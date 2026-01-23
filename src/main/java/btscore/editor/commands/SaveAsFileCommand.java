@@ -2,7 +2,7 @@ package btscore.editor.commands;
 
 import java.io.File;
 import javafx.stage.FileChooser;
-import btscore.App;
+import btscore.UiApp;
 import btscore.Config;
 import btscore.graph.io.GraphSaver;
 import btscore.editor.context.Command;
@@ -31,7 +31,7 @@ public class SaveAsFileCommand implements Command, MarkSavedCommand {
         }
         chooser.setTitle("Save as ." + Config.XML_FILE_EXTENSION + " file");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(Config.XML_FILE_EXTENSION, "*." + Config.XML_FILE_EXTENSION));
-        File file = chooser.showSaveDialog(App.getStage());
+        File file = chooser.showSaveDialog(UiApp.getStage());
 
         if (file != null) {
             Config.setLastOpenedDirectory(file);

@@ -17,7 +17,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
-import btscore.App;
+import btscore.UiApp;
 
 /**
  *
@@ -166,7 +166,7 @@ public class WorkspaceModel {
     }
 
     public List<ConnectionModel> removeConnectionModels(BlockModel blockModel) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceModel.removeConnectionModels()");
         }
         List<ConnectionModel> connections = blockModel.getConnections();
@@ -181,7 +181,7 @@ public class WorkspaceModel {
      * GROUPS
      */
     public void removeBlockGroupModel(BlockGroupModel blockGroupModel) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceModel.removeBlockGroupModel()");
         }
         blockGroupModels.remove(blockGroupModel);
@@ -201,14 +201,14 @@ public class WorkspaceModel {
     }
 
     public void addBlockGroupModel(BlockGroupModel blockGroupModel) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceModel.addBlockGroupModel()");
         }
         blockGroupModels.add(blockGroupModel);
     }
 
     public BlockGroupModel removeBlockFromGroup(BlockModel blockModel) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceModel.removeBlockFromGroup()");
         }
         BlockGroupModel blockGroupModel = blockGroupIndex.getBlockGroup(blockModel);

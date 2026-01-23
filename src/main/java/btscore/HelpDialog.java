@@ -152,7 +152,7 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
 
     // Static method to show the WelcomeDialog
     public static void show() {
-        Stage owner = App.getStage();
+        Stage owner = UiApp.getStage();
         Stage dialog = new Stage();
         dialog.setResizable(false);
         dialog.initOwner(owner);

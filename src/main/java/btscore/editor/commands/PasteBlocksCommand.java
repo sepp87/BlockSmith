@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import btscore.App;
+import btscore.UiApp;
 import btscore.clipboard.CopyPasteMemory;
 import btscore.clipboard.CopyResult;
 import btscore.graph.block.BlockModel;
@@ -50,7 +50,7 @@ public class PasteBlocksCommand implements UndoableCommand {
             }
 
             Point2D copyPoint = new Point2D(boundingBox.getMinX() + boundingBox.getWidth() / 2, boundingBox.getMinY() + boundingBox.getHeight() / 2);
-            Point2D pastePoint = App.getContext(workspaceController.getContextId()).getMousePositionOnWorkspace();
+            Point2D pastePoint = UiApp.getContext(workspaceController.getContextId()).getMousePositionOnWorkspace();
 
             Point2D delta = pastePoint.subtract(copyPoint);
 
@@ -176,7 +176,7 @@ public class PasteBlocksCommand implements UndoableCommand {
                 continue;
             }
             ConnectionModel autoConnection = workspaceModel.getAutoConnectIndex().registerReceiver(port);
-            if (autoConnection != null && App.LOG_POTENTIAL_BUGS) {
+            if (autoConnection != null && UiApp.LOG_POTENTIAL_BUGS) {
                 /**
                  * There cannot be an auto-connection, since the pasted block
                  * caused the auto-connection in the first place, so there are

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import btscore.App;
+import btscore.UiApp;
 import btscore.graph.block.BlockModel;
 import btscore.graph.connection.ConnectionModel;
 import btscore.graph.port.PortModel;
@@ -60,7 +60,7 @@ public class AutoConnectIndex {
         if (pendingReceivers.containsKey(type)) {
             // TODO connect
             for (PortModel receiver : pendingReceivers.get(type)) {
-                if (!receiver.getConnections().isEmpty() && App.LOG_POTENTIAL_BUGS) {
+                if (!receiver.getConnections().isEmpty() && UiApp.LOG_POTENTIAL_BUGS) {
                     System.out.println("WARNING: Receiver was already connected eventhough it is registered. This issue might occur when reviving wireless connections");
                 }
                 if (silent) {
@@ -77,7 +77,7 @@ public class AutoConnectIndex {
     }
 
     public ConnectionModel registerReceiver(PortModel receiver) {
-        if (!receiver.getConnections().isEmpty() && App.LOG_POTENTIAL_BUGS) {
+        if (!receiver.getConnections().isEmpty() && UiApp.LOG_POTENTIAL_BUGS) {
             System.out.println("WARNING: Receiver was already connected before registering. Evaluate if this case should be caught");
         }
         Class<?> type = receiver.getDataType();
@@ -99,7 +99,7 @@ public class AutoConnectIndex {
         if (transmitters.containsKey(type)) {
             return transmitters.get(type).indexOf(transmitter);
         }
-        if (result == -1 && App.LOG_POTENTIAL_BUGS) {
+        if (result == -1 && UiApp.LOG_POTENTIAL_BUGS) {
             System.out.println("ERROR: Transmitter was NOT found, eventhough it should have been registered.");
         }
         return result;

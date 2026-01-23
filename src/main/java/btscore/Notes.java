@@ -7,6 +7,11 @@ package btscore;
 public class Notes {
     
 }
+// BACKLOG
+// Domain - replace all JavaFx stuff with pure Java
+// Commands - reimplement so logic is not inside commands
+//
+//
 // TODO / WIP
 // put stylesheets stuff into AppStylesheetsHelper
 //

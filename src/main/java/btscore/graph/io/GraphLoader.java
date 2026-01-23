@@ -1,6 +1,6 @@
 package btscore.graph.io;
 
-import btscore.App;
+import btscore.UiApp;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
@@ -53,7 +53,7 @@ public class GraphLoader {
             // register all transmitting ports, first after deserializing all blocks and connections
             Collection<BlockModel> blocks = workspaceModel.getBlockModels();
             Collection<ConnectionModel> autoConnections = workspaceModel.getAutoConnectIndex().registerAllTransmitters(blocks);
-            if (!autoConnections.isEmpty() && App.LOG_POTENTIAL_BUGS) {
+            if (!autoConnections.isEmpty() && UiApp.LOG_POTENTIAL_BUGS) {
                 /**
                  * Edge case (which should not occur) - The end user opens and
                  * edits a .btsxml file in a text editor and removes

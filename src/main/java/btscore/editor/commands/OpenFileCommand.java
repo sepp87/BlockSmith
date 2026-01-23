@@ -2,7 +2,7 @@ package btscore.editor.commands;
 
 import java.io.File;
 import javafx.stage.FileChooser;
-import btscore.App;
+import btscore.UiApp;
 import btscore.Config;
 import btscore.editor.context.Command;
 import btscore.graph.io.GraphLoader;
@@ -33,7 +33,7 @@ public class OpenFileCommand implements Command, ResetHistoryCommand, MarkSavedC
         chooser.setTitle("Open a ." + Config.XML_FILE_EXTENSION + " file");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(Config.XML_FILE_EXTENSION, "*." + Config.XML_FILE_EXTENSION));
 
-        File file = chooser.showOpenDialog(App.getStage());
+        File file = chooser.showOpenDialog(UiApp.getStage());
 
         if (file == null) {
             return false;

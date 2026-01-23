@@ -3,7 +3,7 @@ package btscore.editor;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import btscore.App;
+import btscore.UiApp;
 import btscore.editor.context.ActionManager;
 import btscore.editor.context.EventRouter;
 import btscore.editor.context.StateManager;
@@ -27,9 +27,9 @@ public class SelectionRectangleController extends BaseController {
 
     public SelectionRectangleController(String contextId, SelectionRectangleView selectionRectangleView) {
         super(contextId);
-        this.eventRouter = App.getContext(contextId).getEventRouter();
-        this.actionManager = App.getContext(contextId).getActionManager();
-        this.state = App.getContext(contextId).getStateManager();
+        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
+        this.actionManager = UiApp.getContext(contextId).getActionManager();
+        this.state = UiApp.getContext(contextId).getStateManager();
         this.view = selectionRectangleView;
 
         eventRouter.addEventListener(MouseEvent.MOUSE_PRESSED, this::handleSelectionStarted);

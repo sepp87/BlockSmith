@@ -2,7 +2,7 @@ package btscore.editor.context;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import btscore.App;
+import btscore.UiApp;
 
 /**
  *
@@ -21,7 +21,7 @@ public class StateManager {
     }
 
     private void printMode(Object b, Object o, Object n) {
-        if (App.LOG_EDITOR_STATE) {
+        if (UiApp.LOG_EDITOR_STATE) {
             System.out.println("State " + n);
         }
     }

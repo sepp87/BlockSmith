@@ -3,7 +3,7 @@ package btscore.editor;
 import btscore.workspace.WorkspaceModel;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import btscore.App;
+import btscore.UiApp;
 import btscore.editor.context.EventRouter;
 import btscore.editor.context.StateManager;
 import static btscore.utils.EditorUtils.onFreeSpace;
@@ -25,8 +25,8 @@ public class PanController extends BaseController {
 
     public PanController(String contextId, WorkspaceModel workspaceModel) {
         super(contextId);
-        this.eventRouter = App.getContext(contextId).getEventRouter();
-        this.state = App.getContext(contextId).getStateManager();
+        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
+        this.state = UiApp.getContext(contextId).getStateManager();
         this.workspaceModel = workspaceModel;
 
         eventRouter.addEventListener(MouseEvent.MOUSE_PRESSED, this::handlePanStarted);

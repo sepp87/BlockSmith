@@ -1,6 +1,6 @@
 package btscore.editor;
 
-import btscore.App;
+import btscore.UiApp;
 import btscore.editor.context.EditorContext;
 
 /**
@@ -25,7 +25,7 @@ public class BaseController {
     }
 
     public EditorContext getEditorContext() {
-        return App.getContext(getContextId());
+        return UiApp.getContext(getContextId());
     }
 
 }

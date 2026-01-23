@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import btscore.App;
+import btscore.UiApp;
 import btscore.editor.context.EventRouter;
 import static btscore.utils.EditorUtils.onFreeSpace;
 
@@ -23,7 +23,7 @@ public class EditorController extends BaseController {
     public EditorController(String contextId, EditorView editorView) {
 
         super(contextId);
-        this.eventRouter = App.getContext(contextId).getEventRouter();
+        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
         this.view = editorView;
 
         view.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler); // capture the event before the sub menu is removed from the radial menu when clicking on "Return To Main" from a sub menu 

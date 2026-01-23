@@ -44,6 +44,10 @@ public abstract class BaseModel implements Comparable<BaseModel> {
     public String getId() {
         return id.get();
     }
+    
+    public UUID getIdAsUuid() {
+        return UUID.fromString(id.get());
+    }
 
     public StringProperty nameProperty() {
         return name;

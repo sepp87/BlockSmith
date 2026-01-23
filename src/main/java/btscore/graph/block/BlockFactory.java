@@ -1,6 +1,6 @@
 package btscore.graph.block;
 
-import btscore.AppLauncher;
+import btscore.Launcher;
 import btscore.graph.port.AutoConnectable;
 import btscore.icons.FontAwesomeSolid;
 import java.lang.reflect.Field;
@@ -104,7 +104,7 @@ public class BlockFactory {
     }
 
     static void testMethod() {
-        for (Method m : AppLauncher.class.getDeclaredMethods()) {
+        for (Method m : Launcher.class.getDeclaredMethods()) {
             if (m.getName().equals("getKey")) {
                 Type genericReturnType = m.getGenericReturnType();
                 if (genericReturnType instanceof ParameterizedType) {

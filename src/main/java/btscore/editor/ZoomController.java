@@ -10,7 +10,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import btscore.App;
+import btscore.UiApp;
 import btscore.Config;
 import btscore.utils.NodeHierarchyUtils;
 import btscore.utils.SystemUtils;
@@ -39,9 +39,9 @@ public class ZoomController extends BaseController {
 
     public ZoomController(String contextId, WorkspaceModel workspaceModel, ZoomView zoomView) {
         super(contextId);
-        this.eventRouter = App.getContext(contextId).getEventRouter();
-        this.actionManager = App.getContext(contextId).getActionManager();
-        this.state = App.getContext(contextId).getStateManager();
+        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
+        this.actionManager = UiApp.getContext(contextId).getActionManager();
+        this.state = UiApp.getContext(contextId).getStateManager();
         this.model = workspaceModel;
         this.view = zoomView;
 

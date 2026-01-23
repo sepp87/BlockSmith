@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import btscore.App;
+import btscore.UiApp;
 import btscore.graph.block.BlockLibraryLoader;
 import btscore.utils.ListViewUtils;
 import btscore.utils.NodeHierarchyUtils;
@@ -45,9 +45,9 @@ public class BlockSearchController extends BaseController {
 
     public BlockSearchController(String contextId, BlockSearchView blockSearchView) {
         super(contextId);
-        this.eventRouter = App.getContext(contextId).getEventRouter();
-        this.actionManager = App.getContext(contextId).getActionManager();
-        this.state = App.getContext(contextId).getStateManager();
+        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
+        this.actionManager = UiApp.getContext(contextId).getActionManager();
+        this.state = UiApp.getContext(contextId).getStateManager();
 
         this.view = blockSearchView;
 

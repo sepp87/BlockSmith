@@ -3,7 +3,7 @@ package btscore.editor.radialmenu;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.input.MouseEvent;
-import btscore.App;
+import btscore.UiApp;
 import btscore.utils.NodeHierarchyUtils;
 import btscore.editor.context.ActionManager;
 import btscore.editor.context.EventRouter;
@@ -27,9 +27,9 @@ public class RadialMenuController extends BaseController {
 
     public RadialMenuController(String contextId, RadialMenuView radialMenuView) {
         super(contextId);
-        this.eventRouter = App.getContext(contextId).getEventRouter();
-        this.actionManager = App.getContext(contextId).getActionManager();
-        this.state = App.getContext(contextId).getStateManager();
+        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
+        this.actionManager = UiApp.getContext(contextId).getActionManager();
+        this.state = UiApp.getContext(contextId).getStateManager();
         this.view = radialMenuView;
 
         for (RadialMenuItem item : view.getAllRadialMenuItems()) {

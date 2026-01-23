@@ -4,7 +4,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
-import btscore.App;
+import btscore.UiApp;
 import btscore.Config;
 import btscore.editor.context.ActionManager;
 
@@ -19,7 +19,7 @@ public class MenuBarController extends BaseController {
 
     public MenuBarController(String contextId, MenuBarView menuBarView) {
         super(contextId);
-        this.actionManager = App.getContext(contextId).getActionManager();
+        this.actionManager = UiApp.getContext(contextId).getActionManager();
         this.view = menuBarView;
 
         for (MenuItem item : view.getAllMenuItems()) {

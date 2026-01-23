@@ -16,7 +16,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
 import javafx.geometry.Point2D;
-import btscore.App;
+import btscore.UiApp;
 import btscore.editor.BaseController;
 import btscore.graph.connection.ConnectionController;
 import btscore.graph.connection.ConnectionView;
@@ -88,7 +88,7 @@ public class WorkspaceController extends BaseController {
     SetChangeListener<BlockModel> blockModelsListener = this::onBlockModelsChanged;
 
     private void onBlockModelsChanged(Change<? extends BlockModel> change) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceController.onBlockModelsChanged()");
         }
         if (change.wasAdded()) {
@@ -99,7 +99,7 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addBlock(BlockModel blockModel) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceController.addBlock()");
         }
         BlockView blockView = new BlockView();
@@ -109,7 +109,7 @@ public class WorkspaceController extends BaseController {
     }
 
     private void removeBlock(BlockModel blockModel) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceController.removeBlock()");
         }
         BlockController blockController = blocks.remove(blockModel);
@@ -144,7 +144,7 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addBlockGroup(BlockGroupModel blockGroupModel) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceController.addBlockGroup()");
         }
         BlockGroupView blockGroupView = new BlockGroupView();
@@ -159,7 +159,7 @@ public class WorkspaceController extends BaseController {
     }
 
     private void removeBlockGroup(BlockGroupModel blockGroupModel) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceController.removeBlockGroup()");
         }
         BlockGroupController blockGroupController = blockGroups.remove(blockGroupModel);
@@ -173,7 +173,7 @@ public class WorkspaceController extends BaseController {
     SetChangeListener<ConnectionModel> connectionModelsListener = this::onConnectionModelsChanged;
 
     private void onConnectionModelsChanged(Change<? extends ConnectionModel> change) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceController.onConnectionModelsChanged()");
         }
         if (change.wasAdded()) {
@@ -184,7 +184,7 @@ public class WorkspaceController extends BaseController {
     }
 
     private void addConnection(ConnectionModel connectionModel) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceController.addConnection()");
         }
         ConnectionView connectionView = new ConnectionView();
@@ -198,7 +198,7 @@ public class WorkspaceController extends BaseController {
     }
 
     private void removeConnection(ConnectionModel connectionModel) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceController.removeConnection()");
         }
         ConnectionController connectionController = connections.remove(connectionModel);
@@ -213,7 +213,7 @@ public class WorkspaceController extends BaseController {
 
     // rename to initiateConnection and when PreConnection != null, then turn PreConnection into a real connection
     public void initiateConnection(PortController portController) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceController.initiateConnection()");
         }
         if (preConnection == null) {
@@ -224,7 +224,7 @@ public class WorkspaceController extends BaseController {
 
     // method is unneeded if createConnection catches the second click
     public void removePreConnection(PreConnection preConnection) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("WorkspaceController.removePreConnection()");
         }
         view.getConnectionLayer().getChildren().remove(preConnection);

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import btscore.App;
+import btscore.UiApp;
 import btscore.graph.block.BlockController;
 import btscore.graph.block.BlockModel;
 import btscore.graph.connection.ConnectionModel;
@@ -38,7 +38,7 @@ public class RemoveSelectedBlocksCommand implements UndoableCommand {
 
     @Override
     public boolean execute() {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("RemoveSelectedBlocksCommand.execute()");
         }
         workspaceController.deselectAllBlocks();
@@ -158,7 +158,7 @@ public class RemoveSelectedBlocksCommand implements UndoableCommand {
             for (PortModel port : portsByIndex.getValue()) {
                 // WARNING when silent is false, transmitter is connecting, because all connections (also wireless) were revived. Meaning there is a pending receiver, that is actually already connected again
                 List<ConnectionModel> result = workspaceModel.getAutoConnectIndex().registerTransmitter(index, port, true);
-                if (!result.isEmpty() && App.LOG_POTENTIAL_BUGS) {
+                if (!result.isEmpty() && UiApp.LOG_POTENTIAL_BUGS) {
                     System.out.println("GENERATING AUTOCONNECTIONS FOR TRANSMITTERS " + result.size());
                 }
             }
@@ -175,7 +175,7 @@ public class RemoveSelectedBlocksCommand implements UndoableCommand {
 //                    continue;
                 }
                 ConnectionModel result = workspaceModel.getAutoConnectIndex().registerReceiver(port); // TODO double check here
-                if (result != null && App.LOG_POTENTIAL_BUGS) {
+                if (result != null && UiApp.LOG_POTENTIAL_BUGS) {
                     System.out.println("GENERATING AUTOCONNECTIONS FOR RECEIVERS");
                 }
             }

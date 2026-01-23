@@ -2,7 +2,7 @@ package btscore.graph.connection;
 
 import btscore.graph.port.PortModel;
 import btsxml.ConnectionTag;
-import btscore.App;
+import btscore.UiApp;
 import btscore.graph.base.BaseModel;
 import btscore.graph.port.PortType;
 import btscore.utils.TypeCastUtils;
@@ -105,7 +105,7 @@ public class ConnectionModel extends BaseModel {
     }
 
     private static boolean isTypeCompatible(PortModel startPortModel, PortModel endPortModel) {
-        if (!App.TYPE_SENSITIVE) {
+        if (!UiApp.TYPE_SENSITIVE) {
             return true;
         }
 

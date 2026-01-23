@@ -9,7 +9,7 @@ import static javafx.scene.input.KeyCode.O;
 import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
-import btscore.App;
+import btscore.UiApp;
 import btscore.utils.EventUtils;
 import btscore.editor.context.ActionManager;
 import btscore.editor.context.EventRouter;
@@ -37,9 +37,9 @@ public class KeyboardController {
 
 
     public static void handleShortcutTriggered(KeyEvent event) {
-        ActionManager actionManager = App.getCurrentContext().getActionManager();
+        ActionManager actionManager = UiApp.getCurrentContext().getActionManager();
         
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("KeyboardController.handleShortcutTriggered()");
         }
         Command command = null;

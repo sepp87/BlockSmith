@@ -14,7 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import btscore.App;
+import btscore.UiApp;
 import btscore.editor.context.ActionManager;
 import btscore.editor.commands.MoveBlocksCommand;
 import btscore.editor.commands.ResizeBlockCommand;
@@ -195,14 +195,14 @@ public class BlockController extends BaseController {
     private final ListChangeListener<BlockException> exceptionsListener = this::onExceptionsChanged;
 
     private void onExceptionsChanged(Change<? extends BlockException> change) {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("BlockController.onExceptionsChanged()");
         }
         showExceptionButton();
     }
 
     private void showExceptionButton() {
-        if (App.LOG_METHOD_CALLS) {
+        if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("BlockController.showExceptionButton() exceptionShown " + exceptionShown);
         }
 
