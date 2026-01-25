@@ -8,6 +8,8 @@ import java.util.Collection;
  * @author joostmeulenkamp
  */
 public interface BlockDefLoader {
-    
+
     Collection<BlockDef> load();
+
+
 }

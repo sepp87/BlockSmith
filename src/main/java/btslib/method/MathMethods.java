@@ -9,36 +9,36 @@ import btscore.graph.block.BlockMetadata;
 public class MathMethods {
 
     @BlockMetadata(
-            name = "pi",
+            label = "pi",
             description = "The double value that is closer than any other to pi (π), the ratio of the circumference of a circle to its diameter.",
-            identifier = "Math.pi",
+            type = "Math.pi",
             category = "Core")
     public static double pi() {
         return Math.PI;
     }
 
     @BlockMetadata(
-            name = "2*pi*r",
+            label = "2*pi*r",
             description = "The circumference of a circle with radius r.",
-            identifier = "Math.getCircleCircumference",
+            type = "Math.getCircleCircumference",
             category = "Core")
     public static Double getCircleCircumference(Number r) {
         return 2 * Math.PI * r.doubleValue();
     }
 
     @BlockMetadata(
-            name = "pi*r^2",
+            label = "pi*r^2",
             description = "The area of a circle with radius r.",
-            identifier = "Math.getCircleArea",
+            type = "Math.getCircleArea",
             category = "Core")
     public static Double getCircleArea(Number r) {
         return Math.PI * Math.pow(r.doubleValue(), 2);
     }
 
     @BlockMetadata(
-            name = "a+b",
+            label = "a+b",
             description = "The result of adding value b to a.",
-            identifier = "Math.add",
+            type = "Math.add",
             category = "Core")
     public static Number add(Number a, Number b) {
         Boolean areIntegers = areIntegers(a, b);
@@ -52,9 +52,9 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            name = "a-b",
+            label = "a-b",
             description = "The result of substracting value b from a.",
-            identifier = "Math.substract",
+            type = "Math.substract",
             category = "Core")
     public static Number substract(Number a, Number b) {
         Boolean areIntegers = areIntegers(a, b);
@@ -68,9 +68,9 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            name = "a*b",
+            label = "a*b",
             description = "The result of multiplying value a with b.",
-            identifier = "Math.multiply",
+            type = "Math.multiply",
             category = "Core")
     public static Number multiply(Number a, Number b) {
         Boolean areIntegers = areIntegers(a, b);
@@ -84,18 +84,18 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            name = "a/b",
+            label = "a/b",
             description = "The result of dividing value a by b.",
-            identifier = "Math.divide",
+            type = "Math.divide",
             category = "Core")
     public static Number divide(Number a, Number b) {
         return a.doubleValue() / b.doubleValue();
     }
 
     @BlockMetadata(
-            name = "a%b",
+            label = "a%b",
             description = "The remainder of dividing value a by b.",
-            identifier = "Math.remainder",
+            type = "Math.remainder",
             category = "Core")
     public static Number remainder(Number a, Number b) {
         Boolean areIntegers = areIntegers(a, b);
@@ -110,7 +110,7 @@ public class MathMethods {
 
     @BlockMetadata(
             description = "Returns the greater of two double values.",
-            identifier = "Math.max",
+            type = "Math.max",
             category = "Core")
     public static Number max(Number a, Number b) {
         Boolean areIntegers = areIntegers(a, b);
@@ -125,7 +125,7 @@ public class MathMethods {
 
     @BlockMetadata(
             description = "Returns the smaller of two double values.",
-            identifier = "Math.min",
+            type = "Math.min",
             category = "Core")
     public static Number min(Number a, Number b) {
         Boolean areIntegers = areIntegers(a, b);
@@ -139,9 +139,9 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            name = "|a|",
+            label = "|a|",
             description = "Returns the absolute value of a double value. If the argument is not negative, the argument is returned. If the argument is negative, the negation of the argument is returned.",
-            identifier = "Math.abs",
+            type = "Math.abs",
             category = "Core")
     public static Number abs(Number a) {
         Boolean isInteger = isInteger(a);

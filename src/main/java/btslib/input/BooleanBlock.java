@@ -17,7 +17,7 @@ import btscore.graph.block.BlockView;
  * @author joostmeulenkamp
  */
 @BlockMetadata(
-        identifier = "Input.boolean",
+        type = "Input.boolean",
         category = "Input",
         description = "Switch between TRUE and FALSE",
         tags = {"boolean", "true", "false"}

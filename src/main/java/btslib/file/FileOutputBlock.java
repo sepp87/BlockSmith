@@ -16,7 +16,7 @@ import javafx.stage.Window;
  * @author joostmeulenkamp
  */
 @BlockMetadata(
-        identifier = "Output.file",
+        type = "Output.file",
         aliases = {"File.create"},
         category = "Output",
         description = "Save to file",

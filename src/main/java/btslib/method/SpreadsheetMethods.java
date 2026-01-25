@@ -44,9 +44,9 @@ import btslib.spreadsheet.DataSheet;
 public class SpreadsheetMethods {
 
     @BlockMetadata(
-            name = "readCsv",
+            label = "readCsv",
             description = "Reads a CSV file and returns a data sheet object. This method automatically detects whether a header is present. If you do not wish to specify a header, set the row number to -1. A value of 0 or 1 will assume the first row as the header. For N ≥ 2, row N will be used as the header.",
-            identifier = "Spreadsheet.readCsv",
+            type = "Spreadsheet.readCsv",
             category = "Core")
     public static DataSheet readCsv(File csv, Integer headerRowNumber) throws IOException {
         try (Reader reader = new FileReader(csv); CSVParser csvParser = CSVParser.parse(reader,
@@ -66,9 +66,9 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            name = "writeCsv",
+            label = "writeCsv",
             description = "",
-            identifier = "Spreadsheet.writeCsv",
+            type = "Spreadsheet.writeCsv",
             category = "Core")
     public static void writeCsv(File csv, DataSheet dataSheet) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(csv)); CSVPrinter csvPrinter = new CSVPrinter(writer,
@@ -88,9 +88,9 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            name = "readExcel",
+            label = "readExcel",
             description = "Reads an XLSX file and returns a data sheet object. This method automatically detects whether a header is present. If you do not wish to specify a header, set the row number to -1. A value of 0 or 1 will assume the first row as the header. For N ≥ 2, row N will be used as the header.",
-            identifier = "Spreadsheet.readExcel",
+            type = "Spreadsheet.readExcel",
             category = "Core")
     public static DataSheet readExcel(File excel, Integer headerRowNumber) throws IOException {
         try (FileInputStream fis = new FileInputStream(excel); Workbook workbook = new XSSFWorkbook(fis)) {
@@ -229,9 +229,9 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            name = "writeExcel",
+            label = "writeExcel",
             description = "",
-            identifier = "Spreadsheet.writeExcel",
+            type = "Spreadsheet.writeExcel",
             category = "Core")
     public static void writeExcel(File excel, DataSheet dataSheet) throws IOException {
         try (Workbook workbook = new XSSFWorkbook(); FileOutputStream fos = new FileOutputStream(excel)) {
@@ -398,9 +398,9 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            name = "filterData",
+            label = "filterData",
             description = "",
-            identifier = "Spreadsheet.filterData",
+            type = "Spreadsheet.filterData",
             category = "Core")
     public static DataSheet filterData(DataSheet dataSheet, String column, Predicate<Object> condition) {
         int colIndex = dataSheet.getHeaderRow().indexOf(column);
@@ -415,9 +415,9 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            name = "sortData",
+            label = "sortData",
             description = "",
-            identifier = "Spreadsheet.sortData",
+            type = "Spreadsheet.sortData",
             category = "Core")
     public static DataSheet sortData(DataSheet dataSheet, String column, boolean ascending) {
         int colIndex = dataSheet.getHeaderRow().indexOf(column);
@@ -436,9 +436,9 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            name = "mergeDataSheets",
+            label = "mergeDataSheets",
             description = "",
-            identifier = "Spreadsheet.mergeDataSheets",
+            type = "Spreadsheet.mergeDataSheets",
             category = "Core")
     public static DataSheet mergeDataSheets(DataSheet sheet1, DataSheet sheet2) {
         if (!sheet1.getHeaderRow().equals(sheet2.getHeaderRow())) {
@@ -458,9 +458,9 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            name = "getUniqueValues",
+            label = "getUniqueValues",
             description = "",
-            identifier = "Spreadsheet.getUniqueValues",
+            type = "Spreadsheet.getUniqueValues",
             category = "Core")
     public static Set<Object> getUniqueValues(DataSheet dataSheet, String column) {
         int colIndex = dataSheet.getHeaderRow().indexOf(column);
@@ -474,9 +474,9 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            name = "findMaxValue",
+            label = "findMaxValue",
             description = "",
-            identifier = "Spreadsheet.findMaxValue",
+            type = "Spreadsheet.findMaxValue",
             category = "Core")
     public static Object findMaxValue(DataSheet dataSheet, String column) {
         int colIndex = dataSheet.getHeaderRow().indexOf(column);
@@ -533,9 +533,9 @@ public class SpreadsheetMethods {
 //        return new DataSheet(headers, columnTypes, castRowsToTypes(rows, columnTypes));
 //    }
     @BlockMetadata(
-            name = "convertExcelToCsv",
+            label = "convertExcelToCsv",
             description = "",
-            identifier = "Spreadsheet.convertExcelToCsv",
+            type = "Spreadsheet.convertExcelToCsv",
             category = "Core")
     public static void convertExcelToCsv(File excel, File csv) throws IOException {
         DataSheet sheet = readExcel(excel, -1);
@@ -543,9 +543,9 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            name = "convertCsvToExcel",
+            label = "convertCsvToExcel",
             description = "",
-            identifier = "Spreadsheet.convertCsvToExcel",
+            type = "Spreadsheet.convertCsvToExcel",
             category = "Core")
     public static void convertCsvToExcel(File csv, File excel) throws IOException {
         DataSheet sheet = readCsv(csv, -1);

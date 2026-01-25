@@ -26,7 +26,7 @@ import btscore.utils.ListViewHoverSelectBehaviour;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Date.temporalUnit",
+        type = "Date.temporalUnit",
         description = "A standard set of date periods units.",
         category = "Core")
 public class ChronoUnitBlock extends BlockModel {

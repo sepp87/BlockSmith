@@ -4,10 +4,12 @@ import blocksmith.domain.block.Port.Direction;
 
 /**
  *
- * @author joostmeulenkamp
+ * @author joost
  */
 public record PortDef(
+        String name,
         Direction direction,
-        Class<?> dataType) {
+        Class<?> dataType,
+        boolean dataTypeIsGeneric) {
 
 }

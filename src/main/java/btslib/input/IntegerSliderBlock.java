@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleIntegerProperty;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Input.integerSlider",
+        type = "Input.integerSlider",
         category = "Input",
         description = "Integer Slider",
         tags = {"input", "slider"})

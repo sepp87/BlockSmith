@@ -15,7 +15,7 @@ import javafx.stage.Window;
  * @author joostmeulenkamp
  */
 @BlockMetadata(
-        identifier = "Input.directory",
+        type = "Input.directory",
         aliases = {"Directory.open"},
         category = "Input",
         description = "Open a directory",

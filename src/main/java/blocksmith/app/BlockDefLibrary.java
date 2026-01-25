@@ -1,14 +1,24 @@
 package blocksmith.app;
 
+import blocksmith.domain.block.BlockDef;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+
 /**
  *
- * @author joostmeulenkamp
+ * @author joost
  */
 public class BlockDefLibrary {
+
+    private final Map<String, BlockDef> defsByType = new TreeMap<>();
+
+    public BlockDefLibrary(Collection<BlockDef> blockDefs) {
+        blockDefs.forEach(e -> defsByType.put(e.metadata().type(), e));
+    }
     
-    private final BlockDefLoader loader;
-    
-    public BlockDefLibrary(BlockDefLoader loader) {
-        this.loader = loader;
+    public Optional<BlockDef> findById(String id) {
+        return Optional.ofNullable(defsByType.get(id));
     }
 }

@@ -27,7 +27,7 @@ import btscore.utils.ListUtils;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Core.methodBlock",
+        type = "Core.methodBlock",
         category = "Core",
         description = "A generic block used to convert static methods and fields to blocks",
         tags = {"core", "method", "block"})
@@ -46,7 +46,7 @@ public class MethodBlock extends BlockModel {
 
     public MethodBlock(Method method) {
         this.info = method.getAnnotation(BlockMetadata.class);
-        this.identifier = info.identifier();
+        this.identifier = info.type();
         this.category = info.category();
         this.description = info.description();
         this.tags = info.tags();
@@ -70,12 +70,12 @@ public class MethodBlock extends BlockModel {
         if (!info.icon().equals(FontAwesomeSolid.NULL)) {
             label = BlockView.getAwesomeIcon(info.icon());
 
-        } else if (!info.name().equals("")) {
-            label = new Label(info.name());
+        } else if (!info.label().equals("")) {
+            label = new Label(info.label());
             label.getStyleClass().add("block-text");
 
         } else {
-            String shortName = info.identifier().split("\\.")[1];
+            String shortName = info.type().split("\\.")[1];
             label = new Label(shortName);
             label.getStyleClass().add("block-text");
         }
@@ -91,7 +91,7 @@ public class MethodBlock extends BlockModel {
     @Override
     public void processSafely() {
 
-        System.out.println(info.identifier().split("\\.")[1] + ".processSafely()");
+        System.out.println(info.type().split("\\.")[1] + ".processSafely()");
 //        for (Thread thread : threads) {
 //            thread.interrupt();
 //        }
@@ -274,7 +274,7 @@ public class MethodBlock extends BlockModel {
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.setType(method.getAnnotation(BlockMetadata.class).identifier());
+        xmlTag.setType(method.getAnnotation(BlockMetadata.class).type());
     }
 
     @Override

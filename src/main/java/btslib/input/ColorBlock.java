@@ -16,7 +16,7 @@ import btscore.workspace.WorkspaceModel;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Input.color",
+        type = "Input.color",
         category = "Input",
         description = "Pick a nice color from the palette",
         tags = {"input", "color"})

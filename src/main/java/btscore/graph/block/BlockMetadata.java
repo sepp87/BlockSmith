@@ -8,27 +8,27 @@ import java.lang.annotation.Target;
 
 /**
  *
- * @author JoostMeulenkamp
+ * @author joost
  */
 @Target({ElementType.TYPE, ElementType.METHOD}) //On class and method level
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BlockMetadata {
 
-    String name() default "";
-
-    String identifier();
-
-    String category();
+    String type();
 
     String description() default "";
 
+    String label() default "";
+
+    String category();
+
     String[] tags() default {};
-    
+
     String[] aliases() default {};
 
 //    IconType icon() default IconType.NULL;
     FontAwesomeSolid icon() default FontAwesomeSolid.NULL;
-    
+
     boolean hasDefaultOutput() default false;
 
 //    Method declarations must not have any parameters or a throws clause. 

@@ -18,9 +18,9 @@ import java.nio.charset.Charset;
 public class FileMethods {
 
     @BlockMetadata(
-            name = "isRegularFile",
+            label = "isRegularFile",
             description = "Tests whether a file is a regular file with opaque content.",
-            identifier = "File.isRegularFile",
+            type = "File.isRegularFile",
             category = "Core")
     public static boolean isRegularFile(File file) {
         Path path = file.toPath();
@@ -28,9 +28,9 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            name = "isDirectory",
+            label = "isDirectory",
             description = "Tests whether a file is a directory.",
-            identifier = "File.isDirectory",
+            type = "File.isDirectory",
             category = "Core")
     public static boolean isDirectory(File file) {
         Path path = file.toPath();
@@ -38,9 +38,9 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            name = "exists",
+            label = "exists",
             description = "Tests whether a file exists.",
-            identifier = "File.exists",
+            type = "File.exists",
             category = "Core")
     public static boolean exists(File file) {
         Path path = file.toPath();
@@ -48,9 +48,9 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            name = "LastModifiedTime",
+            label = "LastModifiedTime",
             description = "Returns a file's last modified time. The string is returned in the ISO 8601 format: YYYY-MM-DDThh:mm:ss[.s+]Z",
-            identifier = "File.getLastModifiedTime",
+            type = "File.getLastModifiedTime",
             category = "Core")
     public static String getLastModifiedTime(File file) throws IOException {
         Path path = file.toPath();
@@ -58,9 +58,9 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            name = "readAllLines",
+            label = "readAllLines",
             description = "Read all lines from a file. When no charset is provided, UTF-8 is default.",
-            identifier = "File.readAllLines",
+            type = "File.readAllLines",
             category = "Core")
     public static List<String> readAllLines(File file, Charset cs) throws IOException {
         Path path = file.toPath();
@@ -71,9 +71,9 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            name = "readString",
+            label = "readString",
             description = "Reads all characters from a file into a string. When no charset is provided, UTF-8 is default.",
-            identifier = "File.readString",
+            type = "File.readString",
             category = "Core")
     public static String readString(File file, Charset cs) throws IOException {
         Path path = file.toPath();
@@ -84,9 +84,9 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            name = "size",
+            label = "size",
             description = "Returns the size of a file (in bytes). The size may differ from the actual size on the file system due to compression, support for sparse files, or other reasons. The size of files that are not regular files is implementation specific and therefore unspecified.",
-            identifier = "File.size",
+            type = "File.size",
             category = "Core")
     public static long size(File file) throws IOException {
         Path path = file.toPath();
@@ -94,9 +94,9 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            name = "isReadable",
+            label = "isReadable",
             description = "Returns a file's last modified time. The string is returned in the ISO 8601 format: YYYY-MM-DDThh:mm:ss[.s+]Z",
-            identifier = "File.isReadable",
+            type = "File.isReadable",
             category = "Core")
     public static boolean isReadable(File file) {
         Path path = file.toPath();
@@ -104,9 +104,9 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            name = "isWritable",
+            label = "isWritable",
             description = "Returns a file's last modified time. The string is returned in the ISO 8601 format: YYYY-MM-DDThh:mm:ss[.s+]Z",
-            identifier = "File.isWritable",
+            type = "File.isWritable",
             category = "Core")
     public static boolean isWritable(File file) {
         Path path = file.toPath();
@@ -114,18 +114,18 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            name = "Encoding",
+            label = "Encoding",
             description = "Detect a file's encoding. If no match was found, it defaults to UTF-8.",
-            identifier = "File.detectEncoding",
+            type = "File.detectEncoding",
             category = "Core")
     public static String detectEncoding(File file) {
         return FileUtils.detectEncoding(file);
     }
 
     @BlockMetadata(
-            name = "list",
+            label = "list",
             description = "Return a list of files, the elements of which are the entries in the directory.",
-            identifier = "Directory.list",
+            type = "Directory.list",
             category = "Core")
     public static List<File> list(File dir) throws IOException {
         Path dirPath = dir.toPath();

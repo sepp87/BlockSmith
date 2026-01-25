@@ -14,7 +14,7 @@ import btscore.graph.block.BlockView;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Autoconnect.Transmitter",
+        type = "Autoconnect.Transmitter",
         category = "General",
         description = "A template block for further customization",
         tags = {"template", "dummy", "example"})

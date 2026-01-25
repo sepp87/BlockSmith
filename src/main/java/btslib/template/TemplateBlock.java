@@ -17,7 +17,7 @@ import btscore.graph.block.BlockView;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Util.Template",
+        type = "Util.Template",
         category = "General",
         description = "A template block for further customization",
         tags = {"template", "dummy", "example"})

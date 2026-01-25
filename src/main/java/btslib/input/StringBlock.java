@@ -15,7 +15,6 @@ import javax.xml.namespace.QName;
 import static btscore.utils.ParsingUtils.getBooleanValue;
 import btsxml.BlockTag;
 import btscore.graph.block.BlockModel;
-import btscore.workspace.WorkspaceModel;
 import btscore.graph.block.BlockMetadata;
 import btscore.utils.DateTimeUtils;
 import btscore.utils.ParsingUtils;
@@ -25,7 +24,7 @@ import btscore.utils.ParsingUtils;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Input.string",
+        type = "Input.string",
         category = "Input",
         description = "Input a line of text. Depending on the value, the output type is changed dynamically e.g. to a Boolean, Integer, Long, Double or a LocalDate. For example an ISO 8601 formatted string (yyyy-MM-dd) will be converted to a LocalDate. The value TRUE will be Boolean and so on. The default output is of type String.",
         tags = {"input", "line", "string"})

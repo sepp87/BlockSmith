@@ -28,7 +28,7 @@ public class JsonMethods {
             .create();
 
     @BlockMetadata(
-            identifier = "Json.asStringList",
+            type = "Json.asStringList",
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
     public static List<String> asStringList(String jsonArray) {
@@ -45,7 +45,7 @@ public class JsonMethods {
     }
 
     @BlockMetadata(
-            identifier = "Json.asList",
+            type = "Json.asList",
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
     public static List<Object> asList(String jsonArray) {
@@ -80,7 +80,7 @@ public class JsonMethods {
     }
 
     @BlockMetadata(
-            identifier = "Json.getKey",
+            type = "Json.getKey",
             category = "Core",
             description = "Returns the element with the specified key in this JSON object.")
     public static String getKey(String json, String key) {
@@ -88,7 +88,7 @@ public class JsonMethods {
     }
 
     @BlockMetadata(
-            identifier = "Json.getIndex",
+            type = "Json.getIndex",
             category = "Core",
             description = "Returns the element as string at the specified position in this JSON array.")
     public static String getIndex(String json, int index) {
@@ -96,7 +96,7 @@ public class JsonMethods {
     }
 
     @BlockMetadata(
-            identifier = "Json.getPath",
+            type = "Json.getPath",
             category = "Core",
             description = "Returns the element with the specified path in this JSON object.")
     public static String getPath(String json, String path) {
@@ -133,7 +133,7 @@ public class JsonMethods {
     }
 
     @BlockMetadata(
-            identifier = "Json.toJson",
+            type = "Json.toJson",
             category = "Core",
             description = "This method serializes the specified object into its equivalent Json representation.")
     public static String toJson(Object object) {

@@ -153,7 +153,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>btscore.AppLauncher</mainClass>
+                            <mainClass>btscore.Launcher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

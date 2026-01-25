@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleDoubleProperty;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Input.doubleSlider",
+        type = "Input.doubleSlider",
         category = "Input",
         description = "Double Slider",
         tags = {"input", "slider"})

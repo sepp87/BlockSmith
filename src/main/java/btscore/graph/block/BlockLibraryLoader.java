@@ -107,7 +107,7 @@ public class BlockLibraryLoader {
             if(metadata ==  null) {
                 continue;
             }
-            String identifier = metadata.identifier();
+            String identifier = metadata.type();
             addBlockType(identifier, blockType, isExternal);
             for (String alias : metadata.aliases()) {
                 addBlockType(alias, blockType, isExternal);
@@ -154,7 +154,7 @@ public class BlockLibraryLoader {
         methods = filterEligibleMethods(methods);
         for (Method blockType : methods) {
             BlockMetadata metadata = getBlockMetadata(blockType);
-            String identifier = metadata.identifier();
+            String identifier = metadata.type();
             addBlockType(identifier, blockType, isExternal);
             for (String alias : metadata.aliases()) {
                 addBlockType(alias, blockType, isExternal);

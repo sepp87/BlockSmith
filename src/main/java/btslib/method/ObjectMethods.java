@@ -9,7 +9,7 @@ import btscore.graph.block.BlockMetadata;
 public class ObjectMethods {
 
     @BlockMetadata(
-            identifier = "Object.getClass",
+            type = "Object.getClass",
             aliases = {"Object.getType"},
             category = "Core",
             description = "Returns the runtime class of this Object.")
@@ -18,7 +18,7 @@ public class ObjectMethods {
     }
 
     @BlockMetadata(
-            identifier = "Object.toString",
+            type = "Object.toString",
             aliases = {"String.fromObject"},
             category = "Core",
             description = "Returns a string representation of the object.")

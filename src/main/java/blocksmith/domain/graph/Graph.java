@@ -7,7 +7,7 @@ import java.util.Objects;
 
 /**
  *
- * @author joostmeulenkamp
+ * @author joost
  */
 public final class Graph {
     

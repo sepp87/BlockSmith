@@ -1,5 +1,6 @@
 package blocksmith.adapter.block;
 
+import blocksmith.app.BlockDefLoader;
 import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.block.BlockTask;
 import blocksmith.domain.block.Port;
@@ -7,10 +8,10 @@ import blocksmith.domain.block.PortDef;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.port.AutoConnectable;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,9 +20,9 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author joostmeulenkamp
+ * @author joost
  */
-public class MethodBlockDefLoader {
+public class MethodBlockDefLoader implements BlockDefLoader {
 
     private static final Logger LOGGER = Logger.getLogger(MethodBlockDefLoader.class.getName());
 
@@ -38,8 +39,8 @@ public class MethodBlockDefLoader {
     private static List<BlockDef> blockDefsFromMethods(Collection<Class<?>> classes) {
         var result = new ArrayList<BlockDef>();
 
-        var methods = ReflectionUtils.getStaticMethodsFromClasses(classes);
-        var eligble = ReflectionUtils.filterMethodsByAnnotation(methods, BlockMetadata.class);
+        var methods = MethodLoaderUtils.getStaticMethodsFromClasses(classes);
+        var eligble = MethodLoaderUtils.filterMethodsByAnnotation(methods, BlockMetadata.class);
 
         for (Method method : eligble) {
             try {
@@ -59,11 +60,11 @@ public class MethodBlockDefLoader {
         var metadata = method.getAnnotation(BlockMetadata.class);
         var inputs = inputDefsFromParameters(method);
         var output = outputDefFromReturnType(method);
-        var task = new BlockTask();
 
-        return new BlockDef(metadata, inputs, List.of(output), task);
+        return new BlockDef(metadata, inputs, List.of(output));
     }
 
+    // TODO move somewhere else
     private static boolean isListOperator(Method method) {
         // If first input parameter is of type list, then this is a list operator block
         if (method.getParameters().length > 0 && List.class.isAssignableFrom(method.getParameters()[0].getType())) {
@@ -72,25 +73,30 @@ public class MethodBlockDefLoader {
         return false;
     }
 
-    private static boolean isListReturnType(Method method) {
-        return false;
-    }
-
     private static List<PortDef> inputDefsFromParameters(Method method) {
         var result = new ArrayList<PortDef>();
 
         for (Parameter p : method.getParameters()) {
-            boolean isAutoConnectable = AutoConnectable.class.isAssignableFrom(p.getType());
 
             if (List.class.isAssignableFrom(p.getType())) {
-                var portDef = new PortDef(Port.Direction.INPUT, Object.class);
-                result.add(portDef);
-//                blockModel.addInputPort("Object : List", Object.class, isAutoConnectable);
+                if (p.getParameterizedType() instanceof ParameterizedType parameterizedType) {
+                    var typeArgument = parameterizedType.getActualTypeArguments()[0];
+                    if (typeArgument instanceof TypeVariable<?> typeVariable) {
+                        var dataType = typeVariable.getBounds()[0].getClass();
+                        var portDef = new PortDef(p.getName(), Port.Direction.INPUT, dataType, true);
+                        result.add(portDef);
+
+                    } else {
+                        var dataType = typeArgument.getClass();
+                        var portDef = new PortDef(p.getName(), Port.Direction.INPUT, dataType, false);
+                        result.add(portDef);
+
+                    }
+                }
 
             } else {
-                var portDef = new PortDef(Port.Direction.INPUT, p.getType());
+                var portDef = new PortDef(p.getName(), Port.Direction.INPUT, p.getType(), false);
                 result.add(portDef);
-//                blockModel.addInputPort(p.getName(), p.getType(), isAutoConnectable);
             }
         }
         return result;
@@ -98,33 +104,29 @@ public class MethodBlockDefLoader {
 
     private static PortDef outputDefFromReturnType(Method method) throws ReflectiveOperationException {
         Class<?> returnType = method.getReturnType();
-        boolean isAutoConnectable = AutoConnectable.class.isAssignableFrom(returnType);
 
         if (returnType.equals(Number.class)) {
-            return new PortDef(Port.Direction.OUTPUT, double.class);
-//            blockModel.addOutputPort("double", double.class, isAutoConnectable);
+            return new PortDef("double", Port.Direction.OUTPUT, double.class, false);
 
         } else if (List.class.isAssignableFrom(returnType)) {
 
             Type genericReturnType = method.getGenericReturnType();
-            if (genericReturnType instanceof ParameterizedType) { // if list TODO refactor since the return type is a ParameterizedType of type list
-                ParameterizedType pt = (ParameterizedType) genericReturnType;
-                Type typeArgument = pt.getActualTypeArguments()[0];
-                if (typeArgument instanceof Class) {
-                    Class<?> clazz = (Class<?>) typeArgument;
-                    return new PortDef(Port.Direction.OUTPUT, double.class);
-//                    blockModel.addOutputPort(clazz.getSimpleName(), clazz, isAutoConnectable);
+            if (genericReturnType instanceof ParameterizedType parameterizedType) {
+                Type typeArgument = parameterizedType.getActualTypeArguments()[0];
+                if (typeArgument instanceof TypeVariable<?> typeVariable) {
+                    var dataType = typeVariable.getBounds()[0].getClass();
+                    var portDef = new PortDef(dataType.getSimpleName(), Port.Direction.OUTPUT, dataType, true);
+                    return portDef;
 
                 } else {
-                    return new PortDef(Port.Direction.OUTPUT, Object.class);
-//                    blockModel.isListReturnType = true;
-//                    blockModel.addOutputPort(Object.class.getSimpleName(), Object.class, isAutoConnectable);
+                    var dataType = typeArgument.getClass();
+                    var portDef =  new PortDef(dataType.getSimpleName(), Port.Direction.OUTPUT, dataType, false);
+                    return portDef;
                 }
             }
 
         } else {
-            return new PortDef(Port.Direction.OUTPUT, returnType);
-//            blockModel.addOutputPort(returnType.getSimpleName(), returnType, isAutoConnectable);
+            return new PortDef(returnType.getSimpleName(), Port.Direction.OUTPUT, returnType, false);
 
         }
 

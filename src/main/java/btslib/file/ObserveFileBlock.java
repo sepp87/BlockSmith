@@ -28,7 +28,7 @@ import btscore.graph.block.BlockView;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "File.observe",
+        type = "File.observe",
         category = "File",
         description = "Observe a file",
         tags = {"file", "observe", "watch"}

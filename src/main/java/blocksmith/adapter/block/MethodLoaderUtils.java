@@ -1,7 +1,6 @@
 
 package blocksmith.adapter.block;
 
-import btscore.graph.block.BlockMetadata;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -11,11 +10,11 @@ import java.util.List;
 
 /**
  *
- * @author joostmeulenkamp
+ * @author joost
  */
-public final class ReflectionUtils {
+public final class MethodLoaderUtils {
     
-    private ReflectionUtils() {
+    private MethodLoaderUtils() {
         
     }
     

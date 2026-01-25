@@ -205,7 +205,7 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public void serialize(BlockTag xmlTag) {
-        xmlTag.setType(this.getClass().getAnnotation(BlockMetadata.class).identifier());
+        xmlTag.setType(this.getClass().getAnnotation(BlockMetadata.class).type());
         xmlTag.setUUID(idProperty().get());
         xmlTag.setX(layoutXProperty().get());
         xmlTag.setY(layoutYProperty().get());

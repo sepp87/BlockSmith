@@ -15,7 +15,7 @@ import btscore.graph.block.BlockModel;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Input.file",
+        type = "Input.file",
         aliases = {"File.open"},
         category = "Input",
         description = "Open a file",

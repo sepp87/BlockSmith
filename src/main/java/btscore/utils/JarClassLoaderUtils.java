@@ -20,6 +20,10 @@ import java.util.logging.Logger;
 public class JarClassLoaderUtils {
 
     private static final Logger LOGGER = Logger.getLogger(JarClassLoaderUtils.class.getName());
+    
+    private JarClassLoaderUtils() {
+        
+    }
 
     public static List<Class<?>> getClassesFromLibraries(File[] libraries) {
         List<Class<?>> result = new ArrayList<>();

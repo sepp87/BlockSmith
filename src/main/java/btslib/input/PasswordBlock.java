@@ -24,7 +24,7 @@ import btscore.graph.block.BlockMetadata;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Input.password",
+        type = "Input.password",
         category = "Input",
         description = "This text field only hides its text, it does not encrypt it or something. Be careful, the password is still saved as plain text and can still be shown.",
         tags = {"input", "line", "string", "password"})

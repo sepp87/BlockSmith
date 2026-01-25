@@ -21,7 +21,7 @@ import btscore.graph.block.BlockMetadata;
  * @author JoostMeulenkamp
  */
 @BlockMetadata(
-        identifier = "Input.text",
+        type = "Input.text",
         category = "Input",
         description = "Input text or observe output as text",
         tags = {"input", "panel", "text"})

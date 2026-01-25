@@ -10,7 +10,7 @@ import btscore.workspace.WorkspaceModel;
  * @author joostmeulenkamp
  */
 @BlockMetadata(
-        identifier = "Spreadsheet.tableView",
+        type = "Spreadsheet.tableView",
         category = "Spreadsheet",
         description = "View the spreadsheet data in the data sheet with this table view.",
         tags = {"tableView", "spreadsheet"})
