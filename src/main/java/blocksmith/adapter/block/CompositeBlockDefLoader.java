@@ -1,6 +1,6 @@
 package blocksmith.adapter.block;
 
-import blocksmith.app.BlockDefLoader;
+import blocksmith.app.ports.BlockDefLoader;
 import blocksmith.domain.block.BlockDef;
 import java.util.ArrayList;
 import java.util.Collection;

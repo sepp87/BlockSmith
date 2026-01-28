@@ -1,5 +1,6 @@
 package btscore;
 
+import blocksmith.ui.BlockModelFactory;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -35,6 +36,12 @@ import btscore.graph.io.GraphLoader;
  */
 public class UiApp extends Application {
 
+    private static App app;
+
+    public static void setApp(App app) {
+        UiApp.app = app;
+    }
+
     public static final boolean LOG_POTENTIAL_BUGS = true;
     public static final boolean LOG_METHOD_CALLS = false;
     public static final boolean LOG_EDITOR_STATE = false;
@@ -50,6 +57,10 @@ public class UiApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        var defLibrary = app.getBlockDefLibrary();
+        var funcLibrary = app.getBlockFuncLibrary();
+        var blockModelFactory = new BlockModelFactory(defLibrary, funcLibrary);
 
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
@@ -77,7 +88,7 @@ public class UiApp extends Application {
 
         // initialize ActionManager for Context
         WorkspaceController workspaceController = new WorkspaceController(contextId, workspaceModel, workspaceView);
-        ActionManager actionManager = new ActionManager(workspaceModel, workspaceController);
+        ActionManager actionManager = new ActionManager(blockModelFactory, workspaceModel, workspaceController);
         context.initializeActionManager(actionManager);
 
         // Initialize controllers

@@ -1,5 +1,6 @@
 package btscore.editor.context;
 
+import blocksmith.ui.BlockModelFactory;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import btscore.workspace.WorkspaceController;
@@ -11,6 +12,7 @@ import btscore.workspace.WorkspaceModel;
  */
 public class ActionManager {
 
+    private final BlockModelFactory blockModelFactory;
     private final WorkspaceModel workspaceModel;
     private final WorkspaceController workspaceController;
 
@@ -21,18 +23,23 @@ public class ActionManager {
 
     private int savepoint = -1;
 
-    public ActionManager(WorkspaceModel workspaceModel, WorkspaceController workspaceController) {
+    public ActionManager(BlockModelFactory blockModelFactory, WorkspaceModel workspaceModel, WorkspaceController workspaceController) {
+        this.blockModelFactory = blockModelFactory;
         this.workspaceModel = workspaceModel;
         this.workspaceController = workspaceController;
         this.commandFactory = new CommandFactory(workspaceModel, workspaceController);
     }
-
-    public WorkspaceController getWorkspaceController() {
-        return workspaceController;
+    
+    public BlockModelFactory getBlockModelFactory() {
+        return blockModelFactory;
     }
 
     public WorkspaceModel getWorkspaceModel() {
         return workspaceModel;
+    }
+
+    public WorkspaceController getWorkspaceController() {
+        return workspaceController;
     }
 
     public void executeCommand(String id) {

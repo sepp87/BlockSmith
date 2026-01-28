@@ -1,38 +1,39 @@
+
 package blocksmith.adapter.block;
 
-import btscore.Config;
-import btscore.utils.FileUtils;
+import blocksmith.adapter.AppPaths;
 import btscore.utils.JarClassLoaderUtils;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
  *
- * @author joost
+ * @author joostmeulenkamp
  */
-public class MethodClassProvider {
-
+public class ClassIndex {
+    
     private final AppPaths paths;
-    private final List<Class<?>> externalLibraries;
-
-    public MethodClassProvider() throws IOException {
-        this.paths = new AppPaths();
-        
-        externalLibraries = loadExternalLibraries();
-    }
-
-    public Collection<Class<?>> externalMethodLibraries() {
-        return externalLibraries;
+    private final List<Class<?>> classes;
+    
+    public ClassIndex(AppPaths paths) {
+        this.paths = paths;
+        this.classes = List.copyOf(loadClasses());
     }
     
-    public Collection<Class<?>> externalClassLibraries() {
-        return externalLibraries;
+    public Collection<Class<?>> classes () {
+        return classes;
     }
-
-    public Collection<Class<?>> internalMethodLibraries() {
+    
+    private List<Class<?>> loadClasses() {
+        var result = new ArrayList<>(internalClasses());
+        result.addAll(loadExternalClasses());
+        return result;
+    }
+    
+    private List<Class<?>> internalClasses() {
         return List.of(
                 btslib.method.DateMethods.class,
                 btslib.method.FileMethods.class,
@@ -45,7 +46,7 @@ public class MethodClassProvider {
         );
     }
 
-    private List<Class<?>> loadExternalLibraries() {
+    private List<Class<?>> loadExternalClasses() {
         var jars = paths.getJarFiles().stream().map(Path::toFile).toArray(File[]::new);
         return JarClassLoaderUtils.getClassesFromLibraries(jars);
     }

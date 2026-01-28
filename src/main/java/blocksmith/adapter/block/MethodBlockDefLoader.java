@@ -1,6 +1,6 @@
 package blocksmith.adapter.block;
 
-import blocksmith.app.BlockDefLoader;
+import blocksmith.app.ports.BlockDefLoader;
 import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.block.BlockTask;
 import blocksmith.domain.block.Port;
@@ -26,23 +26,24 @@ public class MethodBlockDefLoader implements BlockDefLoader {
 
     private static final Logger LOGGER = Logger.getLogger(MethodBlockDefLoader.class.getName());
 
-    private final Collection<Class<?>> methodLibraries;
+//    private final Collection<Class<?>> methodLibraries;
+    private final Collection<Method> methods;
 
-    public MethodBlockDefLoader(Collection<Class<?>> methodLibraries) {
-        this.methodLibraries = methodLibraries;
+    public MethodBlockDefLoader(Collection<Method> methods) {
+        this.methods = methods;
     }
 
+//    public MethodBlockDefLoader(Collection<Class<?>> methodLibraries) {
+//        this.methodLibraries = methodLibraries;
+//    }
     public Collection<BlockDef> load() {
-        return blockDefsFromMethods(methodLibraries);
+        return blockDefsFromMethods(methods);
     }
 
-    private static List<BlockDef> blockDefsFromMethods(Collection<Class<?>> classes) {
+    public static List<BlockDef> blockDefsFromMethods(Collection<Method> methods) {
         var result = new ArrayList<BlockDef>();
 
-        var methods = MethodLoaderUtils.getStaticMethodsFromClasses(classes);
-        var eligble = MethodLoaderUtils.filterMethodsByAnnotation(methods, BlockMetadata.class);
-
-        for (Method method : eligble) {
+        for (Method method : methods) {
             try {
                 var definition = blockDefFromMethod(method);
                 result.add(definition);
@@ -120,7 +121,7 @@ public class MethodBlockDefLoader implements BlockDefLoader {
 
                 } else {
                     var dataType = typeArgument.getClass();
-                    var portDef =  new PortDef(dataType.getSimpleName(), Port.Direction.OUTPUT, dataType, false);
+                    var portDef = new PortDef(dataType.getSimpleName(), Port.Direction.OUTPUT, dataType, false);
                     return portDef;
                 }
             }

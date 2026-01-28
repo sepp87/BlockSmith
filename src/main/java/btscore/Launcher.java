@@ -23,14 +23,14 @@ public class Launcher {
         App app = new App();
 
         if (devMode) {
-            Draft.getGenericTypeOfMethodParam();
-//            new UiAppRunner().run();
+//            Draft.getGenericTypeOfMethodParam();
+            new UiAppRunner(app).run();
             
         } else if (hasConsole || isHeadless) {
             // run CLI
 
         } else {
-            new UiAppRunner().run();
+            new UiAppRunner(app).run();
         }
 
     }

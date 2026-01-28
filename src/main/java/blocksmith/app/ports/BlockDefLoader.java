@@ -1,4 +1,4 @@
-package blocksmith.app;
+package blocksmith.app.ports;
 
 import blocksmith.domain.block.BlockDef;
 import java.util.Collection;

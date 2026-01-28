@@ -1,5 +1,6 @@
 package btscore.editor.commands;
 
+import blocksmith.ui.BlockModelFactory;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Point2D;
@@ -15,23 +16,26 @@ import btscore.graph.port.PortModel;
  * @author Joost
  */
 public class CreateBlockCommand implements UndoableCommand {
-
-    private final String blockIdentifier;
-    private final Point2D location;
+    
+    private final BlockModelFactory blockModelFactory;
     private final WorkspaceModel workspaceModel;
+    private final String blockType;
+    private final Point2D location;
     private BlockModel blockModel;
     private final List<ConnectionModel> wirelessConnections = new ArrayList<>();
 
-    public CreateBlockCommand(WorkspaceModel workspaceModel, String blockIdentifier, Point2D location) {
+    public CreateBlockCommand(BlockModelFactory blockModelFactory, WorkspaceModel workspaceModel, String blockType, Point2D location) {
+        this.blockModelFactory = blockModelFactory;
         this.workspaceModel = workspaceModel;
-        this.blockIdentifier = blockIdentifier;
+        this.blockType = blockType;
         this.location = location;
     }
 
     @Override
     public boolean execute() {
         if (blockModel == null) {
-            blockModel = BlockFactory.createBlock(blockIdentifier);
+            var test = blockModelFactory.create(blockType);
+            blockModel = BlockFactory.createBlock(blockType);
             blockModel.layoutXProperty().set(location.getX());
             blockModel.layoutYProperty().set(location.getY());
             

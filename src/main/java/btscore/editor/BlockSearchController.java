@@ -140,15 +140,19 @@ public class BlockSearchController extends BaseController {
     }
 
     private void createBlock() {
-        String blockIdentifier = listView.getSelectionModel().getSelectedItem();
-        if (blockIdentifier == null) {
+        String blockType = listView.getSelectionModel().getSelectedItem();
+        if (blockType == null) {
             return;
         }
 
-        System.out.println("Create block " + blockIdentifier);
+        System.out.println("Create block " + blockType);
         WorkspaceController workspaceController = actionManager.getWorkspaceController();
         Point2D location = workspaceController.getView().sceneToLocal(creationPoint);
-        CreateBlockCommand createBlockCommand = new CreateBlockCommand(actionManager.getWorkspaceModel(), blockIdentifier, location);
+        CreateBlockCommand createBlockCommand = new CreateBlockCommand(
+                actionManager.getBlockModelFactory(), 
+                actionManager.getWorkspaceModel(),
+                blockType, 
+                location);
         actionManager.executeCommand(createBlockCommand);
 
         hideView();
@@ -165,7 +169,4 @@ public class BlockSearchController extends BaseController {
 //            listView.getSelectionModel().select(index); // Select the item at the calculated index
 //        }
 //    }
-
-
-
 }

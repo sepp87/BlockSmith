@@ -1,4 +1,4 @@
-package blocksmith.adapter.block;
+package blocksmith.adapter;
 
 import java.io.IOException;
 import java.nio.file.Files;

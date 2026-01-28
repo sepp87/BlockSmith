@@ -12,13 +12,13 @@ import java.util.TreeMap;
  */
 public class BlockDefLibrary {
 
-    private final Map<String, BlockDef> defsByType = new TreeMap<>();
+    private final Map<String, BlockDef> byType = new TreeMap<>();
 
     public BlockDefLibrary(Collection<BlockDef> blockDefs) {
-        blockDefs.forEach(e -> defsByType.put(e.metadata().type(), e));
+        blockDefs.forEach(e -> byType.put(e.metadata().type(), e));
     }
     
-    public Optional<BlockDef> findById(String id) {
-        return Optional.ofNullable(defsByType.get(id));
+    public Optional<BlockDef> findByType(String type) {
+        return Optional.ofNullable(byType.get(type));
     }
 }

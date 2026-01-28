@@ -1,9 +1,14 @@
 package btscore;
 
-import blocksmith.adapter.block.MethodClassProvider;
+import blocksmith.adapter.AppPaths;
+import blocksmith.adapter.block.ClassIndex;
+import blocksmith.adapter.block.MethodIndex;
 import blocksmith.adapter.block.MethodBlockDefLoader;
 import blocksmith.adapter.block.CompositeBlockDefLoader;
+import blocksmith.adapter.block.MethodBlockFuncLoader;
 import blocksmith.app.BlockDefLibrary;
+import blocksmith.app.BlockFuncLibrary;
+import blocksmith.ui.BlockModelFactory;
 import btscore.graph.block.BlockLibraryLoader;
 import java.io.IOException;
 import java.util.List;
@@ -19,14 +24,24 @@ import java.util.logging.Logger;
  */
 public class App {
 
+    private final BlockDefLibrary blockDefLibrary;
+    private final BlockFuncLibrary blockFuncLibrary;
+    
     public App() throws IOException {
         configureLogging();
 
-        var libraryProvider = new MethodClassProvider();
-        var internalMethodLoader = new MethodBlockDefLoader(libraryProvider.internalMethodLibraries());
-        var externalMethodLoader = new MethodBlockDefLoader(libraryProvider.externalMethodLibraries());
-        var blockDefLoader = new CompositeBlockDefLoader(List.of(internalMethodLoader, externalMethodLoader));
-        var blockDefLibrary = new BlockDefLibrary(blockDefLoader.load());
+        var paths = new AppPaths();
+        var classIndex = new ClassIndex(paths);
+        var methodIndex = new MethodIndex(classIndex.classes());
+        
+        var methodDefLoader = new MethodBlockDefLoader(methodIndex.methods());
+        var compositeDefLoader = new CompositeBlockDefLoader(List.of(methodDefLoader));
+        this.blockDefLibrary = new BlockDefLibrary(compositeDefLoader.load());
+        
+        var methodFuncLoader = new MethodBlockFuncLoader(methodIndex.methods());
+        this.blockFuncLibrary = new BlockFuncLibrary(methodFuncLoader.load());
+        
+        var blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
         
         //Load all block types
         BlockLibraryLoader.loadBlocks();
@@ -61,4 +76,12 @@ public class App {
         root.addHandler(handler);
     }
 
+    public BlockDefLibrary getBlockDefLibrary() {
+        return blockDefLibrary;
+    }
+    
+    public BlockFuncLibrary getBlockFuncLibrary() {
+        return blockFuncLibrary;
+    }
+    
 }
