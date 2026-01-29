@@ -10,6 +10,8 @@ import java.util.List;
 public record BlockDef(
         BlockMetadata metadata,
         List<PortDef> inputs,
-        List<PortDef> outputs        ) {
+        List<PortDef> outputs,
+        List<ParamDef> params,
+        boolean isListOperator) {
 
 }

@@ -8,6 +8,6 @@ import java.util.List;
  */
 @FunctionalInterface
 public interface BlockFunc {
-
+    
     Object apply(List<Object> inputs) throws Exception;
 }

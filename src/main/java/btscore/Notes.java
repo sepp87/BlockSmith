@@ -43,3 +43,7 @@ public class Notes {
 //
 // REMINDERS / THOUGTHS
 // do block.onIncomingConnectionAdded/Removed make sense, what could their use be? not trigger processing
+//
+//
+// SMALL UI BUGS
+// load spinner causes small method blocks to grow and shrink

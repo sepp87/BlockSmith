@@ -1,5 +1,7 @@
 package btscore.editor;
 
+import blocksmith.app.BlockDefLibrary;
+import btscore.Launcher;
 import javafx.beans.value.ChangeListener;
 import static javafx.collections.FXCollections.observableArrayList;
 import javafx.collections.ObservableList;
@@ -21,6 +23,7 @@ import static btscore.utils.EditorUtils.onFreeSpace;
 import static btscore.utils.EventUtils.isDoubleClick;
 import btscore.utils.ListViewHoverSelectBehaviour;
 import btscore.workspace.WorkspaceController;
+import javafx.collections.FXCollections;
 
 /**
  *
@@ -35,6 +38,7 @@ public class BlockSearchController extends BaseController {
     private final ActionManager actionManager;
     private final StateManager state;
     private final BlockSearchView view;
+    private final BlockDefLibrary blockDefLibrary;
 
     private Point2D creationPoint;
 
@@ -43,13 +47,14 @@ public class BlockSearchController extends BaseController {
 
     private final ChangeListener<Boolean> searchFieldFocusChangedListener;
 
-    public BlockSearchController(String contextId, BlockSearchView blockSearchView) {
+    public BlockSearchController(String contextId, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary) {
         super(contextId);
         this.eventRouter = UiApp.getContext(contextId).getEventRouter();
         this.actionManager = UiApp.getContext(contextId).getActionManager();
         this.state = UiApp.getContext(contextId).getStateManager();
 
         this.view = blockSearchView;
+        this.blockDefLibrary = blockDefLibrary;
 
         searchField = view.getSearchField();
         listView = view.getListView();
@@ -58,10 +63,13 @@ public class BlockSearchController extends BaseController {
         searchField.textProperty().addListener(this::handleSearchAction);
         searchFieldFocusChangedListener = this::handleRetainFocus;
 
-        listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
+        if (Launcher.BLOCK_DEF_LOADER) {
+            listView.setItems(FXCollections.observableArrayList(blockDefLibrary.types()));
+        } else {
+            listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
+        }
         listView.setOnMouseClicked(this::handleCreateBlock);
         new ListViewHoverSelectBehaviour(listView);
-//        listView.setOnMouseMoved(this::handleSelectHoveredItem);
 
         eventRouter.addEventListener(MouseEvent.MOUSE_CLICKED, this::toggleBlockSearch);
     }
@@ -105,15 +113,28 @@ public class BlockSearchController extends BaseController {
     private void handleSearchAction(Object b, String o, String searchTerm) {
         searchTerm = searchTerm.toLowerCase();
         if (searchTerm.isBlank()) {
-            listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
+            if (Launcher.BLOCK_DEF_LOADER) {
+                listView.setItems(FXCollections.observableArrayList(blockDefLibrary.types()));
+            } else {
+                listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
+            }
             listView.getSelectionModel().select(-1);
             return;
         }
 
         ObservableList<String> result = observableArrayList();
-        for (String type : BlockLibraryLoader.BLOCK_TYPE_LIST) {
-            if (type.toLowerCase().contains(searchTerm)) {
-                result.add(type);
+
+        if (Launcher.BLOCK_DEF_LOADER) {
+            for (String type : blockDefLibrary.types()) {
+                if (type.toLowerCase().contains(searchTerm)) {
+                    result.add(type);
+                }
+            }
+        } else {
+            for (String type : BlockLibraryLoader.BLOCK_TYPE_LIST) {
+                if (type.toLowerCase().contains(searchTerm)) {
+                    result.add(type);
+                }
             }
         }
 
@@ -149,24 +170,13 @@ public class BlockSearchController extends BaseController {
         WorkspaceController workspaceController = actionManager.getWorkspaceController();
         Point2D location = workspaceController.getView().sceneToLocal(creationPoint);
         CreateBlockCommand createBlockCommand = new CreateBlockCommand(
-                actionManager.getBlockModelFactory(), 
+                actionManager.getBlockModelFactory(),
                 actionManager.getWorkspaceModel(),
-                blockType, 
+                blockType,
                 location);
         actionManager.executeCommand(createBlockCommand);
 
         hideView();
     }
 
-//    private void handleSelectHoveredItem(MouseEvent event) {
-//        double yPos = event.getY(); // Get the Y position of the mouse event relative to the ListView
-//        Integer firstVisibleIndex = ListViewUtils.getFirstVisibleCell(listView);
-//        if (firstVisibleIndex == null) {
-//            return;
-//        }
-//        int index = firstVisibleIndex + (int) (yPos / ListViewUtils.getCellHeight(listView)); // Calculate the index of the item under the mouse
-//        if (index >= 0 && index < listView.getItems().size()) { // Ensure the index is within the bounds of the ListView's items
-//            listView.getSelectionModel().select(index); // Select the item at the calculated index
-//        }
-//    }
 }

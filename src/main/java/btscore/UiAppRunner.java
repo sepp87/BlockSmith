@@ -17,6 +17,7 @@ public class UiAppRunner {
     
     public void run() {
         //Launch the UI
+        UiApp.setApp(app);
         UiApp.launch(UiApp.class);
     }
 }

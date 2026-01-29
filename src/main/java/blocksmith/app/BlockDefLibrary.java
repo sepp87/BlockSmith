@@ -21,4 +21,8 @@ public class BlockDefLibrary {
     public Optional<BlockDef> findByType(String type) {
         return Optional.ofNullable(byType.get(type));
     }
+    
+    public Collection<String> types() {
+        return byType.keySet();
+    }
 }

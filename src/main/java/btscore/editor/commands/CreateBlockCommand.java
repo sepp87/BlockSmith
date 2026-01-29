@@ -1,6 +1,7 @@
 package btscore.editor.commands;
 
 import blocksmith.ui.BlockModelFactory;
+import btscore.Launcher;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Point2D;
@@ -16,7 +17,7 @@ import btscore.graph.port.PortModel;
  * @author Joost
  */
 public class CreateBlockCommand implements UndoableCommand {
-    
+
     private final BlockModelFactory blockModelFactory;
     private final WorkspaceModel workspaceModel;
     private final String blockType;
@@ -34,15 +35,20 @@ public class CreateBlockCommand implements UndoableCommand {
     @Override
     public boolean execute() {
         if (blockModel == null) {
-            var test = blockModelFactory.create(blockType);
-            blockModel = BlockFactory.createBlock(blockType);
+            
+            if (Launcher.BLOCK_DEF_LOADER) {
+                blockModel = blockModelFactory.create(blockType);
+            } else {
+                blockModel = BlockFactory.createBlock(blockType);
+            }
+
             blockModel.layoutXProperty().set(location.getX());
             blockModel.layoutYProperty().set(location.getY());
-            
+
         } else { // redo triggered
             blockModel.revive();
         }
-        
+
         workspaceModel.addBlockModel(blockModel);
 
         // auto-connect transmitters
@@ -52,7 +58,7 @@ public class CreateBlockCommand implements UndoableCommand {
             List<ConnectionModel> autoConnections = workspaceModel.getAutoConnectIndex().registerTransmitter(port);
             wirelessConnections.addAll(autoConnections);
         }
-        
+
         // auto-connect receivers
         List<PortModel> receivers = blockModel.getReceivingPorts();
         for (PortModel port : receivers) {
@@ -61,14 +67,14 @@ public class CreateBlockCommand implements UndoableCommand {
                 wirelessConnections.add(autoConnection);
             }
         }
-        
+
         // place wireless connections on the workspace
         for (ConnectionModel connection : wirelessConnections) {
             workspaceModel.addConnectionModel(connection);
         }
 
         System.out.println("PENDING RECEIVERS " + workspaceModel.getAutoConnectIndex().pendingReceivers.size());
-        
+
         return true;
     }
 
@@ -107,5 +113,3 @@ public class CreateBlockCommand implements UndoableCommand {
     }
 
 }
-
-

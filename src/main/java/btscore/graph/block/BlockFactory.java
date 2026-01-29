@@ -75,7 +75,7 @@ public class BlockFactory {
                         Class<?> clazz = (Class<?>) typeArgument;
                         blockModel.addOutputPort(clazz.getSimpleName(), clazz, isAutoConnectable);
                     } else {
-                        blockModel.isListReturnType = true;
+                        blockModel.isListWithUnknownReturnType = true;
                         blockModel.addOutputPort(Object.class.getSimpleName(), Object.class, isAutoConnectable);
                     }
                 }

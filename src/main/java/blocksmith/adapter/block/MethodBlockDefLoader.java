@@ -2,11 +2,9 @@ package blocksmith.adapter.block;
 
 import blocksmith.app.ports.BlockDefLoader;
 import blocksmith.domain.block.BlockDef;
-import blocksmith.domain.block.BlockTask;
 import blocksmith.domain.block.Port;
 import blocksmith.domain.block.PortDef;
 import btscore.graph.block.BlockMetadata;
-import btscore.graph.port.AutoConnectable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
@@ -26,16 +24,12 @@ public class MethodBlockDefLoader implements BlockDefLoader {
 
     private static final Logger LOGGER = Logger.getLogger(MethodBlockDefLoader.class.getName());
 
-//    private final Collection<Class<?>> methodLibraries;
     private final Collection<Method> methods;
 
     public MethodBlockDefLoader(Collection<Method> methods) {
         this.methods = methods;
     }
 
-//    public MethodBlockDefLoader(Collection<Class<?>> methodLibraries) {
-//        this.methodLibraries = methodLibraries;
-//    }
     public Collection<BlockDef> load() {
         return blockDefsFromMethods(methods);
     }
@@ -61,8 +55,9 @@ public class MethodBlockDefLoader implements BlockDefLoader {
         var metadata = method.getAnnotation(BlockMetadata.class);
         var inputs = inputDefsFromParameters(method);
         var output = outputDefFromReturnType(method);
+        var isListOperator = isListOperator(method);
 
-        return new BlockDef(metadata, inputs, List.of(output));
+        return new BlockDef(metadata, inputs, List.of(output), List.of(), isListOperator);
     }
 
     // TODO move somewhere else
@@ -77,6 +72,7 @@ public class MethodBlockDefLoader implements BlockDefLoader {
     private static List<PortDef> inputDefsFromParameters(Method method) {
         var result = new ArrayList<PortDef>();
 
+        int i = 0;
         for (Parameter p : method.getParameters()) {
 
             if (List.class.isAssignableFrom(p.getType())) {
@@ -84,21 +80,23 @@ public class MethodBlockDefLoader implements BlockDefLoader {
                     var typeArgument = parameterizedType.getActualTypeArguments()[0];
                     if (typeArgument instanceof TypeVariable<?> typeVariable) {
                         var dataType = typeVariable.getBounds()[0].getClass();
-                        var portDef = new PortDef(p.getName(), Port.Direction.INPUT, dataType, true);
+                        var portDef = new PortDef(i, p.getName(), Port.Direction.INPUT, dataType, true);
                         result.add(portDef);
 
                     } else {
                         var dataType = typeArgument.getClass();
-                        var portDef = new PortDef(p.getName(), Port.Direction.INPUT, dataType, false);
+                        var portDef = new PortDef(i, p.getName(), Port.Direction.INPUT, dataType, false);
                         result.add(portDef);
 
                     }
                 }
 
             } else {
-                var portDef = new PortDef(p.getName(), Port.Direction.INPUT, p.getType(), false);
+                var portDef = new PortDef(i, p.getName(), Port.Direction.INPUT, p.getType(), false);
                 result.add(portDef);
             }
+
+            i++;
         }
         return result;
     }
@@ -107,7 +105,7 @@ public class MethodBlockDefLoader implements BlockDefLoader {
         Class<?> returnType = method.getReturnType();
 
         if (returnType.equals(Number.class)) {
-            return new PortDef("double", Port.Direction.OUTPUT, double.class, false);
+            return new PortDef(-1, "double", Port.Direction.OUTPUT, double.class, false);
 
         } else if (List.class.isAssignableFrom(returnType)) {
 
@@ -116,18 +114,18 @@ public class MethodBlockDefLoader implements BlockDefLoader {
                 Type typeArgument = parameterizedType.getActualTypeArguments()[0];
                 if (typeArgument instanceof TypeVariable<?> typeVariable) {
                     var dataType = typeVariable.getBounds()[0].getClass();
-                    var portDef = new PortDef(dataType.getSimpleName(), Port.Direction.OUTPUT, dataType, true);
+                    var portDef = new PortDef(-1, dataType.getSimpleName(), Port.Direction.OUTPUT, dataType, true);
                     return portDef;
 
                 } else {
                     var dataType = typeArgument.getClass();
-                    var portDef = new PortDef(dataType.getSimpleName(), Port.Direction.OUTPUT, dataType, false);
+                    var portDef = new PortDef(-1, dataType.getSimpleName(), Port.Direction.OUTPUT, dataType, false);
                     return portDef;
                 }
             }
 
         } else {
-            return new PortDef(returnType.getSimpleName(), Port.Direction.OUTPUT, returnType, false);
+            return new PortDef(-1, returnType.getSimpleName(), Port.Direction.OUTPUT, returnType, false);
 
         }
 

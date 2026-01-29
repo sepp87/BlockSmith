@@ -13,6 +13,8 @@ import org.xml.sax.SAXException;
  */
 public class Launcher {
 
+    public static boolean BLOCK_DEF_LOADER = false;
+
     public static void main(String[] args) throws IOException, OpenXML4JException, SAXException, Exception {
 
         boolean devMode = Boolean.getBoolean("blocksmith.dev") || "dev".equalsIgnoreCase(System.getenv("BLOCKSMITH_MODE")); // set flag -Dblocksmith.dev=true
@@ -23,9 +25,11 @@ public class Launcher {
         App app = new App();
 
         if (devMode) {
-//            Draft.getGenericTypeOfMethodParam();
+            //            Draft.getGenericTypeOfMethodParam();
+
+            BLOCK_DEF_LOADER = true;
             new UiAppRunner(app).run();
-            
+
         } else if (hasConsole || isHeadless) {
             // run CLI
 

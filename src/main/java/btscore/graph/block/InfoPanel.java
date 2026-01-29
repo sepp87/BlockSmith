@@ -1,5 +1,6 @@
 package btscore.graph.block;
 
+import blocksmith.ui.MethodBlockNew;
 import java.util.ArrayList;
 import java.util.Collections;
 import btscore.graph.port.PortModel;
@@ -147,12 +148,15 @@ public class InfoPanel extends Pane {
     }
 
     private Label buildDescription() {
-        BlockMetadata info;
-        if (blockModel instanceof MethodBlock methodBlock) {
-            info = methodBlock.getMethod().getAnnotation(BlockMetadata.class);
-        } else {
-            info = blockModel.getClass().getAnnotation(BlockMetadata.class);
-        }
+        BlockMetadata info = blockModel.getMetadata();
+        
+//        if (blockModel instanceof MethodBlock methodBlock) {
+//            info = methodBlock.getMethod().getAnnotation(BlockMetadata.class);
+//        } else if (blockModel instanceof MethodBlockNew methodBlockNew) {
+//            info = blockModel.getMetadata();
+//        } else {
+//            info = blockModel.getClass().getAnnotation(BlockMetadata.class);
+//        }
         String description = info.description().isEmpty() ? "n/a" : info.description();
         Label label = buildLabel(description);
 

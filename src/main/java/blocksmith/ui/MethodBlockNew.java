@@ -1,7 +1,14 @@
-package btscore.graph.block;
+package blocksmith.ui;
 
+import blocksmith.domain.block.BlockDef;
+import blocksmith.exec.BlockExecutor;
+import blocksmith.exec.BlockExecutor.InvocationResult;
+import blocksmith.exec.BlockFunc;
+import btscore.graph.block.BlockMetadata;
+import btscore.graph.block.BlockModel;
+import btscore.graph.block.BlockView;
+import btscore.graph.block.ExceptionPanel;
 import btscore.icons.FontAwesomeSolid;
-import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -19,7 +26,6 @@ import javafx.scene.layout.StackPane;
 import btsxml.BlockTag;
 import btscore.graph.port.PortModel;
 import btscore.graph.block.ExceptionPanel.BlockException;
-import btscore.graph.block.MethodExecutor.InvocationResult;
 import btscore.utils.ListUtils;
 
 /**
@@ -31,31 +37,35 @@ import btscore.utils.ListUtils;
         category = "Core",
         description = "A generic block used to convert static methods and fields to blocks",
         tags = {"core", "method", "block"})
-public class MethodBlock extends BlockModel {
+public class MethodBlockNew extends BlockModel {
 
+    private final BlockDef def;
+    private final BlockFunc func;
     private final BlockMetadata info;
     private String identifier;
     private String category;
     private String description;
     private String[] tags;
-    private Method method;
+//    private Method method;
 
     private StackPane container;
     private ProgressIndicator spinner;
     private Label label;
 
-    public MethodBlock(Method method) {
-        this.info = method.getAnnotation(BlockMetadata.class);
+    public MethodBlockNew(BlockDef def, BlockFunc func) {
+        this.def = def;
+        this.func = func;
+        this.info = def.metadata();
         this.identifier = info.type();
         this.category = info.category();
         this.description = info.description();
         this.tags = info.tags();
-        this.method = method;
+//        this.method = method;
     }
 
-//    public Method getMethod() {
-//        return method;
-//    }
+    public BlockDef getBlockDef() {
+        return def;
+    }
 
     @Override
     protected void initialize() {
@@ -162,7 +172,7 @@ public class MethodBlock extends BlockModel {
                 }
             }
         } catch (Exception e) {
-            Logger.getLogger(MethodBlock.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(MethodBlockNew.class.getName()).log(Level.SEVERE, null, e);
         }
 
         if (isListWithUnknownReturnType && result[0].data().get() != null) {
@@ -232,7 +242,9 @@ public class MethodBlock extends BlockModel {
     private InvocationResult invokeListMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
         InvocationResult invocationResult = new InvocationResult();
         try {
-            Object result = method.invoke(null, parameters);
+//            Object result = method.invoke(null, parameters);
+            Object result = func.apply(List.of(parameters));
+
             invocationResult.data().set(result);
 
         } catch (Exception e) {
@@ -250,11 +262,11 @@ public class MethodBlock extends BlockModel {
         return getMethodExecutor().invoke(parameters);
     }
 
-    private MethodExecutor methodExecutor;
+    private BlockExecutor methodExecutor;
 
-    private MethodExecutor getMethodExecutor() {
-        if(methodExecutor == null) {
-            methodExecutor = new MethodExecutor(method);
+    private BlockExecutor getMethodExecutor() {
+        if (methodExecutor == null) {
+            methodExecutor = new BlockExecutor(def, func);
         }
         return methodExecutor;
     }
@@ -273,7 +285,7 @@ public class MethodBlock extends BlockModel {
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.setType(method.getAnnotation(BlockMetadata.class).type());
+        xmlTag.setType(info.type());
     }
 
     @Override
@@ -283,14 +295,25 @@ public class MethodBlock extends BlockModel {
 
     @Override
     public BlockModel copy() {
-        MethodBlock block = BlockFactory.createBlockFromMethod(method);
+        var block = new MethodBlockNew(def, func);
+
+        for (var input : def.inputs()) {
+            block.addInputPort(input.name(), input.dataType());
+        }
+
+        for (var output : def.outputs()) {
+            block.addInputPort(output.name(), output.dataType());
+        }
+
+        block.isListOperator = def.isListOperator();
+        block.isListWithUnknownReturnType = def.outputs().getFirst().dataTypeIsGeneric();
+
         return block;
     }
 
     @Override
     public BlockMetadata getMetadata() {
-        BlockMetadata metadata = method.getAnnotation(BlockMetadata.class);
-        return metadata;
+        return info;
     }
 
     @Override
@@ -305,6 +328,5 @@ public class MethodBlock extends BlockModel {
         LONGEST,
         CROSS_PRODUCT
     }
-
 
 }

@@ -58,9 +58,9 @@ public class UiApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        var defLibrary = app.getBlockDefLibrary();
-        var funcLibrary = app.getBlockFuncLibrary();
-        var blockModelFactory = new BlockModelFactory(defLibrary, funcLibrary);
+        var blockDefLibrary = app.getBlockDefLibrary();
+        var blockFuncLibrary = app.getBlockFuncLibrary();
+        var blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
 
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
@@ -93,7 +93,7 @@ public class UiApp extends Application {
 
         // Initialize controllers
         new ZoomController(contextId, workspaceModel, zoomView);
-        new BlockSearchController(contextId, blockSearchView);
+        new BlockSearchController(contextId, blockSearchView, blockDefLibrary);
         new SelectionRectangleController(contextId, selectionRectangleView);
         new PanController(contextId, workspaceModel);
         new RadialMenuController(contextId, radialMenuView);
