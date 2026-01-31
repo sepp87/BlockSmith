@@ -1,9 +1,12 @@
 package blocksmith.ui;
 
+import blocksmith.ui.control.InputControl;
 import blocksmith.domain.block.BlockDef;
 import blocksmith.exec.BlockExecutor;
-import blocksmith.exec.BlockExecutor.InvocationResult;
+import blocksmith.exec.MethodExecutor;
+import blocksmith.exec.MethodExecutor.InvocationResult;
 import blocksmith.exec.BlockFunc;
+import blocksmith.exec.ListMethodExecutor;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
@@ -27,6 +30,11 @@ import btsxml.BlockTag;
 import btscore.graph.port.PortModel;
 import btscore.graph.block.ExceptionPanel.BlockException;
 import btscore.utils.ListUtils;
+import java.util.HashMap;
+import java.util.Map;
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 /**
  *
@@ -41,30 +49,19 @@ public class MethodBlockNew extends BlockModel {
 
     private final BlockDef def;
     private final BlockFunc func;
-    private final BlockMetadata info;
-    private String identifier;
-    private String category;
-    private String description;
-    private String[] tags;
-//    private Method method;
-
-    private StackPane container;
+    private final Map<String, InputControl<?>> inputControls = new HashMap<>();
+    private Pane container;
     private ProgressIndicator spinner;
     private Label label;
 
     public MethodBlockNew(BlockDef def, BlockFunc func) {
         this.def = def;
         this.func = func;
-        this.info = def.metadata();
-        this.identifier = info.type();
-        this.category = info.category();
-        this.description = info.description();
-        this.tags = info.tags();
-//        this.method = method;
     }
 
-    public BlockDef getBlockDef() {
-        return def;
+    public void addInputControll(String name, InputControl control) {
+        inputControls.put(name, control);
+        control.setOnValueChanged(value -> processSafely());
     }
 
     @Override
@@ -75,22 +72,29 @@ public class MethodBlockNew extends BlockModel {
     @Override
     public Region getCustomization() {
 
-        spinner = new ProgressIndicator();
-
-        if (!info.icon().equals(FontAwesomeSolid.NULL)) {
-            label = BlockView.getAwesomeIcon(info.icon());
-
-        } else if (!info.label().equals("")) {
-            label = new Label(info.label());
-            label.getStyleClass().add("block-text");
-
+        if (!inputControls.isEmpty()) {
+            VBox localContainer = new VBox();
+            var controls = inputControls.values().stream().map(InputControl::node).toList();
+            localContainer.getChildren().addAll(controls);
+            container = localContainer;
         } else {
-            String shortName = info.type().split("\\.")[1];
-            label = new Label(shortName);
-            label.getStyleClass().add("block-text");
+            spinner = new ProgressIndicator();
+
+            if (!def.metadata().icon().equals(FontAwesomeSolid.NULL)) {
+                label = BlockView.getAwesomeIcon(def.metadata().icon());
+
+            } else if (!def.metadata().label().equals("")) {
+                label = new Label(def.metadata().label());
+                label.getStyleClass().add("block-text");
+
+            } else {
+                String shortName = def.metadata().type().split("\\.")[1];
+                label = new Label(shortName);
+                label.getStyleClass().add("block-text");
+            }
+            spinner.prefWidthProperty().bind(label.widthProperty());
+            container = new StackPane(label);
         }
-        spinner.prefWidthProperty().bind(label.widthProperty());
-        container = new StackPane(label);
         return container;
     }
 
@@ -100,11 +104,8 @@ public class MethodBlockNew extends BlockModel {
     @Override
     public void processSafely() {
 
-        System.out.println(info.type().split("\\.")[1] + ".processSafely()");
-//        for (Thread thread : threads) {
-//            thread.interrupt();
-//        }
-//        threads.clear();
+        System.out.println(def.metadata().type().split("\\.")[1] + ".processSafely()");
+
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
@@ -113,16 +114,14 @@ public class MethodBlockNew extends BlockModel {
             }
         };
 
-        if (container != null && label.getWidth() != 0.0) {
+        if (spinner != null && label.getWidth() != 0.0) {
             task.setOnSucceeded(event -> {
-//            task.setOnSucceeded(event -> Platform.runLater(() -> {
                 container.getChildren().clear();
                 container.getChildren().add(label);
-//            }));
             });
         }
 
-        if (container != null && label.getWidth() != 0.0) {
+        if (spinner != null && label.getWidth() != 0.0) {
             spinner.setMinWidth(label.getWidth());
             container.getChildren().clear();
             container.getChildren().add(spinner);
@@ -130,7 +129,6 @@ public class MethodBlockNew extends BlockModel {
 
         // Run the task in a separate thread
         Thread thread = new Thread(task);
-//        threads.add(thread);
         thread.setDaemon(true);
         thread.start();
 
@@ -139,55 +137,26 @@ public class MethodBlockNew extends BlockModel {
     @Override
     public void process() {
 
-        final InvocationResult[] result = {null}; // Use an array instead of AtomicReference
+        var inputData = inputPorts.stream().map(PortModel::getData).toArray();
+        var controlData = inputControls.values().stream().map(InputControl::getValue).toArray();
 
-        Deque<Integer> traversalLog = new ArrayDeque<>(); // keep track which index of the list is currently being processed
-        try {
-            int count = inputPorts.size();
-            switch (count) {
-                case 0 -> {
-                    result[0] = invokeMethodArgs();
-                }
-                case 1 -> {
-                    Object a = inputPorts.get(0).getData();
-                    result[0] = isListOperator ? invokeListMethodArgs(traversalLog, a) : invokeMethodArgs(a);
-                }
-                case 2 -> {
-                    Object a = inputPorts.get(0).getData();
-                    Object b = inputPorts.get(1).getData();
-                    result[0] = isListOperator ? invokeListMethodArgs2(traversalLog, a, b) : invokeMethodArgs(a, b);
-                }
-                case 3 -> {
-                    Object a = inputPorts.get(0).getData();
-                    Object b = inputPorts.get(1).getData();
-                    Object c = inputPorts.get(2).getData();
-                    result[0] = invokeMethodArgs(a, b, c);
-                    // ToDo
-                }
-                default -> { // Show an error when there are more than 3 ports
-                    InvocationResult fallback = new InvocationResult();
-                    BlockException exception = new ExceptionPanel.BlockException(null, ExceptionPanel.Severity.ERROR, new IndexOutOfBoundsException("No more than 3 input ports are supported for the moment."));
-                    fallback.exceptions().add(exception);
-                    result[0] = fallback;
-                }
-            }
-        } catch (Exception e) {
-            Logger.getLogger(MethodBlockNew.class.getName()).log(Level.SEVERE, null, e);
-        }
+        var parameters = controlData.length != 0 ? controlData : inputData; // TODO refactor as soon as inputs and controls start to mix
 
-        if (isListWithUnknownReturnType && result[0].data().get() != null) {
-            List<?> list = (List<?>) result[0].data().get();
+        var result = new BlockExecutor(def, func, isListOperator).invoke(parameters);
+
+        if (isListWithUnknownReturnType && result.data().get() != null) {
+            List<?> list = (List<?>) result.data().get();
             determineOutPortDataTypeFromList(list);
         }
 
         Platform.runLater(() -> {
             int size = exceptions.size();
-            exceptions.addAll(result[0].exceptions());
+            exceptions.addAll(result.exceptions());
             exceptions.remove(0, size);
             if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
                 exceptions.clear();
             }
-            Object data = result[0].data().get();
+            Object data = result.data().get();
             outputPorts.get(0).setData(data);
             if ((data != null) && !List.class.isAssignableFrom(data.getClass())) {
                 outputPorts.get(0).dataTypeProperty().set(data.getClass());
@@ -214,78 +183,10 @@ public class MethodBlockNew extends BlockModel {
         }
     }
 
-    private InvocationResult invokeListMethodArgs2(Deque<Integer> traversalLog, Object a, Object b) {
-
-        // both objects are single values
-        if (!ListUtils.isList(b)) {
-            return invokeListMethodArgs(traversalLog, a, b);
-
-        } else { // object b is a list
-            List<?> bList = (List<?>) b;
-            List<Object> list = new ArrayList<>();
-            InvocationResult invocationResult = new InvocationResult();
-            invocationResult.data().set(list);
-
-            int i = 0;
-            for (Object bItem : bList) {
-                traversalLog.add(i);
-                InvocationResult result = invokeListMethodArgs2(traversalLog, a, bItem);
-                list.add(result.data().get());
-                invocationResult.exceptions().addAll(result.exceptions());
-                traversalLog.pop();
-            }
-
-            return invocationResult;
-        }
-    }
-
-    private InvocationResult invokeListMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
-        InvocationResult invocationResult = new InvocationResult();
-        try {
-//            Object result = method.invoke(null, parameters);
-            Object result = func.apply(List.of(parameters));
-
-            invocationResult.data().set(result);
-
-        } catch (Exception e) {
-            Throwable throwable = e;
-            if (e.getCause() != null) {
-                throwable = e.getCause();
-            }
-            BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(traversalLog), ExceptionPanel.Severity.ERROR, throwable);
-            invocationResult.exceptions().add(exception);
-        }
-        return invocationResult;
-    }
-
-    private InvocationResult invokeMethodArgs(Object... parameters) {
-        return getMethodExecutor().invoke(parameters);
-    }
-
-    private BlockExecutor methodExecutor;
-
-    private BlockExecutor getMethodExecutor() {
-        if (methodExecutor == null) {
-            methodExecutor = new BlockExecutor(def, func);
-        }
-        return methodExecutor;
-    }
-
-    private String getExceptionIndex(Deque<Integer> traversalLog) {
-        if (traversalLog.isEmpty()) {
-            return null;
-        }
-        String result = "";
-        for (Integer index : traversalLog.reversed()) {
-            result += "[" + index + "]";
-        }
-        return result;
-    }
-
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.setType(info.type());
+        xmlTag.setType(def.metadata().type());
     }
 
     @Override
@@ -313,7 +214,7 @@ public class MethodBlockNew extends BlockModel {
 
     @Override
     public BlockMetadata getMetadata() {
-        return info;
+        return def.metadata();
     }
 
     @Override

@@ -56,7 +56,6 @@ public class MethodBlock extends BlockModel {
 //    public Method getMethod() {
 //        return method;
 //    }
-
     @Override
     protected void initialize() {
 
@@ -163,6 +162,10 @@ public class MethodBlock extends BlockModel {
             }
         } catch (Exception e) {
             Logger.getLogger(MethodBlock.class.getName()).log(Level.SEVERE, null, e);
+            InvocationResult fallback = new InvocationResult();
+            BlockException exception = new ExceptionPanel.BlockException(null, ExceptionPanel.Severity.ERROR, e);
+            fallback.exceptions().add(exception);
+            result[0] = fallback;
         }
 
         if (isListWithUnknownReturnType && result[0].data().get() != null) {
@@ -253,7 +256,7 @@ public class MethodBlock extends BlockModel {
     private MethodExecutor methodExecutor;
 
     private MethodExecutor getMethodExecutor() {
-        if(methodExecutor == null) {
+        if (methodExecutor == null) {
             methodExecutor = new MethodExecutor(method);
         }
         return methodExecutor;
@@ -305,6 +308,5 @@ public class MethodBlock extends BlockModel {
         LONGEST,
         CROSS_PRODUCT
     }
-
 
 }

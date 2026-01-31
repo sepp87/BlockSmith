@@ -1,5 +1,9 @@
 package btslib.method;
 
+import blocksmith.domain.block.Param;
+import blocksmith.domain.block.ParamInput;
+import blocksmith.domain.block.ParamInput.Directory;
+import blocksmith.domain.block.ParamInput.FilePath;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,12 +14,47 @@ import java.util.stream.Stream;
 import btscore.graph.block.BlockMetadata;
 import btscore.utils.FileUtils;
 import java.nio.charset.Charset;
+import java.nio.file.InvalidPathException;
 
 /**
  *
  * @author JoostMeulenkamp
  */
 public class FileMethods {
+
+    @BlockMetadata(
+            type = "File.choose",
+            //            type = "Input.file",
+            //            aliases = {"File.open"},
+            category = "Input",
+            description = "Open a file")
+    public static Path inputFile(@Param(input = FilePath.class) String filePath) {
+        if (filePath == null || filePath.isEmpty()) {
+            return null;
+        }
+        var path = Path.of(filePath);
+        if (!Files.exists(path)) {
+            throw new InvalidPathException(filePath, "Given path does NOT exist.");
+        }
+        return path;
+    }
+
+    @BlockMetadata(
+            type = "Directory.choose",
+            //            type = "Input.directory",
+            //            aliases = {"Directory.open"},
+            category = "Input",
+            description = "Open a directory")
+    public static Path inputDirectory(@Param(input = Directory.class) String directory) {
+        if (directory == null || directory.isEmpty()) {
+            return null;
+        }
+        var path = inputFile(directory);
+        if (!Files.isDirectory(path)) {
+            throw new IllegalArgumentException("Provided path was NOT a directory: \"" + path + "\"");
+        }
+        return path;
+    }
 
     @BlockMetadata(
             label = "isRegularFile",

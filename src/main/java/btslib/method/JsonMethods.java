@@ -2,15 +2,10 @@ package btslib.method;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import btscore.graph.block.BlockMetadata;
@@ -49,6 +44,9 @@ public class JsonMethods {
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
     public static List<Object> asList(String jsonArray) {
+        if(jsonArray == null) {
+            throw new NullPointerException("Input string \"jsonArray\" is null");
+        }
         JsonElement element = PARSER.parse(jsonArray);
         return parseJsonElement(element);
     }

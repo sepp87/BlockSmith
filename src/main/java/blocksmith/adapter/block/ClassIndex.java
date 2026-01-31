@@ -35,6 +35,7 @@ public class ClassIndex {
     
     private List<Class<?>> internalClasses() {
         return List.of(
+                btslib.method.BooleanMethods.class,
                 btslib.method.DateMethods.class,
                 btslib.method.FileMethods.class,
                 btslib.method.JsonMethods.class,

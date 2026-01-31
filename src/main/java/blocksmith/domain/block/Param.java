@@ -1,5 +1,6 @@
 package blocksmith.domain.block;
 
+import blocksmith.domain.block.ParamInput.NoInputSpec;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -20,6 +21,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.PARAMETER}) //On class and method level
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UserInput {
+public @interface Param {
 
+    Class<? extends ParamInput> input() default NoInputSpec.class;
 }

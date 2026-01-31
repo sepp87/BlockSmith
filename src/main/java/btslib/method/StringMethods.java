@@ -1,8 +1,9 @@
 package btslib.method;
 
-import blocksmith.domain.block.UserInput;
 import java.util.List;
 import btscore.graph.block.BlockMetadata;
+import blocksmith.domain.block.Param;
+import blocksmith.domain.block.ParamInput.Password;
 
 /**
  *
@@ -10,10 +11,22 @@ import btscore.graph.block.BlockMetadata;
  */
 public class StringMethods {
 
-    public static String inputString(@UserInput String value) {
-        return value;
+    @BlockMetadata(
+            type = "String.password", // Input.password
+            category = "Core",
+            description = "Input a line of text. Warning: the value is not encrypted, only visually hidden.")
+    public static String inputPassword(@Param(input = Password.class) String value) {
+        return value.isEmpty() ? null : value;
     }
-    
+
+    @BlockMetadata(
+            type = "String.new", // Input.string
+            category = "Core",
+            description = "Input a line of text.")
+    public static String inputString(@Param String value) {
+        return value.isEmpty() ? null : value;
+    }
+
     @BlockMetadata(
             type = "String.length",
             category = "Core",

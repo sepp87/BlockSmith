@@ -7,7 +7,8 @@ package blocksmith.domain.block;
 public record ParamDef(
         int argIndex,
         String name,
-        Class<?> dataType // assumed only string, date, path, integer, decimal, ...
+        Class<?> dataType, // assumed only string, date, path, integer, decimal, ...
+        ParamInput input
         ) {
 
 }

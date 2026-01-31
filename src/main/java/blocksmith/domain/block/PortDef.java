@@ -11,6 +11,8 @@ public record PortDef(
         String name,
         Direction direction,
         Class<?> dataType,
-        boolean dataTypeIsGeneric) {
+        boolean isAutoConnectable, // TODO refactor > move elsewhere
+        boolean isList, // TODO refactor > move elsewhere
+        boolean dataTypeIsGeneric) { // TODO refactor > move elsewhere
 
 }

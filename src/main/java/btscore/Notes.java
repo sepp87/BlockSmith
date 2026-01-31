@@ -5,8 +5,23 @@ package btscore;
  * @author joostmeulenkamp
  */
 public class Notes {
-    
+
 }
+
+// REFACTOR BLOCK DEF/FUNC LOADING
+// - ColorBlock
+// - DoubleSlider
+// - IntegerSlider
+// 
+// - ObserveFileBlock
+// - FileOutputBlock
+// - ChronoUnitBlock
+// - TextBlock
+// - ReceiverBlock
+// - TransmitterBlock
+// - DataSheetBlock
+//
+//
 // BACKLOG
 // Domain - replace all JavaFx stuff with pure Java
 // Commands - reimplement so logic is not inside commands

@@ -1,162 +1,60 @@
 package blocksmith.exec;
 
 import blocksmith.domain.block.BlockDef;
+import blocksmith.ui.MethodBlockNew;
 import btscore.graph.block.ExceptionPanel;
-import btscore.utils.ListUtils;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author joostmeulenkamp
  */
 public class BlockExecutor {
-    
+
     private final BlockDef def;
     private final BlockFunc func;
+    private final boolean isListOperator;
 
-    public BlockExecutor(BlockDef def, BlockFunc func) {
+    public BlockExecutor(BlockDef def, BlockFunc func, boolean isListOperator) {
         this.def = def;
         this.func = func;
+        this.isListOperator = isListOperator;
     }
 
-    public InvocationResult invoke(Object... parameters) {
-        Deque<Integer> traversalLog = new ArrayDeque<>(); // keep track which index of the list is currently being processed
-        return invokeMethodArgs(traversalLog, parameters);
-    }
+    public MethodExecutor.InvocationResult invoke(Object... parameters) {
 
-    private InvocationResult invokeMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
-        int listCount = getListCount(parameters);
+        final MethodExecutor.InvocationResult[] result = {null}; // Use an array instead of AtomicReference
 
-        System.out.println("listCount " + listCount + "; method.getParameters().length " + def.inputs().size());
-        if (listCount == 0) { // none are list - invoke method
-            InvocationResult invocationResult = new InvocationResult();
+        try {
+            if (!isListOperator) {
+                result[0] = new MethodExecutor(def, func).invoke(parameters);
+                
+            } else {
+                var listMethodExecutor = new ListMethodExecutor(def, func);
 
-            try {
-                Object result = func.apply(List.of(parameters));
-                invocationResult.data().set(result);
+                if (parameters.length == 1) {
+                    result[0] = listMethodExecutor.invoke(parameters);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                Throwable throwable = e;
-                if (e.getCause() != null) {
-                    throwable = e.getCause();
+                } else if (parameters.length == 2) {
+                    result[0] = listMethodExecutor.invoke2(parameters[0], parameters[1]);
+
+                } else {
+                    // Show an error when there are more than 3 ports
+                    MethodExecutor.InvocationResult fallback = new MethodExecutor.InvocationResult();
+                    ExceptionPanel.BlockException exception = new ExceptionPanel.BlockException(null, ExceptionPanel.Severity.ERROR, new IndexOutOfBoundsException("No more than 2 input ports are supported list operators."));
+                    fallback.exceptions().add(exception);
+                    result[0] = fallback;
+                    
                 }
-                ExceptionPanel.BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(traversalLog), ExceptionPanel.Severity.ERROR, throwable);
-                invocationResult.exceptions.add(exception);
             }
-            return invocationResult;
-
-        } else if (listCount == def.inputs().size()) { // all are lists - loop and recurse
-
-            List<Object> list = new ArrayList<>();
-            InvocationResult invocationResult = new InvocationResult();
-            invocationResult.data().set(list);
-
-            long shortestListSize = getShortestListSize(parameters);
-            for (int i = 0; i < shortestListSize; i++) {
-                traversalLog.add(i);
-
-                Object[] array = new Object[parameters.length];
-                for (int j = 0; j < parameters.length; j++) {
-                    List<?> p = (List<?>) parameters[j];
-                    Object item = p.get(i);
-                    array[j] = item;
-                }
-
-                InvocationResult subResult = invokeMethodArgs(traversalLog, array);
-                invocationResult.exceptions().addAll(subResult.exceptions);
-                list.add(subResult.data.get());
-
-                traversalLog.pop();
-            }
-            return invocationResult;
-
-        } else { // some are list, some are not - make all lists and recurse
-            System.out.println("some are list, some are not - make all lists and recurse");
-            long shortestListSize = getShortestListSize(parameters);
-            if (shortestListSize == 0) {
-                return null;
-            }
-
-            for (int i = 0; i < def.inputs().size(); i++) {
-                Object p = parameters[i];
-                if (ListUtils.isList(p)) {
-                    System.out.println("Parameter " + i + " is list ");
-                    continue;
-                }
-                System.out.println("Parameter " + i + " to list ");
-                List<Object> list = new ArrayList<>();
-                for (int j = 0; j < shortestListSize; j++) {
-                    list.add(p);
-                }
-                parameters[i] = list;
-            }
-            InvocationResult invocationResult = invokeMethodArgs(traversalLog, parameters);
-            return invocationResult;
+        } catch (Exception e) {
+            Logger.getLogger(MethodBlockNew.class.getName()).log(Level.SEVERE, null, e);
         }
-    }
 
-    private String getExceptionIndex(Deque<Integer> traversalLog) {
-        if (traversalLog.isEmpty()) {
-            return null;
-        }
-        String result = "";
-        for (Integer index : traversalLog.reversed()) {
-            result += "[" + index + "]";
-        }
-        return result;
-    }
 
-    private int getListCount(Object... parameters) {
-        int result = 0;
-        int i = 0;
-        for (Object p : parameters) {
-            System.out.println("parameter " + i + " is " + p.getClass().getSimpleName());
-            if (ListUtils.isList(p)) {
-                result++;
-            }
-            i++;
-        }
-        return result;
-    }
+        return result[0];
 
-    private int getShortestListSize(Object... parameters) {
-        List<?> first = getFirstList(parameters);
-        int result = -1;
-        if (first == null) {
-            return result;
-        }
-        result = first.size();
-        for (Object p : parameters) {
-            if (ListUtils.isList(p)) {
-                List<?> list = (List<?>) p;
-                result = list.size() < result ? list.size() : result;
-            }
-        }
-        return result;
-    }
-
-    private List<?> getFirstList(Object... parameters) {
-        for (Object p : parameters) {
-            if (ListUtils.isList(p)) {
-                return (List<?>) p;
-            }
-        }
-        return null;
-    }
-
-    public record InvocationResult(
-            ObjectProperty data,
-            List<ExceptionPanel.BlockException> exceptions) {
-
-        public InvocationResult() {
-            this(new SimpleObjectProperty(), new ArrayList<>());
-        }
     }
 
 }
