@@ -129,7 +129,7 @@ public class NumberSliderExpander extends TitledPane {
     private Double checkValue(String rawValue) {
         Double newValue = null;
         String regex = null;
-        if (isIntegerSlider) {
+        if (!isIntegerSlider) {
             // http://stackoverflow.com/questions/3133770/how-to-find-out-if-the-value-contained-in-a-string-is-double-or-not
             regex = "[\\x00-\\x20]*[+-]?(((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*";
         } else {
@@ -145,7 +145,7 @@ public class NumberSliderExpander extends TitledPane {
         return newValue;
     }
 
-    public void remove() {
+    public void dispose() {
         valueField.setOnKeyPressed(null);
         minField.setOnKeyPressed(null);
         maxField.setOnKeyPressed(null);

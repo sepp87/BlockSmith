@@ -1,13 +1,20 @@
 package blocksmith.domain.block;
 
+import java.util.List;
+import java.util.Objects;
+
 /**
  *
  * @author joostmeulenkamp
  */
 public sealed interface ParamInput {
-    
+
+    public enum NumericType {
+        INT,
+        DOUBLE
+    }
+
     record Boolean() implements ParamInput {
-        
     }
 
     record Text() implements ParamInput {
@@ -16,20 +23,28 @@ public sealed interface ParamInput {
     record Password() implements ParamInput {
     }
 
-    record Range() implements ParamInput {
+    record Range(NumericType type) implements ParamInput {
+
+        public Range {
+            Objects.requireNonNull(type);
+        }
     }
 
-    record Choice() implements ParamInput {
+    record Choice(List<String> options) implements ParamInput {
+
     }
 
     record FilePath() implements ParamInput {
-    } 
+    }
+
+    record FileTarget() implements ParamInput {
+    }
 
     record Directory() implements ParamInput {
     }
 
     record Date() implements ParamInput {
-    } 
+    }
 
     record Color() implements ParamInput {
     }
@@ -40,11 +55,8 @@ public sealed interface ParamInput {
 }
 
 /**
- * date > date picker
- * path > file picker
- * color > color picker
+ * date > date picker path > file picker color > color picker
  */
-
 //sealed interface UserInputSpec {
 //
 //    record Slider(

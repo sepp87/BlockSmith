@@ -52,11 +52,11 @@ public class BooleanInput implements InputControl<Boolean> {
     }
 
     @Override
-    public void setValue(Boolean value) {
-        if (value == null || Objects.equals(this.value.get(), value)) {
+    public void setValue(Boolean newVal) {
+        if (newVal == null || Objects.equals(value.get(), newVal)) {
             return;
         }
-        this.value.setValue(value);
+        value.set(newVal);
 
     }
 

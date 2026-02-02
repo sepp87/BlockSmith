@@ -16,11 +16,18 @@ public final class Port {
     private final Direction direction;
     private final int index;
     private final Class<?> dataType;
+//    private final ValueType valueType;
 
-    public Port(Direction direction, int index, Class<?> dataType) {
+    public Port(
+            Direction direction,
+            int index,
+            Class<?> dataType
+//            , ValueType valueType
+    ) {
         this.direction = Objects.requireNonNull(direction);
         this.index = Objects.requireNonNull(index);
         this.dataType = Objects.requireNonNull(dataType);
+//        this.valueType = Objects.requireNonNull(valueType);
     }
 
     public Direction direction() {

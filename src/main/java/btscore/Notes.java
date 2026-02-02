@@ -9,17 +9,12 @@ public class Notes {
 }
 
 // REFACTOR BLOCK DEF/FUNC LOADING
-// - ColorBlock
-// - DoubleSlider
-// - IntegerSlider
-// 
-// - ObserveFileBlock
-// - FileOutputBlock
-// - ChronoUnitBlock
-// - TextBlock
+// - Serialization and copy
 // - ReceiverBlock
 // - TransmitterBlock
+// - TextBlock
 // - DataSheetBlock
+// - ObserveFileBlock -> with SourceBlock
 //
 //
 // BACKLOG
@@ -62,3 +57,5 @@ public class Notes {
 //
 // SMALL UI BUGS
 // load spinner causes small method blocks to grow and shrink
+// create Paint.color do not move or select, just pick a color, then BlockController.moveCompleted throws an exception
+// Dark mode number slider expander labels not visible

@@ -1,9 +1,9 @@
 package btslib.method;
 
 import blocksmith.domain.block.Param;
-import blocksmith.domain.block.ParamInput;
 import blocksmith.domain.block.ParamInput.Directory;
 import blocksmith.domain.block.ParamInput.FilePath;
+import blocksmith.domain.block.ParamInput.FileTarget;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,6 +22,25 @@ import java.nio.file.InvalidPathException;
  */
 public class FileMethods {
 
+
+    
+        @BlockMetadata(
+            type = "File.new",
+            //            type = "Output.file",
+            //            aliases = {"File.create"},
+            category = "Output",
+            description = "Save to file")
+    public static Path createFile(@Param(input = FileTarget.class) String filePath) throws IOException {
+        if (filePath == null || filePath.isEmpty()) {
+            return null;
+        }
+        var path = Path.of(filePath);
+        if (!Files.exists(path)) {
+            Files.createFile(path);
+        }
+        return path;
+    }
+    
     @BlockMetadata(
             type = "File.choose",
             //            type = "Input.file",

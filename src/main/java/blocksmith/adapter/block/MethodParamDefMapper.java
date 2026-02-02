@@ -1,0 +1,78 @@
+package blocksmith.adapter.block;
+
+import blocksmith.domain.block.Param;
+import blocksmith.domain.block.ParamDef;
+import blocksmith.domain.block.ParamInput;
+import blocksmith.domain.block.ParamInput.NumericType;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ * @author joost
+ */
+public class MethodParamDefMapper {
+
+    public static List<ParamDef> paramDefsFromParameters(Method method) throws Exception {
+        var result = new ArrayList<ParamDef>();
+        int i = 0;
+        for (Parameter p : method.getParameters()) {
+            var param = p.getAnnotation(Param.class);
+            var isParam = param != null;
+
+            // TODO throw exception for unsupported param data types
+            if (isParam) {
+
+                var name = p.getName();
+                var dataType = p.getType();
+                var input = paramInputFrom(param, dataType, method);
+
+                var paramDef = new ParamDef(i, name, dataType, input);
+                result.add(paramDef);
+            }
+            i++;
+        }
+        return result;
+    }
+
+    private static ParamInput paramInputFrom(Param param, Class<?> dataType, Method method) throws Exception {
+
+        if (param.input() == ParamInput.Choice.class && dataType == String.class) {
+            var returnType = method.getReturnType();
+            var choices = choicesFrom(returnType);
+            return new ParamInput.Choice(choices);
+
+        } else if (param.input() == ParamInput.Range.class) {
+            var returnType = method.getReturnType();
+            var numericType = numericTypeFrom(returnType);
+            return new ParamInput.Range(numericType);
+            
+        }
+        return param.input().getDeclaredConstructor().newInstance();
+    }
+
+    private static List<String> choicesFrom(Class<?> returnType) {
+        var result = new ArrayList<String>();
+        if (returnType.isEnum()) {
+            var enums = (Enum<?>[]) returnType.getEnumConstants();
+
+            for (var e : enums) {
+                result.add(e.name());
+            }
+        }
+        return result;
+    }
+
+    private static NumericType numericTypeFrom(Class<?> returnType) {
+        
+        if (returnType == Integer.class || returnType == int.class) {
+            return NumericType.INT;
+            
+        } else if (returnType == Double.class || returnType == double.class) {
+            return NumericType.DOUBLE;
+        }
+        throw new IllegalArgumentException("Return type not supported for param input type range: " + returnType);
+    }
+}

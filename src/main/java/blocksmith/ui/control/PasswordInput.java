@@ -83,11 +83,11 @@ public class PasswordInput implements InputControl<String> {
     }
 
     @Override
-    public void setValue(String value) {
-        if (Objects.equals(textField.getText(), value)) {
+    public void setValue(String newVal) {
+        if (Objects.equals(textField.getText(), newVal)) {
             return;
         }
-        this.value.set(value);
+        value.set(newVal);
     }
 
     @Override

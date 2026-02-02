@@ -2,6 +2,7 @@ package blocksmith.ui;
 
 import blocksmith.ui.control.InputControl;
 import blocksmith.domain.block.BlockDef;
+import blocksmith.domain.block.ValueType;
 import blocksmith.exec.BlockExecutor;
 import blocksmith.exec.MethodExecutor;
 import blocksmith.exec.MethodExecutor.InvocationResult;
@@ -199,11 +200,11 @@ public class MethodBlockNew extends BlockModel {
         var block = new MethodBlockNew(def, func);
 
         for (var input : def.inputs()) {
-            block.addInputPort(input.name(), input.dataType());
+            block.addInputPort(input.name(), ValueType.toDataType(input.valueType()));
         }
 
         for (var output : def.outputs()) {
-            block.addInputPort(output.name(), output.dataType());
+            block.addInputPort(output.name(), ValueType.toDataType(output.valueType()));
         }
 
         block.isListOperator = def.isListOperator();

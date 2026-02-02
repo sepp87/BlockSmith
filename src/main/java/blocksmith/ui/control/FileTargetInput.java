@@ -7,19 +7,19 @@ import javafx.stage.FileChooser;
  *
  * @author joost
  */
-public class FilePathInput extends AbstractPathInput {
+public class FileTargetInput extends FilePathInput {
 
-    public FilePathInput() {
-        textField.setPromptText("Open a file...");
-
+    public FileTargetInput() {
+        textField.setPromptText("Save to file...");
+        textField.setEditable(false);
     }
 
     @Override
     protected File choosePath() {
         var picker = new FileChooser();
-        picker.setTitle("Choose a file...");
+        picker.setTitle("Save as...");
         var window = button.getScene().getWindow();
-        var file = picker.showOpenDialog(window);
+        var file = picker.showSaveDialog(window);
         return file;
     }
 

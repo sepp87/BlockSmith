@@ -6,9 +6,17 @@ import blocksmith.app.BlockDefLibrary;
 import blocksmith.app.BlockFuncLibrary;
 import blocksmith.domain.block.ParamDef;
 import blocksmith.domain.block.ParamInput;
+import blocksmith.domain.block.ParamInput.NumericType;
+import blocksmith.domain.block.ValueType;
 import blocksmith.ui.control.BooleanInput;
+import blocksmith.ui.control.ChoiceInput;
+import blocksmith.ui.control.ColorInput;
+import blocksmith.ui.control.DateInput;
 import blocksmith.ui.control.DirectoryInput;
+import blocksmith.ui.control.DoubleSliderInput;
 import blocksmith.ui.control.FilePathInput;
+import blocksmith.ui.control.FileTargetInput;
+import blocksmith.ui.control.IntegerSliderInput;
 import blocksmith.ui.control.PasswordInput;
 import btscore.graph.block.BlockModel;
 
@@ -33,15 +41,15 @@ public class BlockModelFactory {
         var block = new MethodBlockNew(def, func);
 
         for (var input : def.inputs()) {
-            block.addInputPort(input.name(), input.dataType());
+            block.addInputPort(input.name(), ValueType.toDataType(input.valueType()));
         }
 
         for (var output : def.outputs()) {
-            block.addOutputPort(output.name(), output.dataType());
+            block.addOutputPort(output.name(), ValueType.toDataType(output.valueType()));
         }
 
         for (var param : def.params()) {
-            var control = inputControlFrom(param);
+            var control = inputControlFrom(param, ValueType.toDataType(def.outputs().getFirst().valueType()));
             block.addInputControll(param.name(), control);
         }
 
@@ -51,7 +59,7 @@ public class BlockModelFactory {
         return block;
     }
 
-    private static InputControl<?> inputControlFrom(ParamDef param) {
+    private static InputControl<?> inputControlFrom(ParamDef param, Class<?> outputType) {
 
         var spec = param.input();
 
@@ -63,13 +71,13 @@ public class BlockModelFactory {
                 new BooleanInput();
 
             case ParamInput.Choice choice ->
-                throw new UnsupportedOperationException("Unsupported param input: " + spec.getClass().getSimpleName());
+                new ChoiceInput(choice.options().getFirst(), choice.options());
 
             case ParamInput.Color color ->
-                throw new UnsupportedOperationException("Unsupported param input: " + spec.getClass().getSimpleName());
+                new ColorInput();
 
             case ParamInput.Date date ->
-                throw new UnsupportedOperationException("Unsupported param input: " + spec.getClass().getSimpleName());
+                new DateInput();
 
             case ParamInput.Directory directory ->
                 new DirectoryInput();
@@ -77,14 +85,26 @@ public class BlockModelFactory {
             case ParamInput.FilePath filePath ->
                 new FilePathInput();
 
+            case ParamInput.FileTarget fileTarger ->
+                new FileTargetInput();
+
             case ParamInput.Password password ->
                 new PasswordInput();
 
             case ParamInput.Range range ->
-                throw new UnsupportedOperationException("Unsupported param input: " + spec.getClass().getSimpleName());
+                inferNumberSliderFrom(range.type());
 
             case ParamInput.Text text ->
                 new TextInput();
+        };
+    }
+
+    private static InputControl<?> inferNumberSliderFrom(NumericType type) {
+        return switch (type) {
+            case INT ->
+                new IntegerSliderInput();
+            case DOUBLE ->
+                new DoubleSliderInput();
         };
     }
 
@@ -94,7 +114,7 @@ public class BlockModelFactory {
 
         } else if (dataType == Boolean.class || dataType == boolean.class) {
             return new BooleanInput();
-            
+
         }
 //        else if (dataType == Integer.class || dataType == Double.class) {
 //            return new ParamInput.Range();

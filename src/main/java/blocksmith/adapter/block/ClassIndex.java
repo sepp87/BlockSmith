@@ -41,7 +41,9 @@ public class ClassIndex {
                 btslib.method.JsonMethods.class,
                 btslib.method.ListMethods.class,
                 btslib.method.MathMethods.class,
+                btslib.method.NumberMethods.class,
                 btslib.method.ObjectMethods.class,
+                btslib.method.PaintMethods.class,
                 btslib.method.SpreadsheetMethods.class,
                 btslib.method.StringMethods.class
         );

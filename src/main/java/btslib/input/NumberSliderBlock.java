@@ -98,7 +98,7 @@ public abstract class NumberSliderBlock extends BlockModel {
         }
 
         if (expander != null) {
-            expander.remove();
+            expander.dispose();
         }
     }
 

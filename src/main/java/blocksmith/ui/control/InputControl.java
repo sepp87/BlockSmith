@@ -1,6 +1,5 @@
 package blocksmith.ui.control;
 
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import javafx.scene.Node;
 
@@ -14,9 +13,9 @@ public interface InputControl<T> {
 
     public T getValue();
     
-    public void setValue(T value);
+    public void setValue(T newVal);
     
-    public void dispose(); // TODO rename to dispose/cleanup?
+    public void dispose();
     
     public void setOnValueChanged(Consumer<T> listener);
 }

@@ -47,11 +47,11 @@ public class TextInput implements InputControl<String> {
     }
 
     @Override
-    public void setValue(String value) {
-        if(Objects.equals(textField.getText(), value)) {
+    public void setValue(String newVal) {
+        if(Objects.equals(textField.getText(), newVal)) {
             return;
         }
-        textField.setText(value);
+        textField.setText(newVal);
     }
 
     @Override

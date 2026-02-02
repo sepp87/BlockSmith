@@ -31,7 +31,7 @@ public class ListViewHoverSelectBehaviour<T> {
         }
     }
 
-    public void remove() {
+    public void dispose() {
         listView.setOnMouseMoved(null);
     }
 
