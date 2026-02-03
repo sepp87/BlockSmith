@@ -17,6 +17,7 @@ import blocksmith.ui.control.DoubleSliderInput;
 import blocksmith.ui.control.FilePathInput;
 import blocksmith.ui.control.FileTargetInput;
 import blocksmith.ui.control.IntegerSliderInput;
+import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.control.PasswordInput;
 import btscore.graph.block.BlockModel;
 
@@ -49,17 +50,17 @@ public class BlockModelFactory {
         }
 
         for (var param : def.params()) {
-            var control = inputControlFrom(param, ValueType.toDataType(def.outputs().getFirst().valueType()));
-            block.addInputControll(param.name(), control);
+            var control = inputControlFrom(param);
+            block.addInputControl(param.name(), control);
         }
 
         block.isListOperator = def.isListOperator();
-        block.isListWithUnknownReturnType = def.outputs().getFirst().dataTypeIsGeneric();
+        block.isListWithUnknownReturnType = def.outputs().getFirst().valueType() instanceof ValueType.ListType listType && listType.elementType() instanceof ValueType.VarType;
 
         return block;
     }
 
-    private static InputControl<?> inputControlFrom(ParamDef param, Class<?> outputType) {
+    private static InputControl<?> inputControlFrom(ParamDef param) {
 
         var spec = param.input();
 
@@ -88,6 +89,9 @@ public class BlockModelFactory {
             case ParamInput.FileTarget fileTarger ->
                 new FileTargetInput();
 
+            case ParamInput.MultilineText multilineText ->
+                new MultilineTextInput();
+
             case ParamInput.Password password ->
                 new PasswordInput();
 
@@ -112,9 +116,14 @@ public class BlockModelFactory {
         if (dataType == String.class) {
             return new TextInput();
 
-        } else if (dataType == Boolean.class || dataType == boolean.class) {
+        }
+        if (dataType == Boolean.class || dataType == boolean.class) {
             return new BooleanInput();
 
+        }
+        if (dataType == Object.class) {
+            return new MultilineTextInput();
+            
         }
 //        else if (dataType == Integer.class || dataType == Double.class) {
 //            return new ParamInput.Range();

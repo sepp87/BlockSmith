@@ -396,12 +396,14 @@ public class SpreadsheetMethods {
         }
         return str;
     }
+    
+// TODO future implementation
+//    @BlockMetadata(
+//            label = "filterData",
+//            description = "",
+//            type = "Spreadsheet.filterData",
+//            category = "Core")
 
-    @BlockMetadata(
-            label = "filterData",
-            description = "",
-            type = "Spreadsheet.filterData",
-            category = "Core")
     public static DataSheet filterData(DataSheet dataSheet, String column, Predicate<Object> condition) {
         int colIndex = dataSheet.getHeaderRow().indexOf(column);
         if (colIndex == -1) {

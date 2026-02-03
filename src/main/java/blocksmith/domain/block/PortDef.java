@@ -12,8 +12,10 @@ public record PortDef(
         Direction direction,
 //        Class<?> dataType,
         ValueType valueType,
-        boolean isAutoConnectable, // TODO refactor > move elsewhere
-        boolean isList, // TODO refactor > move elsewhere
-        boolean dataTypeIsGeneric) { // TODO refactor > move elsewhere
+        boolean isAutoConnectable
+//        , // TODO refactor > move elsewhere
+//        boolean isList, // TODO refactor > move elsewhere
+//        boolean dataTypeIsGeneric
+        ) implements ValueDef{ // TODO refactor > move elsewhere
 
 }

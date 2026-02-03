@@ -9,13 +9,15 @@ import javafx.scene.Node;
  */
 public interface InputControl<T> {
 
-    public abstract Node node();
+    abstract Node node();
 
-    public T getValue();
-    
-    public void setValue(T newVal);
-    
-    public void dispose();
-    
-    public void setOnValueChanged(Consumer<T> listener);
+    T getValue();
+
+    void setValue(T newVal);
+
+    void dispose();
+
+    void setOnValueChanged(Consumer<T> listener);
+
+    void setEditable(boolean isEditable);
 }

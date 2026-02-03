@@ -2,8 +2,9 @@ package btslib.method;
 
 import java.util.List;
 import btscore.graph.block.BlockMetadata;
-import blocksmith.domain.block.Param;
 import blocksmith.domain.block.ParamInput.Password;
+import blocksmith.domain.block.Value;
+import blocksmith.domain.block.Value.Source;
 
 /**
  *
@@ -15,15 +16,27 @@ public class StringMethods {
             type = "String.password", // Input.password
             category = "Core",
             description = "Input a line of text. Warning: the value is not encrypted, only visually hidden.")
-    public static String inputPassword(@Param(input = Password.class) String value) {
+    public static String inputPassword(@Value(input = Password.class) String value) {
         return value.isEmpty() ? null : value;
+    }
+    
+    
+    @BlockMetadata(
+            type = "String.newMultiline", // Input.string
+            category = "Core",
+            description = "Input text or observe output as text")
+    public static <T> T inputMultilineString(@Value(source = Source.PARAM_OR_PORT) T value) {
+        if(value != null && value instanceof String str && str.isBlank()) {
+            return null;
+        }
+        return value;
     }
 
     @BlockMetadata(
             type = "String.new", // Input.string
             category = "Core",
             description = "Input a line of text.")
-    public static String inputString(@Param String value) {
+    public static String inputString(@Value String value) {
         return value.isEmpty() ? null : value;
     }
 

@@ -1,8 +1,8 @@
 package btslib.method;
 
-import blocksmith.domain.block.Param;
 import blocksmith.domain.block.ParamInput.Range;
 import btscore.graph.block.BlockMetadata;
+import blocksmith.domain.block.Value;
 
 /**
  *
@@ -15,7 +15,7 @@ public class NumberMethods {
             description = "Integer slider",
             type = "Number.integer",
             category = "Core")
-    public static int inputInteger(@Param(input = Range.class) String value) {
+    public static int inputInteger(@Value(input = Range.class) String value) {
         var number = Integer.parseInt(value);
         return number;
     }
@@ -25,7 +25,7 @@ public class NumberMethods {
             description = "Double slider",
             type = "Number.double",
             category = "Core")
-    public static double inputDouble(@Param(input = Range.class) String value) {
+    public static double inputDouble(@Value(input = Range.class) String value) {
         var number = Double.parseDouble(value);
         return number;
     }

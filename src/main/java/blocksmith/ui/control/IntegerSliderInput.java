@@ -31,4 +31,9 @@ public class IntegerSliderInput extends NumberSliderInput {
         value.setValue(newNum);
     }
 
+    @Override
+    public void setEditable(boolean isEditable) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }

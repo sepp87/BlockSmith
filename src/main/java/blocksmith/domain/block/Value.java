@@ -21,7 +21,15 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.PARAMETER}) //On class and method level
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Param {
+public @interface Value {
 
     Class<? extends ParamInput> input() default NoInputSpec.class;
+    Source source() default Source.PARAM;
+           
+    public enum Source {
+        PARAM,
+        PORT,
+        PARAM_OR_PORT
+    }
+            
 }

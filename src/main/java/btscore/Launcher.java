@@ -13,6 +13,7 @@ import org.xml.sax.SAXException;
  */
 public class Launcher {
 
+    public static boolean VALUE_TYPE_MAPPER = true;
     public static boolean BLOCK_DEF_LOADER = false;
 
     public static void main(String[] args) throws IOException, OpenXML4JException, SAXException, Exception {

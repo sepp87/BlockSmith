@@ -1,17 +1,14 @@
 package blocksmith.adapter.block;
 
-import blocksmith.domain.block.Param;
 import blocksmith.domain.block.Port;
 import blocksmith.domain.block.PortDef;
-import blocksmith.domain.block.ValueType.*;
 import btscore.graph.port.AutoConnectable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
+import blocksmith.domain.block.Value;
+import static blocksmith.domain.block.Value.Source.PARAM;
 
 /**
  *
@@ -25,30 +22,33 @@ public class MethodPortDefMapper {
         int i = 0;
         for (Parameter p : method.getParameters()) {
             boolean isAutoConnectable = AutoConnectable.class.isAssignableFrom(p.getType());
-            boolean isParam = p.isAnnotationPresent(Param.class);
+            Value value = p.getAnnotation(Value.class);
+            boolean hasAnnotation = value != null;
 
-            if (isParam) {
-                // is user input param, so skip
+            try {
+                // by default if:
+                // - value annotation missing > source of value is port by default
+                // - value annotation present > source of value is param by default
+                if (hasAnnotation && value.source().equals(PARAM)) {
+                    continue;
 
-            } else if (List.class.isAssignableFrom(p.getType())) {
-                if (p.getParameterizedType() instanceof ParameterizedType parameterizedType) {
-                    var typeArgument = parameterizedType.getActualTypeArguments()[0];
-                    if (typeArgument instanceof TypeVariable<?> typeVariable) {
-                        var dataType = typeVariable.getBounds()[0].getClass();
-                        var portDef = new PortDef(i, p.getName(), Port.Direction.INPUT, new ListType(new VarType(typeVariable.getName())), isAutoConnectable, true, true);
-                        result.add(portDef);
+                } else {
+                    var valueType = ValueTypeMappingUtils.fromMethodParameter(p);
+                    var portDef = new PortDef(
+                            i,
+                            p.getName(),
+                            Port.Direction.INPUT,
+                            valueType,
+                            isAutoConnectable);
 
-                    } else {
-                        var dataType = typeArgument.getClass(); // TODO can also be a list (edge case)
-                        var portDef = new PortDef(i, p.getName(), Port.Direction.INPUT, new ListType(new SimpleType(dataType)), isAutoConnectable, true, false);
-                        result.add(portDef);
-
-                    }
+                    result.add(portDef);
                 }
-
-            } else {
-                var portDef = new PortDef(i, p.getName(), Port.Direction.INPUT, new SimpleType(p.getType()), isAutoConnectable, false, false);
-                result.add(portDef);
+            } catch (Exception e) {
+                throw new IllegalArgumentException(
+                        "INPUT of block definition unknown: "
+                        + method.getClass().getSimpleName() + "."
+                        + method.getName() + "() "
+                        + p.getName(), e);
             }
 
             i++;
@@ -61,38 +61,25 @@ public class MethodPortDefMapper {
 
         boolean isAutoConnectable = AutoConnectable.class.isAssignableFrom(returnType);
 
-        if (returnType == Integer.class || returnType == int.class) {
-            return new PortDef(-1, "double", Port.Direction.OUTPUT, new SimpleType(Integer.class), isAutoConnectable, false, false);
+        try {
+            var valueType = ValueTypeMappingUtils.fromType(returnType);
+            var portDef = new PortDef(
+                    -1,
+                    returnType.getSimpleName(),
+                    Port.Direction.OUTPUT,
+                    valueType,
+                    isAutoConnectable
+            );
 
-        } else if (returnType == Number.class) {
-            return new PortDef(-1, "double", Port.Direction.OUTPUT, new SimpleType(Double.class), isAutoConnectable, false, false);
-
-        } else if (List.class.isAssignableFrom(returnType)) {
-
-            Type genericReturnType = method.getGenericReturnType();
-            if (genericReturnType instanceof ParameterizedType parameterizedType) {
-                Type typeArgument = parameterizedType.getActualTypeArguments()[0];
-                if (typeArgument instanceof TypeVariable<?> typeVariable) {
-                    var dataType = typeVariable.getBounds()[0].getClass();
-                    var portDef = new PortDef(-1, dataType.getSimpleName(), Port.Direction.OUTPUT, new ListType(new VarType(typeVariable.getName())), isAutoConnectable, true, true);
-                    return portDef;
-
-                } else {
-                    var dataType = typeArgument.getClass(); // TODO could also be of type list
-                    var portDef = new PortDef(-1, dataType.getSimpleName(), Port.Direction.OUTPUT, new ListType(new SimpleType(dataType)), isAutoConnectable, true, false);
-                    return portDef;
-                }
-            }
-
-        } else {
-            return new PortDef(-1, returnType.getSimpleName(), Port.Direction.OUTPUT, new SimpleType(returnType), isAutoConnectable, false, false);
-
+            return portDef;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    "OUTPUT of block definition unknown: "
+                    + method.getClass().getSimpleName() + "."
+                    + method.getName() + "() "
+                    + returnType.getSimpleName(), e);
         }
 
-        throw new ReflectiveOperationException("OUTPUT of block definition unknown");
     }
 
-    private static PortDef portFromParameter(Method method) {
-        return null;
-    }
 }

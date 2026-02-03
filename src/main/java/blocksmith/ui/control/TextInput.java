@@ -66,4 +66,9 @@ public class TextInput implements InputControl<String> {
         listeners.add(listener);
     }
 
+    @Override
+    public void setEditable(boolean isEditable) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }

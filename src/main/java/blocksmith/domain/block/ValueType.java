@@ -29,5 +29,15 @@ public sealed interface ValueType {
         return Object.class;
     }
 
-    
+    public static SimpleType of(Class<?> raw) {
+        return new SimpleType(raw);
+    }
+
+    public static ListType of(ValueType elementType) {
+        return new ListType(elementType);
+    }
+
+    public static VarType of(String name) {
+        return new VarType(name);
+    }
 }

@@ -1,6 +1,5 @@
 package blocksmith.adapter.block;
 
-import blocksmith.domain.block.Param;
 import blocksmith.domain.block.ParamDef;
 import blocksmith.domain.block.ParamInput;
 import blocksmith.domain.block.ParamInput.NumericType;
@@ -8,6 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
+import blocksmith.domain.block.Value;
 
 /**
  *
@@ -18,18 +18,19 @@ public class MethodParamDefMapper {
     public static List<ParamDef> paramDefsFromParameters(Method method) throws Exception {
         var result = new ArrayList<ParamDef>();
         int i = 0;
-        for (Parameter p : method.getParameters()) {
-            var param = p.getAnnotation(Param.class);
+        for (Parameter parameter : method.getParameters()) {
+            var param = parameter.getAnnotation(Value.class);
             var isParam = param != null;
 
             // TODO throw exception for unsupported param data types
             if (isParam) {
 
-                var name = p.getName();
-                var dataType = p.getType();
+                var name = parameter.getName();
+                var dataType = parameter.getType();
+                var valueType = ValueTypeMappingUtils.fromMethodParameter(parameter);
                 var input = paramInputFrom(param, dataType, method);
 
-                var paramDef = new ParamDef(i, name, dataType, input);
+                var paramDef = new ParamDef(i, name, dataType, valueType, input);
                 result.add(paramDef);
             }
             i++;
@@ -37,7 +38,7 @@ public class MethodParamDefMapper {
         return result;
     }
 
-    private static ParamInput paramInputFrom(Param param, Class<?> dataType, Method method) throws Exception {
+    private static ParamInput paramInputFrom(Value param, Class<?> dataType, Method method) throws Exception {
 
         if (param.input() == ParamInput.Choice.class && dataType == String.class) {
             var returnType = method.getReturnType();

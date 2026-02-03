@@ -44,7 +44,7 @@ public class JsonMethods {
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
     public static List<Object> asList(String jsonArray) {
-        if(jsonArray == null) {
+        if (jsonArray == null) {
             throw new NullPointerException("Input string \"jsonArray\" is null");
         }
         JsonElement element = PARSER.parse(jsonArray);
@@ -73,8 +73,9 @@ public class JsonMethods {
                     list.add(null);
                 }
             }
+            return list;
         }
-        return list;
+        throw new IllegalArgumentException("Input string \"jsonArray\" is not an array");
     }
 
     @BlockMetadata(

@@ -4,23 +4,15 @@ import blocksmith.ui.control.InputControl;
 import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.block.ValueType;
 import blocksmith.exec.BlockExecutor;
-import blocksmith.exec.MethodExecutor;
-import blocksmith.exec.MethodExecutor.InvocationResult;
 import blocksmith.exec.BlockFunc;
-import blocksmith.exec.ListMethodExecutor;
+import blocksmith.ui.control.MultilineTextInput;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
-import btscore.graph.block.ExceptionPanel;
 import btscore.icons.FontAwesomeSolid;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
@@ -29,11 +21,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import btsxml.BlockTag;
 import btscore.graph.port.PortModel;
-import btscore.graph.block.ExceptionPanel.BlockException;
-import btscore.utils.ListUtils;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
@@ -60,14 +49,13 @@ public class MethodBlockNew extends BlockModel {
         this.func = func;
     }
 
-    public void addInputControll(String name, InputControl control) {
+    public void addInputControl(String name, InputControl control) {
         inputControls.put(name, control);
         control.setOnValueChanged(value -> processSafely());
     }
 
     @Override
     protected void initialize() {
-
     }
 
     @Override
@@ -97,6 +85,53 @@ public class MethodBlockNew extends BlockModel {
             container = new StackPane(label);
         }
         return container;
+    }
+
+    @Override
+    public void onIncomingConnectionAdded(Object data) {
+        super.onIncomingConnectionAdded(data);
+
+        if (inputControls.isEmpty()) {
+            return;
+        }
+
+        for (var port : inputPorts) {
+            if (!port.isConnected()) {
+                continue;
+            }
+            String key = port.nameProperty().get();
+            var control = inputControls.get(key);
+            if (control == null) {
+                continue;
+            }
+            control.setEditable(false);
+
+            if (control instanceof MultilineTextInput textInput) {
+                textInput.setValue(data);
+            }
+        }
+    }
+
+    @Override
+    public void onIncomingConnectionRemoved(Object data) {
+        super.onIncomingConnectionRemoved(data);
+
+        if (inputControls.isEmpty()) {
+            return;
+        }
+
+        for (var port : inputPorts) {
+            if (port.isConnected()) {
+                continue;
+            }
+            String key = port.nameProperty().get();
+            var control = inputControls.get(key);
+            if (control == null) {
+                continue;
+            }
+            control.setEditable(true);
+
+        }
     }
 
     public boolean isListOperator = false;
@@ -207,8 +242,8 @@ public class MethodBlockNew extends BlockModel {
             block.addInputPort(output.name(), ValueType.toDataType(output.valueType()));
         }
 
-        block.isListOperator = def.isListOperator();
-        block.isListWithUnknownReturnType = def.outputs().getFirst().dataTypeIsGeneric();
+        block.isListOperator = this.isListOperator;
+        block.isListWithUnknownReturnType = this.isListWithUnknownReturnType;
 
         return block;
     }

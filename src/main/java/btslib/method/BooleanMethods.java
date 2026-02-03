@@ -1,7 +1,7 @@
 package btslib.method;
 
-import blocksmith.domain.block.Param;
 import btscore.graph.block.BlockMetadata;
+import blocksmith.domain.block.Value;
 
 /**
  *
@@ -14,7 +14,7 @@ public class BooleanMethods {
             category = "Input",
             description = "Switch between TRUE and FALSE",
             tags = {"boolean", "true", "false"})
-    public static boolean inputBoolean(@Param boolean value) {
+    public static boolean inputBoolean(@Value boolean value) {
         return value;
     }
 

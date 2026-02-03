@@ -1,6 +1,5 @@
 package btslib.method;
 
-import blocksmith.domain.block.Param;
 import blocksmith.domain.block.ParamInput.Directory;
 import blocksmith.domain.block.ParamInput.FilePath;
 import blocksmith.domain.block.ParamInput.FileTarget;
@@ -15,6 +14,7 @@ import btscore.graph.block.BlockMetadata;
 import btscore.utils.FileUtils;
 import java.nio.charset.Charset;
 import java.nio.file.InvalidPathException;
+import blocksmith.domain.block.Value;
 
 /**
  *
@@ -30,7 +30,7 @@ public class FileMethods {
             //            aliases = {"File.create"},
             category = "Output",
             description = "Save to file")
-    public static Path createFile(@Param(input = FileTarget.class) String filePath) throws IOException {
+    public static Path createFile(@Value(input = FileTarget.class) String filePath) throws IOException {
         if (filePath == null || filePath.isEmpty()) {
             return null;
         }
@@ -47,7 +47,7 @@ public class FileMethods {
             //            aliases = {"File.open"},
             category = "Input",
             description = "Open a file")
-    public static Path inputFile(@Param(input = FilePath.class) String filePath) {
+    public static Path inputFile(@Value(input = FilePath.class) String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             return null;
         }
@@ -64,7 +64,7 @@ public class FileMethods {
             //            aliases = {"Directory.open"},
             category = "Input",
             description = "Open a directory")
-    public static Path inputDirectory(@Param(input = Directory.class) String directory) {
+    public static Path inputDirectory(@Value(input = Directory.class) String directory) {
         if (directory == null || directory.isEmpty()) {
             return null;
         }

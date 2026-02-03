@@ -1,6 +1,5 @@
 package btslib.method;
 
-import blocksmith.domain.block.Param;
 import blocksmith.domain.block.ParamInput;
 import blocksmith.domain.block.ParamInput.Choice;
 import blocksmith.domain.block.ParamInput.Date;
@@ -14,6 +13,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import btscore.graph.block.BlockMetadata;
 import btscore.utils.DateTimeUtils;
+import blocksmith.domain.block.Value;
 
 /**
  *
@@ -26,7 +26,7 @@ public class DateMethods {
             description = "Obtains an instance of LocalDate from a text string such as 2007-12-03.",
             type = "Date.new",
             category = "Core")
-    public static LocalDate inputDate(@Param(input = Date.class) String value) {
+    public static LocalDate inputDate(@Value(input = Date.class) String value) {
         String pattern = DateTimeUtils.getDateFormat(value);
         if (pattern == null) {
             throw new DateTimeParseException("Process stopped, because the date format was unknown.", value, 0);
@@ -41,7 +41,7 @@ public class DateMethods {
             description = "A standard set of date periods units.",
             type = "Date.newTemporalUnit",
             category = "Core")
-    public static ChronoUnit temporalUnit(@Param(input = Choice.class) String value) {
+    public static ChronoUnit temporalUnit(@Value(input = Choice.class) String value) {
         return ChronoUnit.valueOf(value);
     }
 

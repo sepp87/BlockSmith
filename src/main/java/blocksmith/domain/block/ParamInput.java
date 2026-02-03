@@ -20,6 +20,9 @@ public sealed interface ParamInput {
     record Text() implements ParamInput {
     }
 
+    record MultilineText() implements ParamInput {
+    }
+
     record Password() implements ParamInput {
     }
 
