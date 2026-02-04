@@ -19,10 +19,11 @@ import java.lang.annotation.Target;
  *
  * @author joost
  */
-@Target({ElementType.PARAMETER}) //On class and method level
+@Target({ElementType.PARAMETER}) // On method parameter
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Value {
 
+    String id() default "";
     Class<? extends ParamInput> input() default NoInputSpec.class;
     Source source() default Source.PARAM;
            

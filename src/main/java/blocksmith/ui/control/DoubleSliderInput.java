@@ -37,4 +37,21 @@ public class DoubleSliderInput extends NumberSliderInput {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    @Override
+    public boolean isEditable() {
+        return true;
+    }
+
+    @Override
+    public InputControl<String> copy() {
+        var control = new DoubleSliderInput();
+        if (isEditable()) {
+            control.value.setValue(this.value.getValue());
+            control.min.setValue(this.min.getValue());
+            control.max.setValue(this.max.getValue());
+            control.step.setValue(this.step.getValue());
+        }
+        return control;
+    }
+
 }

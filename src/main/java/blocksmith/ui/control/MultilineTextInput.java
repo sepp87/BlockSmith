@@ -2,6 +2,7 @@ package blocksmith.ui.control;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
@@ -43,6 +44,9 @@ public class MultilineTextInput implements InputControl<Object> {
 
     @Override
     public void setValue(Object newVal) {
+        if(Objects.equals(this.getValue(), newVal)) {
+            return;
+        }
         textArea.setText(newVal.toString());
     }
 
@@ -65,4 +69,19 @@ public class MultilineTextInput implements InputControl<Object> {
         // if set uneditable, it is assumed a new value will be set instantly afterwards
     }
 
+    @Override
+    public boolean isEditable() {
+        return true;
+    }
+
+    @Override
+    public InputControl<Object> copy() {
+        var control = new MultilineTextInput();
+        if(isEditable()) {
+            control.setValue(this.getValue());
+        }
+        return control;
+    }
+    
+    
 }

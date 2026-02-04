@@ -42,16 +42,16 @@ public class BlockModelFactory {
         var block = new MethodBlockNew(def, func);
 
         for (var input : def.inputs()) {
-            block.addInputPort(input.name(), ValueType.toDataType(input.valueType()));
+            block.addInputPort(input.valueName(), ValueType.toDataType(input.valueType()));
         }
 
         for (var output : def.outputs()) {
-            block.addOutputPort(output.name(), ValueType.toDataType(output.valueType()));
+            block.addOutputPort(output.valueName(), ValueType.toDataType(output.valueType()));
         }
 
         for (var param : def.params()) {
             var control = inputControlFrom(param);
-            block.addInputControl(param.name(), control);
+            block.addInputControl(param.valueName(), control);
         }
 
         block.isListOperator = def.isListOperator();

@@ -19,18 +19,19 @@ public class MethodParamDefMapper {
         var result = new ArrayList<ParamDef>();
         int i = 0;
         for (Parameter parameter : method.getParameters()) {
-            var param = parameter.getAnnotation(Value.class);
-            var isParam = param != null;
+            var value = parameter.getAnnotation(Value.class);
+            var isParam = value != null && value.source() != Value.Source.PORT;
 
             // TODO throw exception for unsupported param data types
             if (isParam) {
 
                 var name = parameter.getName();
+                var valueId = !value.id().isEmpty() ? value.id() : name;
                 var dataType = parameter.getType();
                 var valueType = ValueTypeMappingUtils.fromMethodParameter(parameter);
-                var input = paramInputFrom(param, dataType, method);
+                var input = paramInputFrom(value, dataType, method);
 
-                var paramDef = new ParamDef(i, name, dataType, valueType, input);
+                var paramDef = new ParamDef(valueId, i, name, dataType, valueType, input);
                 result.add(paramDef);
             }
             i++;
@@ -49,7 +50,7 @@ public class MethodParamDefMapper {
             var returnType = method.getReturnType();
             var numericType = numericTypeFrom(returnType);
             return new ParamInput.Range(numericType);
-            
+
         }
         return param.input().getDeclaredConstructor().newInstance();
     }
@@ -67,10 +68,10 @@ public class MethodParamDefMapper {
     }
 
     private static NumericType numericTypeFrom(Class<?> returnType) {
-        
+
         if (returnType == Integer.class || returnType == int.class) {
             return NumericType.INT;
-            
+
         } else if (returnType == Double.class || returnType == double.class) {
             return NumericType.DOUBLE;
         }

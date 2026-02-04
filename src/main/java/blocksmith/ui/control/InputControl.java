@@ -20,4 +20,8 @@ public interface InputControl<T> {
     void setOnValueChanged(Consumer<T> listener);
 
     void setEditable(boolean isEditable);
+    
+    boolean isEditable();
+    
+    InputControl<T> copy();
 }

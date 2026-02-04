@@ -1,6 +1,5 @@
 package btslib.method;
 
-import blocksmith.domain.block.ParamInput;
 import blocksmith.domain.block.ParamInput.Choice;
 import blocksmith.domain.block.ParamInput.Date;
 import java.time.DayOfWeek;

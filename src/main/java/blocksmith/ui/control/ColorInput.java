@@ -62,4 +62,18 @@ public class ColorInput implements InputControl<String> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+    @Override
+    public boolean isEditable() {
+        return true;
+    }
+
+    @Override
+    public InputControl<String> copy() {
+        var control = new ColorInput();
+        if (isEditable()) {
+            control.setValue(control.getValue());
+        }
+        return control;
+    }
+
 }

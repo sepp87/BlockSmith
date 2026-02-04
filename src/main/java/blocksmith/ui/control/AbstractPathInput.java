@@ -10,11 +10,9 @@ import java.util.function.Consumer;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.stage.FileChooser;
 
 /**
  *
@@ -78,6 +76,7 @@ public abstract class AbstractPathInput implements InputControl<String> {
         value.removeListener(fxListener);
     }
 
+    
     @Override
     public void setOnValueChanged(Consumer<String> listener) {
         listeners.add(listener);

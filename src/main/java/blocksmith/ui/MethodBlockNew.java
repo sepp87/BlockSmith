@@ -223,11 +223,27 @@ public class MethodBlockNew extends BlockModel {
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
         xmlTag.setType(def.metadata().type());
+
+        for (var entry : inputControls.entrySet()) {
+            var name = entry.getKey();
+            var control = entry.getValue();
+            if (control.isEditable()) {
+                
+            }
+        }
     }
 
     @Override
     public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
+
+        for (var entry : inputControls.entrySet()) {
+            var name = entry.getKey();
+            var control = entry.getValue();
+            if (control.isEditable()) {
+
+            }
+        }
     }
 
     @Override
@@ -235,11 +251,15 @@ public class MethodBlockNew extends BlockModel {
         var block = new MethodBlockNew(def, func);
 
         for (var input : def.inputs()) {
-            block.addInputPort(input.name(), ValueType.toDataType(input.valueType()));
+            block.addInputPort(input.valueName(), ValueType.toDataType(input.valueType()));
         }
 
         for (var output : def.outputs()) {
-            block.addInputPort(output.name(), ValueType.toDataType(output.valueType()));
+            block.addInputPort(output.valueName(), ValueType.toDataType(output.valueType()));
+        }
+
+        for (var control : inputControls.entrySet()) {
+            block.addInputControl(control.getKey(), control.getValue());
         }
 
         block.isListOperator = this.isListOperator;

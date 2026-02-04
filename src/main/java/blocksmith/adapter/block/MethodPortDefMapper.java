@@ -19,7 +19,7 @@ public class MethodPortDefMapper {
     public static List<PortDef> inputDefsFromParameters(Method method) {
         var result = new ArrayList<PortDef>();
 
-        int i = 0;
+        int argIndex = 0;
         for (Parameter p : method.getParameters()) {
             boolean isAutoConnectable = AutoConnectable.class.isAssignableFrom(p.getType());
             Value value = p.getAnnotation(Value.class);
@@ -34,12 +34,16 @@ public class MethodPortDefMapper {
 
                 } else {
                     var valueType = ValueTypeMappingUtils.fromMethodParameter(p);
+                    var valueId = value != null && !value.id().isEmpty() ? value.id() : p.getName();
+                    
                     var portDef = new PortDef(
-                            i,
+                            valueId,
+                            argIndex,
                             p.getName(),
                             Port.Direction.INPUT,
                             valueType,
-                            isAutoConnectable);
+                            isAutoConnectable,
+                            false);
 
                     result.add(portDef);
                 }
@@ -51,7 +55,7 @@ public class MethodPortDefMapper {
                         + p.getName(), e);
             }
 
-            i++;
+            argIndex++;
         }
         return result;
     }
@@ -63,12 +67,16 @@ public class MethodPortDefMapper {
 
         try {
             var valueType = ValueTypeMappingUtils.fromType(returnType);
+            var valueId = returnType.getSimpleName();
+
             var portDef = new PortDef(
+                    valueId,
                     -1,
                     returnType.getSimpleName(),
                     Port.Direction.OUTPUT,
                     valueType,
-                    isAutoConnectable
+                    isAutoConnectable,
+                    false
             );
 
             return portDef;

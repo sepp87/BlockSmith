@@ -8,8 +8,9 @@ package blocksmith.domain.block;
  */
 public sealed interface ValueDef permits PortDef, ParamDef {
 
+    String valueId();
     int argIndex();
-    String name();
+    String valueName();
     ValueType valueType();
     
 }

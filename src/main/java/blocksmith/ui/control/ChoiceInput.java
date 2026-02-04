@@ -26,7 +26,7 @@ public class ChoiceInput implements InputControl<String> {
     private final List<Consumer<String>> listeners = new ArrayList<>();
     private final ChangeListener<String> fxListener = (b, o, n) -> listeners.forEach(c -> c.accept(n));
 
-    private final Set<String> choices = new TreeSet<>();
+    private final Set<String> options = new TreeSet<>();
     private final StringProperty value = new SimpleStringProperty();
 
     private final VBox root;
@@ -89,6 +89,21 @@ public class ChoiceInput implements InputControl<String> {
     @Override
     public void setEditable(boolean isEditable) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean isEditable() {
+        return true;
+    }
+
+    @Override
+    public InputControl<String> copy() {
+        if (isEditable()) {
+            var selected = this.getValue();
+            return new ChoiceInput(selected, options);
+        } else {
+            return new ChoiceInput(options.iterator().next(), options);
+        }
     }
 
 }

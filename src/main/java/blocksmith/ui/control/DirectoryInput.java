@@ -28,5 +28,19 @@ public class DirectoryInput extends AbstractPathInput {
     public void setEditable(boolean isEditable) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+    
+    @Override
+    public boolean isEditable() {
+        return true;
+    }
+
+    @Override
+    public InputControl<String> copy() {
+        var control = new DirectoryInput();
+        if(isEditable()) {
+            control.setValue(this.getValue());
+        }
+        return control;
+    }
 
 }
