@@ -1,4 +1,4 @@
-package btscore;
+package blocksmith;
 
 import blocksmith.adapter.AppPaths;
 import blocksmith.adapter.block.ClassIndex;
@@ -41,7 +41,6 @@ public class App {
         var methodFuncLoader = new MethodBlockFuncLoader(methodIndex.methods());
         this.blockFuncLibrary = new BlockFuncLibrary(methodFuncLoader.load());
         
-        var blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
         
         //Load all block types
         BlockLibraryLoader.loadBlocks();
@@ -83,5 +82,7 @@ public class App {
     public BlockFuncLibrary getBlockFuncLibrary() {
         return blockFuncLibrary;
     }
+    
+
     
 }

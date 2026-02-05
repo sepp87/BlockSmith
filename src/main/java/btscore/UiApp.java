@@ -1,5 +1,6 @@
 package btscore;
 
+import blocksmith.App;
 import blocksmith.ui.BlockModelFactory;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -37,6 +38,10 @@ import btscore.graph.io.GraphLoader;
 public class UiApp extends Application {
 
     private static App app;
+    private static BlockModelFactory blockModelFactory;
+    public static BlockModelFactory getBlockModelFactory() {
+        return blockModelFactory;
+    }
 
     public static void setApp(App app) {
         UiApp.app = app;
@@ -60,7 +65,7 @@ public class UiApp extends Application {
 
         var blockDefLibrary = app.getBlockDefLibrary();
         var blockFuncLibrary = app.getBlockFuncLibrary();
-        var blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
+        this.blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
 
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");

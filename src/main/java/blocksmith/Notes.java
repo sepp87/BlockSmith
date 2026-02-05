@@ -1,4 +1,4 @@
-package btscore;
+package blocksmith;
 
 /**
  *
@@ -8,6 +8,11 @@ public class Notes {
 
 }
 
+//
+// Serialization in XML 
+// - getBlock from blocks tags feels of as singular
+// - naming conflicts with values, blocks, connections
+//
 // REFACTOR BLOCK DEF/FUNC LOADING
 // - Serialization and copy
 // - ReceiverBlock

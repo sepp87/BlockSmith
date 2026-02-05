@@ -66,7 +66,7 @@ public class GraphLoader {
             workspaceModel.fileProperty().set(file);
 
         } catch (JAXBException | SecurityException | IllegalArgumentException ex) {
-            Logger.getLogger(GraphLoader.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GraphLoader.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
@@ -79,6 +79,15 @@ public class GraphLoader {
         for (BlockTag blockTag : blockTagList) {
 
             String blockIdentifier = blockTag.getType();
+            var factory = UiApp.getBlockModelFactory();
+            try {
+                var block = factory.create(blockIdentifier);
+
+            } catch (Exception e) {
+                Logger.getLogger(GraphLoader.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+
+            }
+
             BlockModel blockModel = BlockFactory.createBlock(blockIdentifier);
             if (blockModel == null) {
                 System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);

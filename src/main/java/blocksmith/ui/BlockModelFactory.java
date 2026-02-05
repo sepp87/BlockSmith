@@ -36,9 +36,16 @@ public class BlockModelFactory {
     }
 
     public BlockModel create(String type) {
-        var def = defLibrary.findByType(type).get();
-        var func = funcLibrary.findByType(type).get();
+        var oDef = defLibrary.findByType(type);
+        var oFunc = funcLibrary.findByType(type);
 
+        if(oDef.isEmpty()) {
+            throw new IllegalArgumentException("Type does not exist: " + type);
+        }
+        
+        var def = oDef.get();
+        var func = oFunc.get();
+        
         var block = new MethodBlockNew(def, func);
 
         for (var input : def.inputs()) {

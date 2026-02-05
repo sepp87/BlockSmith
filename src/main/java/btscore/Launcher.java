@@ -1,5 +1,6 @@
 package btscore;
 
+import blocksmith.App;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;

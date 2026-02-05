@@ -1,6 +1,7 @@
 package btscore;
 
 
+import blocksmith.App;
 import btscore.UiApp;
 
 /**

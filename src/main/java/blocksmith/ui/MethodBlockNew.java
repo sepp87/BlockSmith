@@ -6,6 +6,8 @@ import blocksmith.domain.block.ValueType;
 import blocksmith.exec.BlockExecutor;
 import blocksmith.exec.BlockFunc;
 import blocksmith.ui.control.MultilineTextInput;
+import blocksmith.ui.control.NumberSliderInput;
+import blocksmith.xml.v2.Value;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
@@ -21,6 +23,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import btsxml.BlockTag;
 import btscore.graph.port.PortModel;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.scene.layout.Pane;
@@ -223,25 +227,36 @@ public class MethodBlockNew extends BlockModel {
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
         xmlTag.setType(def.metadata().type());
-
-        for (var entry : inputControls.entrySet()) {
-            var name = entry.getKey();
-            var control = entry.getValue();
-            if (control.isEditable()) {
-                
-            }
-        }
     }
 
     @Override
     public void deserialize(BlockTag xmlTag) {
         super.deserialize(xmlTag);
+    }
 
+    public Collection<Value> serializeValues() {
+        var result = new ArrayList<Value>();
         for (var entry : inputControls.entrySet()) {
-            var name = entry.getKey();
-            var control = entry.getValue();
-            if (control.isEditable()) {
+            var optional = entry.getValue().serialize();
+            if (optional.isEmpty()) {
+                continue;
+            }
+            var value = optional.get();
+            value.setBlock(this.getId());
+            value.setId(entry.getKey());
+            result.add(value);
+        }
+        return result;
+    }
 
+    public void deserializeValues(Collection<Value> values) {
+        for (var literal : values) {
+            var control = inputControls.get(literal.getId());
+            control.parseValue(literal.getValue());
+            if (control instanceof NumberSliderInput slider) {
+                slider.setMin(Double.parseDouble(literal.getOtherAttributes().get("min")));
+                slider.setMax(Double.parseDouble(literal.getOtherAttributes().get("max")));
+                slider.setStep(Double.parseDouble(literal.getOtherAttributes().get("step")));
             }
         }
     }

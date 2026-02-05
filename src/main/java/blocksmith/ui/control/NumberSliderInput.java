@@ -1,14 +1,17 @@
 package blocksmith.ui.control;
 
+import blocksmith.xml.v2.Value;
 import btslib.ui.NumberSliderExpander;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
+import javax.xml.namespace.QName;
 
 /**
  *
@@ -57,7 +60,7 @@ public abstract class NumberSliderInput implements InputControl<String> {
     protected abstract void initializeProperties();
 
     protected abstract boolean isIntegerSlider();
-    
+
     @Override
     public Node node() {
         return root;
@@ -83,4 +86,28 @@ public abstract class NumberSliderInput implements InputControl<String> {
         listeners.add(listener);
     }
 
+    @Override
+    public Optional<Value> serialize() {
+        if (isEditable()) {
+            Value value = new Value();
+            value.setValue(getValue().toString());
+            value.getOtherAttributes().put(new QName("min"), min.getValue().toString());
+            value.getOtherAttributes().put(new QName("max"), max.getValue().toString());
+            value.getOtherAttributes().put(new QName("step"), step.getValue().toString());
+            return Optional.ofNullable(value);
+        }
+        return Optional.empty();
+    }
+
+    public void setMin(Number newVal) {
+        min.setValue(newVal);
+    }
+
+    public void setMax(Number newVal) {
+        max.setValue(newVal);
+    }
+
+    public void setStep(Number newVal) {
+        step.setValue(newVal);
+    }
 }
