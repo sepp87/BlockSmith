@@ -1,12 +1,11 @@
 package btscore.graph.io;
 
-import blocksmith.xml.v2.Blocks;
-import blocksmith.xml.v2.Connections;
-import blocksmith.xml.v2.Groups;
+import blocksmith.xml.v2.BlocksXml;
+import blocksmith.xml.v2.ConnectionsXml;
+import blocksmith.xml.v2.GroupsXml;
 import blocksmith.xml.v2.ObjectFactory;
 import btscore.Config;
 import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import java.io.File;
@@ -39,7 +38,7 @@ public class GraphSaverV2 {
             ObjectFactory factory = getObjectFactory();
 
             // serialize workspace and settings
-            var documentTag = factory.createDocument();
+            var documentTag = factory.createDocumentXml();
             documentTag.setZoomFactor(workspaceModel.zoomFactorProperty().get());
             documentTag.setTranslateX(workspaceModel.translateXProperty().get());
             documentTag.setTranslateY(workspaceModel.translateYProperty().get());
@@ -76,11 +75,11 @@ public class GraphSaverV2 {
         }
     }
 
-    private static Blocks serializeBlockModels(Collection<BlockModel> blocks) {
+    private static BlocksXml serializeBlockModels(Collection<BlockModel> blocks) {
         ObjectFactory factory = getObjectFactory();
-        var blocksTag = factory.createBlocks();
+        var blocksTag = factory.createBlocksXml();
         for (var block : blocks) {
-            var blockTag = factory.createBlock();
+            var blockTag = factory.createBlockXml();
             blockTag.setId(block.getId());
             blockTag.setType(block.getId());
             blockTag.setLabel(block.getId());
@@ -96,11 +95,11 @@ public class GraphSaverV2 {
         return blocksTag;
     }
 
-    private static Connections serializeConnnectionModels(Collection<ConnectionModel> connections) {
+    private static ConnectionsXml serializeConnnectionModels(Collection<ConnectionModel> connections) {
         ObjectFactory factory = getObjectFactory();
-        var connectionsTag = factory.createConnections();
+        var connectionsTag = factory.createConnectionsXml();
         for (var connection : connections) {
-            var connectionTag = factory.createConnection();
+            var connectionTag = factory.createConnectionXml();
             connectionTag.setFromBlock(connection.getStartPort().getBlock().getId());
             connectionTag.setFromPort(connection.getStartPort().nameProperty().get());
             connectionTag.setToBlock(connection.getEndPort().getBlock().getId());
@@ -111,11 +110,11 @@ public class GraphSaverV2 {
         return connectionsTag;
     }
 
-    private static Groups serializeGroupModels(Collection<BlockGroupModel> groups) {
+    private static GroupsXml serializeGroupModels(Collection<BlockGroupModel> groups) {
         ObjectFactory factory = getObjectFactory();
-        var groupsTag = factory.createGroups();
+        var groupsTag = factory.createGroupsXml();
         for (var group : groups) {
-            var groupTag = factory.createGroup();
+            var groupTag = factory.createGroupXml();
             groupTag.setLabel(group.nameProperty().get());
 
             groupsTag.getGroup().add(groupTag);

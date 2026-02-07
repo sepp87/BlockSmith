@@ -19,7 +19,7 @@ import blocksmith.ui.control.FileTargetInput;
 import blocksmith.ui.control.IntegerSliderInput;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.control.PasswordInput;
-import btscore.graph.block.BlockModel;
+import java.util.UUID;
 
 /**
  *
@@ -34,19 +34,24 @@ public class BlockModelFactory {
         this.defLibrary = defLibrary;
         this.funcLibrary = funcLibrary;
     }
+    
+    public MethodBlockNew create(String type) {
+        var id = UUID.randomUUID().toString();
+        return create(type, id);
+    }
 
-    public BlockModel create(String type) {
+    public MethodBlockNew create(String type, String id) {
         var oDef = defLibrary.findByType(type);
-        var oFunc = funcLibrary.findByType(type);
 
-        if(oDef.isEmpty()) {
+        if (oDef.isEmpty()) {
             throw new IllegalArgumentException("Type does not exist: " + type);
         }
-        
+
         var def = oDef.get();
-        var func = oFunc.get();
-        
-        var block = new MethodBlockNew(def, func);
+        type = def.metadata().type();
+        var func = funcLibrary.findByType(type).get();
+
+        var block = new MethodBlockNew(def, func, id);
 
         for (var input : def.inputs()) {
             block.addInputPort(input.valueName(), ValueType.toDataType(input.valueType()));
@@ -130,7 +135,7 @@ public class BlockModelFactory {
         }
         if (dataType == Object.class) {
             return new MultilineTextInput();
-            
+
         }
 //        else if (dataType == Integer.class || dataType == Double.class) {
 //            return new ParamInput.Range();

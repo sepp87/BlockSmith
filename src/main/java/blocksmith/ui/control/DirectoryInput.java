@@ -25,13 +25,8 @@ public class DirectoryInput extends AbstractPathInput {
     }
 
     @Override
-    public void setEditable(boolean isEditable) {
+    protected void onEditableChanged(boolean isEditable) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
-    @Override
-    public boolean isEditable() {
-        return true;
     }
 
     @Override

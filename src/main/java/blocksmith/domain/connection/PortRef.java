@@ -1,4 +1,4 @@
-package blocksmith.domain.graph;
+package blocksmith.domain.connection;
 
 import blocksmith.domain.block.Port.Direction;
 import java.util.Objects;

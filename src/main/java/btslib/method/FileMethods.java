@@ -22,57 +22,52 @@ import blocksmith.domain.block.Value;
  */
 public class FileMethods {
 
-
-    
-        @BlockMetadata(
-            type = "File.new",
-            //            type = "Output.file",
-            //            aliases = {"File.create"},
+    @BlockMetadata(
+            type = "Output.file",
+            aliases = {"File.new", "File.create"},
             category = "Output",
             description = "Save to file")
-    public static Path createFile(@Value(input = FileTarget.class) String filePath) throws IOException {
-        if (filePath == null || filePath.isEmpty()) {
+    public static Path createFile(@Value(input = FileTarget.class) String path) throws IOException {
+        if (path == null || path.isEmpty()) {
             return null;
         }
-        var path = Path.of(filePath);
-        if (!Files.exists(path)) {
-            Files.createFile(path);
+        var result = Path.of(path);
+        if (!Files.exists(result)) {
+            Files.createFile(result);
         }
-        return path;
-    }
-    
-    @BlockMetadata(
-            type = "File.choose",
-            //            type = "Input.file",
-            //            aliases = {"File.open"},
-            category = "Input",
-            description = "Open a file")
-    public static Path inputFile(@Value(input = FilePath.class) String filePath) {
-        if (filePath == null || filePath.isEmpty()) {
-            return null;
-        }
-        var path = Path.of(filePath);
-        if (!Files.exists(path)) {
-            throw new InvalidPathException(filePath, "Given path does NOT exist.");
-        }
-        return path;
+        return result;
     }
 
     @BlockMetadata(
-            type = "Directory.choose",
-            //            type = "Input.directory",
-            //            aliases = {"Directory.open"},
+            type = "Input.file",
+            aliases = {"File.open", "File.choose"},
             category = "Input",
-            description = "Open a directory")
-    public static Path inputDirectory(@Value(input = Directory.class) String directory) {
-        if (directory == null || directory.isEmpty()) {
+            description = "Open a file")
+    public static Path inputFile(@Value(input = FilePath.class) String path) {
+        if (path == null || path.isEmpty()) {
             return null;
         }
-        var path = inputFile(directory);
-        if (!Files.isDirectory(path)) {
-            throw new IllegalArgumentException("Provided path was NOT a directory: \"" + path + "\"");
+        var result = Path.of(path);
+        if (!Files.exists(result)) {
+            throw new InvalidPathException(path, "Given path does NOT exist.");
         }
-        return path;
+        return result;
+    }
+
+    @BlockMetadata(
+            type = "Input.directory",
+            aliases = {"Directory.open", "Directory.choose"},
+            category = "Input",
+            description = "Open a directory")
+    public static Path inputDirectory(@Value(input = Directory.class) String path) {
+        if (path == null || path.isEmpty()) {
+            return null;
+        }
+        var result = inputFile(path);
+        if (!Files.isDirectory(result)) {
+            throw new IllegalArgumentException("Provided path was NOT a directory: \"" + result + "\"");
+        }
+        return result;
     }
 
     @BlockMetadata(

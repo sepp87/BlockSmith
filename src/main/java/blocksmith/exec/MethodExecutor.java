@@ -34,7 +34,7 @@ public class MethodExecutor {
     private InvocationResult invokeMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
         int listCount = ListUtils.getListCount(parameters);
 
-        System.out.println("listCount " + listCount + "; method.getParameters().length " + def.inputs().size());
+//        System.out.println("listCount " + listCount + "; method.getParameters().length " + def.inputs().size());
         if (listCount == 0) { // none are list - invoke method
             InvocationResult invocationResult = new InvocationResult();
 
@@ -79,7 +79,7 @@ public class MethodExecutor {
             return invocationResult;
 
         } else { // some are list, some are not - make all lists and recurse
-            System.out.println("some are list, some are not - make all lists and recurse");
+//            System.out.println("some are list, some are not - make all lists and recurse");
             long shortestListSize = ListUtils.getShortestListSize(parameters);
             if (shortestListSize == 0) {
                 return null;
@@ -88,10 +88,10 @@ public class MethodExecutor {
             for (int i = 0; i < def.inputs().size(); i++) {
                 Object p = parameters[i];
                 if (ListUtils.isList(p)) {
-                    System.out.println("Parameter " + i + " is list ");
+//                    System.out.println("Parameter " + i + " is list ");
                     continue;
                 }
-                System.out.println("Parameter " + i + " to list ");
+//                System.out.println("Parameter " + i + " to list ");
                 List<Object> list = new ArrayList<>();
                 for (int j = 0; j < shortestListSize; j++) {
                     list.add(p);

@@ -108,7 +108,7 @@ public class PortModel extends BaseModel {
     public void preprocessData(Object value) {
 
         if (!connections.isEmpty()) { // incoming data of one single incoming connection
-            System.out.println(block.getClass().getSimpleName() + " received: " + value);
+            System.out.println(block.getMetadata().type() + " received: " + value);
 
             //Cast all primitive dataType to String if this port dataType is String
             PortModel startPort = connections.iterator().next().getStartPort();

@@ -1,5 +1,7 @@
 package blocksmith.domain.graph;
 
+import blocksmith.domain.connection.Connection;
+import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.block.Block;
 import java.util.Collection;
 import java.util.HashMap;

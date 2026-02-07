@@ -3,10 +3,7 @@ package blocksmith.ui.control;
 import btscore.graph.base.BaseButton;
 import btscore.icons.FontAwesomeSolid;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -18,10 +15,9 @@ import javafx.scene.layout.HBox;
  *
  * @author joost
  */
-public abstract class AbstractPathInput implements InputControl<String> {
+public abstract class AbstractPathInput extends InputControl<String> {
 
-    private final List<Consumer<String>> listeners = new ArrayList<>();
-    private final ChangeListener<String> fxListener = (b, o, n) -> listeners.forEach(c -> c.accept(n));
+    private final ChangeListener<String> fxListener = (b, o, n) -> onValueChangedByUser(n);
     private final StringProperty value = new SimpleStringProperty();
 
     private HBox root;
@@ -76,9 +72,4 @@ public abstract class AbstractPathInput implements InputControl<String> {
         value.removeListener(fxListener);
     }
 
-    
-    @Override
-    public void setOnValueChanged(Consumer<String> listener) {
-        listeners.add(listener);
-    }
 }

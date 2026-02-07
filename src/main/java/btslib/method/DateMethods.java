@@ -21,9 +21,10 @@ import blocksmith.domain.block.Value;
 public class DateMethods {
 
     @BlockMetadata(
+            type = "Input.date",
+            aliases = {"Date.new"},
             label = "Date",
             description = "Obtains an instance of LocalDate from a text string such as 2007-12-03.",
-            type = "Date.new",
             category = "Core")
     public static LocalDate inputDate(@Value(input = Date.class) String value) {
         String pattern = DateTimeUtils.getDateFormat(value);
@@ -36,9 +37,9 @@ public class DateMethods {
     }
 
     @BlockMetadata(
+            type = "Date.temporalUnit",
             label = "TemporalUnit",
             description = "A standard set of date periods units.",
-            type = "Date.newTemporalUnit",
             category = "Core")
     public static ChronoUnit temporalUnit(@Value(input = Choice.class) String value) {
         return ChronoUnit.valueOf(value);

@@ -1,13 +1,10 @@
 package blocksmith.ui.control;
 
 import btscore.utils.ListViewHoverSelectBehaviour;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.Consumer;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -21,10 +18,9 @@ import javafx.scene.layout.VBox;
  *
  * @author joost
  */
-public class ChoiceInput implements InputControl<String> {
+public class ChoiceInput extends InputControl<String> {
 
-    private final List<Consumer<String>> listeners = new ArrayList<>();
-    private final ChangeListener<String> fxListener = (b, o, n) -> listeners.forEach(c -> c.accept(n));
+    private final ChangeListener<String> fxListener = (b, o, n) -> onValueChangedByUser(n);
 
     private final Set<String> options = new TreeSet<>();
     private final StringProperty value = new SimpleStringProperty();
@@ -82,18 +78,8 @@ public class ChoiceInput implements InputControl<String> {
     }
 
     @Override
-    public void setOnValueChanged(Consumer<String> listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void setEditable(boolean isEditable) {
+    protected void onEditableChanged(boolean isEditable) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean isEditable() {
-        return true;
     }
 
     @Override

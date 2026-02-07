@@ -1,6 +1,8 @@
 package blocksmith.ui.control;
 
-import blocksmith.xml.v2.Value;
+import blocksmith.xml.v2.ValueXml;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javafx.scene.Node;
@@ -9,34 +11,58 @@ import javafx.scene.Node;
  *
  * @author joostmeulenkamp
  */
-public interface InputControl<T> {
+public abstract class InputControl<T> {
 
-    abstract Node node();
+    private boolean editable = true;
+    
+    private final List<Consumer<T>> listeners = new ArrayList<>();
+    
+    public abstract Node node();
 
-    T getValue();
+    public abstract T getValue();
 
-    void setValue(T newVal);
+    public abstract void setValue(T newVal);
 
-    void dispose();
+    public abstract void dispose();
 
-    void setOnValueChanged(Consumer<T> listener);
+    public final void setOnValueChangedByUser(Consumer<T> listener) {
+        listeners.add(listener);
+    }
+    
+    protected final void onValueChangedByUser(T t) {
+        if(isEditable()) {
+//                    System.out.println("InputControl.onValueChangedByUser " + t + " " + this.getClass().getSimpleName());
 
-    void setEditable(boolean isEditable);
+            listeners.forEach(c -> c.accept(t));
+        }
+    }
 
-    boolean isEditable();
+    public void setEditable(boolean isEditable) {
+        if(editable == isEditable) {
+            return;
+        }
+        editable = isEditable;
+        onEditableChanged(isEditable);
+    }
+    
+    protected abstract void onEditableChanged(boolean isEditable);
 
-    InputControl<T> copy();
+    public boolean isEditable() {
+        return editable;
+    }
 
-    default Optional<Value> serialize() {
+    public abstract InputControl<T> copy();
+
+    public Optional<ValueXml> serialize() {
         if (isEditable()) {
-            Value value = new Value();
+            var value = new ValueXml();
             value.setValue(getValue().toString());
             return Optional.ofNullable(value);
         }
         return Optional.empty();
     }
-    
-    default void parseValue(String newVal) {
+
+    public void parseValue(String newVal) {
         setValue((T) newVal);
     }
 }

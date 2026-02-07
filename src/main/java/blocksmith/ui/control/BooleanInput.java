@@ -16,10 +16,9 @@ import javafx.scene.control.Label;
  *
  * @author joost
  */
-public class BooleanInput implements InputControl<Boolean> {
+public class BooleanInput extends InputControl<Boolean> {
 
-    private final List<Consumer<Boolean>> listeners = new ArrayList<>();
-    private final ChangeListener<Boolean> fxListener = (b, o, n) -> listeners.forEach(c -> c.accept(n));
+    private final ChangeListener<Boolean> fxListener = (b, o, n) -> onValueChangedByUser(n);
     private final BooleanProperty value = new SimpleBooleanProperty(false);
 
     private Label onOffSwitch;
@@ -67,18 +66,8 @@ public class BooleanInput implements InputControl<Boolean> {
     }
 
     @Override
-    public void setOnValueChanged(Consumer<Boolean> listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void setEditable(boolean isEditable) {
+    protected void onEditableChanged(boolean isEditable) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean isEditable() {
-        return true;
     }
 
     @Override

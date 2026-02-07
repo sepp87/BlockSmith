@@ -7,7 +7,7 @@ import blocksmith.exec.BlockExecutor;
 import blocksmith.exec.BlockFunc;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.control.NumberSliderInput;
-import blocksmith.xml.v2.Value;
+import blocksmith.xml.v2.ValueXml;
 import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
@@ -49,13 +49,28 @@ public class MethodBlockNew extends BlockModel {
     private Label label;
 
     public MethodBlockNew(BlockDef def, BlockFunc func) {
+        this(def, func, null);
+    }
+
+    public MethodBlockNew(BlockDef def, BlockFunc func, String id) {
+        if (id != null) {
+            this.id.set(id);
+        }
         this.def = def;
         this.func = func;
     }
 
     public void addInputControl(String name, InputControl control) {
         inputControls.put(name, control);
-        control.setOnValueChanged(value -> processSafely());
+        control.setOnValueChangedByUser(value -> processSafely());
+    }
+
+    public BlockDef getBlockDef() {
+        return def;
+    }
+
+    public Map<String, InputControl<?>> getInputControls() {
+        return inputControls;
     }
 
     @Override
@@ -109,10 +124,11 @@ public class MethodBlockNew extends BlockModel {
                 continue;
             }
             control.setEditable(false);
+//            System.out.println("MethodBlockNew.onIncomingConnectionAdded");
 
-            if (control instanceof MultilineTextInput textInput) {
-                textInput.setValue(data);
-            }
+//            if (control instanceof MultilineTextInput textInput) {
+//                textInput.setValue(data);
+//            }
         }
     }
 
@@ -144,8 +160,7 @@ public class MethodBlockNew extends BlockModel {
     @Override
     public void processSafely() {
 
-        System.out.println(def.metadata().type().split("\\.")[1] + ".processSafely()");
-
+//        System.out.println(def.metadata().type().split("\\.")[1] + ".processSafely()");
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
@@ -179,6 +194,22 @@ public class MethodBlockNew extends BlockModel {
 
         var inputData = inputPorts.stream().map(PortModel::getData).toArray();
         var controlData = inputControls.values().stream().map(InputControl::getValue).toArray();
+
+        if (!inputControls.isEmpty()) {
+            for (var input : inputPorts) {
+                var valueId = input.nameProperty().get();
+                var control = inputControls.get(valueId);
+                if (control == null) {
+                    continue;
+                }
+                var value = input.getData();
+                if (control instanceof MultilineTextInput multiline) {
+//                            System.out.println("MethodBlockNew.process " + value);
+
+                    multiline.setValue(value);
+                }
+            }
+        }
 
         var parameters = controlData.length != 0 ? controlData : inputData; // TODO refactor as soon as inputs and controls start to mix
 
@@ -234,8 +265,8 @@ public class MethodBlockNew extends BlockModel {
         super.deserialize(xmlTag);
     }
 
-    public Collection<Value> serializeValues() {
-        var result = new ArrayList<Value>();
+    public Collection<ValueXml> serializeValues() {
+        var result = new ArrayList<ValueXml>();
         for (var entry : inputControls.entrySet()) {
             var optional = entry.getValue().serialize();
             if (optional.isEmpty()) {
@@ -249,7 +280,7 @@ public class MethodBlockNew extends BlockModel {
         return result;
     }
 
-    public void deserializeValues(Collection<Value> values) {
+    public void deserializeValues(Collection<ValueXml> values) {
         for (var literal : values) {
             var control = inputControls.get(literal.getId());
             control.parseValue(literal.getValue());

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,10 +22,9 @@ import javafx.scene.layout.HBox;
  *
  * @author joost
  */
-public class PasswordInput implements InputControl<String> {
+public class PasswordInput extends InputControl<String> {
 
-    private final List<Consumer<String>> listeners = new ArrayList<>();
-    private final ChangeListener<String> fxListener = (b, o, n) -> listeners.forEach(c -> c.accept(n));
+    private final ChangeListener<String> fxListener = (b, o, n) -> onValueChangedByUser(n);
 
     private final BooleanProperty hidden = new SimpleBooleanProperty(true);
     private final StringProperty value = new SimpleStringProperty();
@@ -108,19 +106,10 @@ public class PasswordInput implements InputControl<String> {
     }
 
     @Override
-    public void setOnValueChanged(Consumer<String> listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void setEditable(boolean isEditable) {
+    protected void onEditableChanged(boolean isEditable) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
-    @Override
-    public boolean isEditable() {
-        return true;
-    }
+
 
     @Override
     public InputControl<String> copy() {

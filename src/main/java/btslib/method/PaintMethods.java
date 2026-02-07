@@ -12,9 +12,10 @@ import blocksmith.domain.block.Value;
 public class PaintMethods {
 
     @BlockMetadata(
+            type = "Input.color",
+            aliases = {"Paint.color", "Color.new"},
             label = "Color",
             description = "Pick a nice color from the palette",
-            type = "Paint.color",
             category = "Core")
     public static Color inputColor(@Value(input = ParamInput.Color.class) String value) {
         var color = Color.valueOf(value);

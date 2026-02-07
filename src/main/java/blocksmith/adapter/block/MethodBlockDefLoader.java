@@ -2,7 +2,6 @@ package blocksmith.adapter.block;
 
 import blocksmith.app.ports.BlockDefLoader;
 import blocksmith.domain.block.BlockDef;
-import btscore.graph.block.BlockMetadata;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;

@@ -7,7 +7,7 @@ import javafx.scene.Node;
  *
  * @author joost
  */
-public class DateInput implements InputControl<String> {
+public class DateInput extends InputControl<String> {
 
     public DateInput() {
 
@@ -34,18 +34,8 @@ public class DateInput implements InputControl<String> {
     }
 
     @Override
-    public void setOnValueChanged(Consumer<String> listener) {
+    protected void onEditableChanged(boolean isEditable) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void setEditable(boolean isEditable) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean isEditable() {
-        return true;
     }
 
     @Override

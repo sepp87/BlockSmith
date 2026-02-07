@@ -13,11 +13,13 @@ public final class Block {
 
     private final UUID id;
     private final String type;
+    private final String label;
     private final List<Port> ports;
 
-    public Block(UUID id, String type, List<Port> ports) {
+    public Block(UUID id, String type, String label, List<Port> ports) {
         this.id = Objects.requireNonNull(id);
         this.type = Objects.requireNonNull(type);
+        this.label = label;
         this.ports = List.copyOf(Objects.requireNonNull(ports));
     }
 

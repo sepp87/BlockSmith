@@ -5,6 +5,12 @@ import btscore.graph.block.BlockMetadata;
 import blocksmith.domain.block.ParamInput.Password;
 import blocksmith.domain.block.Value;
 import blocksmith.domain.block.Value.Source;
+import btscore.utils.DateTimeUtils;
+import btscore.utils.ParsingUtils;
+import static btscore.utils.ParsingUtils.getBooleanValue;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
 
 /**
  *
@@ -13,27 +19,61 @@ import blocksmith.domain.block.Value.Source;
 public class StringMethods {
 
     @BlockMetadata(
-            type = "String.password", // Input.password
+            type = "Input.password",
+            aliases = {"String.password"},
             category = "Core",
             description = "Input a line of text. Warning: the value is not encrypted, only visually hidden.")
     public static String inputPassword(@Value(input = Password.class) String value) {
         return value.isEmpty() ? null : value;
     }
-    
-    
+
     @BlockMetadata(
-            type = "String.newMultiline", // Input.string
+            type = "Input.text",
+            aliases = {"String.newMultiline"},
             category = "Core",
             description = "Input text or observe output as text")
-    public static <T> T inputMultilineString(@Value(source = Source.PARAM_OR_PORT) T value) {
-        if(value != null && value instanceof String str && str.isBlank()) {
+    public static <T> T inputMultilineString(@Value(source = Source.PARAM_OR_PORT) T text) {
+        if (text != null && text instanceof String str && str.isBlank()) {
             return null;
         }
-        return value;
+        return text;
     }
 
     @BlockMetadata(
-            type = "String.new", // Input.string
+            type = "Input.string",
+            aliases = {"String.newMagicString"},
+            category = "Core",
+            description = "Input a line of text. Depending on the value, the output type is changed dynamically e.g. to a Boolean, Integer, Long, Double or a LocalDate. For example an ISO 8601 formatted string (yyyy-MM-dd) will be converted to a LocalDate. The value TRUE will be Boolean and so on. The default output is of type String.")
+    public static Object inputMagicString(@Value String string) {
+        
+        var str = string;
+        
+        //Forward null and empty string as null
+        if (str == null || str.equals("")) {
+            return null;
+        }
+
+        Boolean bool = getBooleanValue(str);
+        if (bool != null) {
+            return bool;
+        }
+
+        Object number = ParsingUtils.castToBestNumericTypeOrNull(str);
+        if (number != null && !(number instanceof BigDecimal) && !(number instanceof BigInteger)) {
+            return number;
+        }
+
+        LocalDate date = DateTimeUtils.getLocalDateFrom(str);
+        if (date != null) {
+            return date;
+        }
+        
+        return str;
+    }
+
+    @BlockMetadata(
+            type = "Input.plainString",
+            aliases = {"String.new"},
             category = "Core",
             description = "Input a line of text.")
     public static String inputString(@Value String value) {

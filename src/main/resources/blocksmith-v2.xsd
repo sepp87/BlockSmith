@@ -33,12 +33,22 @@
     
     <!-- definition of complex elements -->
     <xsd:complexType name="blocks">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jxb:class name="BlocksXml"/>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="block" maxOccurs="unbounded" type="btsxml:block"/>
         </xsd:sequence>
     </xsd:complexType>
     
     <xsd:complexType name="block">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jxb:class name="BlockXml"/>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:attribute name="type" type="btsxml:string" use="required"/>
         <xsd:attribute name="id" type="btsxml:string" use="required"/>
         <xsd:attribute name="label" type="btsxml:string" use="required"/>
@@ -50,12 +60,22 @@
     </xsd:complexType>
 
     <xsd:complexType name="connections">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jxb:class name="ConnectionsXml"/>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="connection" maxOccurs="unbounded" type="btsxml:connection"/>
         </xsd:sequence>
     </xsd:complexType>
     
     <xsd:complexType name="connection">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jxb:class name="ConnectionXml"/>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:attribute name="fromBlock" type="btsxml:string" use="required"/>
         <xsd:attribute name="fromPort" type="btsxml:string" use="required"/>
         <xsd:attribute name="toBlock" type="btsxml:string" use="required"/>    
@@ -64,12 +84,22 @@
     </xsd:complexType>
     
     <xsd:complexType name="values">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jxb:class name="ValuesXml"/>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="value" maxOccurs="unbounded" type="btsxml:value"/>
         </xsd:sequence>
     </xsd:complexType>
     
     <xsd:complexType name="value">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jxb:class name="ValueXml"/>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:attribute name="block" type="btsxml:string" use="required"/>
         <xsd:attribute name="id" type="btsxml:string" use="required"/>
         <xsd:attribute name="value" type="btsxml:string" use="required"/>
@@ -77,12 +107,22 @@
     </xsd:complexType>
     
     <xsd:complexType name="groups">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jxb:class name="GroupsXml"/>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="group" maxOccurs="unbounded" type="btsxml:group"/>
         </xsd:sequence>
     </xsd:complexType>
     
     <xsd:complexType name="group">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jxb:class name="GroupXml"/>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="block" maxOccurs="unbounded" type="btsxml:blockRef"/>
         </xsd:sequence>
@@ -91,19 +131,29 @@
     </xsd:complexType>
     
     <xsd:complexType name="blockRef">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jxb:class name="BlockRefXml"/>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:attribute name="id" type="btsxml:string" use="required"/>
     </xsd:complexType>
 
     <xsd:complexType name="document">
+        <xsd:annotation>
+            <xsd:appinfo>
+                <jxb:class name="DocumentXml"/>
+            </xsd:appinfo>
+        </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="blocks" maxOccurs="1" type="btsxml:blocks"/>
-            <xsd:element name="connections" maxOccurs="1" type="btsxml:connections"/>
-            <xsd:element name="values" maxOccurs="1" type="btsxml:values"/>
-            <xsd:element name="groups" maxOccurs="1" type="btsxml:groups"/>
+            <xsd:element name="blocks" minOccurs="1" maxOccurs="1" type="btsxml:blocks"/>
+            <xsd:element name="connections" minOccurs="1" maxOccurs="1" type="btsxml:connections"/>
+            <xsd:element name="values" minOccurs="1" maxOccurs="1" type="btsxml:values"/>
+            <xsd:element name="groups" minOccurs="1" maxOccurs="1" type="btsxml:groups"/>
         </xsd:sequence>
-        <xsd:attribute name="zoomFactor" type="btsxml:double" use="required"/>
-        <xsd:attribute name="translateX" type="btsxml:double" use="required"/>
-        <xsd:attribute name="translateY" type="btsxml:double" use="required"/>
+        <xsd:attribute name="zoomFactor" type="btsxml:double" use="optional"/>
+        <xsd:attribute name="translateX" type="btsxml:double" use="optional"/>
+        <xsd:attribute name="translateY" type="btsxml:double" use="optional"/>
         <xsd:anyAttribute processContents="skip"/>  
     </xsd:complexType>
 

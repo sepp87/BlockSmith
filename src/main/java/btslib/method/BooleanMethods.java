@@ -10,7 +10,8 @@ import blocksmith.domain.block.Value;
 public class BooleanMethods {
 
     @BlockMetadata(
-            type = "Boolean.new", // Input.boolean
+            type = "Input.boolean", // Input.boolean
+            aliases = {"Boolean.new"},
             category = "Input",
             description = "Switch between TRUE and FALSE",
             tags = {"boolean", "true", "false"})

@@ -11,9 +11,10 @@ import blocksmith.domain.block.Value;
 public class NumberMethods {
 
     @BlockMetadata(
+            type = "Input.integerSlider",
+            aliases = {"Number.integer"},
             label = "Integer",
             description = "Integer slider",
-            type = "Number.integer",
             category = "Core")
     public static int inputInteger(@Value(input = Range.class) String value) {
         var number = Integer.parseInt(value);
@@ -21,9 +22,10 @@ public class NumberMethods {
     }
 
     @BlockMetadata(
+            type = "Input.doubleSlider",
+            aliases = {"Number.double"},
             label = "Double",
             description = "Double slider",
-            type = "Number.double",
             category = "Core")
     public static double inputDouble(@Value(input = Range.class) String value) {
         var number = Double.parseDouble(value);

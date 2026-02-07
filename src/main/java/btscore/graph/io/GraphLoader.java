@@ -1,5 +1,8 @@
 package btscore.graph.io;
 
+import blocksmith.ui.control.MultilineTextInput;
+import blocksmith.ui.control.NumberSliderInput;
+import btscore.Launcher;
 import btscore.UiApp;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
@@ -18,6 +21,7 @@ import btscore.graph.block.BlockModel;
 import btscore.graph.connection.ConnectionModel;
 import btscore.graph.port.PortModel;
 import java.util.Collection;
+import javax.xml.namespace.QName;
 
 /**
  *
@@ -79,22 +83,57 @@ public class GraphLoader {
         for (BlockTag blockTag : blockTagList) {
 
             String blockIdentifier = blockTag.getType();
-            var factory = UiApp.getBlockModelFactory();
-            try {
-                var block = factory.create(blockIdentifier);
+            if (Launcher.BLOCK_DEF_LOADER) {
+                try {
+                    var factory = UiApp.getBlockModelFactory();
+                    var block = factory.create(blockIdentifier, blockTag.getUUID());
+                    block.layoutXProperty().set(blockTag.getX());
+                    block.layoutYProperty().set(blockTag.getY());
+                    if (block.resizableProperty().get()) {
+                        Double width = blockTag.getWidth();
+                        Double height = blockTag.getHeight();
+                        if (width == null || height == null) {
+                            return;
+                        }
+                        block.widthProperty().set(width);
+                        block.heightProperty().set(height);
+                    }
+                    var controls = block.getInputControls();
+                    for (var entry : controls.entrySet()) {
+                        var valueId = entry.getKey();
+                        var control = entry.getValue();
 
-            } catch (Exception e) {
-                Logger.getLogger(GraphLoader.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+                        if (control.isEditable()) {
+                            String value = blockTag.getOtherAttributes().get(QName.valueOf(valueId));
+                            control.parseValue(value);
+                            if (control instanceof NumberSliderInput slider) {
+                                String min = blockTag.getOtherAttributes().get(QName.valueOf(valueId));
+                                String max = blockTag.getOtherAttributes().get(QName.valueOf(valueId));
+                                String step = blockTag.getOtherAttributes().get(QName.valueOf(valueId));
+                                slider.setMin(Double.parseDouble(min));
+                                slider.setMax(Double.parseDouble(max));
+                                slider.setStep(Double.parseDouble(step));
+                            }
+                        }
+                    }
+                    workspaceModel.addBlockModel(block);
 
+                } catch (Exception e) {
+                    Logger.getLogger(GraphLoader.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+
+                }
+
+            } else {
+
+                BlockModel blockModel = BlockFactory.createBlock(blockIdentifier);
+                if (blockModel == null) {
+                    System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
+                    return;
+                }
+                blockModel.deserialize(blockTag);
+                workspaceModel.addBlockModel(blockModel);
             }
 
-            BlockModel blockModel = BlockFactory.createBlock(blockIdentifier);
-            if (blockModel == null) {
-                System.out.println("WARNING: Could not instantiate block type " + blockIdentifier);
-                return;
-            }
-            blockModel.deserialize(blockTag);
-            workspaceModel.addBlockModel(blockModel);
         }
     }
 

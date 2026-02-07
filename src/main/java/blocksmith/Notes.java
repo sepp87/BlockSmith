@@ -63,4 +63,5 @@ public class Notes {
 // SMALL UI BUGS
 // load spinner causes small method blocks to grow and shrink
 // create Paint.color do not move or select, just pick a color, then BlockController.moveCompleted throws an exception
-// Dark mode number slider expander labels not visible
+// Number slider - Dark mode number slider expander labels not visible
+// Integer slider - format settings not to show decimals

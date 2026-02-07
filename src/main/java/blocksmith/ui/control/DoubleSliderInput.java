@@ -9,49 +9,10 @@ import javafx.beans.property.SimpleDoubleProperty;
  */
 public class DoubleSliderInput extends NumberSliderInput {
 
-    @Override
-    protected void initializeProperties() {
-        this.value = new SimpleDoubleProperty(0);
-        this.min = new SimpleDoubleProperty(0);
-        this.max = new SimpleDoubleProperty(10);
-        this.step = new SimpleDoubleProperty(0.1);
+
+    public DoubleSliderInput() {
+        super(0, 0, 10, .0, false);
     }
 
-    @Override
-    protected boolean isIntegerSlider() {
-        return false;
-    }
-
-    @Override
-    public void setValue(String newVal) {
-        var newNum = Double.parseDouble(newVal);
-        var oldNum = value.getValue().doubleValue();
-        if (Double.compare(newNum, newNum) == 0) {
-            return;
-        }
-        value.setValue(newNum);
-    }
-
-    @Override
-    public void setEditable(boolean isEditable) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean isEditable() {
-        return true;
-    }
-
-    @Override
-    public InputControl<String> copy() {
-        var control = new DoubleSliderInput();
-        if (isEditable()) {
-            control.value.setValue(this.value.getValue());
-            control.min.setValue(this.min.getValue());
-            control.max.setValue(this.max.getValue());
-            control.step.setValue(this.step.getValue());
-        }
-        return control;
-    }
 
 }

@@ -1,8 +1,6 @@
 package blocksmith.ui.control;
 
 import btslib.ui.ColorBox;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import javafx.beans.property.ObjectProperty;
@@ -14,10 +12,9 @@ import javafx.scene.paint.Color;
  *
  * @author joost
  */
-public class ColorInput implements InputControl<String> {
+public class ColorInput extends InputControl<String> {
 
-    private List<Consumer<String>> listeners = new ArrayList<>();
-    private ChangeListener<Color> fxListener = (b, o, n) -> listeners.forEach(c -> c.accept(n.toString()));
+    private final ChangeListener<Color> fxListener = (b, o, n) -> onValueChangedByUser(n.toString());
     private ObjectProperty<Color> value;
 
     private ColorBox picker;
@@ -53,18 +50,8 @@ public class ColorInput implements InputControl<String> {
     }
 
     @Override
-    public void setOnValueChanged(Consumer<String> listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void setEditable(boolean isEditable) {
+    protected void onEditableChanged(boolean isEditable) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public boolean isEditable() {
-        return true;
     }
 
     @Override

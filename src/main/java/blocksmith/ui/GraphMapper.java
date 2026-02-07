@@ -1,10 +1,10 @@
 package blocksmith.ui;
 
 import blocksmith.domain.block.Block;
-import blocksmith.domain.graph.Connection;
+import blocksmith.domain.connection.Connection;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.block.Port;
-import blocksmith.domain.graph.PortRef;
+import blocksmith.domain.connection.PortRef;
 import btscore.graph.block.BlockModel;
 import btscore.workspace.WorkspaceModel;
 import java.util.ArrayList;
@@ -17,14 +17,14 @@ import java.util.List;
 public final class GraphMapper {
 
     private GraphMapper() {
-        
+
     }
-    
+
     public static Graph toDomain(WorkspaceModel workspace) {
         var blocks = blocksToDomain(workspace);
         var connections = connectionsToDomain(workspace);
 
-        return new Graph(blocks, connections);
+        return new Graph(null, blocks, connections);
     }
 
     private static List<Block> blocksToDomain(WorkspaceModel workspace) {
@@ -32,14 +32,18 @@ public final class GraphMapper {
 
         for (var block : workspace.getBlockModels()) {
 
-            var ports = portsToDomain(block);
-            var domain = new Block(
-                    block.getIdAsUuid(),
-                    block.getClass().getSimpleName(),
-                    ports
-            );
+            if (block instanceof MethodBlockNew methodBlock) {
+                var ports = portsToDomain(block);
+                var domain = new Block(
+                        block.getIdAsUuid(),
+                        methodBlock.getBlockDef().metadata().type(),
+                        methodBlock.nameProperty().get(),
+                        ports
+                );
 
-            result.add(domain);
+                result.add(domain);
+            }
+
         }
         return result;
     }
@@ -64,10 +68,10 @@ public final class GraphMapper {
         var result = new ArrayList<Connection>();
 
         for (var connection : workspace.getConnectionModels()) {
-            
+
             var from = connection.getStartPort();
             var to = connection.getEndPort();
-            
+
             var fromRef = new PortRef(
                     from.getBlock().getIdAsUuid(),
                     Port.Direction.OUTPUT,

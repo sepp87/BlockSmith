@@ -13,9 +13,9 @@ public class ListUtils {
         int i = 0;
         for (Object p : parameters) {
             if (p != null) {
-                System.out.println("parameter " + i + " is " + p.getClass().getSimpleName());
+//                System.out.println("parameter " + i + " is " + p.getClass().getSimpleName());
             } else {
-                System.out.println("parameter " + i + " is " + null);
+//                System.out.println("parameter " + i + " is " + null);
             }
             
             if (ListUtils.isList(p)) {
