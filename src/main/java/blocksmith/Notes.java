@@ -8,6 +8,24 @@ public class Notes {
 
 }
 
+// Invariants
+// - valueId is unique within inputs/params
+// - valueId is unique within outputs
+// - params only set as strings, so only simple type String is allowed or var type if pass through is needed
+// - inputs can only have one connection
+//
+//
+//
+// Questions
+// - GraphXmlMapper instantiating *XmlMappers 
+// - GraphXmlMapper inject with BlockFactory?
+// - BlockDef ensure Ports/Params are uniquely named
+// - BlockDefLibrary rename find to resolve(key)?
+// - Block inputs and params or only value slots?
+// - interface BlockMetadata, Value, Display go to adapters?
+// - interface rename Value to Slot? Arg? Val?
+// - resizable where to move this? textblock was resizable now it is not
+// - Group where to persist when not in graph
 //
 // Serialization in XML 
 // - getBlock from blocks tags feels of as singular

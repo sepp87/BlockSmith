@@ -6,10 +6,16 @@ import blocksmith.adapter.block.MethodIndex;
 import blocksmith.adapter.block.MethodBlockDefLoader;
 import blocksmith.adapter.block.CompositeBlockDefLoader;
 import blocksmith.adapter.block.MethodBlockFuncLoader;
+import blocksmith.adapter.graph.GraphXmlMapper;
+import blocksmith.adapter.graph.GraphXmlRepo;
 import blocksmith.app.BlockDefLibrary;
 import blocksmith.app.BlockFuncLibrary;
-import blocksmith.ui.BlockModelFactory;
+import blocksmith.domain.block.BlockFactory;
+import blocksmith.xml.v2.ObjectFactory;
 import btscore.graph.block.BlockLibraryLoader;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
@@ -26,22 +32,29 @@ public class App {
 
     private final BlockDefLibrary blockDefLibrary;
     private final BlockFuncLibrary blockFuncLibrary;
-    
-    public App() throws IOException {
+
+    public App() throws IOException, JAXBException {
         configureLogging();
 
         var paths = new AppPaths();
         var classIndex = new ClassIndex(paths);
         var methodIndex = new MethodIndex(classIndex.classes());
-        
+
         var methodDefLoader = new MethodBlockDefLoader(methodIndex.methods());
         var compositeDefLoader = new CompositeBlockDefLoader(List.of(methodDefLoader));
         this.blockDefLibrary = new BlockDefLibrary(compositeDefLoader.load());
-        
+
         var methodFuncLoader = new MethodBlockFuncLoader(methodIndex.methods());
         this.blockFuncLibrary = new BlockFuncLibrary(methodFuncLoader.load());
-        
-        
+
+        var blockFactory = new BlockFactory(blockDefLibrary);
+        var graphXmlMapper = new GraphXmlMapper(blockFactory);
+        var jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+        var graphRepo = new GraphXmlRepo(graphXmlMapper, jaxbContext);
+
+        var graph = graphRepo.load(new File("btsxml/aslist-v2.btsxml").toPath());
+        graphRepo.save(new File("btsxml/aslist-v2-test.btsxml").toPath(), graph);
+
         //Load all block types
         BlockLibraryLoader.loadBlocks();
         System.out.println("Launcher.main() Number of loaded blocks is " + BlockLibraryLoader.BLOCK_TYPE_LIST.size());
@@ -78,11 +91,9 @@ public class App {
     public BlockDefLibrary getBlockDefLibrary() {
         return blockDefLibrary;
     }
-    
+
     public BlockFuncLibrary getBlockFuncLibrary() {
         return blockFuncLibrary;
     }
-    
 
-    
 }

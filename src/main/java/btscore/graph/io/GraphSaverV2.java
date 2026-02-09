@@ -1,9 +1,17 @@
 package btscore.graph.io;
 
+import blocksmith.domain.block.Block;
+import blocksmith.domain.block.BlockId;
+import blocksmith.domain.connection.Connection;
+import blocksmith.domain.connection.PortRef;
+import blocksmith.ui.MethodBlockNew;
+import blocksmith.xml.v2.BlockRefXml;
 import blocksmith.xml.v2.BlocksXml;
 import blocksmith.xml.v2.ConnectionsXml;
 import blocksmith.xml.v2.GroupsXml;
 import blocksmith.xml.v2.ObjectFactory;
+import blocksmith.xml.v2.ValueXml;
+import blocksmith.xml.v2.ValuesXml;
 import btscore.Config;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -16,6 +24,8 @@ import btscore.workspace.WorkspaceModel;
 import btscore.graph.group.BlockGroupModel;
 import btscore.graph.block.BlockModel;
 import btscore.graph.connection.ConnectionModel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -55,14 +65,15 @@ public class GraphSaverV2 {
 
             // serialize groups of graph
             Collection<BlockGroupModel> groups = workspaceModel.getBlockGroupModels();
-            if (!groups.isEmpty()) {
-                var groupsTag = serializeGroupModels(groups);
-                documentTag.setGroups(groupsTag);
-            }
+            var groupsTag = serializeGroupModels(groups);
+            documentTag.setGroups(groupsTag);
+
+            var valuesTag = serializeValues(blocks);
+            documentTag.setValues(valuesTag);
 
             // serialize the conplete document and save to file
             var document = factory.createDocument(documentTag);
-            JAXBContext context = JAXBContext.newInstance(Config.XML_NAMESPACE);
+            JAXBContext context = JAXBContext.newInstance("blocksmith.xml.v2");
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(document, file);
@@ -71,7 +82,8 @@ public class GraphSaverV2 {
             workspaceModel.fileProperty().set(file);
 
         } catch (JAXBException ex) {
-            Logger.getLogger(GraphSaverV2.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            Logger.getLogger(GraphSaverV2.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
@@ -81,8 +93,8 @@ public class GraphSaverV2 {
         for (var block : blocks) {
             var blockTag = factory.createBlockXml();
             blockTag.setId(block.getId());
-            blockTag.setType(block.getId());
-            blockTag.setLabel(block.getId());
+            blockTag.setType(block.getMetadata().type());
+            blockTag.setLabel(block.nameProperty().get());
             blockTag.setX(block.layoutXProperty().get());
             blockTag.setY(block.layoutYProperty().get());
             if (block.resizableProperty().get()) {
@@ -100,11 +112,12 @@ public class GraphSaverV2 {
         var connectionsTag = factory.createConnectionsXml();
         for (var connection : connections) {
             var connectionTag = factory.createConnectionXml();
+
             connectionTag.setFromBlock(connection.getStartPort().getBlock().getId());
             connectionTag.setFromPort(connection.getStartPort().nameProperty().get());
             connectionTag.setToBlock(connection.getEndPort().getBlock().getId());
-            connectionTag.setToPort(connection.getStartPort().nameProperty().get());
-            
+            connectionTag.setToPort(connection.getEndPort().nameProperty().get());
+
             connectionsTag.getConnection().add(connectionTag);
         }
         return connectionsTag;
@@ -116,10 +129,36 @@ public class GraphSaverV2 {
         for (var group : groups) {
             var groupTag = factory.createGroupXml();
             groupTag.setLabel(group.nameProperty().get());
-
+            var blockRefs = blockRefsToXml(group.getBlocks());
+            groupTag.getBlock().addAll(blockRefs);
             groupsTag.getGroup().add(groupTag);
         }
         return groupsTag;
+    }
+    
+    
+    public static List<BlockRefXml> blockRefsToXml(Collection<BlockModel> blocks) {
+        var result = new ArrayList<BlockRefXml>();
+        for(var block : blocks) {
+            var blockRefXml = getObjectFactory().createBlockRefXml();
+            blockRefXml.setId(block.getId());
+            result.add(blockRefXml);
+        }
+        return result;
+    }
+
+    public static ValuesXml serializeValues(Collection<BlockModel> blocks) {
+        ObjectFactory factory = getObjectFactory();
+        var valuesTag = factory.createValuesXml();
+
+        for (var block : blocks) {
+            if (block instanceof MethodBlockNew mb) {
+                valuesTag.getValue().addAll(mb.serializeValues());
+            }
+        }
+
+        return valuesTag;
+
     }
 
 }

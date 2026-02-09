@@ -1,7 +1,7 @@
 package btslib.method;
 
 import btscore.graph.block.BlockMetadata;
-import blocksmith.domain.block.Value;
+import blocksmith.domain.value.Value;
 
 /**
  *

@@ -1,6 +1,6 @@
 package blocksmith.adapter.block;
 
-import blocksmith.domain.block.ValueType.*;
+import blocksmith.domain.value.ValueType.*;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;

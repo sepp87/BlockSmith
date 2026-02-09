@@ -3,6 +3,7 @@ package blocksmith.domain.graph;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.block.Block;
+import blocksmith.domain.block.BlockId;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,7 +48,7 @@ public final class GraphValidator {
     }
 
     private static void verifyPortsExist(Graph graph) {
-        var blockIndex = new HashMap<UUID, Block>();
+        var blockIndex = new HashMap<BlockId, Block>();
         graph.blocks().forEach(e -> blockIndex.put(e.id(), e));
 
         for (var connection : graph.connections()) {
@@ -56,16 +57,15 @@ public final class GraphValidator {
         }
     }
 
-    private static void verifyPortExists(PortRef ref, Map<UUID, Block> blockIndex) {
+    private static void verifyPortExists(PortRef ref, Map<BlockId, Block> blockIndex) {
         if (!blockIndex.containsKey(ref.blockId())) {
             throw new IllegalStateException("Connection refers to a non-existent block: " + ref.blockId());
         }
 
         var block = blockIndex.get(ref.blockId());
         for (var port : block.ports()) {
-            var sameDirection = ref.direction() == port.direction();
-            var sameIndex = ref.index() == port.index();
-            if (sameDirection && sameIndex) {
+            var portExists = ref.valueId() == port.valueId();
+            if (portExists) {
                 return;
             }
         }

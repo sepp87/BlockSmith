@@ -1,4 +1,4 @@
-package blocksmith.domain.block;
+package blocksmith.domain.value;
 
 import java.util.List;
 import java.util.Objects;

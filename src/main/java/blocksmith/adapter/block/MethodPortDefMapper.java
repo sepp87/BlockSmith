@@ -1,14 +1,14 @@
 package blocksmith.adapter.block;
 
-import blocksmith.domain.block.Port;
-import blocksmith.domain.block.PortDef;
+import blocksmith.domain.value.Port;
+import blocksmith.domain.value.PortDef;
 import btscore.graph.port.AutoConnectable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
-import blocksmith.domain.block.Value;
-import static blocksmith.domain.block.Value.Source.PARAM;
+import blocksmith.domain.value.Value;
+import static blocksmith.domain.value.Value.Source.PARAM;
 
 /**
  *

@@ -1,6 +1,6 @@
-package blocksmith.domain.block;
+package blocksmith.domain.value;
 
-import blocksmith.domain.block.Port.Direction;
+import blocksmith.domain.value.Port.Direction;
 
 /**
  *

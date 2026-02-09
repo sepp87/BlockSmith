@@ -1,5 +1,7 @@
 package blocksmith.domain.block;
 
+import blocksmith.domain.value.ParamDef;
+import blocksmith.domain.value.PortDef;
 import btscore.graph.block.BlockMetadata;
 import java.util.List;
 

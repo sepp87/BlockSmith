@@ -2,7 +2,7 @@ package blocksmith.ui;
 
 import blocksmith.ui.control.InputControl;
 import blocksmith.domain.block.BlockDef;
-import blocksmith.domain.block.ValueType;
+import blocksmith.domain.value.ValueType;
 import blocksmith.exec.BlockExecutor;
 import blocksmith.exec.BlockFunc;
 import blocksmith.ui.control.MultilineTextInput;
@@ -28,7 +28,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javax.xml.namespace.QName;
 
 /**
  *
@@ -62,6 +64,9 @@ public class MethodBlockNew extends BlockModel {
 
     public void addInputControl(String name, InputControl control) {
         inputControls.put(name, control);
+        if (control instanceof MultilineTextInput) {
+            resizableProperty().set(true);
+        }
         control.setOnValueChangedByUser(value -> processSafely());
     }
 
@@ -84,15 +89,19 @@ public class MethodBlockNew extends BlockModel {
             VBox localContainer = new VBox();
             var controls = inputControls.values().stream().map(InputControl::node).toList();
             localContainer.getChildren().addAll(controls);
+            if (controls.size() == 1) {
+                VBox.setVgrow(controls.get(0), Priority.ALWAYS);
+            }
             container = localContainer;
+
         } else {
             spinner = new ProgressIndicator();
 
             if (!def.metadata().icon().equals(FontAwesomeSolid.NULL)) {
                 label = BlockView.getAwesomeIcon(def.metadata().icon());
 
-            } else if (!def.metadata().label().equals("")) {
-                label = new Label(def.metadata().label());
+            } else if (!def.metadata().name().equals("")) {
+                label = new Label(def.metadata().name());
                 label.getStyleClass().add("block-text");
 
             } else {
@@ -203,7 +212,7 @@ public class MethodBlockNew extends BlockModel {
                     continue;
                 }
                 var value = input.getData();
-                if (control instanceof MultilineTextInput multiline) {
+                if (control instanceof MultilineTextInput multiline && !multiline.isEditable()) {
 //                            System.out.println("MethodBlockNew.process " + value);
 
                     multiline.setValue(value);
@@ -258,6 +267,24 @@ public class MethodBlockNew extends BlockModel {
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
         xmlTag.setType(def.metadata().type());
+        var values = xmlTag.getOtherAttributes();
+
+        for (var entry : inputControls.entrySet()) {
+            var control = entry.getValue();
+
+            if (!control.isEditable()) {
+                continue;
+            }
+            var valueId = entry.getKey();
+            var value = control.getValue().toString();
+            values.put(QName.valueOf(valueId), value);
+
+            if (control instanceof NumberSliderInput slider) {
+                values.put(QName.valueOf("min"), slider.getValue());
+                values.put(QName.valueOf("max"), slider.getValue());
+                values.put(QName.valueOf("step"), slider.getValue());
+            }
+        }
     }
 
     @Override

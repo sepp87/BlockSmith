@@ -18,7 +18,7 @@ public @interface BlockMetadata {
 
     String description() default "";
 
-    String label() default "";
+    String name() default "";
 
     String category();
 

@@ -1,24 +1,19 @@
 package blocksmith.domain.connection;
 
-import blocksmith.domain.block.Port.Direction;
+import blocksmith.domain.block.BlockId;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  *
  * @author joostmeulenkamp
  */
 public record PortRef(
-        UUID blockId,
-        Direction direction,
-        int index) {
+        BlockId blockId,
+        String valueId) {
 
     public PortRef   {
         Objects.requireNonNull(blockId);
-        Objects.requireNonNull(direction);
-        if (index < 0) {
-            throw new IllegalArgumentException("Port index must be >= 0");
-        }
+        Objects.requireNonNull(valueId);
     }
 
 }

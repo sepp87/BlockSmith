@@ -1,6 +1,6 @@
 
 
-package blocksmith.domain.block;
+package blocksmith.domain.value;
 
 /**
  *

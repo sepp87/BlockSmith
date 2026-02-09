@@ -107,9 +107,9 @@ public class GraphLoader {
                             String value = blockTag.getOtherAttributes().get(QName.valueOf(valueId));
                             control.parseValue(value);
                             if (control instanceof NumberSliderInput slider) {
-                                String min = blockTag.getOtherAttributes().get(QName.valueOf(valueId));
-                                String max = blockTag.getOtherAttributes().get(QName.valueOf(valueId));
-                                String step = blockTag.getOtherAttributes().get(QName.valueOf(valueId));
+                                String min = blockTag.getOtherAttributes().get(QName.valueOf("min"));
+                                String max = blockTag.getOtherAttributes().get(QName.valueOf("max"));
+                                String step = blockTag.getOtherAttributes().get(QName.valueOf("step"));
                                 slider.setMin(Double.parseDouble(min));
                                 slider.setMax(Double.parseDouble(max));
                                 slider.setStep(Double.parseDouble(step));

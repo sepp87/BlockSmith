@@ -9,7 +9,7 @@ import btscore.graph.block.BlockMetadata;
 public class MathMethods {
 
     @BlockMetadata(
-            label = "pi",
+            name = "pi",
             description = "The double value that is closer than any other to pi (π), the ratio of the circumference of a circle to its diameter.",
             type = "Math.pi",
             category = "Core")
@@ -18,7 +18,7 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            label = "2*pi*r",
+            name = "2*pi*r",
             description = "The circumference of a circle with radius r.",
             type = "Math.getCircleCircumference",
             category = "Core")
@@ -27,7 +27,7 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            label = "pi*r^2",
+            name = "pi*r^2",
             description = "The area of a circle with radius r.",
             type = "Math.getCircleArea",
             category = "Core")
@@ -36,7 +36,7 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            label = "a+b",
+            name = "a+b",
             description = "The result of adding value b to a.",
             type = "Math.add",
             category = "Core")
@@ -52,7 +52,7 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            label = "a-b",
+            name = "a-b",
             description = "The result of substracting value b from a.",
             type = "Math.substract",
             category = "Core")
@@ -68,7 +68,7 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            label = "a*b",
+            name = "a*b",
             description = "The result of multiplying value a with b.",
             type = "Math.multiply",
             category = "Core")
@@ -84,7 +84,7 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            label = "a/b",
+            name = "a/b",
             description = "The result of dividing value a by b.",
             type = "Math.divide",
             category = "Core")
@@ -93,7 +93,7 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            label = "a%b",
+            name = "a%b",
             description = "The remainder of dividing value a by b.",
             type = "Math.remainder",
             category = "Core")
@@ -139,7 +139,7 @@ public class MathMethods {
     }
 
     @BlockMetadata(
-            label = "|a|",
+            name = "|a|",
             description = "Returns the absolute value of a double value. If the argument is not negative, the argument is returned. If the argument is negative, the negation of the argument is returned.",
             type = "Math.abs",
             category = "Core")

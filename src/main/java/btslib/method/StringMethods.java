@@ -2,9 +2,9 @@ package btslib.method;
 
 import java.util.List;
 import btscore.graph.block.BlockMetadata;
-import blocksmith.domain.block.ParamInput.Password;
-import blocksmith.domain.block.Value;
-import blocksmith.domain.block.Value.Source;
+import blocksmith.domain.value.ParamInput.Password;
+import blocksmith.domain.value.Value;
+import blocksmith.domain.value.Value.Source;
 import btscore.utils.DateTimeUtils;
 import btscore.utils.ParsingUtils;
 import static btscore.utils.ParsingUtils.getBooleanValue;
@@ -93,7 +93,7 @@ public class StringMethods {
             type = "String.toUpperCase",
             category = "Core",
             description = "Converts all of the characters in this String to upper case using the rules of the default locale.",
-            label = "a > A")
+            name = "a > A")
     public static String toUpperCase(String string) {
         return string.toUpperCase();
     }
@@ -102,7 +102,7 @@ public class StringMethods {
             type = "String.toLowerCase",
             category = "Core",
             description = "Converts all of the characters in this String to lower case using the rules of the default locale.",
-            label = "A > a")
+            name = "A > a")
     public static String toLowerCase(String string) {
         return string.toLowerCase();
     }
@@ -111,7 +111,7 @@ public class StringMethods {
             type = "String.stripLeading",
             category = "Core",
             description = "Returns a string whose value is this string, with all leading white space removed.",
-            label = "_ strip")
+            name = "_ strip")
     public static String stripLeading(String string) {
         return string.stripLeading();
     }
@@ -120,7 +120,7 @@ public class StringMethods {
             type = "String.stripTrailing",
             category = "Core",
             description = "Returns a string whose value is this string, with all trailing white space removed.",
-            label = "strip _")
+            name = "strip _")
     public static String stripTrailing(String string) {
         return string.stripTrailing();
     }
@@ -129,7 +129,7 @@ public class StringMethods {
             type = "String.strip",
             category = "Core",
             description = "Returns a string whose value is this string, with all leading and trailing white space removed.",
-            label = "_ strip _")
+            name = "_ strip _")
     public static String strip(String string) {
         return string.strip();
     }
@@ -138,7 +138,7 @@ public class StringMethods {
             type = "String.substring",
             category = "Core",
             description = "Returns a string that is a substring of this string. The substring begins at the specified beginIndex and extends to the character at index endIndex - 1. Thus the length of the substring is endIndex-beginIndex.",
-            label = "a > A")
+            name = "a > A")
     public static String substring(String string, Integer beginIndex, Integer endIndex) throws StringIndexOutOfBoundsException {
         beginIndex = beginIndex == null ? 0 : beginIndex;
         if (endIndex == null) {

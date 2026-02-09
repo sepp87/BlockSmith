@@ -44,7 +44,7 @@ import btslib.spreadsheet.DataSheet;
 public class SpreadsheetMethods {
 
     @BlockMetadata(
-            label = "readCsv",
+            name = "readCsv",
             description = "Reads a CSV file and returns a data sheet object. This method automatically detects whether a header is present. If you do not wish to specify a header, set the row number to -1. A value of 0 or 1 will assume the first row as the header. For N ≥ 2, row N will be used as the header.",
             type = "Spreadsheet.readCsv",
             category = "Core")
@@ -66,7 +66,7 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            label = "writeCsv",
+            name = "writeCsv",
             description = "",
             type = "Spreadsheet.writeCsv",
             category = "Core")
@@ -88,7 +88,7 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            label = "readExcel",
+            name = "readExcel",
             description = "Reads an XLSX file and returns a data sheet object. This method automatically detects whether a header is present. If you do not wish to specify a header, set the row number to -1. A value of 0 or 1 will assume the first row as the header. For N ≥ 2, row N will be used as the header.",
             type = "Spreadsheet.readExcel",
             category = "Core")
@@ -229,7 +229,7 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            label = "writeExcel",
+            name = "writeExcel",
             description = "",
             type = "Spreadsheet.writeExcel",
             category = "Core")
@@ -417,7 +417,7 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            label = "sortData",
+            name = "sortData",
             description = "",
             type = "Spreadsheet.sortData",
             category = "Core")
@@ -438,7 +438,7 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            label = "mergeDataSheets",
+            name = "mergeDataSheets",
             description = "",
             type = "Spreadsheet.mergeDataSheets",
             category = "Core")
@@ -460,7 +460,7 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            label = "getUniqueValues",
+            name = "getUniqueValues",
             description = "",
             type = "Spreadsheet.getUniqueValues",
             category = "Core")
@@ -476,7 +476,7 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            label = "findMaxValue",
+            name = "findMaxValue",
             description = "",
             type = "Spreadsheet.findMaxValue",
             category = "Core")
@@ -535,7 +535,7 @@ public class SpreadsheetMethods {
 //        return new DataSheet(headers, columnTypes, castRowsToTypes(rows, columnTypes));
 //    }
     @BlockMetadata(
-            label = "convertExcelToCsv",
+            name = "convertExcelToCsv",
             description = "",
             type = "Spreadsheet.convertExcelToCsv",
             category = "Core")
@@ -545,7 +545,7 @@ public class SpreadsheetMethods {
     }
 
     @BlockMetadata(
-            label = "convertCsvToExcel",
+            name = "convertCsvToExcel",
             description = "",
             type = "Spreadsheet.convertCsvToExcel",
             category = "Core")

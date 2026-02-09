@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<document xmlns="http://www.blocksmith.io/xml/v2" zoomFactor="0.9" translateX="-108.4999885559082" translateY="259.14998626708984">
+    <blocks>
+        <block type="Input.string" id="d15608e0-4ffc-4719-a43c-6604ba58620f" x="141.0" y="-108.0"/>
+        <block type="Input.text" id="bc503338-2779-4a29-af55-5b369c0b27ec" x="729.0" y="45.0" width="-1.0" height="-1.0"/>
+        <block type="List.get" id="411de2cd-8cfe-43f0-b54d-f8d7eac8ca5a" x="550.0" y="87.0"/>
+        <block type="Json.asList" id="c3085da9-286d-4d46-bb81-0e28c4ab82d2" x="285.0" y="81.0"/>
+        <block type="Input.string" id="f3506dc6-69ea-4e59-a6f7-a351e6cc9f29" x="400.0" y="345.0"/>
+    </blocks>
+    <connections>
+        <connection fromBlock="411de2cd-8cfe-43f0-b54d-f8d7eac8ca5a" fromPort="Object" toBlock="bc503338-2779-4a29-af55-5b369c0b27ec" toPort="text"/>
+        <connection fromBlock="f3506dc6-69ea-4e59-a6f7-a351e6cc9f29" fromPort="Object" toBlock="411de2cd-8cfe-43f0-b54d-f8d7eac8ca5a" toPort="index"/>
+        <connection fromBlock="d15608e0-4ffc-4719-a43c-6604ba58620f" fromPort="Object" toBlock="c3085da9-286d-4d46-bb81-0e28c4ab82d2" toPort="jsonArray"/>
+        <connection fromBlock="c3085da9-286d-4d46-bb81-0e28c4ab82d2" fromPort="List" toBlock="411de2cd-8cfe-43f0-b54d-f8d7eac8ca5a" toPort="list"/>
+    </connections>
+    <values>
+        <value block="d15608e0-4ffc-4719-a43c-6604ba58620f" id="string" value="[1,2,3,4,5]"/>
+        <value block="f3506dc6-69ea-4e59-a6f7-a351e6cc9f29" id="string" value="1"/>
+    </values>
+    <groups/>
+</document>

@@ -26,7 +26,7 @@ public class BlockDefLibrary {
 
     }
 
-    public Optional<BlockDef> findByType(String type) {
+    public Optional<BlockDef> resolve(String type) {
         return Optional.ofNullable(byType.getOrDefault(type, byAlias.get(type)));
     }
 

@@ -69,8 +69,8 @@ public class MethodBlock extends BlockModel {
         if (!info.icon().equals(FontAwesomeSolid.NULL)) {
             label = BlockView.getAwesomeIcon(info.icon());
 
-        } else if (!info.label().equals("")) {
-            label = new Label(info.label());
+        } else if (!info.name().equals("")) {
+            label = new Label(info.name());
             label.getStyleClass().add("block-text");
 
         } else {

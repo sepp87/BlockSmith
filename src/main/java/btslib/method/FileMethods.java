@@ -1,8 +1,8 @@
 package btslib.method;
 
-import blocksmith.domain.block.ParamInput.Directory;
-import blocksmith.domain.block.ParamInput.FilePath;
-import blocksmith.domain.block.ParamInput.FileTarget;
+import blocksmith.domain.value.ParamInput.Directory;
+import blocksmith.domain.value.ParamInput.FilePath;
+import blocksmith.domain.value.ParamInput.FileTarget;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,7 +14,7 @@ import btscore.graph.block.BlockMetadata;
 import btscore.utils.FileUtils;
 import java.nio.charset.Charset;
 import java.nio.file.InvalidPathException;
-import blocksmith.domain.block.Value;
+import blocksmith.domain.value.Value;
 
 /**
  *
@@ -71,7 +71,7 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            label = "isRegularFile",
+            name = "isRegularFile",
             description = "Tests whether a file is a regular file with opaque content.",
             type = "File.isRegularFile",
             category = "Core")
@@ -81,7 +81,7 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            label = "isDirectory",
+            name = "isDirectory",
             description = "Tests whether a file is a directory.",
             type = "File.isDirectory",
             category = "Core")
@@ -91,7 +91,7 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            label = "exists",
+            name = "exists",
             description = "Tests whether a file exists.",
             type = "File.exists",
             category = "Core")
@@ -101,7 +101,7 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            label = "LastModifiedTime",
+            name = "LastModifiedTime",
             description = "Returns a file's last modified time. The string is returned in the ISO 8601 format: YYYY-MM-DDThh:mm:ss[.s+]Z",
             type = "File.getLastModifiedTime",
             category = "Core")
@@ -111,7 +111,7 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            label = "readAllLines",
+            name = "readAllLines",
             description = "Read all lines from a file. When no charset is provided, UTF-8 is default.",
             type = "File.readAllLines",
             category = "Core")
@@ -124,7 +124,7 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            label = "readString",
+            name = "readString",
             description = "Reads all characters from a file into a string. When no charset is provided, UTF-8 is default.",
             type = "File.readString",
             category = "Core")
@@ -137,7 +137,7 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            label = "size",
+            name = "size",
             description = "Returns the size of a file (in bytes). The size may differ from the actual size on the file system due to compression, support for sparse files, or other reasons. The size of files that are not regular files is implementation specific and therefore unspecified.",
             type = "File.size",
             category = "Core")
@@ -147,7 +147,7 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            label = "isReadable",
+            name = "isReadable",
             description = "Returns a file's last modified time. The string is returned in the ISO 8601 format: YYYY-MM-DDThh:mm:ss[.s+]Z",
             type = "File.isReadable",
             category = "Core")
@@ -157,7 +157,7 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            label = "isWritable",
+            name = "isWritable",
             description = "Returns a file's last modified time. The string is returned in the ISO 8601 format: YYYY-MM-DDThh:mm:ss[.s+]Z",
             type = "File.isWritable",
             category = "Core")
@@ -167,7 +167,7 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            label = "Encoding",
+            name = "Encoding",
             description = "Detect a file's encoding. If no match was found, it defaults to UTF-8.",
             type = "File.detectEncoding",
             category = "Core")
@@ -176,7 +176,7 @@ public class FileMethods {
     }
 
     @BlockMetadata(
-            label = "list",
+            name = "list",
             description = "Return a list of files, the elements of which are the entries in the directory.",
             type = "Directory.list",
             category = "Core")

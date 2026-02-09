@@ -4,6 +4,6 @@ package blocksmith.app;
  *
  * @author joost
  */
-public class GraphEditor {
+public class Workspace {
 
 }

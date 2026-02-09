@@ -1,13 +1,13 @@
 package blocksmith.adapter.block;
 
-import blocksmith.domain.block.ParamDef;
-import blocksmith.domain.block.ParamInput;
-import blocksmith.domain.block.ParamInput.NumericType;
+import blocksmith.domain.value.ParamDef;
+import blocksmith.domain.value.ParamInput;
+import blocksmith.domain.value.ParamInput.NumericType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
-import blocksmith.domain.block.Value;
+import blocksmith.domain.value.Value;
 
 /**
  *
@@ -17,7 +17,7 @@ public class MethodParamDefMapper {
 
     public static List<ParamDef> paramDefsFromParameters(Method method) throws Exception {
         var result = new ArrayList<ParamDef>();
-        int i = 0;
+        int argIndex = 0;
         for (Parameter parameter : method.getParameters()) {
             var value = parameter.getAnnotation(Value.class);
             var isParam = value != null && value.source() != Value.Source.PORT;
@@ -25,16 +25,16 @@ public class MethodParamDefMapper {
             // TODO throw exception for unsupported param data types
             if (isParam) {
 
-                var name = parameter.getName();
-                var valueId = !value.id().isEmpty() ? value.id() : name;
+                var valueName = parameter.getName();
+                var valueId = !value.id().isEmpty() ? value.id() : valueName;
                 var dataType = parameter.getType();
                 var valueType = ValueTypeMappingUtils.fromMethodParameter(parameter);
                 var input = paramInputFrom(value, dataType, method);
 
-                var paramDef = new ParamDef(valueId, i, name, dataType, valueType, input);
+                var paramDef = new ParamDef(valueId, argIndex, valueName, valueType, input);
                 result.add(paramDef);
             }
-            i++;
+            argIndex++;
         }
         return result;
     }

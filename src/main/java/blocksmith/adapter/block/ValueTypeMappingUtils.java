@@ -1,9 +1,9 @@
 package blocksmith.adapter.block;
 
-import blocksmith.domain.block.ValueType;
-import blocksmith.domain.block.ValueType.ListType;
-import blocksmith.domain.block.ValueType.SimpleType;
-import blocksmith.domain.block.ValueType.VarType;
+import blocksmith.domain.value.ValueType;
+import blocksmith.domain.value.ValueType.ListType;
+import blocksmith.domain.value.ValueType.SimpleType;
+import blocksmith.domain.value.ValueType.VarType;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

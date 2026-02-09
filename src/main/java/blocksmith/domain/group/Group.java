@@ -1,9 +1,14 @@
 package blocksmith.domain.group;
 
+import blocksmith.domain.block.BlockId;
+import java.util.List;
+
 /**
  *
  * @author joost
  */
-public class Group {
+public record Group(
+        String label,
+        List<BlockId> blocks) {
 
 }

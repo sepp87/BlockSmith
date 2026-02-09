@@ -2,7 +2,6 @@ package blocksmith.ui.control;
 
 import blocksmith.ui.control.InputControl;
 import java.util.Objects;
-import java.util.function.Consumer;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;

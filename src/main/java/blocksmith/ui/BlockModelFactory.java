@@ -4,10 +4,10 @@ import blocksmith.ui.control.TextInput;
 import blocksmith.ui.control.InputControl;
 import blocksmith.app.BlockDefLibrary;
 import blocksmith.app.BlockFuncLibrary;
-import blocksmith.domain.block.ParamDef;
-import blocksmith.domain.block.ParamInput;
-import blocksmith.domain.block.ParamInput.NumericType;
-import blocksmith.domain.block.ValueType;
+import blocksmith.domain.value.ParamDef;
+import blocksmith.domain.value.ParamInput;
+import blocksmith.domain.value.ParamInput.NumericType;
+import blocksmith.domain.value.ValueType;
 import blocksmith.ui.control.BooleanInput;
 import blocksmith.ui.control.ChoiceInput;
 import blocksmith.ui.control.ColorInput;
@@ -34,14 +34,14 @@ public class BlockModelFactory {
         this.defLibrary = defLibrary;
         this.funcLibrary = funcLibrary;
     }
-    
+
     public MethodBlockNew create(String type) {
         var id = UUID.randomUUID().toString();
         return create(type, id);
     }
 
     public MethodBlockNew create(String type, String id) {
-        var oDef = defLibrary.findByType(type);
+        var oDef = defLibrary.resolve(type);
 
         if (oDef.isEmpty()) {
             throw new IllegalArgumentException("Type does not exist: " + type);
@@ -54,16 +54,16 @@ public class BlockModelFactory {
         var block = new MethodBlockNew(def, func, id);
 
         for (var input : def.inputs()) {
-            block.addInputPort(input.valueName(), ValueType.toDataType(input.valueType()));
+            block.addInputPort(input.valueId(), ValueType.toDataType(input.valueType()));
         }
 
         for (var output : def.outputs()) {
-            block.addOutputPort(output.valueName(), ValueType.toDataType(output.valueType()));
+            block.addOutputPort(output.valueId(), ValueType.toDataType(output.valueType()));
         }
 
         for (var param : def.params()) {
             var control = inputControlFrom(param);
-            block.addInputControl(param.valueName(), control);
+            block.addInputControl(param.valueId(), control);
         }
 
         block.isListOperator = def.isListOperator();
@@ -78,7 +78,7 @@ public class BlockModelFactory {
 
         return switch (spec) {
             case ParamInput.NoInputSpec na ->
-                inferInputControlFrom(param.dataType());
+                inferInputControlFrom(param.valueType());
 
             case ParamInput.Boolean bool ->
                 new BooleanInput();
@@ -124,16 +124,29 @@ public class BlockModelFactory {
         };
     }
 
-    private static InputControl<?> inferInputControlFrom(Class<?> dataType) {
-        if (dataType == String.class) {
+    private static InputControl<?> inferInputControlFrom(ValueType valueType) {
+
+        Class<?> rawType = null;
+        
+        if (valueType instanceof ValueType.ListType) {
+            throw new IllegalArgumentException("Unsupported param type: " + valueType);
+            
+        } else if (valueType instanceof ValueType.SimpleType simple) {
+            rawType = simple.raw();
+            
+        } else if (valueType instanceof ValueType.VarType var) {
+            rawType = Object.class;
+        }
+
+        if (rawType == String.class) {
             return new TextInput();
 
         }
-        if (dataType == Boolean.class || dataType == boolean.class) {
+        if (rawType == Boolean.class || rawType == boolean.class) {
             return new BooleanInput();
 
         }
-        if (dataType == Object.class) {
+        if (rawType == Object.class) {
             return new MultilineTextInput();
 
         }
@@ -148,7 +161,9 @@ public class BlockModelFactory {
 //
 //        }
 
-        throw new IllegalArgumentException("Unsupported param type: " + dataType.getSimpleName());
+        throw new IllegalArgumentException("Unsupported param type: " + rawType.getSimpleName());
     }
+
+
 
 }

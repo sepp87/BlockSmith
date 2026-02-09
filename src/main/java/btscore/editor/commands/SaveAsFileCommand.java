@@ -4,10 +4,12 @@ import java.io.File;
 import javafx.stage.FileChooser;
 import btscore.UiApp;
 import btscore.Config;
+import btscore.Launcher;
 import btscore.graph.io.GraphSaver;
 import btscore.editor.context.Command;
 import btscore.workspace.WorkspaceModel;
 import btscore.editor.context.MarkSavedCommand;
+import btscore.graph.io.GraphSaverV2;
 
 /**
  *
@@ -35,7 +37,12 @@ public class SaveAsFileCommand implements Command, MarkSavedCommand {
 
         if (file != null) {
             Config.setLastOpenedDirectory(file);
-            GraphSaver.serialize(file, workspaceModel);
+            if (Launcher.GRAPH_LOADER_V2) {
+                GraphSaverV2.serialize(file, workspaceModel);
+            } else {
+                                GraphSaver.serialize(file, workspaceModel);
+
+            }
         }
         return true;
 

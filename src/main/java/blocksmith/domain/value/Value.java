@@ -1,6 +1,6 @@
-package blocksmith.domain.block;
+package blocksmith.domain.value;
 
-import blocksmith.domain.block.ParamInput.NoInputSpec;
+import blocksmith.domain.value.ParamInput.NoInputSpec;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

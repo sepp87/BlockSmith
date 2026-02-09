@@ -85,8 +85,8 @@ public class BlockFactory {
             }
 
             // set the name
-            if (!info.label().equals("") && info.icon().equals(FontAwesomeSolid.NULL)) {
-                blockModel.nameProperty().set(info.label());
+            if (!info.name().equals("") && info.icon().equals(FontAwesomeSolid.NULL)) {
+                blockModel.nameProperty().set(info.name());
             } else {
                 String shortName = info.type().split("\\.")[1];
                 blockModel.nameProperty().set(shortName);

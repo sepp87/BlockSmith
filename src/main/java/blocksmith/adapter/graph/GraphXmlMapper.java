@@ -1,25 +1,14 @@
 package blocksmith.adapter.graph;
 
-import blocksmith.domain.block.Block;
-import blocksmith.domain.block.EditorMetadata;
-import blocksmith.domain.block.ValueInst;
-import blocksmith.domain.connection.Connection;
+import blocksmith.domain.block.BlockFactory;
 import blocksmith.domain.graph.DocumentMetadata;
 import blocksmith.domain.graph.Graph;
-import blocksmith.domain.group.Group;
-import blocksmith.xml.v2.BlockXml;
-import blocksmith.xml.v2.ConnectionXml;
 import blocksmith.xml.v2.DocumentXml;
-import blocksmith.xml.v2.GroupXml;
 import blocksmith.xml.v2.ObjectFactory;
-import blocksmith.xml.v2.ValueXml;
 
-import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -27,77 +16,55 @@ import java.util.List;
  */
 public class GraphXmlMapper {
 
-    private final Unmarshaller unmarshaller;
 
-    public GraphXmlMapper() throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-        this.unmarshaller = context.createUnmarshaller();
+    private final ObjectFactory xmlFactory;
+    private final BlockXmlMapper blockMapper;
+    private final ConnectionXmlMapper connectionMapper;
+    private final ValueXmlMapper valueMapper;
+    private final GroupXmlMapper groupMapper;
+
+    public GraphXmlMapper(BlockFactory blockFactory) throws JAXBException {
+
+        this.xmlFactory = new ObjectFactory();
+        this.blockMapper = new BlockXmlMapper(xmlFactory, blockFactory);
+        this.connectionMapper = new ConnectionXmlMapper(xmlFactory);
+        this.valueMapper = new ValueXmlMapper(xmlFactory);
+        this.groupMapper = new GroupXmlMapper(xmlFactory);
     }
 
-    public Graph toDomain(Path path, DocumentXml document) throws JAXBException {
+    public Graph toDomain(DocumentXml document, DocumentMetadata metadata) throws JAXBException {
+        var blocks = blockMapper.toDomain(document.getBlocks().getBlock());
+        var connections = connectionMapper.toDomain(document.getConnections().getConnection());
+        var updatedBlocks = valueMapper.toDomain(blocks, document.getValues().getValue());
+        var groups = groupMapper.toDomain(document.getGroups().getGroup());
 
-        var metadata = documentMetadataToDomain(path, document);
-        var blocks = blocksToDomain(document.getBlocks().getBlock());
-        var connections = connectionsToDomain(document.getConnections().getConnection());
-        var values = valuesToDomain(document.getValues().getValue());
-        var groups = groupsToDomain(document.getGroups().getGroup());
-
-        return null;
+        return new Graph(metadata, updatedBlocks, connections, groups);
     }
 
-    private DocumentMetadata documentMetadataToDomain(Path path, DocumentXml xmlDoc) {
-        Double translateX = xmlDoc.getTranslateX();
-        Double translateY = xmlDoc.getTranslateY();
-        Double zoomFactor = xmlDoc.getZoomFactor();
-        return DocumentMetadata.create(path, zoomFactor, translateX, translateY);
-    }
+    public JAXBElement<DocumentXml> toXml(Graph graph) {
 
-    private List<Block> blocksToDomain(List<BlockXml> blocksXml) {
-        var result = new ArrayList<Block>();
+        var document = documentMetadataToXml(graph);
+        var blocks = blockMapper.toXml(graph.blocks());
+        var connections = connectionMapper.toXml(graph.connections());
+        var values = valueMapper.toXml(graph.blocks());
+        var groups = groupMapper.toXml(graph.groups());
 
-        for (var blockXml : blocksXml) {
-            var id = blockXml.getId();
-            var type = blockXml.getType();
-            var label = blockXml.getLabel();
-            var editorMetadata = editorMetadataToDomain(blockXml);
-        }
-        return result;
-    }
-
-    private EditorMetadata editorMetadataToDomain(BlockXml blockXml) {
-
-        var x = blockXml.getX();
-        var y = blockXml.getY();
-        var width = blockXml.getWidth();
-        var height = blockXml.getHeight();
-
-        return new EditorMetadata(x, y, width, height);
-    }
-
-    private List<Connection> connectionsToDomain(List<ConnectionXml> connectionsXml) {
-        var result = new ArrayList<Connection>();
-        for (var connectionXml : connectionsXml) {
-
-        }
-        return result;
-    }
-
-    private List<ValueInst> valuesToDomain(List<ValueXml> valuesXml) {
-        var result = new ArrayList<ValueInst>();
-        for (var valueXml : valuesXml) {
-
-        }
-        return result;
+        document.setBlocks(blocks);
+        document.setConnections(connections);
+        document.setValues(values);
+        document.setGroups(groups);
+        
+        return xmlFactory.createDocument(document);
 
     }
 
-    private List<Group> groupsToDomain(List<GroupXml> groupsXml) {
-        var result = new ArrayList<Group>();
-        for (var groupXml : groupsXml) {
-
-        }
-        return result;
-
+    private DocumentXml documentMetadataToXml(Graph graph) {
+    
+        var document = xmlFactory.createDocumentXml();
+        document.setZoomFactor(graph.metadata().zoomFactor());
+        document.setTranslateX(graph.metadata().translateX());
+        document.setTranslateY(graph.metadata().translateY());
+        return document;
     }
 
 }
