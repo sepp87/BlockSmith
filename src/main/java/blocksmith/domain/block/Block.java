@@ -40,13 +40,17 @@ public final class Block {
     public Collection<Port> ports() {
         return ports;
     }
-    
+
     public Collection<Param> params() {
         return params;
     }
 
     public Optional<EditorMetadata> editorMetadata() {
         return Optional.ofNullable(metadata);
+    }
+
+    public Optional<Port> port(String valueId) {
+        return ports.stream().filter(port -> port.valueId().equals(valueId)).findFirst();
     }
 
     public Collection<Port> inputPorts() {
@@ -58,24 +62,20 @@ public final class Block {
     }
 
     public Block withParamValue(String valueId, String value) {
-        var updated = new ArrayList<>();
-        for(var p : params) {
-            if(p.valueId().equals(valueId)) {
+        var updated = new ArrayList<Param>();
+        for (var p : params) {
+            if (p.valueId().equals(valueId)) {
                 updated.add(p.withValue(value));
             } else {
                 updated.add(p);
             }
         }
-        
-        var index = new HashMap<String, Param>();
-        params.forEach(p -> index.put(p.valueId(), p));
-        index.put(param.valueId(), param);
 
         return new Block(
                 id,
                 type,
                 ports,
-                index.values(),
+                updated,
                 metadata
         );
     }

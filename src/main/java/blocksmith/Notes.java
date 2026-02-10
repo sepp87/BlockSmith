@@ -12,7 +12,7 @@ public class Notes {
 // - valueId is unique within inputs/params
 // - valueId is unique within outputs
 // - params only set as strings, so only simple type String is allowed or var type if pass through is needed
-// - inputs can only have one connection
+// - input ports can only have one incoming connection
 //
 //
 //
@@ -24,11 +24,11 @@ public class Notes {
 // - Block inputs and params or only value slots?
 // - interface BlockMetadata, Value, Display go to adapters?
 // - interface rename Value to Slot? Arg? Val?
-// - resizable where to move this? textblock was resizable now it is not
+// - resizable where to move this? textblock was resizable now it is not? resizable only for specific controls e.g. with resizable interface and only when one is present?
 // - Group where to persist when not in graph
 //
 // Serialization in XML 
-// - getBlock from blocks tags feels of as singular
+// - getBlock from blocks tags feels off as singular
 // - naming conflicts with values, blocks, connections
 //
 // REFACTOR BLOCK DEF/FUNC LOADING

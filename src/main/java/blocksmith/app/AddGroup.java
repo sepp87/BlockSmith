@@ -4,6 +4,6 @@ package blocksmith.app;
  *
  * @author joost
  */
-public class GroupBlocks {
+public class AddGroup {
 
 }
