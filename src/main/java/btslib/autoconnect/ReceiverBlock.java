@@ -5,15 +5,15 @@ import java.net.http.HttpClient;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import btsxml.BlockTag;
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Autoconnect.Receiver",
         category = "General",
         description = "A template block for further customization",

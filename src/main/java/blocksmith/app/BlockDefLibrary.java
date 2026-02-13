@@ -17,10 +17,10 @@ public class BlockDefLibrary {
     private final Map<String, BlockDef> byAlias = new TreeMap<>();
 
     public BlockDefLibrary(Collection<BlockDef> blockDefs) {
-        blockDefs.forEach(e -> byType.put(e.metadata().type(), e));
-        blockDefs.forEach(e -> {
-            for (var alias : e.metadata().aliases()) {
-                byAlias.put(alias, e);
+        blockDefs.forEach(def -> {
+            byType.put(def.type(), def);
+            for (var alias : def.aliases()) {
+                byAlias.put(alias, def);
             }
         });
 

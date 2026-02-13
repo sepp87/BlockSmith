@@ -1,6 +1,5 @@
 package btslib.file;
 
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import java.io.File;
 import java.io.IOException;
@@ -9,13 +8,14 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  * TODO should NOT have a text field to NOT create unwanted files upon typing
  *
  * @author joostmeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Output.file",
         aliases = {"File.create"},
         category = "Output",

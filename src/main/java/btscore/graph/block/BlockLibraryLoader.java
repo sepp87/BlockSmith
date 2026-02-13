@@ -20,6 +20,7 @@ import btscore.Config;
 import org.reflections.Reflections;
 import btscore.utils.FileUtils;
 import btscore.utils.JarClassLoaderUtils;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -103,7 +104,7 @@ public class BlockLibraryLoader {
 
     private static void loadBlockClasses(Collection<Class<? extends BlockModel>> classes, boolean isExternal) {
         for (Class<?> blockType : classes) {
-            BlockMetadata metadata = getBlockMetadata(blockType);
+            Block metadata = getBlockMetadata(blockType);
             if (metadata == null) {
                 continue;
             }
@@ -115,12 +116,12 @@ public class BlockLibraryLoader {
         }
     }
 
-    private static BlockMetadata getBlockMetadata(Method blockType) {
-        return blockType.getAnnotation(BlockMetadata.class);
+    private static Block getBlockMetadata(Method blockType) {
+        return blockType.getAnnotation(Block.class);
     }
 
-    private static BlockMetadata getBlockMetadata(Class<?> blockType) {
-        return blockType.getAnnotation(BlockMetadata.class);
+    private static Block getBlockMetadata(Class<?> blockType) {
+        return blockType.getAnnotation(Block.class);
     }
 
     private static void addBlockType(String identifier, Object blockType, boolean isExternal) {
@@ -134,7 +135,7 @@ public class BlockLibraryLoader {
     private static List<Class<? extends BlockModel>> filterEligibleClasses(List<Class<?>> classes) {
         List<Class<? extends BlockModel>> result = new ArrayList<>();
         for (Class<?> clazz : classes) {
-            if (BlockModel.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BlockMetadata.class)) {
+            if (BlockModel.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Block.class)) {
                 result.add((Class<? extends BlockModel>) clazz);
             }
         }
@@ -153,7 +154,7 @@ public class BlockLibraryLoader {
         List<Method> methods = getStaticMethodsFromClasses(classes);
         methods = filterEligibleMethods(methods);
         for (Method blockType : methods) {
-            BlockMetadata metadata = getBlockMetadata(blockType);
+            Block metadata = getBlockMetadata(blockType);
             String identifier = metadata.type();
             addBlockType(identifier, blockType, isExternal);
             for (String alias : metadata.aliases()) {
@@ -165,7 +166,7 @@ public class BlockLibraryLoader {
     private static List<Method> filterEligibleMethods(List<Method> methods) {
         List<Method> result = new ArrayList<>();
         for (Method method : methods) {
-            if (method.isAnnotationPresent(BlockMetadata.class)) {
+            if (method.isAnnotationPresent(Block.class)) {
                 result.add(method);
             }
         }

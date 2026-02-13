@@ -24,6 +24,7 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import btscore.icons.FontAwesomeSolid;
 import btscore.workspace.WorkspaceView;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -148,8 +149,8 @@ public class InfoPanel extends Pane {
     }
 
     private Label buildDescription() {
-        BlockMetadata info = blockModel.getMetadata();
-        
+        var description = blockModel.description();
+
 //        if (blockModel instanceof MethodBlock methodBlock) {
 //            info = methodBlock.getMethod().getAnnotation(BlockMetadata.class);
 //        } else if (blockModel instanceof MethodBlockNew methodBlockNew) {
@@ -157,7 +158,7 @@ public class InfoPanel extends Pane {
 //        } else {
 //            info = blockModel.getClass().getAnnotation(BlockMetadata.class);
 //        }
-        String description = info.description().isEmpty() ? "n/a" : info.description();
+        description = description.isEmpty() ? "n/a" : description;
         Label label = buildLabel(description);
 
         return label;

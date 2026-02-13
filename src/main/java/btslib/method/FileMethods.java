@@ -10,11 +10,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import btscore.graph.block.BlockMetadata;
 import btscore.utils.FileUtils;
 import java.nio.charset.Charset;
 import java.nio.file.InvalidPathException;
-import blocksmith.domain.value.Value;
+import blocksmith.infra.blockloader.annotations.Value;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -22,7 +22,7 @@ import blocksmith.domain.value.Value;
  */
 public class FileMethods {
 
-    @BlockMetadata(
+    @Block(
             type = "Output.file",
             aliases = {"File.new", "File.create"},
             category = "Output",
@@ -38,7 +38,7 @@ public class FileMethods {
         return result;
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Input.file",
             aliases = {"File.open", "File.choose"},
             category = "Input",
@@ -54,7 +54,7 @@ public class FileMethods {
         return result;
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Input.directory",
             aliases = {"Directory.open", "Directory.choose"},
             category = "Input",
@@ -70,7 +70,7 @@ public class FileMethods {
         return result;
     }
 
-    @BlockMetadata(
+    @Block(
             name = "isRegularFile",
             description = "Tests whether a file is a regular file with opaque content.",
             type = "File.isRegularFile",
@@ -80,7 +80,7 @@ public class FileMethods {
         return Files.isRegularFile(path);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "isDirectory",
             description = "Tests whether a file is a directory.",
             type = "File.isDirectory",
@@ -90,7 +90,7 @@ public class FileMethods {
         return Files.isDirectory(path);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "exists",
             description = "Tests whether a file exists.",
             type = "File.exists",
@@ -100,7 +100,7 @@ public class FileMethods {
         return Files.exists(path);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "LastModifiedTime",
             description = "Returns a file's last modified time. The string is returned in the ISO 8601 format: YYYY-MM-DDThh:mm:ss[.s+]Z",
             type = "File.getLastModifiedTime",
@@ -110,7 +110,7 @@ public class FileMethods {
         return Files.getLastModifiedTime(path).toString();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "readAllLines",
             description = "Read all lines from a file. When no charset is provided, UTF-8 is default.",
             type = "File.readAllLines",
@@ -123,7 +123,7 @@ public class FileMethods {
         return Files.readAllLines(path, cs);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "readString",
             description = "Reads all characters from a file into a string. When no charset is provided, UTF-8 is default.",
             type = "File.readString",
@@ -136,7 +136,7 @@ public class FileMethods {
         return Files.readString(path);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "size",
             description = "Returns the size of a file (in bytes). The size may differ from the actual size on the file system due to compression, support for sparse files, or other reasons. The size of files that are not regular files is implementation specific and therefore unspecified.",
             type = "File.size",
@@ -146,7 +146,7 @@ public class FileMethods {
         return Files.size(path);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "isReadable",
             description = "Returns a file's last modified time. The string is returned in the ISO 8601 format: YYYY-MM-DDThh:mm:ss[.s+]Z",
             type = "File.isReadable",
@@ -156,7 +156,7 @@ public class FileMethods {
         return Files.isReadable(path);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "isWritable",
             description = "Returns a file's last modified time. The string is returned in the ISO 8601 format: YYYY-MM-DDThh:mm:ss[.s+]Z",
             type = "File.isWritable",
@@ -166,7 +166,7 @@ public class FileMethods {
         return Files.isWritable(path);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "Encoding",
             description = "Detect a file's encoding. If no match was found, it defaults to UTF-8.",
             type = "File.detectEncoding",
@@ -175,7 +175,7 @@ public class FileMethods {
         return FileUtils.detectEncoding(file);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "list",
             description = "Return a list of files, the elements of which are the entries in the directory.",
             type = "Directory.list",

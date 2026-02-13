@@ -1,6 +1,6 @@
 package btslib.method;
 
-import btscore.graph.block.BlockMetadata;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -8,7 +8,7 @@ import btscore.graph.block.BlockMetadata;
  */
 public class ObjectMethods {
 
-    @BlockMetadata(
+    @Block(
             type = "Object.getClass",
             aliases = {"Object.getType"},
             category = "Core",
@@ -17,7 +17,7 @@ public class ObjectMethods {
         return object.getClass();
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Object.toString",
             aliases = {"String.fromObject"},
             category = "Core",

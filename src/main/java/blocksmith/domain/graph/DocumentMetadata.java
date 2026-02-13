@@ -20,4 +20,12 @@ public record DocumentMetadata(
 
         return new DocumentMetadata(path, zoomFactor, translateX, translateY);
     }
+
+    public static DocumentMetadata createDefault() {
+        return new DocumentMetadata(null, 1., 0., 0.);
+    }
+    
+    public DocumentMetadata withPath(Path path) {
+        return new DocumentMetadata(path, zoomFactor, translateX, translateY);
+    }
 }

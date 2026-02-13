@@ -2,15 +2,15 @@ package btslib.input;
 
 import javax.xml.namespace.QName;
 import btsxml.BlockTag;
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import javafx.beans.property.SimpleIntegerProperty;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Input.integerSlider",
         category = "Input",
         description = "Integer Slider",

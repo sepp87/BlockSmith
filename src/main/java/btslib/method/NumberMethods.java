@@ -1,8 +1,8 @@
 package btslib.method;
 
 import blocksmith.domain.value.ParamInput.Range;
-import btscore.graph.block.BlockMetadata;
-import blocksmith.domain.value.Value;
+import blocksmith.infra.blockloader.annotations.Value;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -10,7 +10,7 @@ import blocksmith.domain.value.Value;
  */
 public class NumberMethods {
 
-    @BlockMetadata(
+    @Block(
             type = "Input.integerSlider",
             aliases = {"Number.integer"},
             name = "Integer",
@@ -21,7 +21,7 @@ public class NumberMethods {
         return number;
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Input.doubleSlider",
             aliases = {"Number.double"},
             name = "Double",

@@ -17,13 +17,13 @@ import javax.xml.namespace.QName;
 import btsxml.BlockTag;
 import btscore.graph.base.BaseButton;
 import btscore.graph.block.BlockModel;
-import btscore.graph.block.BlockMetadata;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Input.password",
         category = "Input",
         description = "This text field only hides its text, it does not encrypt it or something. Be careful, the password is still saved as plain text and can still be shown.",

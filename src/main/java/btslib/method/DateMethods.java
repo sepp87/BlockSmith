@@ -10,9 +10,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
-import btscore.graph.block.BlockMetadata;
 import btscore.utils.DateTimeUtils;
-import blocksmith.domain.value.Value;
+import blocksmith.infra.blockloader.annotations.Value;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -20,7 +20,7 @@ import blocksmith.domain.value.Value;
  */
 public class DateMethods {
 
-    @BlockMetadata(
+    @Block(
             type = "Input.date",
             aliases = {"Date.new"},
             name = "Date",
@@ -36,7 +36,7 @@ public class DateMethods {
         return date;
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Date.temporalUnit",
             name = "TemporalUnit",
             description = "A standard set of date periods units.",
@@ -45,7 +45,7 @@ public class DateMethods {
         return ChronoUnit.valueOf(value);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "Date",
             description = "Obtains an instance of LocalDate from a text string such as 2007-12-03.",
             type = "Date.fromString",
@@ -60,7 +60,7 @@ public class DateMethods {
         return date;
     }
 
-    @BlockMetadata(
+    @Block(
             name = "now",
             description = "Obtains the current date from the system clock in the default time-zone.",
             type = "Date.now",
@@ -69,7 +69,7 @@ public class DateMethods {
         return LocalDate.now();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "DayOfWeek",
             description = "Gets the day-of-week field, which is an enum DayOfWeek.",
             type = "Date.getDayOfWeek",
@@ -78,7 +78,7 @@ public class DateMethods {
         return date.getDayOfWeek();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "DayOfYear",
             description = "Gets the day-of-year field.",
             type = "Date.getDayOfYear",
@@ -87,7 +87,7 @@ public class DateMethods {
         return date.getDayOfYear();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "Era",
             description = "Gets the era applicable at this date.\nThe official ISO-8601 standard does not define eras, however IsoChronology does. It defines two eras, 'CE' from year one onwards and 'BCE' from year zero backwards. Since dates before the Julian-Gregorian cutover are not in line with history, the cutover between 'BCE' and 'CE' is also not aligned with the commonly used eras, often referred to using 'BC' and 'AD'.",
             type = "Date.getEra",
@@ -96,7 +96,7 @@ public class DateMethods {
         return date.getEra();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "Month",
             description = "Gets the month-of-year field using the Month enum.",
             type = "Date.getMonth",
@@ -105,7 +105,7 @@ public class DateMethods {
         return date.getMonth();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "MonthValue",
             description = "Gets the month-of-year field from 1 to 12.",
             type = "Date.getMonthValue",
@@ -114,7 +114,7 @@ public class DateMethods {
         return date.getMonthValue();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "Year",
             description = "Gets the year field.",
             type = "Date.getYear",
@@ -123,7 +123,7 @@ public class DateMethods {
         return date.getYear();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "lengthOfMonth",
             description = "Returns the length of the month represented by this date.\nThis returns the length of the month in days. For example, a date in January would return 31.",
             type = "Date.lengthOfMonth",
@@ -132,7 +132,7 @@ public class DateMethods {
         return date.lengthOfMonth();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "lengthOfYear",
             description = "Returns the length of the year represented by this date.\nThis returns the length of the year in days, either 365 or 366.",
             type = "Date.lengthOfYear",
@@ -141,7 +141,7 @@ public class DateMethods {
         return date.lengthOfYear();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "minus",
             description = "Returns a copy of this date with the specified amount subtracted.",
             type = "Date.minus",
@@ -150,7 +150,7 @@ public class DateMethods {
         return date.minus(amountToSubstract, unit);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "minusDays",
             description = "Returns a copy of this date with the specified amount subtracted.",
             type = "Date.minusDays",
@@ -159,7 +159,7 @@ public class DateMethods {
         return date.minusDays(daysToSubstract);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "minusMonths",
             description = "Returns a copy of this LocalDate with the specified number of months subtracted.",
             type = "Date.minusMonths",
@@ -168,7 +168,7 @@ public class DateMethods {
         return date.minusMonths(monthsToSubstract);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "minusWeeks",
             description = "Returns a copy of this LocalDate with the specified number of weeks subtracted.",
             type = "Date.minusWeeks",
@@ -177,7 +177,7 @@ public class DateMethods {
         return date.minusWeeks(weeksToSubstract);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "minusYears",
             description = "Returns a copy of this LocalDate with the specified number of years subtracted.",
             type = "Date.minusYears",
@@ -186,7 +186,7 @@ public class DateMethods {
         return date.minusYears(yearsToSubstract);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "isLeapYear",
             description = "Checks if the year is a leap year, according to the ISO proleptic calendar system rules.",
             type = "Date.isLeapYear",
@@ -195,7 +195,7 @@ public class DateMethods {
         return date.isLeapYear();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "isBefore",
             description = "Checks if this date is before the specified date.",
             type = "Date.isBefore",
@@ -204,7 +204,7 @@ public class DateMethods {
         return date.isBefore(other);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "isAfter",
             description = "Checks if this date is after the specified date.",
             type = "Date.isAfter",
@@ -213,7 +213,7 @@ public class DateMethods {
         return date.isAfter(other);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "isEqual",
             description = "Checks if this date is equal to the specified date.",
             type = "Date.isEqual",
@@ -222,7 +222,7 @@ public class DateMethods {
         return date.isEqual(other);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "daysBetween",
             description = "Calculates the amount of time between two dates.",
             type = "Date.daysBetween",

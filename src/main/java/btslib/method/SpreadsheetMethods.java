@@ -33,9 +33,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import btscore.graph.block.BlockMetadata;
 import btscore.utils.ParsingUtils;
 import btslib.spreadsheet.DataSheet;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -43,7 +43,7 @@ import btslib.spreadsheet.DataSheet;
  */
 public class SpreadsheetMethods {
 
-    @BlockMetadata(
+    @Block(
             name = "readCsv",
             description = "Reads a CSV file and returns a data sheet object. This method automatically detects whether a header is present. If you do not wish to specify a header, set the row number to -1. A value of 0 or 1 will assume the first row as the header. For N ≥ 2, row N will be used as the header.",
             type = "Spreadsheet.readCsv",
@@ -65,7 +65,7 @@ public class SpreadsheetMethods {
         }
     }
 
-    @BlockMetadata(
+    @Block(
             name = "writeCsv",
             description = "",
             type = "Spreadsheet.writeCsv",
@@ -87,7 +87,7 @@ public class SpreadsheetMethods {
         }
     }
 
-    @BlockMetadata(
+    @Block(
             name = "readExcel",
             description = "Reads an XLSX file and returns a data sheet object. This method automatically detects whether a header is present. If you do not wish to specify a header, set the row number to -1. A value of 0 or 1 will assume the first row as the header. For N ≥ 2, row N will be used as the header.",
             type = "Spreadsheet.readExcel",
@@ -228,7 +228,7 @@ public class SpreadsheetMethods {
         return mostRecurringColumnCount;
     }
 
-    @BlockMetadata(
+    @Block(
             name = "writeExcel",
             description = "",
             type = "Spreadsheet.writeExcel",
@@ -416,7 +416,7 @@ public class SpreadsheetMethods {
         return new DataSheet(dataSheet.getHeaderRow(), dataSheet.getColumnTypes(), dataSheet.getLeadingRows(), filteredRows, dataSheet.getTrailingRows());
     }
 
-    @BlockMetadata(
+    @Block(
             name = "sortData",
             description = "",
             type = "Spreadsheet.sortData",
@@ -437,7 +437,7 @@ public class SpreadsheetMethods {
         return new DataSheet(dataSheet.getHeaderRow(), dataSheet.getColumnTypes(), dataSheet.getLeadingRows(), sortedRows, dataSheet.getTrailingRows());
     }
 
-    @BlockMetadata(
+    @Block(
             name = "mergeDataSheets",
             description = "",
             type = "Spreadsheet.mergeDataSheets",
@@ -459,7 +459,7 @@ public class SpreadsheetMethods {
         return new DataSheet(sheet1.getHeaderRow(), sheet1.getColumnTypes(), mergedLeadingRows, mergedRows, mergedTrailingRows);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "getUniqueValues",
             description = "",
             type = "Spreadsheet.getUniqueValues",
@@ -475,7 +475,7 @@ public class SpreadsheetMethods {
                 .collect(Collectors.toSet());
     }
 
-    @BlockMetadata(
+    @Block(
             name = "findMaxValue",
             description = "",
             type = "Spreadsheet.findMaxValue",
@@ -534,7 +534,7 @@ public class SpreadsheetMethods {
 //        Map<String, Class<?>> columnTypes = inferColumnTypes(rows);
 //        return new DataSheet(headers, columnTypes, castRowsToTypes(rows, columnTypes));
 //    }
-    @BlockMetadata(
+    @Block(
             name = "convertExcelToCsv",
             description = "",
             type = "Spreadsheet.convertExcelToCsv",
@@ -544,7 +544,7 @@ public class SpreadsheetMethods {
         writeCsv(csv, sheet);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "convertCsvToExcel",
             description = "",
             type = "Spreadsheet.convertCsvToExcel",

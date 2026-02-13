@@ -15,5 +15,9 @@ public record PortRef(
         Objects.requireNonNull(blockId);
         Objects.requireNonNull(valueId);
     }
+    
+    public static PortRef of(BlockId blockId, String valueId) {
+        return new PortRef(blockId, valueId);
+    }
 
 }

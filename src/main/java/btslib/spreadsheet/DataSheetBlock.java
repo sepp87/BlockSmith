@@ -1,15 +1,15 @@
 package btslib.spreadsheet;
 
 import javafx.scene.layout.Region;
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.workspace.WorkspaceModel;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author joostmeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Spreadsheet.tableView",
         category = "Spreadsheet",
         description = "View the spreadsheet data in the data sheet with this table view.",

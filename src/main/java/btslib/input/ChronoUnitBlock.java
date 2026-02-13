@@ -15,15 +15,15 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javax.xml.namespace.QName;
 import btsxml.BlockTag;
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.utils.ListViewHoverSelectBehaviour;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Date.temporalUnit",
         description = "A standard set of date periods units.",
         category = "Core")

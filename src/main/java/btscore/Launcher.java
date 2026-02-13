@@ -1,6 +1,7 @@
 package btscore;
 
 import blocksmith.App;
+import btscore.graph.block.BlockLibraryLoader;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
@@ -32,6 +33,12 @@ public class Launcher {
 
             GRAPH_LOADER_V2 = true;
             BLOCK_DEF_LOADER = true;
+            if (!BLOCK_DEF_LOADER) {
+                //Load all block types
+                BlockLibraryLoader.loadBlocks();
+                System.out.println("Launcher.main() Number of loaded blocks is " + BlockLibraryLoader.BLOCK_TYPE_LIST.size());
+            }
+
             new UiAppRunner(app).run();
 
         } else if (hasConsole || isHeadless) {

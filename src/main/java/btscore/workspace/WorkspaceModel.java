@@ -1,5 +1,6 @@
 package btscore.workspace;
 
+import blocksmith.domain.graph.Graph;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,10 @@ public class WorkspaceModel {
     private final ObservableSet<ConnectionModel> connectionModels = FXCollections.observableSet();
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
     private final ObservableMap<Class<?>, List<PortModel>> dataTransmittors = FXCollections.observableHashMap();
+    
+    public void updateFrom(Graph graph) {
+        
+    }
     
     public AutoConnectIndex getAutoConnectIndex(){
         return wirelessIndex;

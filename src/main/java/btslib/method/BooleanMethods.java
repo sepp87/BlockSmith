@@ -1,7 +1,7 @@
 package btslib.method;
 
-import btscore.graph.block.BlockMetadata;
-import blocksmith.domain.value.Value;
+import blocksmith.infra.blockloader.annotations.Value;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -9,7 +9,7 @@ import blocksmith.domain.value.Value;
  */
 public class BooleanMethods {
 
-    @BlockMetadata(
+    @Block(
             type = "Input.boolean", // Input.boolean
             aliases = {"Boolean.new"},
             category = "Input",
@@ -19,7 +19,7 @@ public class BooleanMethods {
         return value;
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Boolean.negate",
             category = "Input",
             description = "Negate the value of a boolean e.g. from TRUE to FALSE",

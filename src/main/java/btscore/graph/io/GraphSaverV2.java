@@ -93,7 +93,7 @@ public class GraphSaverV2 {
         for (var block : blocks) {
             var blockTag = factory.createBlockXml();
             blockTag.setId(block.getId());
-            blockTag.setType(block.getMetadata().type());
+            blockTag.setType(block.type());
             blockTag.setLabel(block.nameProperty().get());
             blockTag.setX(block.layoutXProperty().get());
             blockTag.setY(block.layoutYProperty().get());

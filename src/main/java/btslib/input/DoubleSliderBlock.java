@@ -2,15 +2,15 @@ package btslib.input;
 
 import javax.xml.namespace.QName;
 import btsxml.BlockTag;
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import javafx.beans.property.SimpleDoubleProperty;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Input.doubleSlider",
         category = "Input",
         description = "Double Slider",

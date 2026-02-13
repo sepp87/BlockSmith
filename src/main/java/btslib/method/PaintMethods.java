@@ -1,9 +1,9 @@
 package btslib.method;
 
 import blocksmith.domain.value.ParamInput;
-import btscore.graph.block.BlockMetadata;
 import javafx.scene.paint.Color;
-import blocksmith.domain.value.Value;
+import blocksmith.infra.blockloader.annotations.Value;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -11,7 +11,7 @@ import blocksmith.domain.value.Value;
  */
 public class PaintMethods {
 
-    @BlockMetadata(
+    @Block(
             type = "Input.color",
             aliases = {"Paint.color", "Color.new"},
             name = "Color",

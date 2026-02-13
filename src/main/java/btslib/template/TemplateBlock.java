@@ -8,15 +8,15 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
 import btsxml.BlockTag;
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Util.Template",
         category = "General",
         description = "A template block for further customization",

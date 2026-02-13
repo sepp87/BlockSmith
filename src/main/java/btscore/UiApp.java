@@ -2,6 +2,7 @@ package btscore;
 
 import blocksmith.App;
 import blocksmith.ui.BlockModelFactory;
+import blocksmith.ui.editor.EditorSession;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -39,6 +40,7 @@ public class UiApp extends Application {
 
     private static App app;
     private static BlockModelFactory blockModelFactory;
+
     public static BlockModelFactory getBlockModelFactory() {
         return blockModelFactory;
     }
@@ -73,6 +75,11 @@ public class UiApp extends Application {
         // Initialize models
         WorkspaceModel workspaceModel = new WorkspaceModel();
 
+        var designSession = app.getGraphDesignSession();
+        var editorSession = new EditorSession(designSession, workspaceModel);
+        
+        
+
         // Initialize views
         WorkspaceView workspaceView = new WorkspaceView();
         BlockSearchView blockSearchView = new BlockSearchView();
@@ -98,7 +105,7 @@ public class UiApp extends Application {
 
         // Initialize controllers
         new ZoomController(contextId, workspaceModel, zoomView);
-        new BlockSearchController(contextId, blockSearchView, blockDefLibrary);
+        new BlockSearchController(contextId, blockSearchView, blockDefLibrary, editorSession);
         new SelectionRectangleController(contextId, selectionRectangleView);
         new PanController(contextId, workspaceModel);
         new RadialMenuController(contextId, radialMenuView);

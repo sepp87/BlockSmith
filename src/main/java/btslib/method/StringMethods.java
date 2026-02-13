@@ -1,16 +1,16 @@
 package btslib.method;
 
 import java.util.List;
-import btscore.graph.block.BlockMetadata;
 import blocksmith.domain.value.ParamInput.Password;
-import blocksmith.domain.value.Value;
-import blocksmith.domain.value.Value.Source;
+import blocksmith.infra.blockloader.annotations.Value;
+import blocksmith.infra.blockloader.annotations.Value.Source;
 import btscore.utils.DateTimeUtils;
 import btscore.utils.ParsingUtils;
 import static btscore.utils.ParsingUtils.getBooleanValue;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -18,7 +18,7 @@ import java.time.LocalDate;
  */
 public class StringMethods {
 
-    @BlockMetadata(
+    @Block(
             type = "Input.password",
             aliases = {"String.password"},
             category = "Core",
@@ -27,7 +27,7 @@ public class StringMethods {
         return value.isEmpty() ? null : value;
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Input.text",
             aliases = {"String.newMultiline"},
             category = "Core",
@@ -39,7 +39,7 @@ public class StringMethods {
         return text;
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Input.string",
             aliases = {"String.newMagicString"},
             category = "Core",
@@ -71,7 +71,7 @@ public class StringMethods {
         return str;
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Input.plainString",
             aliases = {"String.new"},
             category = "Core",
@@ -80,7 +80,7 @@ public class StringMethods {
         return value.isEmpty() ? null : value;
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.length",
             category = "Core",
             description = "Returns the length of this string. The length is equal to the number of Unicode code units in the string.",
@@ -89,7 +89,7 @@ public class StringMethods {
         return string.length();
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.toUpperCase",
             category = "Core",
             description = "Converts all of the characters in this String to upper case using the rules of the default locale.",
@@ -98,7 +98,7 @@ public class StringMethods {
         return string.toUpperCase();
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.toLowerCase",
             category = "Core",
             description = "Converts all of the characters in this String to lower case using the rules of the default locale.",
@@ -107,7 +107,7 @@ public class StringMethods {
         return string.toLowerCase();
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.stripLeading",
             category = "Core",
             description = "Returns a string whose value is this string, with all leading white space removed.",
@@ -116,7 +116,7 @@ public class StringMethods {
         return string.stripLeading();
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.stripTrailing",
             category = "Core",
             description = "Returns a string whose value is this string, with all trailing white space removed.",
@@ -125,7 +125,7 @@ public class StringMethods {
         return string.stripTrailing();
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.strip",
             category = "Core",
             description = "Returns a string whose value is this string, with all leading and trailing white space removed.",
@@ -134,7 +134,7 @@ public class StringMethods {
         return string.strip();
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.substring",
             category = "Core",
             description = "Returns a string that is a substring of this string. The substring begins at the specified beginIndex and extends to the character at index endIndex - 1. Thus the length of the substring is endIndex-beginIndex.",
@@ -147,7 +147,7 @@ public class StringMethods {
         return string.substring(beginIndex, endIndex);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.contains",
             category = "Core",
             description = "Returns true if and only if this string contains the specified sequence of char values.",
@@ -156,7 +156,7 @@ public class StringMethods {
         return string.contains(sequence);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.endsWith",
             category = "Core",
             description = "Tests if this string ends with the specified suffix.",
@@ -165,7 +165,7 @@ public class StringMethods {
         return string.endsWith(suffix);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.startsWith",
             category = "Core",
             description = "Tests if the substring of this string beginning at the specified index starts with the specified prefix. By default the offset is set to zero.",
@@ -175,7 +175,7 @@ public class StringMethods {
         return string.startsWith(prefix, offset);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.equals",
             category = "Core",
             description = "Compares this string to the specified object. The result is true if and only if the argument is not null and is a String object that represents the same sequence of characters as this object.")
@@ -183,7 +183,7 @@ public class StringMethods {
         return a.equals(another);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.equalsIgnoreCase",
             category = "Core",
             description = "Compares this String to another String, ignoring case considerations. Two strings are considered equal ignoring case if they are of the same length and corresponding Unicode code points in the two strings are equal ignoring case.")
@@ -191,7 +191,7 @@ public class StringMethods {
         return a.equalsIgnoreCase(another);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.indexOf",
             category = "Core",
             description = "Returns the index within this string of the first occurrence of the specified substring.")
@@ -199,7 +199,7 @@ public class StringMethods {
         return string.indexOf(str);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.lastIndexOf",
             category = "Core",
             description = "Returns the index within this string of the last occurrence of the specified substring.")
@@ -207,7 +207,7 @@ public class StringMethods {
         return string.lastIndexOf(str);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.replace",
             category = "Core",
             description = "Replaces each substring of this string that matches the literal target sequence with the specified literal replacement sequence. The replacement proceeds from the beginning of the string to the end, for example, replacing \"aa\" with \"b\" in the string \"aaa\" will result in \"ba\" rather than \"ab\".")
@@ -216,7 +216,7 @@ public class StringMethods {
         return string.replace(target, replacement);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.replaceAll",
             category = "Core",
             description = "Replaces each substring of this string that matches the given regular expression with the given replacement.")
@@ -225,7 +225,7 @@ public class StringMethods {
         return string.replaceAll(regex, replacement);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.replaceFirst",
             category = "Core",
             description = "Replaces the first substring of this string that matches the given regular expression with the given replacement.")
@@ -234,7 +234,7 @@ public class StringMethods {
         return string.replaceFirst(regex, replacement);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.concat",
             category = "Core",
             description = "Concatenates string b to the end of string a.")
@@ -242,7 +242,7 @@ public class StringMethods {
         return a.concat(b);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.concatList",
             category = "Core",
             description = "Concatenates the list of string value into a single string")
@@ -257,7 +257,7 @@ public class StringMethods {
         return result;
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.matches",
             category = "Core",
             description = "Tells whether or not this string matches the given regular expression.")
@@ -265,7 +265,7 @@ public class StringMethods {
         return value.matches(regex);
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.split",
             category = "Core",
             description = "Splits this string around matches of the given regular expression.")
@@ -273,7 +273,7 @@ public class StringMethods {
         return List.of(value.split(regex));
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.isBlank",
             category = "Core",
             description = "Returns true if the string is empty or contains only white space codepoints, otherwise false.")
@@ -281,7 +281,7 @@ public class StringMethods {
         return value.isBlank();
     }
 
-    @BlockMetadata(
+    @Block(
             type = "String.isEmpty",
             category = "Core",
             description = "Returns true if, and only if, length() is 0.")

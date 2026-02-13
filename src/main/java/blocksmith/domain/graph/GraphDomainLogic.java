@@ -1,8 +1,4 @@
-
 package blocksmith.domain.graph;
-
-import blocksmith.domain.value.Param;
-import java.util.List;
 
 /**
  *
@@ -10,8 +6,8 @@ import java.util.List;
  */
 public class GraphDomainLogic {
 
+    // merge graphs
     
-    public static List<Param> filterActiveParams() {
-        return List.of();
-    }
+    // dif of graphs
+   
 }

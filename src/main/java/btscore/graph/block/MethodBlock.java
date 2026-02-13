@@ -21,19 +21,20 @@ import btscore.graph.port.PortModel;
 import btscore.graph.block.ExceptionPanel.BlockException;
 import btscore.graph.block.MethodExecutor.InvocationResult;
 import btscore.utils.ListUtils;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Core.methodBlock",
         category = "Core",
         description = "A generic block used to convert static methods and fields to blocks",
         tags = {"core", "method", "block"})
 public class MethodBlock extends BlockModel {
 
-    private final BlockMetadata info;
+    private final Block info;
     private String identifier;
     private String category;
     private String description;
@@ -45,7 +46,7 @@ public class MethodBlock extends BlockModel {
     private Label label;
 
     public MethodBlock(Method method) {
-        this.info = method.getAnnotation(BlockMetadata.class);
+        this.info = method.getAnnotation(Block.class);
         this.identifier = info.type();
         this.category = info.category();
         this.description = info.description();
@@ -276,7 +277,7 @@ public class MethodBlock extends BlockModel {
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.setType(method.getAnnotation(BlockMetadata.class).type());
+        xmlTag.setType(method.getAnnotation(Block.class).type());
     }
 
     @Override
@@ -291,9 +292,15 @@ public class MethodBlock extends BlockModel {
     }
 
     @Override
-    public BlockMetadata getMetadata() {
-        BlockMetadata metadata = method.getAnnotation(BlockMetadata.class);
-        return metadata;
+    public String type() {
+        Block metadata = method.getAnnotation(Block.class);
+        return metadata.type();
+    }
+
+    @Override
+    public String description() {
+        Block metadata = method.getAnnotation(Block.class);
+        return metadata.description();
     }
 
     @Override

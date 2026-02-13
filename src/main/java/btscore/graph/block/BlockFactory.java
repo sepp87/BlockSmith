@@ -12,6 +12,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -46,7 +47,7 @@ public class BlockFactory {
     public static MethodBlock createBlockFromMethod(Method method) {
         MethodBlock blockModel = null;
         try {
-            BlockMetadata info = method.getAnnotation(BlockMetadata.class);
+            Block info = method.getAnnotation(Block.class);
             blockModel = new MethodBlock(method);
 
             // set input ports

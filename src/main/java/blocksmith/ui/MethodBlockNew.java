@@ -8,7 +8,6 @@ import blocksmith.exec.BlockFunc;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.control.NumberSliderInput;
 import blocksmith.xml.v2.ValueXml;
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
 import btscore.icons.FontAwesomeSolid;
@@ -31,12 +30,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javax.xml.namespace.QName;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Core.methodBlock",
         category = "Core",
         description = "A generic block used to convert static methods and fields to blocks",
@@ -97,15 +97,15 @@ public class MethodBlockNew extends BlockModel {
         } else {
             spinner = new ProgressIndicator();
 
-            if (!def.metadata().icon().equals(FontAwesomeSolid.NULL)) {
-                label = BlockView.getAwesomeIcon(def.metadata().icon());
+            if (!def.icon().equals(FontAwesomeSolid.NULL)) {
+                label = BlockView.getAwesomeIcon(def.icon());
 
-            } else if (!def.metadata().name().equals("")) {
-                label = new Label(def.metadata().name());
+            } else if (!def.name().equals("")) {
+                label = new Label(def.name());
                 label.getStyleClass().add("block-text");
 
             } else {
-                String shortName = def.metadata().type().split("\\.")[1];
+                String shortName = def.type().split("\\.")[1];
                 label = new Label(shortName);
                 label.getStyleClass().add("block-text");
             }
@@ -266,7 +266,7 @@ public class MethodBlockNew extends BlockModel {
     @Override
     public void serialize(BlockTag xmlTag) {
         super.serialize(xmlTag);
-        xmlTag.setType(def.metadata().type());
+        xmlTag.setType(def.type());
         var values = xmlTag.getOtherAttributes();
 
         for (var entry : inputControls.entrySet()) {
@@ -342,8 +342,13 @@ public class MethodBlockNew extends BlockModel {
     }
 
     @Override
-    public BlockMetadata getMetadata() {
-        return def.metadata();
+    public String type() {
+        return def.type();
+    }
+
+    @Override
+    public String description() {
+        return def.description();
     }
 
     @Override

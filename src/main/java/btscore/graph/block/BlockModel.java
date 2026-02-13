@@ -21,6 +21,7 @@ import btsxml.BlockTag;
 import btscore.graph.block.ExceptionPanel.BlockException;
 import btscore.graph.connection.ConnectionModel;
 import btscore.graph.port.PortType;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -58,8 +59,7 @@ public abstract class BlockModel extends BaseModel {
             }
             return;
         }
-        if (this.getMetadata().hasDefaultOutput() || inputPorts.isEmpty()) {
-//        if (this.getMetadata().hasDefaultOutput() || inputPorts.isEmpty() || inputPorts.stream().anyMatch(PortModel::isActive)) {
+        if (inputPorts.isEmpty()) {
             processSafely();
         }
     }
@@ -118,7 +118,7 @@ public abstract class BlockModel extends BaseModel {
 
     public void processSafely() {
         System.out.println(this.getClass().getSimpleName() + ".processSafely()");
-        
+
         Set<BlockException> previousExceptions = new HashSet<>(exceptions);
 
         // Ensure processing only happens when active
@@ -197,6 +197,7 @@ public abstract class BlockModel extends BaseModel {
     public PortModel addOutputPort(String name, Class<?> type) {
         return addOutputPort(name, type, false);
     }
+
     public PortModel addOutputPort(String name, Class<?> type, boolean isAutoConnectable) {
         PortModel port = new PortModel(name, PortType.OUTPUT, type, this, true);
         port.autoConnectableProperty().set(isAutoConnectable);
@@ -205,7 +206,7 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public void serialize(BlockTag xmlTag) {
-        xmlTag.setType(this.getClass().getAnnotation(BlockMetadata.class).type());
+        xmlTag.setType(this.getClass().getAnnotation(Block.class).type());
         xmlTag.setUUID(idProperty().get());
         xmlTag.setX(layoutXProperty().get());
         xmlTag.setY(layoutYProperty().get());
@@ -270,9 +271,16 @@ public abstract class BlockModel extends BaseModel {
         super.revive();
     }
 
-    public BlockMetadata getMetadata() {
-        BlockMetadata metadata = this.getClass().getAnnotation(BlockMetadata.class);
-        return metadata;
+    public String type() {
+        Block metadata = this.getClass().getAnnotation(Block.class);
+        return metadata.type();
     }
+
+    public String description() {
+        Block metadata = this.getClass().getAnnotation(Block.class);
+        return metadata.description();
+    }
+
+    
 
 }

@@ -1,6 +1,8 @@
 package btscore.editor;
 
 import blocksmith.app.BlockDefLibrary;
+import blocksmith.app.inbound.GraphMutation;
+import blocksmith.domain.block.EditorMetadata;
 import btscore.Launcher;
 import javafx.beans.value.ChangeListener;
 import static javafx.collections.FXCollections.observableArrayList;
@@ -39,6 +41,7 @@ public class BlockSearchController extends BaseController {
     private final StateManager state;
     private final BlockSearchView view;
     private final BlockDefLibrary blockDefLibrary;
+    private final GraphMutation editor;
 
     private Point2D creationPoint;
 
@@ -47,7 +50,7 @@ public class BlockSearchController extends BaseController {
 
     private final ChangeListener<Boolean> searchFieldFocusChangedListener;
 
-    public BlockSearchController(String contextId, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary) {
+    public BlockSearchController(String contextId, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary, GraphMutation editor) {
         super(contextId);
         this.eventRouter = UiApp.getContext(contextId).getEventRouter();
         this.actionManager = UiApp.getContext(contextId).getActionManager();
@@ -55,6 +58,7 @@ public class BlockSearchController extends BaseController {
 
         this.view = blockSearchView;
         this.blockDefLibrary = blockDefLibrary;
+        this.editor = editor;
 
         searchField = view.getSearchField();
         listView = view.getListView();
@@ -175,6 +179,8 @@ public class BlockSearchController extends BaseController {
                 blockType,
                 location);
         actionManager.executeCommand(createBlockCommand);
+        
+        editor.addBlock(blockType, EditorMetadata.create(location.getX(), location.getY()));
 
         hideView();
     }

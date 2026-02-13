@@ -24,10 +24,10 @@ public class BlockFactory {
             throw new IllegalArgumentException("Creation aborted, block type unknown: " + type);
         }
         var def = oDef.get();
-        var blockType = def.metadata().type();
+        var blockType = def.type();
         var ports = createPorts(def);
         var params = createParams(def);
-        var block = new Block(id, blockType, ports, params, null);
+        var block = new Block(id, blockType, params, ports, null);
 
         return block;
     }
@@ -36,7 +36,7 @@ public class BlockFactory {
         var result = new ArrayList<Port>();
 
         for (var portDef : def.inputs()) {
-            var port = new Port(Port.Direction.INPUT, portDef.valueId(),  null, portDef.valueType());
+            var port = new Port(Port.Direction.INPUT, portDef.valueId(), null, portDef.valueType());
             result.add(port);
         }
 

@@ -8,8 +8,8 @@ import com.google.gson.JsonPrimitive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import btscore.graph.block.BlockMetadata;
 import btscore.utils.ParsingUtils;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -22,7 +22,7 @@ public class JsonMethods {
             .setPrettyPrinting()
             .create();
 
-    @BlockMetadata(
+    @Block(
             type = "Json.asStringList",
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
@@ -39,7 +39,7 @@ public class JsonMethods {
         return list;
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Json.asList",
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
@@ -78,7 +78,7 @@ public class JsonMethods {
         throw new IllegalArgumentException("Input string \"jsonArray\" is not an array");
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Json.getKey",
             category = "Core",
             description = "Returns the element with the specified key in this JSON object.")
@@ -86,7 +86,7 @@ public class JsonMethods {
         return PARSER.parse(json).getAsJsonObject().get(key).toString();
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Json.getIndex",
             category = "Core",
             description = "Returns the element as string at the specified position in this JSON array.")
@@ -94,7 +94,7 @@ public class JsonMethods {
         return PARSER.parse(json).getAsJsonArray().get(index).toString();
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Json.getPath",
             category = "Core",
             description = "Returns the element with the specified path in this JSON object.")
@@ -131,7 +131,7 @@ public class JsonMethods {
         return element.toString();
     }
 
-    @BlockMetadata(
+    @Block(
             type = "Json.toJson",
             category = "Core",
             description = "This method serializes the specified object into its equivalent Json representation.")

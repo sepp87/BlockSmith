@@ -1,6 +1,5 @@
 package btslib.input;
 
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btslib.file.FileBlock;
 import java.io.File;
@@ -9,12 +8,13 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author joostmeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Input.directory",
         aliases = {"Directory.open"},
         category = "Input",

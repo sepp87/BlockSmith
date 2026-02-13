@@ -14,13 +14,13 @@ import javafx.scene.layout.Region;
 import javax.xml.namespace.QName;
 import btsxml.BlockTag;
 import btscore.graph.block.BlockModel;
-import btscore.graph.block.BlockMetadata;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Input.text",
         category = "Input",
         description = "Input text or observe output as text",

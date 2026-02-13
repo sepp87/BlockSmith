@@ -49,9 +49,9 @@ public final class GraphMapper {
                 );
                 var domain = new Block(
                         BlockId.from(block.getId()),
-                        methodBlock.getBlockDef().metadata().type(),
-                        ports,
+                        methodBlock.getBlockDef().type(),
                         params,
+                        ports,
                         editorMetadata
                 );
 
@@ -121,10 +121,10 @@ public final class GraphMapper {
 
         return result;
     }
-    
+
     private static List<Group> groupsToDomain(WorkspaceModel workspace) {
         var result = new ArrayList<Group>();
-        for(var group : workspace.getBlockGroupModels()) {
+        for (var group : workspace.getBlockGroupModels()) {
             var label = group.nameProperty().get();
             var blocks = group.getBlocks().stream().map(b -> BlockId.from(b.getId())).toList();
             var domain = new Group(label, blocks);
@@ -132,4 +132,4 @@ public final class GraphMapper {
         }
         return result;
     }
- }
+}

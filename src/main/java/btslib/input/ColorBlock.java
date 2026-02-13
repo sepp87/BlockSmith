@@ -7,15 +7,15 @@ import javafx.scene.paint.Color;
 import javax.xml.namespace.QName;
 import btslib.ui.ColorBox;
 import btsxml.BlockTag;
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.workspace.WorkspaceModel;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Input.color",
         category = "Input",
         description = "Pick a nice color from the palette",

@@ -7,14 +7,14 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "Input.file",
         aliases = {"File.open"},
         category = "Input",

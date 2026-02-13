@@ -14,9 +14,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
-import btscore.graph.block.BlockMetadata;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  * Note to self - if multiple changes due to saving recur, it might be worth
@@ -27,7 +27,7 @@ import btscore.graph.block.BlockView;
  *
  * @author JoostMeulenkamp
  */
-@BlockMetadata(
+@Block(
         type = "File.observe",
         category = "File",
         description = "Observe a file",

@@ -1,6 +1,6 @@
 package btslib.method;
 
-import btscore.graph.block.BlockMetadata;
+import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -8,7 +8,7 @@ import btscore.graph.block.BlockMetadata;
  */
 public class MathMethods {
 
-    @BlockMetadata(
+    @Block(
             name = "pi",
             description = "The double value that is closer than any other to pi (π), the ratio of the circumference of a circle to its diameter.",
             type = "Math.pi",
@@ -17,7 +17,7 @@ public class MathMethods {
         return Math.PI;
     }
 
-    @BlockMetadata(
+    @Block(
             name = "2*pi*r",
             description = "The circumference of a circle with radius r.",
             type = "Math.getCircleCircumference",
@@ -26,7 +26,7 @@ public class MathMethods {
         return 2 * Math.PI * r.doubleValue();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "pi*r^2",
             description = "The area of a circle with radius r.",
             type = "Math.getCircleArea",
@@ -35,7 +35,7 @@ public class MathMethods {
         return Math.PI * Math.pow(r.doubleValue(), 2);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "a+b",
             description = "The result of adding value b to a.",
             type = "Math.add",
@@ -51,7 +51,7 @@ public class MathMethods {
         return a.doubleValue() + b.doubleValue();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "a-b",
             description = "The result of substracting value b from a.",
             type = "Math.substract",
@@ -67,7 +67,7 @@ public class MathMethods {
         return a.doubleValue() - b.doubleValue();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "a*b",
             description = "The result of multiplying value a with b.",
             type = "Math.multiply",
@@ -83,7 +83,7 @@ public class MathMethods {
         return a.doubleValue() * b.doubleValue();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "a/b",
             description = "The result of dividing value a by b.",
             type = "Math.divide",
@@ -92,7 +92,7 @@ public class MathMethods {
         return a.doubleValue() / b.doubleValue();
     }
 
-    @BlockMetadata(
+    @Block(
             name = "a%b",
             description = "The remainder of dividing value a by b.",
             type = "Math.remainder",
@@ -108,7 +108,7 @@ public class MathMethods {
         return a.doubleValue() % b.doubleValue();
     }
 
-    @BlockMetadata(
+    @Block(
             description = "Returns the greater of two double values.",
             type = "Math.max",
             category = "Core")
@@ -123,7 +123,7 @@ public class MathMethods {
         return Math.max((double) a, (double) b);
     }
 
-    @BlockMetadata(
+    @Block(
             description = "Returns the smaller of two double values.",
             type = "Math.min",
             category = "Core")
@@ -138,7 +138,7 @@ public class MathMethods {
         return Math.min((double) a, (double) b);
     }
 
-    @BlockMetadata(
+    @Block(
             name = "|a|",
             description = "Returns the absolute value of a double value. If the argument is not negative, the argument is returned. If the argument is negative, the negation of the argument is returned.",
             type = "Math.abs",
