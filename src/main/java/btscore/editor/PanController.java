@@ -4,30 +4,28 @@ import btscore.workspace.WorkspaceModel;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import btscore.UiApp;
-import btscore.editor.context.EventRouter;
-import btscore.editor.context.StateManager;
+import btscore.editor.context.EditorContext;
+import btscore.editor.context.EditorEventRouter;
+import btscore.workspace.WorkspaceState;
 import static btscore.utils.EditorUtils.onFreeSpace;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class PanController extends BaseController {
+public class PanController {
 
-    private final EventRouter eventRouter;
-    private final StateManager state;
-    private final WorkspaceModel workspaceModel;
+    private final EditorEventRouter eventRouter;
+    private final EditorContext context;
 
     private double initialX;
     private double initialY;
     private double initialTranslateX;
     private double initialTranslateY;
 
-    public PanController(String contextId, WorkspaceModel workspaceModel) {
-        super(contextId);
-        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
-        this.state = UiApp.getContext(contextId).getStateManager();
-        this.workspaceModel = workspaceModel;
+    public PanController(EditorEventRouter eventRouter, EditorContext context) {
+        this.eventRouter = eventRouter;
+        this.context = context;
 
         eventRouter.addEventListener(MouseEvent.MOUSE_PRESSED, this::handlePanStarted);
         eventRouter.addEventListener(MouseEvent.MOUSE_DRAGGED, this::handlePanUpdated);
@@ -35,28 +33,31 @@ public class PanController extends BaseController {
     }
 
     public void handlePanStarted(MouseEvent event) {
+        var workspace = context.activeWorkspace();
         boolean onFreeSpace = onFreeSpace(event);
         boolean isSecondary = event.getButton() == MouseButton.SECONDARY;
-        if (onFreeSpace && state.isIdle() && isSecondary) {
-            state.setPanning();
+        if (onFreeSpace && workspace.state().isIdle() && isSecondary) {
+            workspace.state().setPanning();
             initialX = event.getSceneX();
             initialY = event.getSceneY();
-            initialTranslateX = workspaceModel.translateXProperty().get();
-            initialTranslateY = workspaceModel.translateYProperty().get();
+            initialTranslateX = workspace.model().translateXProperty().get();
+            initialTranslateY = workspace.model().translateYProperty().get();
         }
     }
 
     public void handlePanUpdated(MouseEvent event) {
+        var workspace = context.activeWorkspace();
         boolean isSecondary = event.getButton() == MouseButton.SECONDARY;
-        if (state.isPanning() && isSecondary) {
-            workspaceModel.translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
-            workspaceModel.translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
+        if (workspace.state().isPanning() && isSecondary) {
+            workspace.model().translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
+            workspace.model().translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
         }
     }
 
     public void handlePanFinished(MouseEvent event) {
-        if (state.isPanning() && event.getButton() == MouseButton.SECONDARY) {
-            state.setIdle();
+        var workspace = context.activeWorkspace();
+        if (workspace.state().isPanning() && event.getButton() == MouseButton.SECONDARY) {
+            workspace.state().setIdle();
         }
     }
 

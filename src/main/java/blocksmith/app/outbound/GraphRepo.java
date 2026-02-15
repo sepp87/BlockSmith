@@ -2,8 +2,7 @@
 
 package blocksmith.app.outbound;
 
-import blocksmith.domain.graph.Graph;
-import java.io.IOException;
+import blocksmith.app.GraphDocument;
 import java.nio.file.Path;
 
 /**
@@ -12,7 +11,7 @@ import java.nio.file.Path;
  */
 public interface GraphRepo {
     
-    Graph load(Path path) throws Exception;
+    GraphDocument load(Path path) throws Exception;
     
-    void save(Path path, Graph graph) throws Exception;
+    void save(Path path, GraphDocument document) throws Exception;
 }

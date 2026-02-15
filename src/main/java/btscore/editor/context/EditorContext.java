@@ -1,38 +1,36 @@
 package btscore.editor.context;
 
+import btscore.workspace.WorkspaceContext;
+import blocksmith.ui.Workspace;
+import btscore.editor.EditorView;
+import static btscore.utils.EditorUtils.onFreeSpace;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import btscore.editor.EditorView;
-import static btscore.utils.EditorUtils.onFreeSpace;
-import btscore.workspace.WorkspaceView;
 
 /**
  *
- * @author Joost
+ * @author joost
  */
 public class EditorContext {
 
-    private final String id;
+    // commandfactory (global context) > to get current workspace
+    private WorkspaceContext activeWorkspace;
+    private List<WorkspaceContext> workspaces = new ArrayList<>();
+
     private final EditorView editorView;
-    private final WorkspaceView workspaceView;
-    private final StateManager stateManager;
-    private ActionManager actionManager;
-    private EventRouter eventRouter;
-    private Point2D mousePosition = new Point2D(0, 0);
+    private EditorEventRouter eventRouter;
+    private Point2D mousePosition = new Point2D(0, 0); // EDITOR
 
     private final ChangeListener<Object> setupMouseTracking = this::setupMouseTracking;
     private final EventHandler<MouseEvent> trackMouse = this::trackMouse;
-//    private final EventHandler<KeyEvent> trackKeyboard = this::trackKeyboard;
 
-    public EditorContext(EditorView editorView, WorkspaceView workspaceView) {
-        this.id = UUID.randomUUID().toString();
+    public EditorContext(EditorView editorView) {
         this.editorView = editorView;
-        this.workspaceView = workspaceView;
-        this.stateManager = new StateManager();
         editorView.sceneProperty().addListener(setupMouseTracking);
     }
 
@@ -47,59 +45,28 @@ public class EditorContext {
 
     private void trackMouse(MouseEvent event) {
         mousePosition = new Point2D(event.getSceneX(), event.getSceneY());
-        
+
         boolean isEditorFocused = editorView.getScene().focusOwnerProperty().get() instanceof EditorView;
         if (!isEditorFocused && onFreeSpace(event)) {
             editorView.requestFocus();
         }
     }
 
-    public String getId() {
-        return id;
+    public void addWorkspace(WorkspaceContext workspace) {
+        activeWorkspace = workspace;
+        workspaces.add(workspace);
     }
 
-    public void initializeActionManager(ActionManager actionManager) {
-        if (this.actionManager == null) {
-            this.actionManager = actionManager;
-        }
-    }
-
-    public void initializeStateManager() {
-
-    }
-
-    public void initializeEventRouter(EventRouter eventRouter) {
-        if (this.eventRouter == null) {
-            this.eventRouter = eventRouter;
-        }
-    }
-
-    public ActionManager getActionManager() {
-        return actionManager;
-    }
-
-    public StateManager getStateManager() {
-        return stateManager;
-    }
-
-    public EventRouter getEventRouter() {
-        return eventRouter;
-    }
-
-    public Point2D getMousePositionOnScene() {
-        return mousePosition;
+    public WorkspaceContext activeWorkspace() {
+        return activeWorkspace;
     }
 
     public Point2D getMousePositionOnWorkspace() {
-        return workspaceView.sceneToLocal(mousePosition);
+        return activeWorkspace.view().sceneToLocal(mousePosition);
     }
 
     public Point2D sceneToWorkspace(Point2D sceneCoordinates) {
-        return workspaceView.sceneToLocal(sceneCoordinates);
-    }
-
-    public void returnFocusToEditor() {
-        editorView.requestFocus();
+        return activeWorkspace.view().sceneToLocal(sceneCoordinates);
     }
 
 }

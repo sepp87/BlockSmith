@@ -2,6 +2,7 @@ package btscore.editor.commands;
 
 import btscore.editor.context.Command;
 import btscore.editor.context.ResetHistoryCommand;
+import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceModel;
 
 /**
@@ -17,7 +18,7 @@ public class NewFileCommand implements Command, ResetHistoryCommand {
     }
 
     @Override
-    public boolean execute() {
+    public boolean execute(WorkspaceContext context) {
         workspaceModel.reset();
         return true;
 

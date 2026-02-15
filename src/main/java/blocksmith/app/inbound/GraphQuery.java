@@ -10,4 +10,9 @@ import blocksmith.domain.graph.Graph;
 public interface GraphQuery {
     
     Graph currentGraph();
+    
+    boolean hasUndoableState();
+    
+    boolean hasRedoableState();
+    
 }

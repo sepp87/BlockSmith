@@ -27,6 +27,9 @@ public record Group(
     }
 
     public Group withoutBlock(BlockId id) {
+        if(!contains(id)) {
+            return this;
+        }
         var updated = new ArrayList<BlockId>(blocks);
         updated.remove(id);
         return new Group(label, updated);

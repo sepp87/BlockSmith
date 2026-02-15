@@ -1,5 +1,7 @@
 package btscore.editor.radialmenu;
 
+import btscore.editor.context.Command;
+import static btscore.editor.context.Command.Id.*;
 import btscore.icons.FontAwesomeRegular;
 import btscore.icons.FontAwesomeSolid;
 import java.util.ArrayList;
@@ -22,14 +24,14 @@ public class RadialMenuView extends Group {
 
     private RadialMenu buildRadialMenu() {
         // create menu items
-        RadialMenuItem openFileItem = new RadialMenuItem("Open\nfile", "OPEN_FILE", FontAwesomeRegular.FOLDER_OPEN);
-        RadialMenuItem saveFileItem = new RadialMenuItem("Save\nfile", "SAVE_FILE", FontAwesomeRegular.FLOPPY_DISK);
-        RadialMenuItem zoomToFitItem = new RadialMenuItem("Zoom\nto fit", "ZOOM_TO_FIT", FontAwesomeSolid.SEARCH);
+        RadialMenuItem openFileItem = new RadialMenuItem("Open\nfile", OPEN_FILE.name(), FontAwesomeRegular.FOLDER_OPEN);
+        RadialMenuItem saveFileItem = new RadialMenuItem("Save\nfile", SAVE_FILE.name(), FontAwesomeRegular.FLOPPY_DISK);
+        RadialMenuItem zoomToFitItem = new RadialMenuItem("Zoom\nto fit", ZOOM_TO_FIT.name(), FontAwesomeSolid.SEARCH);
         RadialSubMenu alignItem = new RadialSubMenu("Align", FontAwesomeSolid.SORT_AMOUNT_DOWN);
-        RadialMenuItem copyItem = new RadialMenuItem("Copy", "COPY_BLOCKS", FontAwesomeRegular.COPY);
-        RadialMenuItem pasteItem = new RadialMenuItem("Paste", "PASTE_BLOCKS", FontAwesomeRegular.PASTE);
-        RadialMenuItem groupItem = new RadialMenuItem("Group", "GROUP_BLOCKS", FontAwesomeRegular.OBJECT_GROUP);
-        RadialMenuItem newFileItem = new RadialMenuItem("New\nfile", "NEW_FILE", FontAwesomeRegular.FILE);
+        RadialMenuItem copyItem = new RadialMenuItem("Copy", COPY_BLOCKS.name(), FontAwesomeRegular.COPY);
+        RadialMenuItem pasteItem = new RadialMenuItem("Paste", PASTE_BLOCKS.name(), FontAwesomeRegular.PASTE);
+        RadialMenuItem groupItem = new RadialMenuItem("Group", ADD_GROUP.name(), FontAwesomeRegular.OBJECT_GROUP);
+        RadialMenuItem newFileItem = new RadialMenuItem("New\nfile", NEW_FILE.name(), FontAwesomeRegular.FILE);
 
         // create menu
         List<RadialMenuItem> items = new ArrayList();
@@ -52,12 +54,12 @@ public class RadialMenuView extends Group {
 
     private List<RadialMenuItem> buildAlignSubMenu() {
         List<RadialMenuItem> alignItems = new ArrayList();
-        RadialMenuItem alignTopItem = new RadialMenuItem("Align\ntop", "ALIGN_TOP", FontAwesomeSolid.ALIGN_LEFT, 90.);
-        RadialMenuItem alignVerticallyItem = new RadialMenuItem("Align\nvertically", "ALIGN_VERTICALLY", FontAwesomeSolid.ALIGN_CENTER);
-        RadialMenuItem alignRightItem = new RadialMenuItem("Align\nright", "ALIGN_RIGHT", FontAwesomeSolid.ALIGN_RIGHT);
-        RadialMenuItem alignBottomItem = new RadialMenuItem("Align\nbottom", "ALIGN_BOTTOM", FontAwesomeSolid.ALIGN_RIGHT, 90.);
-        RadialMenuItem alignHorizontallyItem = new RadialMenuItem("Align\nhorizontally", "ALIGN_HORIZONTALLY", FontAwesomeSolid.ALIGN_CENTER, 90.);
-        RadialMenuItem alignLefItem = new RadialMenuItem("Align\nleft", "ALIGN_LEFT", FontAwesomeSolid.ALIGN_LEFT);
+        RadialMenuItem alignTopItem = new RadialMenuItem("Align\ntop", ALIGN_TOP.name(), FontAwesomeSolid.ALIGN_LEFT, 90.);
+        RadialMenuItem alignVerticallyItem = new RadialMenuItem("Align\nvertically", ALIGN_VERTICALLY.name(), FontAwesomeSolid.ALIGN_CENTER);
+        RadialMenuItem alignRightItem = new RadialMenuItem("Align\nright", ALIGN_RIGHT.name(), FontAwesomeSolid.ALIGN_RIGHT);
+        RadialMenuItem alignBottomItem = new RadialMenuItem("Align\nbottom", ALIGN_BOTTOM.name(), FontAwesomeSolid.ALIGN_RIGHT, 90.);
+        RadialMenuItem alignHorizontallyItem = new RadialMenuItem("Align\nhorizontally", ALIGN_HORIZONTALLY.name(), FontAwesomeSolid.ALIGN_CENTER, 90.);
+        RadialMenuItem alignLefItem = new RadialMenuItem("Align\nleft", ALIGN_LEFT.name(), FontAwesomeSolid.ALIGN_LEFT);
 
         // create sub menu
         alignItems.add(alignTopItem);

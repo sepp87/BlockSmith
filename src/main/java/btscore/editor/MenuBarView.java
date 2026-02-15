@@ -1,5 +1,6 @@
 package btscore.editor;
 
+import static btscore.editor.context.Command.Id.*;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.control.Menu;
@@ -25,40 +26,40 @@ public class MenuBarView extends MenuBar {
         this.setUseSystemMenuBar(false);
 
         fileMenu = new Menu("File");
-        MenuItem newFile = new MenuItem("New file", "NEW_FILE");
-        MenuItem openFile = new MenuItem("Open file", "OPEN_FILE");
-        save = new MenuItem("Save", "SAVE_FILE");
-        MenuItem saveAs = new MenuItem("Save as", "SAVE_AS_FILE");
+        MenuItem newFile = new MenuItem("New file", NEW_FILE.name());
+        MenuItem openFile = new MenuItem("Open file", OPEN_FILE.name());
+        save = new MenuItem("Save", SAVE_FILE.name());
+        MenuItem saveAs = new MenuItem("Save as", SAVE_AS_FILE.name());
         fileMenu.getItems().addAll(newFile, openFile, save, saveAs);
 
         this.editMenu = new Menu("Edit");
         this.undo = new MenuItem("Undo", "UNDO");
         this.redo = new MenuItem("Redo", "REDO");
-        MenuItem copy = new MenuItem("Copy", "COPY_BLOCKS");
-        MenuItem paste = new MenuItem("Paste", "PASTE_BLOCKS");
-        MenuItem delete = new MenuItem("Delete", "DELETE_SELECTED_BLOCKS");
-        this.group = new MenuItem("Group", "GROUP_BLOCKS");
+        MenuItem copy = new MenuItem("Copy", COPY_BLOCKS.name());
+        MenuItem paste = new MenuItem("Paste", PASTE_BLOCKS.name());
+        MenuItem delete = new MenuItem("Delete", REMOVE_BLOCKS.name());
+        this.group = new MenuItem("Group", ADD_GROUP.name());
         Menu alignMenu = new Menu("Align");
         editMenu.getItems().addAll(undo, redo, copy, paste, delete, group, alignMenu);
 
-        MenuItem alignLeft = new MenuItem("Align left", "ALIGN_LEFT");
-        MenuItem alignVertically = new MenuItem("Align vertically", "ALIGN_VERTICALLY");
-        MenuItem alignRight = new MenuItem("Align right", "ALIGN_RIGHT");
-        MenuItem alignTop = new MenuItem("Align top", "ALIGN_TOP");
-        MenuItem alignHorizontally = new MenuItem("Align horizontally", "ALIGN_HORIZONTALLY");
-        MenuItem alignBottom = new MenuItem("Align bottom", "ALIGN_BOTTOM");
+        MenuItem alignLeft = new MenuItem("Align left", ALIGN_LEFT.name());
+        MenuItem alignVertically = new MenuItem("Align vertically", ALIGN_VERTICALLY.name());
+        MenuItem alignRight = new MenuItem("Align right", ALIGN_RIGHT.name());
+        MenuItem alignTop = new MenuItem("Align top", ALIGN_TOP.name());
+        MenuItem alignHorizontally = new MenuItem("Align horizontally", ALIGN_HORIZONTALLY.name());
+        MenuItem alignBottom = new MenuItem("Align bottom", ALIGN_BOTTOM.name());
         alignMenu.getItems().addAll(alignLeft, alignVertically, alignRight, alignTop, alignHorizontally, alignBottom);
 
         Menu viewMenu = new Menu("View");
-        MenuItem zoomToFit = new MenuItem("Zoom to fit", "ZOOM_TO_FIT");
-        MenuItem zoomIn = new MenuItem("Zoom in", "ZOOM_IN");
-        MenuItem zoomOut = new MenuItem("Zoom out", "ZOOM_OUT");
+        MenuItem zoomToFit = new MenuItem("Zoom to fit", ZOOM_TO_FIT.name());
+        MenuItem zoomIn = new MenuItem("Zoom in", ZOOM_IN.name());
+        MenuItem zoomOut = new MenuItem("Zoom out", ZOOM_OUT.name());
         viewMenu.getItems().addAll(zoomToFit, zoomIn, zoomOut);
 
         Menu extrasMenu = new Menu("Extras");
-        MenuItem reloadPlugins = new MenuItem("Reload plugins", "RELOAD_PLUGINS");
+        MenuItem reloadPlugins = new MenuItem("Reload plugins", RELOAD_PLUGINS.name());
         MenuItem logErrors = new MenuItem("Log errors", "LOG_ERRORS");
-        MenuItem help = new MenuItem("Help", "HELP");
+        MenuItem help = new MenuItem("Help", HELP.name());
         this.styleMenu = new Menu("Style");
         extrasMenu.getItems().addAll(reloadPlugins, logErrors, help, styleMenu);
 

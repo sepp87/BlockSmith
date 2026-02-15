@@ -6,12 +6,9 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
-import btscore.editor.commands.CreateConnectionCommand;
-import btscore.editor.commands.RemoveConnectionCommand;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
-import btscore.utils.TypeCastUtils;
 import btscore.workspace.WorkspaceController;
 import btscore.workspace.WorkspaceModel;
 import btscore.workspace.WorkspaceView;
@@ -55,7 +52,7 @@ public class PreConnection extends Line {
     private final EventHandler<MouseEvent> mouseClickedHandler = this::handleMouseClicked;
 
     private void handleMouseClicked(MouseEvent event) {
-        System.out.println("PreConnection.handleMouseClicked()");
+//        System.out.println("PreConnection.handleMouseClicked()");
 
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onPort = intersectedNode instanceof PortView;
@@ -73,7 +70,7 @@ public class PreConnection extends Line {
     }
 
     private void createConnection(PortController endPortController) {
-        System.out.println("PreConnection.createConnection()");
+//        System.out.println("PreConnection.createConnection()");
 
         PortModel startPortModel = startPortController.getModel();
         PortModel endPortModel = endPortController.getModel();
@@ -87,16 +84,14 @@ public class PreConnection extends Line {
              * Make a new connection and remove all the existing connections
              * Where is multi connect?
              */
-            if (endPortModel.getPortType() == PortType.OUTPUT) {
-                System.out.println("PreConnection.createConnection() INPUT to OUTPUT");
-                CreateConnectionCommand command = new CreateConnectionCommand(workspaceModel, endPortModel, startPortModel);
-                workspaceController.getEditorContext().getActionManager().executeCommand(command);
 
-            } else { // endPort is INPUT
-                System.out.println("PreConnection.createConnection() OUTPUT to INPUT");
-                CreateConnectionCommand command = new CreateConnectionCommand(workspaceModel, startPortModel, endPortModel);
-                workspaceController.getEditorContext().getActionManager().executeCommand(command);
-            }
+
+            var fromPort = endPortModel.getPortType() == PortType.OUTPUT ? endPortModel : startPortModel;
+            var toPort = startPortModel.getPortType() == PortType.INPUT ? startPortModel : endPortModel;
+            var command = workspaceController.context().commandFactory().createAddConnectionCommand(fromPort, toPort);
+            workspaceController.context().actionManager().executeCommand(command);
+
+
 
         }
         /**

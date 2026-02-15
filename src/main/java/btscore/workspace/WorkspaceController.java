@@ -1,5 +1,6 @@
 package btscore.workspace;
 
+import blocksmith.app.inbound.GraphMutation;
 import java.util.ArrayList;
 import btscore.graph.group.BlockGroupModel;
 import btscore.graph.connection.PreConnection;
@@ -11,13 +12,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
 import javafx.geometry.Point2D;
 import btscore.UiApp;
-import btscore.editor.BaseController;
+import btscore.editor.BaseWorkspaceController;
 import btscore.graph.connection.ConnectionController;
 import btscore.graph.connection.ConnectionView;
 import btscore.graph.group.BlockGroupController;
@@ -28,7 +27,7 @@ import btscore.graph.port.PortController;
  *
  * @author JoostMeulenkamp
  */
-public class WorkspaceController extends BaseController {
+public class WorkspaceController extends BaseWorkspaceController {
 
     private final WorkspaceModel model;
     private final WorkspaceView view;
@@ -42,19 +41,25 @@ public class WorkspaceController extends BaseController {
     private final Map<BlockGroupModel, BlockGroupController> blockGroups = new HashMap<>();
     private final Map<String, PortController> ports = new HashMap<>();
 
-    public WorkspaceController(String contextId, WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
-        super(contextId);
+    public WorkspaceController(WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
+        super(WorkspaceContext.createEmpty());
         this.model = workspaceModel;
         this.view = workspaceView;
         this.zoomHelper = new ZoomHelper(model, view);
-        this.selectionHelper = new SelectionHelper(contextId, model, view, this);
+        this.selectionHelper = new SelectionHelper(this, model, view, this);
         this.infoPanelHelper = new InfoPanelHelper(view);
 
         model.addBlockModelsListener(blockModelsListener);
         model.addConnectionModelsListener(connectionModelsListener);
         model.addBlockGroupModelsListener(blockGroupModelsListener);
     }
-    
+
+    public void bindContext(WorkspaceContext context) {
+        if (this.context.id() == null) {
+            this.context = context;
+        }
+    }
+
     public void registerPort(PortController portController) {
         ports.put(portController.getModel().idProperty().get(), portController);
     }

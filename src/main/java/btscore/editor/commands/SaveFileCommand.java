@@ -6,6 +6,7 @@ import btscore.editor.context.Command;
 import btscore.graph.io.GraphSaver;
 import btscore.workspace.WorkspaceModel;
 import btscore.editor.context.MarkSavedCommand;
+import btscore.workspace.WorkspaceContext;
 
 /**
  *
@@ -20,7 +21,7 @@ public class SaveFileCommand implements Command, MarkSavedCommand {
     }
 
     @Override
-    public boolean execute() {
+    public boolean execute(WorkspaceContext context) {
 
         File file = workspaceModel.fileProperty().get();
 

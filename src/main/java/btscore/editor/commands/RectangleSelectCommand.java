@@ -2,6 +2,7 @@ package btscore.editor.commands;
 
 import javafx.geometry.Point2D;
 import btscore.editor.context.Command;
+import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
 
 /**
@@ -21,7 +22,7 @@ public class RectangleSelectCommand implements Command {
     }
 
     @Override
-    public boolean execute() {
+    public boolean execute(WorkspaceContext context) {
         workspaceController.rectangleSelect(selectionMin, selectionMax);
         return true;
 

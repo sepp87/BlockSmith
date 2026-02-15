@@ -1,0 +1,63 @@
+package btscore.editor.commands_done;
+
+import blocksmith.ui.AlignmentPolicy;
+import blocksmith.ui.WorkspaceSession;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import javafx.geometry.Bounds;
+import btscore.graph.block.BlockController;
+import btscore.graph.block.BlockModel;
+import btscore.graph.block.BlockView;
+import btscore.workspace.WorkspaceController;
+import btscore.editor.context.UndoableCommand;
+import btscore.workspace.WorkspaceContext;
+
+/**
+ *
+ * @author JoostMeulenkamp
+ */
+public class AlignHorizontallyCommand implements UndoableCommand {
+
+    private final WorkspaceSession session;
+    private final Collection<BlockController> blocks;
+    private final Map<String, Double> previousLocations = new TreeMap<>();
+
+    public AlignHorizontallyCommand(WorkspaceController workspace, WorkspaceSession session) {
+        this.session = session;
+        this.blocks = workspace.getSelectedBlockControllers();
+    }
+
+    @Override
+    public boolean execute(WorkspaceContext context) {
+        var views = blocks.stream().map(b -> b.getView()).toList();
+        var align = new AlignmentPolicy();
+        var requests = align.apply(views, AlignmentPolicy.Mode.HORIZONTALLY);
+        session.moveBlocks(requests);
+
+        // OLD STUFF
+        
+        List<BlockView> blockViews = new ArrayList<>();
+        for (BlockController blockController : blocks) {
+            blockViews.add(blockController.getView());
+        }
+        Bounds bBox = BlockView.getBoundingBoxOfBlocks(blockViews);
+        for (BlockController blockController : blocks) {
+            BlockModel blockModel = blockController.getModel();
+            BlockView blockView = blockController.getView();
+            previousLocations.put(blockModel.getId(), blockModel.layoutYProperty().get());
+            blockModel.layoutYProperty().set(bBox.getMaxY() - bBox.getHeight() / 2 - blockView.getHeight() / 2);
+        }
+        return true;
+    }
+
+    @Override
+    public void undo() {
+        for (BlockController blockController : blocks) {
+            BlockModel blockModel = blockController.getModel();
+            blockModel.layoutYProperty().set(previousLocations.get(blockModel.getId()));
+        }
+    }
+}

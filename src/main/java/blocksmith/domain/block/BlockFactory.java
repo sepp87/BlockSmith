@@ -1,7 +1,7 @@
 package blocksmith.domain.block;
 
 import blocksmith.domain.value.Port;
-import blocksmith.app.BlockDefLibrary;
+import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.domain.value.Param;
 import java.util.ArrayList;
 import java.util.List;

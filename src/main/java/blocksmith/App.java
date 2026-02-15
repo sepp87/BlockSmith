@@ -1,8 +1,8 @@
 package blocksmith;
 
-import blocksmith.app.AddBlock;
-import blocksmith.app.AddConnection;
-import blocksmith.app.AddGroup;
+import blocksmith.app.block.AddBlock;
+import blocksmith.app.connection.AddConnection;
+import blocksmith.app.group.AddGroup;
 import blocksmith.infra.AppPaths;
 import blocksmith.infra.blockloader.ClassIndex;
 import blocksmith.infra.blockloader.MethodIndex;
@@ -11,12 +11,15 @@ import blocksmith.infra.blockloader.CompositeBlockDefLoader;
 import blocksmith.infra.blockloader.MethodBlockFuncLoader;
 import blocksmith.infra.xml.GraphXmlMapper;
 import blocksmith.infra.xml.GraphXmlRepo;
-import blocksmith.app.BlockDefLibrary;
-import blocksmith.app.BlockFuncLibrary;
+import blocksmith.app.block.BlockDefLibrary;
+import blocksmith.app.block.BlockFuncLibrary;
 import blocksmith.app.GraphEditor;
-import blocksmith.app.RemoveBlock;
-import blocksmith.app.RemoveConnection;
-import blocksmith.app.RemoveGroup;
+import blocksmith.app.block.MoveBlocks;
+import blocksmith.app.block.RemoveAllBlocks;
+import blocksmith.app.block.RemoveBlock;
+import blocksmith.app.block.SetParamValue;
+import blocksmith.app.connection.RemoveConnection;
+import blocksmith.app.group.RemoveGroup;
 import blocksmith.app.inbound.GraphDesignSession;
 import blocksmith.app.outbound.GraphRepo;
 import blocksmith.domain.block.BlockFactory;
@@ -65,11 +68,19 @@ public class App {
         var graph = Graph.createEmpty();
         var addBlock = new AddBlock(blockFactory);
         var removeBlock = new RemoveBlock();
+        var removeAllBlocks = new RemoveAllBlocks();
+        var setParamValue = new SetParamValue();
+        var moveBlocks = new MoveBlocks();
         var addConnection = new AddConnection();
         var removeConnection = new RemoveConnection();
         var addGroup = new AddGroup();
         var removeGroup = new RemoveGroup();
-        this.designSession = new GraphEditor(graph, addBlock, removeBlock, addConnection, removeConnection, addGroup, removeGroup);
+        this.designSession = new GraphEditor(
+                graph, 
+                addBlock, removeBlock, removeAllBlocks, setParamValue, moveBlocks,
+                addConnection, removeConnection, 
+                addGroup, removeGroup
+        );
 
     }
 
@@ -107,7 +118,7 @@ public class App {
     public BlockFuncLibrary getBlockFuncLibrary() {
         return blockFuncLibrary;
     }
-    
+
     public GraphRepo getGraphRepo() {
         return graphRepo;
     }

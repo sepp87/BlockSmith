@@ -1,8 +1,7 @@
 package blocksmith.infra.xml;
 
+import blocksmith.app.GraphDocument;
 import blocksmith.app.outbound.GraphRepo;
-import blocksmith.domain.graph.DocumentMetadata;
-import blocksmith.domain.graph.Graph;
 import blocksmith.xml.v2.DocumentXml;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
@@ -28,25 +27,16 @@ public class GraphXmlRepo implements GraphRepo {
     }
 
     @Override
-    public Graph load(Path path) throws JAXBException {
+    public GraphDocument load(Path path) throws JAXBException {
         JAXBElement<?> jaxbElement = (JAXBElement) unmarshaller.unmarshal(path.toFile());
         var document = (DocumentXml) jaxbElement.getValue();
-        var metadata = extractDocumentMetadata(path, document);
-        return mapper.toDomain(document, metadata);
+        return mapper.toDomain(document);
     }
 
-    private DocumentMetadata extractDocumentMetadata(Path path, DocumentXml document) {
-        return new DocumentMetadata(
-                path,
-                document.getZoomFactor(),
-                document.getTranslateX(),
-                document.getTranslateY()
-        );
-    }
 
     @Override
-    public void save(Path path, Graph graph) throws JAXBException {
-        var jaxbElement = mapper.toXml(graph);
+    public void save(Path path, GraphDocument document) throws JAXBException {
+        var jaxbElement = mapper.toXml(document);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.marshal(jaxbElement, path.toFile());
     }

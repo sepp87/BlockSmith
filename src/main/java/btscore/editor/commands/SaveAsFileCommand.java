@@ -10,6 +10,7 @@ import btscore.editor.context.Command;
 import btscore.workspace.WorkspaceModel;
 import btscore.editor.context.MarkSavedCommand;
 import btscore.graph.io.GraphSaverV2;
+import btscore.workspace.WorkspaceContext;
 
 /**
  *
@@ -24,7 +25,7 @@ public class SaveAsFileCommand implements Command, MarkSavedCommand {
     }
 
     @Override
-    public boolean execute() {
+    public boolean execute(WorkspaceContext context) {
 
         FileChooser chooser = new FileChooser();
         File lastOpenedDirectory = Config.getLastOpenedDirectory();

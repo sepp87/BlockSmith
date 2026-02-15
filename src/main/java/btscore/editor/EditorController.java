@@ -1,29 +1,23 @@
 package btscore.editor;
 
-import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import btscore.UiApp;
-import btscore.editor.context.EventRouter;
-import static btscore.utils.EditorUtils.onFreeSpace;
+import btscore.editor.context.EditorEventRouter;
 
 /**
  *
  * @author Joost
  */
-public class EditorController extends BaseController {
+public class EditorController {
 
-    private final EventRouter eventRouter;
+    private final EditorEventRouter eventRouter;
 
     private final EditorView view;
 
-    public EditorController(String contextId, EditorView editorView) {
+    public EditorController(EditorEventRouter eventRouter, EditorView editorView) {
 
-        super(contextId);
-        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
+        this.eventRouter = eventRouter;
         this.view = editorView;
 
         view.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler); // capture the event before the sub menu is removed from the radial menu when clicking on "Return To Main" from a sub menu 

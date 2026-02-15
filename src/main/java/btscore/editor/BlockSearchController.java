@@ -1,8 +1,7 @@
 package btscore.editor;
 
-import blocksmith.app.BlockDefLibrary;
-import blocksmith.app.inbound.GraphMutation;
-import blocksmith.domain.block.EditorMetadata;
+import blocksmith.app.block.BlockDefLibrary;
+import blocksmith.ui.WorkspaceSession;
 import btscore.Launcher;
 import javafx.beans.value.ChangeListener;
 import static javafx.collections.FXCollections.observableArrayList;
@@ -18,30 +17,27 @@ import btscore.graph.block.BlockLibraryLoader;
 import btscore.utils.ListViewUtils;
 import btscore.utils.NodeHierarchyUtils;
 import btscore.editor.context.ActionManager;
-import btscore.editor.context.EventRouter;
-import btscore.editor.context.StateManager;
-import btscore.editor.commands.CreateBlockCommand;
+import btscore.editor.context.EditorContext;
+import btscore.editor.context.EditorEventRouter;
+import btscore.workspace.WorkspaceState;
 import static btscore.utils.EditorUtils.onFreeSpace;
 import static btscore.utils.EventUtils.isDoubleClick;
 import btscore.utils.ListViewHoverSelectBehaviour;
-import btscore.workspace.WorkspaceController;
 import javafx.collections.FXCollections;
 
 /**
  *
  * @author Joost
  */
-public class BlockSearchController extends BaseController {
+public class BlockSearchController {
 
     private static final double OFFSET = 20;
     private static final int ROWS_VISIBLE = 17;
 
-    private final EventRouter eventRouter;
-    private final ActionManager actionManager;
-    private final StateManager state;
+    private final EditorEventRouter eventRouter;
+    private final EditorContext context;
     private final BlockSearchView view;
     private final BlockDefLibrary blockDefLibrary;
-    private final GraphMutation editor;
 
     private Point2D creationPoint;
 
@@ -50,15 +46,12 @@ public class BlockSearchController extends BaseController {
 
     private final ChangeListener<Boolean> searchFieldFocusChangedListener;
 
-    public BlockSearchController(String contextId, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary, GraphMutation editor) {
-        super(contextId);
-        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
-        this.actionManager = UiApp.getContext(contextId).getActionManager();
-        this.state = UiApp.getContext(contextId).getStateManager();
+    public BlockSearchController(EditorEventRouter eventRouter, EditorContext context, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary) {
+        this.eventRouter = eventRouter;
+        this.context = context;
 
         this.view = blockSearchView;
         this.blockDefLibrary = blockDefLibrary;
-        this.editor = editor;
 
         searchField = view.getSearchField();
         listView = view.getListView();
@@ -79,7 +72,8 @@ public class BlockSearchController extends BaseController {
     }
 
     private void toggleBlockSearch(MouseEvent event) {
-        if (isDoubleClick(event) && onFreeSpace(event) && state.isIdle()) {
+        var workspace = context.activeWorkspace();
+        if (isDoubleClick(event) && onFreeSpace(event) && workspace.state().isIdle()) {
             showView(event.getSceneX(), event.getSceneY());
 
         } else if (view.isVisible() && !NodeHierarchyUtils.isPickedNodeOrParentOfType(event, BlockSearchView.class)) {
@@ -89,7 +83,8 @@ public class BlockSearchController extends BaseController {
     }
 
     private void showView(double x, double y) {
-        state.setAwaitingBlockSearch();
+        var workspace = context.activeWorkspace();
+        workspace.state().setAwaitingBlockSearch();
         creationPoint = new Point2D(x - OFFSET, y - OFFSET);
         view.setVisible(true);
         view.setTranslateX(x - OFFSET);
@@ -102,8 +97,9 @@ public class BlockSearchController extends BaseController {
     }
 
     private void hideView() {
+        var workspace = context.activeWorkspace();
         view.setVisible(false);
-        state.setIdle();
+        workspace.state().setIdle();
         searchField.setText("");
         searchField.focusedProperty().removeListener(searchFieldFocusChangedListener);
     }
@@ -170,18 +166,11 @@ public class BlockSearchController extends BaseController {
             return;
         }
 
-        System.out.println("Create block " + blockType);
-        WorkspaceController workspaceController = actionManager.getWorkspaceController();
-        Point2D location = workspaceController.getView().sceneToLocal(creationPoint);
-        CreateBlockCommand createBlockCommand = new CreateBlockCommand(
-                actionManager.getBlockModelFactory(),
-                actionManager.getWorkspaceModel(),
-                blockType,
-                location);
-        actionManager.executeCommand(createBlockCommand);
-        
-        editor.addBlock(blockType, EditorMetadata.create(location.getX(), location.getY()));
-
+//        System.out.println("Create block " + blockType);
+        var location = context.sceneToWorkspace(creationPoint);
+        var workspace = context.activeWorkspace();
+        var command = workspace.commandFactory().createAddBlockCommand(blockType, location);
+        workspace.actionManager().executeCommand(command);
         hideView();
     }
 

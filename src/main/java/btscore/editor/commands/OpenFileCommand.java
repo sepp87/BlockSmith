@@ -8,6 +8,7 @@ import btscore.editor.context.Command;
 import btscore.graph.io.GraphLoader;
 import btscore.editor.context.ResetHistoryCommand;
 import btscore.editor.context.MarkSavedCommand;
+import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceModel;
 
 /**
@@ -23,7 +24,7 @@ public class OpenFileCommand implements Command, ResetHistoryCommand, MarkSavedC
     }
 
     @Override
-    public boolean execute() {
+    public boolean execute(WorkspaceContext context) {
         //Open File
         FileChooser chooser = new FileChooser();
         File lastOpenedDirectory = Config.getLastOpenedDirectory();

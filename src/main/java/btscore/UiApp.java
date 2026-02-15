@@ -2,7 +2,9 @@ package btscore;
 
 import blocksmith.App;
 import blocksmith.ui.BlockModelFactory;
-import blocksmith.ui.editor.EditorSession;
+import blocksmith.ui.Workspace;
+import btscore.editor.context.EditorContext;
+import blocksmith.ui.WorkspaceSession;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -10,8 +12,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import btscore.editor.context.EditorContext;
-import btscore.editor.context.EventRouter;
+import btscore.workspace.WorkspaceContext;
+import btscore.editor.context.EditorEventRouter;
 import btscore.editor.EditorController;
 import btscore.editor.EditorView;
 import btscore.editor.KeyboardController;
@@ -29,8 +31,11 @@ import btscore.editor.ZoomView;
 import btscore.editor.BlockSearchController;
 import btscore.editor.BlockSearchView;
 import btscore.editor.context.ActionManager;
+import btscore.editor.context.CommandFactory;
+import btscore.workspace.WorkspaceState;
 import btscore.workspace.WorkspaceView;
 import btscore.graph.io.GraphLoader;
+import btscore.workspace.WorkspaceHistory;
 
 /**
  *
@@ -56,8 +61,6 @@ public class UiApp extends Application {
     public static final boolean TYPE_SENSITIVE = true;
     public static final boolean CONNECTION_REFACTOR = false;
 
-    private static final Map<String, EditorContext> CONTEXTS = new HashMap<>();
-
     private static final double APP_WIDTH = 800;
     private static final double APP_HEIGHT = 800;
     private static Stage stage;
@@ -76,9 +79,7 @@ public class UiApp extends Application {
         WorkspaceModel workspaceModel = new WorkspaceModel();
 
         var designSession = app.getGraphDesignSession();
-        var editorSession = new EditorSession(designSession, workspaceModel);
-        
-        
+        var workspaceSession = new WorkspaceSession(designSession, workspaceModel);
 
         // Initialize views
         WorkspaceView workspaceView = new WorkspaceView();
@@ -89,28 +90,29 @@ public class UiApp extends Application {
         MenuBarView menuBarView = new MenuBarView();
         EditorView editorView = new EditorView(radialMenuView, workspaceView, menuBarView, zoomView, selectionRectangleView, blockSearchView);
 
-        // initialize context
-        EditorContext context = new EditorContext(editorView, workspaceView);
-        String contextId = context.getId();
-        CONTEXTS.put(contextId, context);
+        EditorContext editorContext = new EditorContext(editorView);
 
         // initialize EventRouter for Context
-        EventRouter eventRouter = new EventRouter();
-        context.initializeEventRouter(eventRouter);
-
-        // initialize ActionManager for Context
-        WorkspaceController workspaceController = new WorkspaceController(contextId, workspaceModel, workspaceView);
-        ActionManager actionManager = new ActionManager(blockModelFactory, workspaceModel, workspaceController);
-        context.initializeActionManager(actionManager);
+        EditorEventRouter eventRouter = new EditorEventRouter();
 
         // Initialize controllers
-        new ZoomController(contextId, workspaceModel, zoomView);
-        new BlockSearchController(contextId, blockSearchView, blockDefLibrary, editorSession);
-        new SelectionRectangleController(contextId, selectionRectangleView);
-        new PanController(contextId, workspaceModel);
-        new RadialMenuController(contextId, radialMenuView);
-        new MenuBarController(contextId, menuBarView);
-        new EditorController(contextId, editorView);
+        var zoomController = new ZoomController(eventRouter, editorContext, workspaceModel, zoomView);
+        var blockSearchController = new BlockSearchController(eventRouter, editorContext, blockSearchView, blockDefLibrary);
+        var selectionRectangleController = new SelectionRectangleController(eventRouter, editorContext, selectionRectangleView);
+        var panController = new PanController(eventRouter, editorContext);
+        var radialMenuController = new RadialMenuController(eventRouter, editorContext, radialMenuView);
+        var menuBarController = new MenuBarController(editorContext, menuBarView);
+        var editorController = new EditorController(eventRouter, editorView);
+
+        // initialize ActionManager for Context
+        var workspaceState = new WorkspaceState();
+        var workspaceHistory = WorkspaceHistory.create();
+        var commandFactory = new CommandFactory(editorContext, blockModelFactory);
+        var actionManager = new ActionManager(editorContext, workspaceSession, commandFactory);
+        var workspaceController = new WorkspaceController(workspaceModel, workspaceView);
+        var workspaceContext = WorkspaceContext.create(workspaceController, workspaceSession, workspaceState, workspaceHistory, actionManager, commandFactory);
+        workspaceController.bindContext(workspaceContext);
+        editorContext.addWorkspace(workspaceContext);
 
         // Setup scene
         Scene scene = new Scene(editorView, APP_WIDTH, APP_HEIGHT);
@@ -131,7 +133,8 @@ public class UiApp extends Application {
             System.exit(0);  // Force JVM shutdown, triggering the shutdown hook
         });
 
-        scene.setOnKeyPressed(KeyboardController::handleShortcutTriggered);
+        var keyboardController = new KeyboardController(editorContext);
+        scene.setOnKeyPressed(event -> keyboardController.handleShortcutTriggered(event));
 
         if (Config.showHelpOnStartup()) {
             HelpDialog.show();
@@ -141,14 +144,6 @@ public class UiApp extends Application {
 
     public static Stage getStage() {
         return stage;
-    }
-
-    public static EditorContext getContext(String contextId) {
-        return CONTEXTS.get(contextId);
-    }
-
-    public static EditorContext getCurrentContext() {
-        return CONTEXTS.values().iterator().next();
     }
 
 }

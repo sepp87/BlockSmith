@@ -1,10 +1,6 @@
 package btscore.editor.context;
 
-import blocksmith.ui.BlockModelFactory;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import btscore.workspace.WorkspaceController;
-import btscore.workspace.WorkspaceModel;
+import blocksmith.ui.WorkspaceSession;
 
 /**
  *
@@ -12,96 +8,94 @@ import btscore.workspace.WorkspaceModel;
  */
 public class ActionManager {
 
-    private final BlockModelFactory blockModelFactory;
-    private final WorkspaceModel workspaceModel;
-    private final WorkspaceController workspaceController;
-
+    private final EditorContext context;
     private final CommandFactory commandFactory;
 
-    private final Deque<UndoableCommand> undoStack = new ArrayDeque<>();
-    private final Deque<UndoableCommand> redoStack = new ArrayDeque<>();
-
-    private int savepoint = -1;
-
-    public ActionManager(BlockModelFactory blockModelFactory, WorkspaceModel workspaceModel, WorkspaceController workspaceController) {
-        this.blockModelFactory = blockModelFactory;
-        this.workspaceModel = workspaceModel;
-        this.workspaceController = workspaceController;
-        this.commandFactory = new CommandFactory(workspaceModel, workspaceController);
-    }
-    
-    public BlockModelFactory getBlockModelFactory() {
-        return blockModelFactory;
+    public ActionManager(EditorContext context, WorkspaceSession session, CommandFactory commandFactory) {
+        this.context = context;
+        this.commandFactory = commandFactory;
     }
 
-    public WorkspaceModel getWorkspaceModel() {
-        return workspaceModel;
+    public CommandFactory getCommandFactory() {
+        return commandFactory;
     }
 
-    public WorkspaceController getWorkspaceController() {
-        return workspaceController;
-    }
-
-    public void executeCommand(String id) {
-        Command command = commandFactory.createCommand(id);
+    public void executeCommand(Command.Id name) {
+        Command command = commandFactory.createCommand(name);
         if (command != null) {
             executeCommand(command);
         } else {
-            System.out.println("Command not found: " + id);
+            System.out.println("Command not found: " + name);
         }
     }
 
     public void executeCommand(Command command) {
-        boolean isSuccessful = command.execute();
+        var workspace = context.activeWorkspace();
+        var history = context.activeWorkspace().history();
+        var state = context.activeWorkspace().state();
+        boolean isSuccessful = command.execute(workspace);
         if (isSuccessful) {
 
             if (command instanceof UndoableCommand undoable) {
-                undoStack.push(undoable);
-                redoStack.clear();
+                history.undoStack().push(undoable);
+                history.redoStack().clear();
             } else if (command instanceof ResetHistoryCommand) {
                 resetHistory();
             }
 
             if (command instanceof MarkSavedCommand) {
-                savepoint = undoStack.size();
+                var marker = history.undoStack().size();
+                state.setSavepoint(marker);
             }
             updateSavableState();
         }
     }
 
     public void undo() {
-        if (!undoStack.isEmpty()) {
-            UndoableCommand command = undoStack.pop();
+        var workspace = context.activeWorkspace();
+        context.activeWorkspace().session().undo();
+        var history = context.activeWorkspace().history();
+        if (!history.undoStack().isEmpty()) {
+            UndoableCommand command = history.undoStack().pop();
             command.undo();
-            redoStack.push(command);
+            history.redoStack().push(command);
             updateSavableState();
         }
     }
 
     public void redo() {
-        if (!redoStack.isEmpty()) {
-            UndoableCommand command = redoStack.pop();
-            command.execute();
-            undoStack.push(command);
+        var workspace = context.activeWorkspace();
+        context.activeWorkspace().session().redo();
+        var history = context.activeWorkspace().history();
+        if (!history.redoStack().isEmpty()) {
+            UndoableCommand command = history.redoStack().pop();
+            command.execute(workspace);
+            history.undoStack().push(command);
             updateSavableState();
         }
     }
 
     private void updateSavableState() {
-        boolean isSavable = undoStack.size() != savepoint;
-        workspaceModel.savableProperty().set(isSavable);
+        var history = context.activeWorkspace().history();
+        var state = context.activeWorkspace().state();
+        var isSavable = history.undoStack().size() != state.getSavepoint();
+        state.setSavable(isSavable);
     }
 
     public void resetHistory() {
-        undoStack.clear();
-        redoStack.clear();
+        var history = context.activeWorkspace().history();
+        history.undoStack().clear();
+        history.redoStack().clear();
     }
 
     public boolean hasUndoableCommands() {
-        return !undoStack.isEmpty();
+        var history = context.activeWorkspace().history();
+        return !history.undoStack().isEmpty();
     }
 
     public boolean hasRedoableCommands() {
-        return !redoStack.isEmpty();
+        var history = context.activeWorkspace().history();
+        return !history.redoStack().isEmpty();
     }
+
 }

@@ -10,9 +10,9 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import btscore.editor.context.ActionManager;
-import btscore.editor.context.StateManager;
-import btscore.editor.commands.RemoveGroupCommand;
-import btscore.editor.BaseController;
+import btscore.workspace.WorkspaceState;
+import btscore.editor.commands_done.RemoveGroupCommand;
+import btscore.editor.BaseWorkspaceController;
 import btscore.graph.block.BlockController;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
@@ -22,10 +22,10 @@ import btscore.workspace.WorkspaceController;
  *
  * @author JoostMeulenkamp
  */
-public class BlockGroupController extends BaseController {
+public class BlockGroupController extends BaseWorkspaceController {
 
     private final ActionManager actionManager;
-    private final StateManager state;
+    private final WorkspaceState state;
 
     private final WorkspaceController workspaceController;
 
@@ -36,8 +36,8 @@ public class BlockGroupController extends BaseController {
 
     public BlockGroupController(WorkspaceController workspaceController, BlockGroupModel blockGroupModel, BlockGroupView blockGroupView) {
         super(workspaceController);
-        this.actionManager = this.getEditorContext().getActionManager();
-        this.state = this.getEditorContext().getStateManager();
+        this.actionManager = this.context().actionManager();
+        this.state = this.context().state();
         this.workspaceController = workspaceController;
         this.model = blockGroupModel;
         this.view = blockGroupView;
@@ -108,7 +108,7 @@ public class BlockGroupController extends BaseController {
     }
 
     private void handleBinButtonClicked(ActionEvent event) {
-        RemoveGroupCommand command = new RemoveGroupCommand(actionManager.getWorkspaceModel(), model);
+       var command =  context().commandFactory().createRemoveGroupCommand(model);
         actionManager.executeCommand(command);
     }
 

@@ -3,12 +3,10 @@ package btscore.editor.radialmenu;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.input.MouseEvent;
-import btscore.UiApp;
 import btscore.utils.NodeHierarchyUtils;
-import btscore.editor.context.ActionManager;
-import btscore.editor.context.EventRouter;
-import btscore.editor.context.StateManager;
-import btscore.editor.BaseController;
+import btscore.editor.context.EditorEventRouter;
+import btscore.editor.context.Command;
+import btscore.editor.context.EditorContext;
 import static btscore.utils.EditorUtils.onFreeSpace;
 import static btscore.utils.EventUtils.isRightClick;
 
@@ -16,20 +14,17 @@ import static btscore.utils.EventUtils.isRightClick;
  *
  * @author joostmeulenkamp
  */
-public class RadialMenuController extends BaseController {
+public class RadialMenuController {
 
-    private final EventRouter eventRouter;
-    private final ActionManager actionManager;
-    private final StateManager state;
+    private final EditorEventRouter eventRouter;
+    private final EditorContext context;
     private final RadialMenuView view;
 
     private final ChangeListener<Boolean> visibilityToggledHandler;
 
-    public RadialMenuController(String contextId, RadialMenuView radialMenuView) {
-        super(contextId);
-        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
-        this.actionManager = UiApp.getContext(contextId).getActionManager();
-        this.state = UiApp.getContext(contextId).getStateManager();
+    public RadialMenuController(EditorEventRouter eventRouter, EditorContext context, RadialMenuView radialMenuView) {
+        this.eventRouter = eventRouter;
+        this.context = context;
         this.view = radialMenuView;
 
         for (RadialMenuItem item : view.getAllRadialMenuItems()) {
@@ -42,9 +37,10 @@ public class RadialMenuController extends BaseController {
     }
 
     private void toggleRadialMenu(MouseEvent event) {
-        if (isRightClick(event) && onFreeSpace(event) && (state.isIdle() || view.getRadialMenu().isVisible())) {
+        var workspace = context.activeWorkspace();
+        if (isRightClick(event) && onFreeSpace(event) && (workspace.state().isIdle() || view.getRadialMenu().isVisible())) {
             showView(event.getSceneX(), event.getSceneY());
-            
+
         } else if (!NodeHierarchyUtils.isPickedNodeOrParentOfType(event, RadialMenu.class)) {
             // hide radial menu if any kind of click was anywhere else than on the menu
             hideView();
@@ -53,16 +49,17 @@ public class RadialMenuController extends BaseController {
 
     private void handleRadialMenuItemClicked(MouseEvent event) {
         if (event.getSource() instanceof RadialMenuItem menuItem) {
-            actionManager.executeCommand(menuItem.getId());
+            context.activeWorkspace().actionManager().executeCommand(Command.Id.valueOf(menuItem.getId()));
         }
         hideView();
     }
 
     private void handleToggleMouseMode(ObservableValue<? extends Boolean> observableValue, Boolean oldBoolean, Boolean isVisble) {
+        var workspace = context.activeWorkspace();
         if (isVisble) {
-            state.setAwaitingRadialMenu();
+            workspace.state().setAwaitingRadialMenu();
         } else {
-            state.setIdle();
+            workspace.state().setIdle();
         }
     }
 

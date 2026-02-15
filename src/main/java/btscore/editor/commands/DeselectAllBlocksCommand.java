@@ -1,6 +1,7 @@
 package btscore.editor.commands;
 
 import btscore.editor.context.Command;
+import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
 
 /**
@@ -16,7 +17,7 @@ public class DeselectAllBlocksCommand implements Command {
     }
 
     @Override
-    public boolean execute() {
+    public boolean execute(WorkspaceContext context) {
         workspace.deselectAllBlocks();
         return true;
     }

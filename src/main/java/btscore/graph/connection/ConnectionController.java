@@ -4,9 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.CubicCurve;
-import btscore.editor.context.ActionManager;
-import btscore.editor.commands.RemoveConnectionCommand;
-import btscore.editor.BaseController;
+import btscore.editor.BaseWorkspaceController;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
@@ -17,7 +15,7 @@ import btscore.workspace.WorkspaceController;
  *
  * @author JoostMeulenkamp
  */
-public class ConnectionController extends BaseController {
+public class ConnectionController extends BaseWorkspaceController {
 
     private final WorkspaceController workspaceController;
 
@@ -128,9 +126,13 @@ public class ConnectionController extends BaseController {
         if (!isLeftClick(event)) {
             return;
         }
-        ActionManager actionManager = this.getEditorContext().getActionManager();
-        RemoveConnectionCommand command = new RemoveConnectionCommand(actionManager.getWorkspaceModel(), model);
+        
+        var commandFactory = this.context().commandFactory();
+        var command = commandFactory.createRemoveConnectionCommand(model);
+        
+        var actionManager = this.context().actionManager();
         actionManager.executeCommand(command);
+
     }
 
     public void remove() {

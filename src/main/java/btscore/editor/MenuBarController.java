@@ -1,25 +1,24 @@
 package btscore.editor;
 
+import btscore.editor.context.EditorContext;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
-import btscore.UiApp;
 import btscore.Config;
-import btscore.editor.context.ActionManager;
+import btscore.editor.context.Command;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class MenuBarController extends BaseController {
+public class MenuBarController {
 
-    private final ActionManager actionManager;
+    private final EditorContext context;
     private final MenuBarView view;
 
-    public MenuBarController(String contextId, MenuBarView menuBarView) {
-        super(contextId);
-        this.actionManager = UiApp.getContext(contextId).getActionManager();
+    public MenuBarController(EditorContext context, MenuBarView menuBarView) {
+        this.context = context;
         this.view = menuBarView;
 
         for (MenuItem item : view.getAllMenuItems()) {
@@ -37,26 +36,32 @@ public class MenuBarController extends BaseController {
     }
 
     private void undo() {
-        actionManager.undo();
+        context.activeWorkspace().actionManager().undo();
     }
 
     private void redo() {
-        actionManager.redo();
+        context.activeWorkspace().actionManager().redo();
     }
 
     private final ChangeListener<Boolean> fileMenuShownListener = this::onFileMenuShown;
 
     private void onFileMenuShown(Object b, Boolean o, Boolean n) {
-        view.getSaveMenuItem().setDisable(!actionManager.getWorkspaceModel().savableProperty().get());
+        var workspace = context.activeWorkspace();
+        var state = workspace.state();
+        view.getSaveMenuItem().setDisable(!state.isSavable());
     }
 
     private final ChangeListener<Boolean> editMenuShownListener = this::onEditMenuShown;
 
     private void onEditMenuShown(Object b, Boolean o, Boolean n) {
-        view.getUndoMenuItem().setDisable(!actionManager.hasUndoableCommands());
-        view.getRedoMenuItem().setDisable(!actionManager.hasRedoableCommands());
+        var workspace = context.activeWorkspace();
+        var session = workspace.session();
+        var controller = workspace.controller();
 
-        boolean isGroupable = actionManager.getWorkspaceController().areSelectedBlocksGroupable();
+        view.getUndoMenuItem().setDisable(!session.hasUndoableState());
+        view.getRedoMenuItem().setDisable(!session.hasRedoableState());
+
+        boolean isGroupable = controller.areSelectedBlocksGroupable();
         view.getGroupMenuItem().disableProperty().set(!isGroupable);
     }
 
@@ -64,7 +69,7 @@ public class MenuBarController extends BaseController {
 
     private void handleMenuBarItemClicked(ActionEvent event) {
         if (event.getSource() instanceof MenuItem menuItem) {
-            actionManager.executeCommand(menuItem.getId());
+            context.activeWorkspace().actionManager().executeCommand(Command.Id.valueOf(menuItem.getId()));
         }
     }
 

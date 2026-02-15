@@ -5,31 +5,27 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import btscore.UiApp;
 import btscore.editor.context.ActionManager;
-import btscore.editor.context.EventRouter;
-import btscore.editor.context.StateManager;
+import btscore.editor.context.EditorEventRouter;
+import btscore.workspace.WorkspaceState;
 import btscore.editor.context.Command;
-import btscore.editor.commands.DeselectAllBlocksCommand;
-import btscore.editor.commands.RectangleSelectCommand;
+import btscore.editor.context.EditorContext;
 import static btscore.utils.EditorUtils.onFreeSpace;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class SelectionRectangleController extends BaseController {
+public class SelectionRectangleController {
 
-    private final EventRouter eventRouter;
-    private final ActionManager actionManager;
-    private final StateManager state;
+    private final EditorEventRouter eventRouter;
+    private final EditorContext context;
     private final SelectionRectangleView view;
 
     private Point2D startPoint;
 
-    public SelectionRectangleController(String contextId, SelectionRectangleView selectionRectangleView) {
-        super(contextId);
-        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
-        this.actionManager = UiApp.getContext(contextId).getActionManager();
-        this.state = UiApp.getContext(contextId).getStateManager();
+    public SelectionRectangleController(EditorEventRouter eventRouter, EditorContext context, SelectionRectangleView selectionRectangleView) {
+        this.eventRouter = eventRouter;
+        this.context = context;
         this.view = selectionRectangleView;
 
         eventRouter.addEventListener(MouseEvent.MOUSE_PRESSED, this::handleSelectionStarted);
@@ -38,18 +34,20 @@ public class SelectionRectangleController extends BaseController {
     }
 
     public void handleSelectionStarted(MouseEvent event) {
+        var workspace = context.activeWorkspace();
         boolean onFreeSpace = onFreeSpace(event);
         boolean isPrimary = event.getButton() == MouseButton.PRIMARY;
-        boolean isIdle = state.isIdle();
+        boolean isIdle = workspace.state().isIdle();
         if (onFreeSpace && isPrimary && isIdle) {
-            state.setSelecting();
+            workspace.state().setSelecting();
             prepareSelectionRectangle(event);
         }
     }
 
     public void handleSelectionUpdated(MouseEvent event) {
+        var workspace = context.activeWorkspace();
         boolean isPrimary = event.getButton() == MouseButton.PRIMARY;
-        boolean isSelecting = state.isSelecting();
+        boolean isSelecting = workspace.state().isSelecting();
 
         if (isSelecting && isPrimary) {
             initializeSelectionRectangle();
@@ -59,19 +57,21 @@ public class SelectionRectangleController extends BaseController {
     }
 
     public void handleSelectionFinished(MouseEvent event) {
+        var workspace = context.activeWorkspace();
+
         // do NOT reset startPoint to null, because this will throw null pointer exceptions, when accidentally clicking another button when selecting
         if (event.getButton() == MouseButton.PRIMARY) {
-            if (state.isSelecting()) {
+            if (workspace.state().isSelecting()) {
                 // Reset the mouse mode back to idle
-                state.setIdle();
+                workspace.state().setIdle();
                 // Check if selection rectangle is active
                 if (view.isVisible()) {
                     // Finalize selection by removing the selection rectangle
                     removeSelectionRectangle();
                 } else {
                     // Deselect all blocks if no selection rectangle was active
-                    Command command = new DeselectAllBlocksCommand(actionManager.getWorkspaceController());
-                    actionManager.executeCommand(command);
+                    var command = workspace.commandFactory().createCommand(Command.Id.DESELECT_ALL_BLOCKS);
+                    workspace.actionManager().executeCommand(command);
                 }
             }
         }
@@ -109,10 +109,12 @@ public class SelectionRectangleController extends BaseController {
     }
 
     private void updateSelection() {
+        var workspace = context.activeWorkspace();
+        
         Point2D selectionMin = new Point2D(view.getLayoutX(), view.getLayoutY());
         Point2D selectionMax = new Point2D(view.getLayoutX() + view.getWidth(), view.getLayoutY() + view.getHeight());
-        Command command = new RectangleSelectCommand(actionManager.getWorkspaceController(), selectionMin, selectionMax);
-        actionManager.executeCommand(command);
+        var command = workspace.commandFactory().createRectangleSelectCommand(selectionMin, selectionMax);
+        workspace.actionManager().executeCommand(command);
     }
 
     private void removeSelectionRectangle() {

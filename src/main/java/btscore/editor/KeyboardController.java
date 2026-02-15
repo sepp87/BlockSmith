@@ -1,5 +1,6 @@
 package btscore.editor;
 
+import btscore.editor.context.EditorContext;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.C;
 import static javafx.scene.input.KeyCode.DELETE;
@@ -11,23 +12,7 @@ import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
 import btscore.UiApp;
 import btscore.utils.EventUtils;
-import btscore.editor.context.ActionManager;
-import btscore.editor.context.EventRouter;
 import btscore.editor.context.Command;
-import btscore.editor.context.EditorContext;
-import btscore.editor.commands.CopyBlocksCommand;
-import btscore.editor.commands.RemoveSelectedBlocksCommand;
-import btscore.editor.commands.GroupBlocksCommand;
-import btscore.editor.commands.NewFileCommand;
-import btscore.editor.commands.OpenFileCommand;
-import btscore.editor.commands.PasteBlocksCommand;
-import btscore.editor.commands.SaveAsFileCommand;
-import btscore.editor.commands.SaveFileCommand;
-import btscore.editor.commands.SelectAllBlocksCommand;
-import btscore.editor.commands.ZoomInCommand;
-import btscore.editor.commands.ZoomOutCommand;
-import btscore.editor.commands.ZoomToFitCommand;
-import btscore.workspace.WorkspaceController;
 
 /**
  *
@@ -35,85 +20,97 @@ import btscore.workspace.WorkspaceController;
  */
 public class KeyboardController {
 
+    private final EditorContext context;
 
-    public static void handleShortcutTriggered(KeyEvent event) {
-        ActionManager actionManager = UiApp.getCurrentContext().getActionManager();
-        
+    public KeyboardController(EditorContext context) {
+        this.context = context;
+    }
+
+    public void handleShortcutTriggered(KeyEvent event) {
+        var workspace = context.activeWorkspace();
+        var actionManager = workspace.actionManager();
+        var state = workspace.state();
+//        var session = workspace.sesion();
+//        var model = workspace.model();
+//        ActionManager actionManager = UiApp.getCurrentContext().getActionManager();
+
         if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("KeyboardController.handleShortcutTriggered()");
         }
         Command command = null;
         boolean isModifierDown = EventUtils.isModifierDown(event);
+        var commandFactory = workspace.commandFactory();
+
         switch (event.getCode()) {
             case BACK_SPACE:
             case DELETE:
-                command = new RemoveSelectedBlocksCommand(actionManager.getWorkspaceController());
+                command = commandFactory.createCommand(Command.Id.REMOVE_BLOCKS);
+
                 break;
             case C:
                 if (isModifierDown) {
-                    command = new CopyBlocksCommand(actionManager.getWorkspaceController());
+                    command = commandFactory.createCommand(Command.Id.COPY_BLOCKS);
                 }
                 break;
             case V:
                 if (isModifierDown) {
-                    command = new PasteBlocksCommand(actionManager.getWorkspaceController(), actionManager.getWorkspaceModel());
+                    command = commandFactory.createCommand(Command.Id.PASTE_BLOCKS);
                 }
                 break;
             case G:
                 if (isModifierDown) {
-                    WorkspaceController workspaceController = actionManager.getWorkspaceController();
-                    boolean isGroupable = workspaceController.areSelectedBlocksGroupable();
-                    if (isGroupable) {
-                        command = new GroupBlocksCommand(actionManager.getWorkspaceController(), actionManager.getWorkspaceModel());
-                    }
+                    command = commandFactory.createCommand(Command.Id.ADD_GROUP);
                 }
                 break;
             case N:
                 if (isModifierDown) {
-                    command = new NewFileCommand(actionManager.getWorkspaceModel());
+                    command = commandFactory.createCommand(Command.Id.NEW_FILE);
                 }
                 break;
             case S:
                 if (isModifierDown) {
                     if (event.isShiftDown()) {
-                        command = new SaveAsFileCommand(actionManager.getWorkspaceModel());
+                        command = commandFactory.createCommand(Command.Id.SAVE_AS_FILE);
 
-                    } else if (actionManager.getWorkspaceModel().savableProperty().get()) {
-                        command = new SaveFileCommand(actionManager.getWorkspaceModel());
+                    } else if (state.isSavable()) {
+                        command = commandFactory.createCommand(Command.Id.SAVE_FILE);
                     }
                 }
                 break;
             case O:
                 if (isModifierDown) {
-                    command = new OpenFileCommand(actionManager.getWorkspaceModel());
+                    command = commandFactory.createCommand(Command.Id.OPEN_FILE);
                 }
                 break;
             case A:
                 if (isModifierDown) {
-                    command = new SelectAllBlocksCommand(actionManager.getWorkspaceController());
+                    command = commandFactory.createCommand(Command.Id.SELECT_ALL_BLOCKS);
                 }
                 break;
             case PLUS:
                 if (isModifierDown) {
-                    command = new ZoomInCommand(actionManager.getWorkspaceController());
+                    command = commandFactory.createCommand(Command.Id.ZOOM_IN);
+
                 }
                 break;
             case MINUS:
                 if (isModifierDown) {
-                    command = new ZoomOutCommand(actionManager.getWorkspaceController());
+                    command = commandFactory.createCommand(Command.Id.ZOOM_OUT);
                 }
                 break;
             case SPACE:
-                command = new ZoomToFitCommand(actionManager.getWorkspaceController());
+                command = commandFactory.createCommand(Command.Id.ZOOM_TO_FIT);
                 break;
             case Z:
                 if (isModifierDown) {
                     actionManager.undo();
+//                    session.undo();
                 }
                 break;
             case Y:
                 if (isModifierDown) {
                     actionManager.redo();
+//                    session.redo();
                 }
                 break;
 

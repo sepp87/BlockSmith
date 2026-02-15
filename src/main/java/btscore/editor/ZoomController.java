@@ -1,6 +1,5 @@
 package btscore.editor;
 
-import btscore.editor.context.EditorMode;
 import btscore.workspace.WorkspaceModel;
 import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
@@ -15,34 +14,33 @@ import btscore.Config;
 import btscore.utils.NodeHierarchyUtils;
 import btscore.utils.SystemUtils;
 import btscore.editor.context.ActionManager;
-import btscore.editor.context.EventRouter;
-import btscore.editor.context.StateManager;
+import btscore.editor.context.EditorEventRouter;
+import btscore.workspace.WorkspaceState;
 import btscore.editor.context.Command;
-import btscore.editor.commands.ApplyZoomCommand;
-import btscore.editor.commands.ZoomInCommand;
-import btscore.editor.commands.ZoomOutCommand;
+import btscore.editor.context.EditorContext;
 
 /**
  * Manages zooming functionality and controls in the workspace.
  */
-public class ZoomController extends BaseController {
+public class ZoomController {
 
-    private final EventRouter eventRouter;
-    private final ActionManager actionManager;
-    private final StateManager state;
-    private final WorkspaceModel model;
+    private final EditorEventRouter eventRouter;
+    private final EditorContext editorContext;
+//    private final ActionManager actionManager;
+//    private final WorkspaceStateManager state;
+//    private final WorkspaceModel model;
     private final ZoomView view;
 
     // To throttle zoom on macOS
     private long lastZoomTime = 0;
     private final long zoomThrottleInterval = 50;  // Throttle time in milliseconds (tune for macOS)
 
-    public ZoomController(String contextId, WorkspaceModel workspaceModel, ZoomView zoomView) {
-        super(contextId);
-        this.eventRouter = UiApp.getContext(contextId).getEventRouter();
-        this.actionManager = UiApp.getContext(contextId).getActionManager();
-        this.state = UiApp.getContext(contextId).getStateManager();
-        this.model = workspaceModel;
+    public ZoomController(EditorEventRouter eventRouter, EditorContext editorContext, WorkspaceModel workspaceModel, ZoomView zoomView) {
+        this.eventRouter = eventRouter;
+        this.editorContext = editorContext;
+//        this.actionManager = UiApp.getContext(contextId).getActionManager();
+//        this.state = UiApp.getContext(contextId).getStateManager();
+//        this.model = workspaceModel;
         this.view = zoomView;
 
         view.getZoomInButton().setOnAction(this::handleZoomIn);
@@ -56,42 +54,49 @@ public class ZoomController extends BaseController {
     }
 
     private void handleZoomIn(ActionEvent event) {
-        Command command = new ZoomInCommand(actionManager.getWorkspaceController());
-        actionManager.executeCommand(command);
+        var workspace = editorContext.activeWorkspace();
+        var command = workspace.commandFactory().createCommand(Command.Id.ZOOM_IN);
+        workspace.actionManager().executeCommand(command);
     }
 
     private void handleZoomOut(ActionEvent event) {
-        Command command = new ZoomOutCommand(actionManager.getWorkspaceController());
-        actionManager.executeCommand(command);
+        var workspace = editorContext.activeWorkspace();
+        var command = workspace.commandFactory().createCommand(Command.Id.ZOOM_OUT);
+        workspace.actionManager().executeCommand(command);
     }
 
     private void handleZoomReset(MouseEvent event) {
         // Zoom is not from scrolling; no pivot point needed, since scene center is
-        Command command = new ApplyZoomCommand(actionManager.getWorkspaceController(), 1.0, null);
-        actionManager.executeCommand(command);
+        var workspace = editorContext.activeWorkspace();
+
+        var command = workspace.commandFactory().createZoomCommand(1.0, null);
+        workspace.actionManager().executeCommand(command);
     }
 
     public void handleScrollStarted(ScrollEvent event) {
         // Scroll started is not triggered on Mac with a normal mouse
-        if (state.isIdle()) {
-            state.setZooming();
+        var workspace = editorContext.activeWorkspace();
+        if (workspace.state().isIdle()) {
+            workspace.state().setZooming();
         }
     }
 
     // Create and return the ScrollEvent handler for SCROLL
     public void handleScrollUpdated(ScrollEvent event) {
 
+        var workspace = editorContext.activeWorkspace();
+        
         boolean onMac = Config.get().operatingSystem() == SystemUtils.OperatingSystem.MACOS;
-        boolean isZoomModeAndOnMac = state.isZooming() && onMac;
-        boolean isIdleAndNotOnMac = state.isIdle() && !onMac;
+        boolean isZoomModeAndOnMac = workspace.state().isZooming() && onMac;
+        boolean isIdleAndNotOnMac = workspace.state().isIdle() && !onMac;
 
         Node intersectedNode = event.getPickResult().getIntersectedNode();
         boolean onScrollPane = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, ScrollPane.class);
         boolean onListView = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, ListView.class);
         boolean onTableView = NodeHierarchyUtils.isNodeOrParentOfType(intersectedNode, TableView.class);
-        
+
 //        if (!onScrollPane && !onListView && (isZoomModeAndOnMac || isIdleAndNotOnMac)) {
-        if (!onScrollPane && !onListView && !onTableView && (state.isIdle() || isIdleAndNotOnMac)) {
+        if (!onScrollPane && !onListView && !onTableView && (workspace.state().isIdle() || isIdleAndNotOnMac)) {
 
             // Throttle zoom on macOS
             if (onMac) {
@@ -105,21 +110,22 @@ public class ZoomController extends BaseController {
             double newScale;
             // Adjust zoom factor based on scroll direction
             if (event.getDeltaY() > 0) {
-                newScale = model.getIncrementedZoomFactor();
+                newScale = workspace.model().getIncrementedZoomFactor();
             } else {
-                newScale = model.getDecrementedZoomFactor();
+                newScale = workspace.model().getDecrementedZoomFactor();
             }
             Point2D pivotPoint = new Point2D(event.getSceneX(), event.getSceneY());
 
             // Zoom from scrolling; keep zoom centered around mouse position
-            Command command = new ApplyZoomCommand(actionManager.getWorkspaceController(), newScale, pivotPoint);
-            actionManager.executeCommand(command);
+            var command = workspace.commandFactory().createZoomCommand(newScale, pivotPoint);
+            workspace.actionManager().executeCommand(command);
         }
     }
 
     public void handleScrollFinished(ScrollEvent event) {
-        if (state.isZooming()) {
-            state.setIdle();
+        var workspace = editorContext.activeWorkspace();
+        if (workspace.state().isZooming()) {
+            workspace.state().setIdle();
         }
     }
 

@@ -16,10 +16,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import btscore.UiApp;
 import btscore.editor.context.ActionManager;
-import btscore.editor.commands.MoveBlocksCommand;
-import btscore.editor.commands.ResizeBlockCommand;
+import btscore.editor.commands_todo.MoveBlocksCommand;
+import btscore.editor.commands_todo.ResizeBlockCommand;
 import btscore.editor.commands.UpdateSelectionCommand;
-import btscore.editor.BaseController;
+import btscore.editor.BaseWorkspaceController;
 import btscore.graph.block.ExceptionPanel.BlockException;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortModel;
@@ -32,7 +32,7 @@ import btscore.workspace.WorkspaceController;
  *
  * @author Joost
  */
-public class BlockController extends BaseController {
+public class BlockController extends BaseWorkspaceController {
 
     private final ActionManager actionManager;
     private final WorkspaceController workspaceController;
@@ -53,7 +53,7 @@ public class BlockController extends BaseController {
 
     public BlockController(WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
         super(workspaceController);
-        this.actionManager = this.getEditorContext().getActionManager();
+        this.actionManager = this.context().actionManager();
         this.workspaceController = workspaceController;
         this.model = blockModel;
         this.view = blockView;
@@ -164,7 +164,7 @@ public class BlockController extends BaseController {
         view.toFront();
         startPoint = new Point2D(event.getSceneX(), event.getSceneY());
         updatedPoint = startPoint;
-        UpdateSelectionCommand command = new UpdateSelectionCommand(actionManager.getWorkspaceController(), this, EventUtils.isModifierDown(event));
+        var command = actionManager.getCommandFactory().createUpdateSelectionCommand(this, EventUtils.isModifierDown(event));
         actionManager.executeCommand(command);
         event.consume();
     }

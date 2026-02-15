@@ -2,6 +2,7 @@ package btscore.editor.commands;
 
 import btscore.editor.context.Command;
 import btscore.graph.block.BlockLibraryLoader;
+import btscore.workspace.WorkspaceContext;
 
 /**
  *
@@ -13,7 +14,7 @@ public class ReloadPluginsCommand implements Command {
     }
 
     @Override
-    public boolean execute() {
+    public boolean execute(WorkspaceContext context) {
         BlockLibraryLoader.reloadExternalBlocks();
         return true;
 

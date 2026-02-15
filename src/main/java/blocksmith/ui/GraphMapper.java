@@ -29,7 +29,7 @@ public final class GraphMapper {
         var connections = connectionsToDomain(workspace);
         var groups = groupsToDomain(workspace);
 
-        return new Graph(null, blocks, connections, List.of());
+        return new Graph(blocks, connections, groups);
     }
 
     private static List<Block> blocksToDomain(WorkspaceModel workspace) {

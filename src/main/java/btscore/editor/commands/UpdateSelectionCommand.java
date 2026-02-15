@@ -2,6 +2,7 @@ package btscore.editor.commands;
 
 import btscore.editor.context.Command;
 import btscore.graph.block.BlockController;
+import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
 
 /**
@@ -21,7 +22,7 @@ public class UpdateSelectionCommand implements Command {
     }
 
     @Override
-    public boolean execute() {
+    public boolean execute(WorkspaceContext context) {
         workspaceController.updateSelection(blockController, isModifierDown);
         return true;
     }

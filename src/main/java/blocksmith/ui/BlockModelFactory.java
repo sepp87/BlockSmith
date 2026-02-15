@@ -2,8 +2,8 @@ package blocksmith.ui;
 
 import blocksmith.ui.control.TextInput;
 import blocksmith.ui.control.InputControl;
-import blocksmith.app.BlockDefLibrary;
-import blocksmith.app.BlockFuncLibrary;
+import blocksmith.app.block.BlockDefLibrary;
+import blocksmith.app.block.BlockFuncLibrary;
 import blocksmith.domain.value.ParamDef;
 import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.ParamInput.NumericType;
