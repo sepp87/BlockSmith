@@ -1,63 +1,46 @@
 package btscore.workspace;
 
-import blocksmith.ui.WorkspaceSession;
-import btscore.editor.context.ActionManager;
-import btscore.editor.context.CommandFactory;
-import btscore.workspace.WorkspaceController;
-import btscore.workspace.WorkspaceHistory;
-import btscore.workspace.WorkspaceModel;
-import btscore.workspace.WorkspaceView;
 import java.util.UUID;
 
 /**
  *
  * @author Joost
  */
-public record WorkspaceContext(
-        String id,
-        WorkspaceController controller,
-        WorkspaceSession session,
-        WorkspaceState state,
-        WorkspaceHistory history,
-        ActionManager actionManager,
-        CommandFactory commandFactory) {
+public class WorkspaceContext {
 
-    public static WorkspaceContext create(
-            WorkspaceController controller,
-            WorkspaceSession session,
-            WorkspaceState state,
-            WorkspaceHistory history,
-            ActionManager actionManager,
-            CommandFactory commandFactory) {
+    private final String id;
+    private final WorkspaceState state;
+    private final WorkspaceHistory history;
+    private WorkspaceController controller;
 
-        return new WorkspaceContext(
-                UUID.randomUUID().toString(),
-                controller,
-                session,
-                state,
-                history,
-                actionManager,
-                commandFactory);
+    public WorkspaceContext(
+            WorkspaceState state, 
+            WorkspaceHistory history
+    ) {
+        this.id = UUID.randomUUID().toString();
+        this.state = state;
+        this.history = history;
     }
 
-    public static WorkspaceContext createEmpty() {
-        return new WorkspaceContext(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+    public void attachController(WorkspaceController controller) {
+        this.controller = controller;
     }
 
-    public WorkspaceModel model() {
-        return controller.getModel();
+    public String id() {
+        return id;
+
     }
 
-    public WorkspaceView view() {
-        return controller.getView();
+    public WorkspaceState state() {
+        return state;
+    }
+    
+    public WorkspaceHistory history() {
+        return history;
+    }
+
+    public WorkspaceController controller() {
+        return controller;
     }
 
 }

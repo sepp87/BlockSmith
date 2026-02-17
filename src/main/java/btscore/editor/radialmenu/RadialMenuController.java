@@ -1,11 +1,13 @@
 package btscore.editor.radialmenu;
 
+import btscore.editor.context.ActionManager;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.input.MouseEvent;
 import btscore.utils.NodeHierarchyUtils;
 import btscore.editor.context.EditorEventRouter;
 import btscore.editor.context.Command;
+import btscore.editor.context.CommandFactory;
 import btscore.editor.context.EditorContext;
 import static btscore.utils.EditorUtils.onFreeSpace;
 import static btscore.utils.EventUtils.isRightClick;
@@ -16,13 +18,17 @@ import static btscore.utils.EventUtils.isRightClick;
  */
 public class RadialMenuController {
 
+    private final ActionManager actionManager;
+    private final CommandFactory commandFactory;
     private final EditorEventRouter eventRouter;
     private final EditorContext context;
     private final RadialMenuView view;
 
     private final ChangeListener<Boolean> visibilityToggledHandler;
 
-    public RadialMenuController(EditorEventRouter eventRouter, EditorContext context, RadialMenuView radialMenuView) {
+    public RadialMenuController(ActionManager actionManager, CommandFactory commandFactory, EditorEventRouter eventRouter, EditorContext context, RadialMenuView radialMenuView) {
+        this.actionManager = actionManager;
+        this.commandFactory = commandFactory;
         this.eventRouter = eventRouter;
         this.context = context;
         this.view = radialMenuView;
@@ -49,7 +55,7 @@ public class RadialMenuController {
 
     private void handleRadialMenuItemClicked(MouseEvent event) {
         if (event.getSource() instanceof RadialMenuItem menuItem) {
-            context.activeWorkspace().actionManager().executeCommand(Command.Id.valueOf(menuItem.getId()));
+            actionManager.executeCommand(Command.Id.valueOf(menuItem.getId()));
         }
         hideView();
     }

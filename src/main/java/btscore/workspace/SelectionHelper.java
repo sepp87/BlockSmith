@@ -8,13 +8,15 @@ import java.util.Collection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
-import btscore.editor.BaseWorkspaceController;
+import btscore.editor.BaseController;
+import btscore.editor.context.ActionManager;
+import btscore.editor.context.CommandFactory;
 
 /**
  *
  * @author Joost
  */
-public class SelectionHelper extends BaseWorkspaceController {
+public class SelectionHelper extends BaseController {
 
     private final WorkspaceModel model;
     private final WorkspaceView view;
@@ -22,8 +24,8 @@ public class SelectionHelper extends BaseWorkspaceController {
 
     private final ObservableSet<BlockController> selectedBlocks = FXCollections.observableSet();
 
-    public SelectionHelper(WorkspaceController controller, WorkspaceModel workspaceModel, WorkspaceView workspaceView, WorkspaceController workspaceController) {
-        super(controller);
+    public SelectionHelper(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceController controller, WorkspaceModel workspaceModel, WorkspaceView workspaceView, WorkspaceController workspaceController) {
+        super(actionManager, commandFactory, context);
         this.model = workspaceModel;
         this.view = workspaceView;
         this.controller = workspaceController;

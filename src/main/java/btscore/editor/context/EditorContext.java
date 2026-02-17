@@ -1,12 +1,10 @@
 package btscore.editor.context;
 
 import btscore.workspace.WorkspaceContext;
-import blocksmith.ui.Workspace;
 import btscore.editor.EditorView;
 import static btscore.utils.EditorUtils.onFreeSpace;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -62,11 +60,11 @@ public class EditorContext {
     }
 
     public Point2D getMousePositionOnWorkspace() {
-        return activeWorkspace.view().sceneToLocal(mousePosition);
+        return activeWorkspace.controller().getView().sceneToLocal(mousePosition);
     }
 
     public Point2D sceneToWorkspace(Point2D sceneCoordinates) {
-        return activeWorkspace.view().sceneToLocal(sceneCoordinates);
+        return activeWorkspace.controller().getView().sceneToLocal(sceneCoordinates);
     }
 
 }

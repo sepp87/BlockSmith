@@ -1,5 +1,6 @@
 package btscore.editor.commands;
 
+import blocksmith.app.outbound.GraphRepo;
 import java.io.File;
 import javafx.stage.FileChooser;
 import btscore.UiApp;
@@ -19,9 +20,11 @@ import btscore.workspace.WorkspaceContext;
 public class SaveAsFileCommand implements Command, MarkSavedCommand {
 
     private final WorkspaceModel workspaceModel;
+    private final GraphRepo graphRepo;
 
-    public SaveAsFileCommand(WorkspaceModel workspaceModel) {
+    public SaveAsFileCommand(WorkspaceModel workspaceModel, GraphRepo graphRepo) {
         this.workspaceModel = workspaceModel;
+        this.graphRepo = graphRepo;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class SaveAsFileCommand implements Command, MarkSavedCommand {
             if (Launcher.GRAPH_LOADER_V2) {
                 GraphSaverV2.serialize(file, workspaceModel);
             } else {
-                                GraphSaver.serialize(file, workspaceModel);
+                GraphSaver.serialize(file, workspaceModel);
 
             }
         }

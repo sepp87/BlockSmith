@@ -1,7 +1,6 @@
 package btscore.editor.commands_done;
 
 import blocksmith.ui.AlignmentPolicy;
-import blocksmith.ui.WorkspaceSession;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,6 +13,7 @@ import btscore.graph.block.BlockView;
 import btscore.workspace.WorkspaceController;
 import btscore.editor.context.UndoableCommand;
 import btscore.workspace.WorkspaceContext;
+import btscore.workspace.WorkspaceModel;
 
 /**
  *
@@ -21,11 +21,11 @@ import btscore.workspace.WorkspaceContext;
  */
 public class AlignTopCommand implements UndoableCommand {
 
-    private final WorkspaceSession session;
+    private final WorkspaceModel session;
     private final Collection<BlockController> blocks;
     private final Map<String, Double> previousLocations = new TreeMap<>();
 
-    public AlignTopCommand(WorkspaceController workspace, WorkspaceSession session) {
+    public AlignTopCommand(WorkspaceController workspace, WorkspaceModel session) {
         this.session = session;
         this.blocks = workspace.getSelectedBlockControllers();
     }

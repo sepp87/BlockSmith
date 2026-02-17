@@ -6,7 +6,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import btscore.Config;
+import btscore.editor.context.ActionManager;
 import btscore.editor.context.Command;
+import btscore.editor.context.CommandFactory;
 
 /**
  *
@@ -14,10 +16,16 @@ import btscore.editor.context.Command;
  */
 public class MenuBarController {
 
+    private final ActionManager actionManager;
+    private final CommandFactory commandFactory;
     private final EditorContext context;
+
     private final MenuBarView view;
 
-    public MenuBarController(EditorContext context, MenuBarView menuBarView) {
+    public MenuBarController(ActionManager actionManager, CommandFactory commandFactory, EditorContext context, MenuBarView menuBarView) {
+        this.actionManager = actionManager;
+        this.commandFactory = commandFactory;
+
         this.context = context;
         this.view = menuBarView;
 
@@ -36,11 +44,11 @@ public class MenuBarController {
     }
 
     private void undo() {
-        context.activeWorkspace().actionManager().undo();
+        actionManager.undo();
     }
 
     private void redo() {
-        context.activeWorkspace().actionManager().redo();
+        actionManager.redo();
     }
 
     private final ChangeListener<Boolean> fileMenuShownListener = this::onFileMenuShown;
@@ -55,11 +63,10 @@ public class MenuBarController {
 
     private void onEditMenuShown(Object b, Boolean o, Boolean n) {
         var workspace = context.activeWorkspace();
-        var session = workspace.session();
         var controller = workspace.controller();
 
-        view.getUndoMenuItem().setDisable(!session.hasUndoableState());
-        view.getRedoMenuItem().setDisable(!session.hasRedoableState());
+        view.getUndoMenuItem().setDisable(!workspace.controller().getModel().hasUndoableState());
+        view.getRedoMenuItem().setDisable(!workspace.controller().getModel().hasRedoableState());
 
         boolean isGroupable = controller.areSelectedBlocksGroupable();
         view.getGroupMenuItem().disableProperty().set(!isGroupable);
@@ -69,7 +76,7 @@ public class MenuBarController {
 
     private void handleMenuBarItemClicked(ActionEvent event) {
         if (event.getSource() instanceof MenuItem menuItem) {
-            context.activeWorkspace().actionManager().executeCommand(Command.Id.valueOf(menuItem.getId()));
+            actionManager.executeCommand(Command.Id.valueOf(menuItem.getId()));
         }
     }
 

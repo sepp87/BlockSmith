@@ -2,7 +2,7 @@ package blocksmith.ui;
 
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
-import blocksmith.domain.block.EditorMetadata;
+import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.value.Port;
@@ -29,7 +29,7 @@ public final class GraphMapper {
         var connections = connectionsToDomain(workspace);
         var groups = groupsToDomain(workspace);
 
-        return new Graph(blocks, connections, groups);
+        return Graph.withAll(blocks, connections, groups);
     }
 
     private static List<Block> blocksToDomain(WorkspaceModel workspace) {
@@ -40,7 +40,7 @@ public final class GraphMapper {
             if (block instanceof MethodBlockNew methodBlock) {
                 var ports = portsToDomain(methodBlock);
                 var params = paramsToDomain(methodBlock);
-                var editorMetadata = new EditorMetadata(
+                var editorMetadata = new BlockLayout(
                         methodBlock.nameProperty().get(),
                         methodBlock.layoutXProperty().get(),
                         methodBlock.layoutYProperty().get(),

@@ -12,20 +12,20 @@ import javafx.scene.input.MouseEvent;
 import btscore.editor.context.ActionManager;
 import btscore.workspace.WorkspaceState;
 import btscore.editor.commands_done.RemoveGroupCommand;
-import btscore.editor.BaseWorkspaceController;
+import btscore.editor.BaseController;
+import btscore.editor.context.CommandFactory;
 import btscore.graph.block.BlockController;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
+import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-public class BlockGroupController extends BaseWorkspaceController {
+public class BlockGroupController extends BaseController {
 
-    private final ActionManager actionManager;
-    private final WorkspaceState state;
 
     private final WorkspaceController workspaceController;
 
@@ -34,10 +34,8 @@ public class BlockGroupController extends BaseWorkspaceController {
 
     private final ObservableMap<BlockModel, BlockController> children;
 
-    public BlockGroupController(WorkspaceController workspaceController, BlockGroupModel blockGroupModel, BlockGroupView blockGroupView) {
-        super(workspaceController);
-        this.actionManager = this.context().actionManager();
-        this.state = this.context().state();
+    public BlockGroupController(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context,WorkspaceController workspaceController, BlockGroupModel blockGroupModel, BlockGroupView blockGroupView) {
+        super(actionManager, commandFactory, context);
         this.workspaceController = workspaceController;
         this.model = blockGroupModel;
         this.view = blockGroupView;
@@ -108,7 +106,7 @@ public class BlockGroupController extends BaseWorkspaceController {
     }
 
     private void handleBinButtonClicked(ActionEvent event) {
-       var command =  context().commandFactory().createRemoveGroupCommand(model);
+       var command =  commandFactory.createRemoveGroupCommand(model);
         actionManager.executeCommand(command);
     }
 
@@ -127,11 +125,11 @@ public class BlockGroupController extends BaseWorkspaceController {
             blockController.startPoint = new Point2D(event.getSceneX(), event.getSceneY());
             workspaceController.selectBlock(blockController);
         }
-        state.setSelectingBlockGroup(); // prevent group from being deselected
+        workspaceContext.state().setSelectingBlockGroup(); // prevent group from being deselected
     }
 
     private void handleGroupReleased(MouseEvent event) {
-        state.setIdle();
+        workspaceContext.state().setIdle();
 //        event.consume();
     }
 

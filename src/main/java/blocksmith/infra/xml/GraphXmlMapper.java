@@ -35,7 +35,7 @@ public class GraphXmlMapper {
         var connections = connectionMapper.toDomain(document.getConnections().getConnection());
         var updatedBlocks = valueMapper.toDomain(blocks, document.getValues().getValue());
         var groups = groupMapper.toDomain(document.getGroups().getGroup());
-        var graph = new Graph(updatedBlocks, connections, groups);
+        var graph = Graph.withAll(updatedBlocks, connections, groups);
 
         return documentToDomain(document, graph);
     }

@@ -3,7 +3,7 @@ package blocksmith.infra.xml;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockFactory;
 import blocksmith.domain.block.BlockId;
-import blocksmith.domain.block.EditorMetadata;
+import blocksmith.domain.block.BlockLayout;
 import blocksmith.xml.v2.BlockXml;
 import blocksmith.xml.v2.BlocksXml;
 import blocksmith.xml.v2.ObjectFactory;
@@ -34,7 +34,7 @@ public class BlockXmlMapper {
             var type = blockXml.getType();
             var block = blockFactory.create(id, type);
             var metadata = editorMetadataToDomain(blockXml);
-            var updated = block.withEditorMetadata(metadata);
+            var updated = block.withLayout(metadata);
 
             result.add(updated);
 
@@ -42,7 +42,7 @@ public class BlockXmlMapper {
         return result;
     }
 
-    private EditorMetadata editorMetadataToDomain(BlockXml blockXml) {
+    private BlockLayout editorMetadataToDomain(BlockXml blockXml) {
 
         var label = blockXml.getLabel();
         var x = blockXml.getX();
@@ -50,7 +50,7 @@ public class BlockXmlMapper {
         var width = blockXml.getWidth();
         var height = blockXml.getHeight();
 
-        return new EditorMetadata(label, x, y, width, height);
+        return new BlockLayout(label, x, y, width, height);
     }
 
     public BlocksXml toXml(Collection<Block> blocks) {
@@ -68,15 +68,14 @@ public class BlockXmlMapper {
 
     public BlockXml editorMetadataToXml(Block block) {
         var blockXml = xmlFactory.createBlockXml();
-        
-        if (block.editorMetadata().isPresent()) {
-            var metadata = block.editorMetadata().get();
-            blockXml.setLabel(metadata.label());
-            blockXml.setX(metadata.x());
-            blockXml.setY(metadata.y());
-            blockXml.setWidth(metadata.width());
-            blockXml.setHeight(metadata.height());
-        }
+
+        var metadata = block.layout();
+        blockXml.setLabel(metadata.label());
+        blockXml.setX(metadata.x());
+        blockXml.setY(metadata.y());
+        blockXml.setWidth(metadata.width());
+        blockXml.setHeight(metadata.height());
+
         return blockXml;
     }
 

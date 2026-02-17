@@ -8,6 +8,7 @@ import btscore.editor.context.ActionManager;
 import btscore.editor.context.EditorEventRouter;
 import btscore.workspace.WorkspaceState;
 import btscore.editor.context.Command;
+import btscore.editor.context.CommandFactory;
 import btscore.editor.context.EditorContext;
 import static btscore.utils.EditorUtils.onFreeSpace;
 
@@ -17,13 +18,17 @@ import static btscore.utils.EditorUtils.onFreeSpace;
  */
 public class SelectionRectangleController {
 
+    private final ActionManager actionManager;
+    private final CommandFactory commandFactory;
     private final EditorEventRouter eventRouter;
     private final EditorContext context;
     private final SelectionRectangleView view;
 
     private Point2D startPoint;
 
-    public SelectionRectangleController(EditorEventRouter eventRouter, EditorContext context, SelectionRectangleView selectionRectangleView) {
+    public SelectionRectangleController(ActionManager actionManager, CommandFactory commandFactory, EditorEventRouter eventRouter, EditorContext context, SelectionRectangleView selectionRectangleView) {
+        this.actionManager = actionManager;
+        this.commandFactory = commandFactory;
         this.eventRouter = eventRouter;
         this.context = context;
         this.view = selectionRectangleView;
@@ -70,8 +75,8 @@ public class SelectionRectangleController {
                     removeSelectionRectangle();
                 } else {
                     // Deselect all blocks if no selection rectangle was active
-                    var command = workspace.commandFactory().createCommand(Command.Id.DESELECT_ALL_BLOCKS);
-                    workspace.actionManager().executeCommand(command);
+                    var command = commandFactory.createCommand(Command.Id.DESELECT_ALL_BLOCKS);
+                    actionManager.executeCommand(command);
                 }
             }
         }
@@ -113,8 +118,8 @@ public class SelectionRectangleController {
         
         Point2D selectionMin = new Point2D(view.getLayoutX(), view.getLayoutY());
         Point2D selectionMax = new Point2D(view.getLayoutX() + view.getWidth(), view.getLayoutY() + view.getHeight());
-        var command = workspace.commandFactory().createRectangleSelectCommand(selectionMin, selectionMax);
-        workspace.actionManager().executeCommand(command);
+        var command = commandFactory.createRectangleSelectCommand(selectionMin, selectionMax);
+        actionManager.executeCommand(command);
     }
 
     private void removeSelectionRectangle() {

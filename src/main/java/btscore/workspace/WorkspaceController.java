@@ -16,7 +16,9 @@ import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
 import javafx.geometry.Point2D;
 import btscore.UiApp;
-import btscore.editor.BaseWorkspaceController;
+import btscore.editor.BaseController;
+import btscore.editor.context.ActionManager;
+import btscore.editor.context.CommandFactory;
 import btscore.graph.connection.ConnectionController;
 import btscore.graph.connection.ConnectionView;
 import btscore.graph.group.BlockGroupController;
@@ -27,7 +29,7 @@ import btscore.graph.port.PortController;
  *
  * @author JoostMeulenkamp
  */
-public class WorkspaceController extends BaseWorkspaceController {
+public class WorkspaceController extends BaseController {
 
     private final WorkspaceModel model;
     private final WorkspaceView view;
@@ -41,23 +43,17 @@ public class WorkspaceController extends BaseWorkspaceController {
     private final Map<BlockGroupModel, BlockGroupController> blockGroups = new HashMap<>();
     private final Map<String, PortController> ports = new HashMap<>();
 
-    public WorkspaceController(WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
-        super(WorkspaceContext.createEmpty());
+    public WorkspaceController(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
+        super(actionManager, commandFactory, context);
         this.model = workspaceModel;
         this.view = workspaceView;
         this.zoomHelper = new ZoomHelper(model, view);
-        this.selectionHelper = new SelectionHelper(this, model, view, this);
+        this.selectionHelper = new SelectionHelper(actionManager, commandFactory, context, this, model, view, this);
         this.infoPanelHelper = new InfoPanelHelper(view);
 
         model.addBlockModelsListener(blockModelsListener);
         model.addConnectionModelsListener(connectionModelsListener);
         model.addBlockGroupModelsListener(blockGroupModelsListener);
-    }
-
-    public void bindContext(WorkspaceContext context) {
-        if (this.context.id() == null) {
-            this.context = context;
-        }
     }
 
     public void registerPort(PortController portController) {
@@ -109,7 +105,7 @@ public class WorkspaceController extends BaseWorkspaceController {
         }
         BlockView blockView = new BlockView();
         view.getBlockLayer().getChildren().add(blockView);
-        BlockController blockController = new BlockController(this, blockModel, blockView);
+        BlockController blockController = new BlockController(actionManager, commandFactory, workspaceContext, this, blockModel, blockView);
         blocks.put(blockModel, blockController);
     }
 
@@ -154,7 +150,7 @@ public class WorkspaceController extends BaseWorkspaceController {
         }
         BlockGroupView blockGroupView = new BlockGroupView();
         view.getGroupLayer().getChildren().add(0, blockGroupView);
-        BlockGroupController blockGroupController = new BlockGroupController(this, blockGroupModel, blockGroupView);
+        BlockGroupController blockGroupController = new BlockGroupController(actionManager, commandFactory, workspaceContext, this, blockGroupModel, blockGroupView);
         List<BlockController> blockControllers = new ArrayList<>();
         for (BlockModel blockModel : blockGroupModel.getBlocks()) {
             blockControllers.add(blocks.get(blockModel));
@@ -197,7 +193,7 @@ public class WorkspaceController extends BaseWorkspaceController {
 //        view.getChildren().add(position, connectionView);
         view.getConnectionLayer().getChildren().add(connectionView);
 
-        ConnectionController connectionController = new ConnectionController(this, connectionModel, connectionView);
+        ConnectionController connectionController = new ConnectionController(actionManager, commandFactory, workspaceContext, this, connectionModel, connectionView);
         connections.put(connectionModel, connectionController);
 //        view.getChildren().add(0, connectionModel);
     }
@@ -222,7 +218,7 @@ public class WorkspaceController extends BaseWorkspaceController {
             System.out.println("WorkspaceController.initiateConnection()");
         }
         if (preConnection == null) {
-            preConnection = new PreConnection(WorkspaceController.this, portController);
+            preConnection = new PreConnection(actionManager, commandFactory, workspaceContext, WorkspaceController.this, portController);
             view.getConnectionLayer().getChildren().add(0, preConnection);
         }
     }

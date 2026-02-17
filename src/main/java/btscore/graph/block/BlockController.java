@@ -16,25 +16,24 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import btscore.UiApp;
 import btscore.editor.context.ActionManager;
-import btscore.editor.commands_todo.MoveBlocksCommand;
 import btscore.editor.commands_todo.ResizeBlockCommand;
-import btscore.editor.commands.UpdateSelectionCommand;
-import btscore.editor.BaseWorkspaceController;
+import btscore.editor.BaseController;
+import btscore.editor.context.CommandFactory;
 import btscore.graph.block.ExceptionPanel.BlockException;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortModel;
 import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
 import btscore.utils.EventUtils;
+import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
 
 /**
  *
  * @author Joost
  */
-public class BlockController extends BaseWorkspaceController {
+public class BlockController extends BaseController {
 
-    private final ActionManager actionManager;
     private final WorkspaceController workspaceController;
     private final BlockModel model;
     private final BlockView view;
@@ -51,9 +50,8 @@ public class BlockController extends BaseWorkspaceController {
     private double previousWidth = -1;
     private double previousHeight = -1;
 
-    public BlockController(WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
-        super(workspaceController);
-        this.actionManager = this.context().actionManager();
+    public BlockController(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context,WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
+        super(actionManager, commandFactory, context);
         this.workspaceController = workspaceController;
         this.model = blockModel;
         this.view = blockView;
@@ -187,7 +185,8 @@ public class BlockController extends BaseWorkspaceController {
         if (!event.isDragDetect()) {
             Collection<BlockController> blockControllers = workspaceController.getSelectedBlockControllers();
             Point2D delta = updatedPoint.subtract(startPoint);
-            MoveBlocksCommand command = new MoveBlocksCommand(blockControllers, delta);
+            
+            var command = commandFactory.createMoveBlocksCommand(blockControllers, delta);
             actionManager.executeCommand(command);
         }
     }
@@ -262,7 +261,7 @@ public class BlockController extends BaseWorkspaceController {
         if (!event.isDragDetect()) {
             double newWidth = model.widthProperty().get();
             double newHeight = model.heightProperty().get();
-            ResizeBlockCommand command = new ResizeBlockCommand(this, newWidth, newHeight);
+            var command = commandFactory.createResizeBlockCommand(this, newWidth, newHeight);
             actionManager.executeCommand(command);
         }
     }

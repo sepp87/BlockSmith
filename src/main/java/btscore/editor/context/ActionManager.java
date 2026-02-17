@@ -1,6 +1,5 @@
 package btscore.editor.context;
 
-import blocksmith.ui.WorkspaceSession;
 
 /**
  *
@@ -11,7 +10,7 @@ public class ActionManager {
     private final EditorContext context;
     private final CommandFactory commandFactory;
 
-    public ActionManager(EditorContext context, WorkspaceSession session, CommandFactory commandFactory) {
+    public ActionManager(EditorContext context, CommandFactory commandFactory) {
         this.context = context;
         this.commandFactory = commandFactory;
     }
@@ -31,8 +30,8 @@ public class ActionManager {
 
     public void executeCommand(Command command) {
         var workspace = context.activeWorkspace();
-        var history = context.activeWorkspace().history();
-        var state = context.activeWorkspace().state();
+        var state = workspace.state();
+        var history = workspace.history();
         boolean isSuccessful = command.execute(workspace);
         if (isSuccessful) {
 
@@ -46,6 +45,7 @@ public class ActionManager {
             if (command instanceof MarkSavedCommand) {
                 var marker = history.undoStack().size();
                 state.setSavepoint(marker);
+                workspace.controller().getModel().markSaved();
             }
             updateSavableState();
         }
@@ -53,7 +53,7 @@ public class ActionManager {
 
     public void undo() {
         var workspace = context.activeWorkspace();
-        context.activeWorkspace().session().undo();
+        context.activeWorkspace().controller().getModel().undo();
         var history = context.activeWorkspace().history();
         if (!history.undoStack().isEmpty()) {
             UndoableCommand command = history.undoStack().pop();
@@ -65,7 +65,7 @@ public class ActionManager {
 
     public void redo() {
         var workspace = context.activeWorkspace();
-        context.activeWorkspace().session().redo();
+        context.activeWorkspace().controller().getModel().redo();
         var history = context.activeWorkspace().history();
         if (!history.redoStack().isEmpty()) {
             UndoableCommand command = history.redoStack().pop();

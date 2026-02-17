@@ -1,4 +1,4 @@
-package btscore.editor.commands;
+package btscore.editor.commands_done;
 
 import javafx.geometry.Point2D;
 import btscore.editor.context.Command;

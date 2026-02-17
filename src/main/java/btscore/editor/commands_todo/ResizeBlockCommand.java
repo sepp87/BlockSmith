@@ -1,8 +1,10 @@
 package btscore.editor.commands_todo;
 
+import blocksmith.domain.block.BlockId;
 import btscore.graph.block.BlockController;
 import btscore.editor.context.UndoableCommand;
 import btscore.workspace.WorkspaceContext;
+import btscore.workspace.WorkspaceModel;
 
 /**
  *
@@ -10,13 +12,15 @@ import btscore.workspace.WorkspaceContext;
  */
 public class ResizeBlockCommand implements UndoableCommand {
 
+    private final WorkspaceModel workspaceModel;
     private final BlockController blockController;
     private final double previousWidth;
     private final double previousHeight;
     private final double currentWidth;
     private final double currentHeight;
 
-    public ResizeBlockCommand(BlockController blockController, double width, double height) {
+    public ResizeBlockCommand(WorkspaceModel workspaceModel, BlockController blockController, double width, double height) {
+        this.workspaceModel = workspaceModel;
         this.blockController = blockController;
         this.previousWidth = blockController.getPreviousWidth();
         this.previousHeight = blockController.getPreviousHeight();
@@ -26,6 +30,8 @@ public class ResizeBlockCommand implements UndoableCommand {
 
     @Override
     public boolean execute(WorkspaceContext context) {
+        var id = BlockId.from(blockController.getModel().getId());
+        workspaceModel.resizeBlock(id, currentWidth, currentHeight);
         blockController.getModel().widthProperty().set(currentWidth);
         blockController.getModel().heightProperty().set(currentHeight);
         return true;

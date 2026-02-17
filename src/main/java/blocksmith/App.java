@@ -13,17 +13,11 @@ import blocksmith.infra.xml.GraphXmlMapper;
 import blocksmith.infra.xml.GraphXmlRepo;
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.app.block.BlockFuncLibrary;
-import blocksmith.app.GraphEditor;
-import blocksmith.app.block.MoveBlocks;
-import blocksmith.app.block.RemoveAllBlocks;
-import blocksmith.app.block.RemoveBlock;
-import blocksmith.app.block.SetParamValue;
+import blocksmith.app.GraphEditorFactory;
 import blocksmith.app.connection.RemoveConnection;
 import blocksmith.app.group.RemoveGroup;
-import blocksmith.app.inbound.GraphDesignSession;
 import blocksmith.app.outbound.GraphRepo;
 import blocksmith.domain.block.BlockFactory;
-import blocksmith.domain.graph.Graph;
 import blocksmith.xml.v2.ObjectFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -44,7 +38,7 @@ public class App {
     private final BlockDefLibrary blockDefLibrary;
     private final BlockFuncLibrary blockFuncLibrary;
     private final GraphRepo graphRepo;
-    private final GraphDesignSession designSession;
+    private final GraphEditorFactory graphEditorFactory;
 
     public App() throws IOException, JAXBException {
         configureLogging();
@@ -65,20 +59,14 @@ public class App {
         var jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
         this.graphRepo = new GraphXmlRepo(graphXmlMapper, jaxbContext);
 
-        var graph = Graph.createEmpty();
         var addBlock = new AddBlock(blockFactory);
-        var removeBlock = new RemoveBlock();
-        var removeAllBlocks = new RemoveAllBlocks();
-        var setParamValue = new SetParamValue();
-        var moveBlocks = new MoveBlocks();
         var addConnection = new AddConnection();
         var removeConnection = new RemoveConnection();
         var addGroup = new AddGroup();
         var removeGroup = new RemoveGroup();
-        this.designSession = new GraphEditor(
-                graph, 
-                addBlock, removeBlock, removeAllBlocks, setParamValue, moveBlocks,
-                addConnection, removeConnection, 
+        this.graphEditorFactory = new GraphEditorFactory(
+                addBlock, 
+                addConnection, removeConnection,
                 addGroup, removeGroup
         );
 
@@ -123,8 +111,8 @@ public class App {
         return graphRepo;
     }
 
-    public GraphDesignSession getGraphDesignSession() {
-        return designSession;
+    public GraphEditorFactory getGraphEditorFactory() {
+        return graphEditorFactory;
     }
 
 }

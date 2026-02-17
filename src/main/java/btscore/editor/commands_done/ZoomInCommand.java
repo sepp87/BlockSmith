@@ -1,4 +1,4 @@
-package btscore.editor.commands_todo;
+package btscore.editor.commands_done;
 
 import btscore.editor.context.Command;
 import btscore.workspace.WorkspaceContext;

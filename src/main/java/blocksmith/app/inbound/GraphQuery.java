@@ -11,8 +11,5 @@ public interface GraphQuery {
     
     Graph currentGraph();
     
-    boolean hasUndoableState();
-    
-    boolean hasRedoableState();
     
 }

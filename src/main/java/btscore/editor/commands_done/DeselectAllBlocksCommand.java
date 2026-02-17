@@ -1,4 +1,4 @@
-package btscore.editor.commands_todo;
+package btscore.editor.commands_done;
 
 import btscore.editor.context.Command;
 import btscore.workspace.WorkspaceContext;
@@ -6,22 +6,20 @@ import btscore.workspace.WorkspaceController;
 
 /**
  *
- * @author JoostMeulenkamp
+ * @author Joost
  */
-public class ZoomToFitCommand implements Command {
+public class DeselectAllBlocksCommand implements Command {
 
     private final WorkspaceController workspace;
 
-    public ZoomToFitCommand(WorkspaceController workspace) {
+    public DeselectAllBlocksCommand(WorkspaceController workspace) {
         this.workspace = workspace;
     }
 
     @Override
     public boolean execute(WorkspaceContext context) {
-        workspace.zoomToFit();
+        workspace.deselectAllBlocks();
         return true;
     }
-
-
 
 }

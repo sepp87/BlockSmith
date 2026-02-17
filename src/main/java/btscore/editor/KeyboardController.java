@@ -11,8 +11,10 @@ import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
 import btscore.UiApp;
+import btscore.editor.context.ActionManager;
 import btscore.utils.EventUtils;
 import btscore.editor.context.Command;
+import btscore.editor.context.CommandFactory;
 
 /**
  *
@@ -20,15 +22,19 @@ import btscore.editor.context.Command;
  */
 public class KeyboardController {
 
+    
+    private final ActionManager actionManager;
+    private final CommandFactory commandFactory;
     private final EditorContext context;
 
-    public KeyboardController(EditorContext context) {
+    public KeyboardController(ActionManager actionManager, CommandFactory commandFactory,  EditorContext context) {
+        this.actionManager = actionManager;
+        this.commandFactory = commandFactory;
         this.context = context;
     }
 
     public void handleShortcutTriggered(KeyEvent event) {
         var workspace = context.activeWorkspace();
-        var actionManager = workspace.actionManager();
         var state = workspace.state();
 //        var session = workspace.sesion();
 //        var model = workspace.model();
@@ -39,7 +45,6 @@ public class KeyboardController {
         }
         Command command = null;
         boolean isModifierDown = EventUtils.isModifierDown(event);
-        var commandFactory = workspace.commandFactory();
 
         switch (event.getCode()) {
             case BACK_SPACE:

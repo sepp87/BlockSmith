@@ -1,8 +1,7 @@
 package btscore.editor.commands_done;
 
-import blocksmith.domain.block.EditorMetadata;
+import blocksmith.domain.block.BlockLayout;
 import blocksmith.ui.BlockModelFactory;
-import blocksmith.ui.WorkspaceSession;
 import btscore.Launcher;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,6 @@ import btscore.workspace.WorkspaceContext;
  */
 public class AddBlockCommand implements UndoableCommand {
 
-    private final WorkspaceSession session;
     private final BlockModelFactory blockModelFactory;
     private final WorkspaceModel workspaceModel;
     private final String blockType;
@@ -29,8 +27,7 @@ public class AddBlockCommand implements UndoableCommand {
     private BlockModel blockModel;
     private final List<ConnectionModel> wirelessConnections = new ArrayList<>();
 
-    public AddBlockCommand(WorkspaceSession session, BlockModelFactory blockModelFactory, WorkspaceModel workspaceModel, String blockType, Point2D location) {
-        this.session = session;
+    public AddBlockCommand(BlockModelFactory blockModelFactory, WorkspaceModel workspaceModel, String blockType, Point2D location) {
         this.blockModelFactory = blockModelFactory;
         this.workspaceModel = workspaceModel;
         this.blockType = blockType;
@@ -40,8 +37,9 @@ public class AddBlockCommand implements UndoableCommand {
 
     @Override
     public boolean execute(WorkspaceContext context) {
-        session.addBlock(blockType, EditorMetadata.create(location.getX(), location.getY()));
+        workspaceModel.addBlock(blockType, BlockLayout.create(location.getX(), location.getY()));
 
+        // OLD STUFF
         if (blockModel == null) {
 
             if (Launcher.BLOCK_DEF_LOADER) {

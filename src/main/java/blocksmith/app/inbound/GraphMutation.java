@@ -1,8 +1,8 @@
 package blocksmith.app.inbound;
 
-import blocksmith.app.block.MoveBlockRequest;
+import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;
-import blocksmith.domain.block.EditorMetadata;
+import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
 import java.util.Collection;
@@ -13,21 +13,25 @@ import java.util.Collection;
  */
 public interface GraphMutation {
 
-    void addBlock(String type, EditorMetadata metadata);
+    void addBlock(String type, BlockLayout metadata);
 
     void removeBlock(BlockId id);
-    
+
     void removeAllBlocks(Collection<BlockId> ids);
 
     void setParamValue(BlockId id, String valueId, String value);
+
+    void moveBlocks(Collection<BlockPosition> requests);
     
-    void moveBlocks(Collection<MoveBlockRequest> requests);
+    void resizeBlock(BlockId id, double width, double height);
 
     void addConnection(PortRef from, PortRef to);
 
     void removeConnection(Connection connection);
 
     void addGroup(String label, Collection<BlockId> blocks);
+
+    void removeGroup(String label, Collection<BlockId> blocks);
 
 //    void removeGroup();
 //    void ungroup(BlockId id);

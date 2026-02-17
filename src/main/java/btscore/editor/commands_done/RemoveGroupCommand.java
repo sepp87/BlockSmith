@@ -1,6 +1,6 @@
 package btscore.editor.commands_done;
 
-import blocksmith.ui.WorkspaceSession;
+import blocksmith.domain.block.BlockId;
 import java.util.ArrayList;
 import java.util.List;
 import btscore.graph.block.BlockModel;
@@ -14,21 +14,23 @@ import btscore.workspace.WorkspaceContext;
  * @author Joost
  */
 public class RemoveGroupCommand implements UndoableCommand {
-    private final WorkspaceSession session;
 
     private final WorkspaceModel workspaceModel;
     private final BlockGroupModel group;
     private final List<BlockModel> blocks;
 
-    public RemoveGroupCommand(WorkspaceModel workspaceModel, BlockGroupModel group, WorkspaceSession session) {
+    public RemoveGroupCommand(WorkspaceModel workspaceModel, BlockGroupModel group) {
         this.workspaceModel = workspaceModel;
         this.group = group;
         this.blocks = new ArrayList<>(group.getBlocks());
-        this.session = session;
     }
 
     @Override
     public boolean execute(WorkspaceContext context) {
+        var ids = blocks.stream().map(b -> BlockId.from(b.getId())).toList();
+        workspaceModel.removeGroup(group.nameProperty().get(), ids);
+        
+        // OLD STUFF
         workspaceModel.removeBlockGroupModel(group);
         return true;
 

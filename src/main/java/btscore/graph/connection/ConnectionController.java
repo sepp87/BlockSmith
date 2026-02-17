@@ -4,18 +4,22 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.CubicCurve;
-import btscore.editor.BaseWorkspaceController;
+import btscore.editor.BaseController;
+import btscore.editor.context.ActionManager;
+import btscore.editor.context.CommandFactory;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
 import static btscore.utils.EventUtils.isLeftClick;
+import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
+import btscore.workspace.WorkspaceState;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-public class ConnectionController extends BaseWorkspaceController {
+public class ConnectionController extends BaseController {
 
     private final WorkspaceController workspaceController;
 
@@ -25,8 +29,8 @@ public class ConnectionController extends BaseWorkspaceController {
     private final PortController startPortController;
     private final PortController endPortController;
 
-    public ConnectionController(WorkspaceController workspaceController, ConnectionModel model, ConnectionView view) {
-        super(workspaceController);
+    public ConnectionController(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceController workspaceController, ConnectionModel model, ConnectionView view) {
+        super(actionManager, commandFactory, context);
         this.workspaceController = workspaceController;
         this.model = model;
         this.view = view;
@@ -126,11 +130,8 @@ public class ConnectionController extends BaseWorkspaceController {
         if (!isLeftClick(event)) {
             return;
         }
-        
-        var commandFactory = this.context().commandFactory();
+
         var command = commandFactory.createRemoveConnectionCommand(model);
-        
-        var actionManager = this.context().actionManager();
         actionManager.executeCommand(command);
 
     }

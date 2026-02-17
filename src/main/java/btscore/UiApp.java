@@ -1,18 +1,14 @@
 package btscore;
 
 import blocksmith.App;
+import blocksmith.domain.graph.Graph;
 import blocksmith.ui.BlockModelFactory;
-import blocksmith.ui.Workspace;
 import btscore.editor.context.EditorContext;
-import blocksmith.ui.WorkspaceSession;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
-import btscore.workspace.WorkspaceContext;
 import btscore.editor.context.EditorEventRouter;
 import btscore.editor.EditorController;
 import btscore.editor.EditorView;
@@ -24,18 +20,16 @@ import btscore.editor.SelectionRectangleController;
 import btscore.editor.SelectionRectangleView;
 import btscore.editor.radialmenu.RadialMenuController;
 import btscore.editor.radialmenu.RadialMenuView;
-import btscore.workspace.WorkspaceController;
-import btscore.workspace.WorkspaceModel;
 import btscore.editor.ZoomController;
 import btscore.editor.ZoomView;
 import btscore.editor.BlockSearchController;
 import btscore.editor.BlockSearchView;
 import btscore.editor.context.ActionManager;
 import btscore.editor.context.CommandFactory;
-import btscore.workspace.WorkspaceState;
-import btscore.workspace.WorkspaceView;
 import btscore.graph.io.GraphLoader;
-import btscore.workspace.WorkspaceHistory;
+import btscore.workspace.WorkspaceFactory;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
 /**
  *
@@ -71,47 +65,45 @@ public class UiApp extends Application {
         var blockDefLibrary = app.getBlockDefLibrary();
         var blockFuncLibrary = app.getBlockFuncLibrary();
         this.blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
+        var graphRepo = app.getGraphRepo();
 
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
 
-        // Initialize models
-        WorkspaceModel workspaceModel = new WorkspaceModel();
-
-        var designSession = app.getGraphDesignSession();
-        var workspaceSession = new WorkspaceSession(designSession, workspaceModel);
-
         // Initialize views
-        WorkspaceView workspaceView = new WorkspaceView();
+        var tabPane = new TabPane();
         BlockSearchView blockSearchView = new BlockSearchView();
         SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
         ZoomView zoomView = new ZoomView();
         RadialMenuView radialMenuView = new RadialMenuView();
         MenuBarView menuBarView = new MenuBarView();
-        EditorView editorView = new EditorView(radialMenuView, workspaceView, menuBarView, zoomView, selectionRectangleView, blockSearchView);
+        EditorView editorView = new EditorView(radialMenuView, tabPane, menuBarView, zoomView, selectionRectangleView, blockSearchView);
 
-        EditorContext editorContext = new EditorContext(editorView);
+        // Create workspace
+        var graphEditorFactory = app.getGraphEditorFactory();
+        var editorContext = new EditorContext(editorView);
+        var commandFactory = new CommandFactory(editorContext, blockModelFactory, graphRepo);
+        var actionManager = new ActionManager(editorContext, commandFactory);
+        var workspaceFactory = new WorkspaceFactory(graphEditorFactory, actionManager, commandFactory);
+        var workspaceContext = workspaceFactory.create(Graph.createEmpty());
+        var workspaceTab = new Tab("New file");
+        workspaceTab.setContent(workspaceContext.controller().getView());
+        tabPane.getTabs().add(workspaceTab);
 
         // initialize EventRouter for Context
         EditorEventRouter eventRouter = new EditorEventRouter();
 
         // Initialize controllers
-        var zoomController = new ZoomController(eventRouter, editorContext, workspaceModel, zoomView);
-        var blockSearchController = new BlockSearchController(eventRouter, editorContext, blockSearchView, blockDefLibrary);
-        var selectionRectangleController = new SelectionRectangleController(eventRouter, editorContext, selectionRectangleView);
+        var zoomController = new ZoomController(actionManager, commandFactory, eventRouter, editorContext, zoomView);
+        zoomController.bindZoomLabel(workspaceContext.controller().getModel().zoomFactorProperty());
+        var blockSearchController = new BlockSearchController(actionManager, commandFactory, eventRouter, editorContext, blockSearchView, blockDefLibrary);
+        var selectionRectangleController = new SelectionRectangleController(actionManager, commandFactory, eventRouter, editorContext, selectionRectangleView);
         var panController = new PanController(eventRouter, editorContext);
-        var radialMenuController = new RadialMenuController(eventRouter, editorContext, radialMenuView);
-        var menuBarController = new MenuBarController(editorContext, menuBarView);
+        var radialMenuController = new RadialMenuController(actionManager, commandFactory, eventRouter, editorContext, radialMenuView);
+        var menuBarController = new MenuBarController(actionManager, commandFactory, editorContext, menuBarView);
         var editorController = new EditorController(eventRouter, editorView);
 
         // initialize ActionManager for Context
-        var workspaceState = new WorkspaceState();
-        var workspaceHistory = WorkspaceHistory.create();
-        var commandFactory = new CommandFactory(editorContext, blockModelFactory);
-        var actionManager = new ActionManager(editorContext, workspaceSession, commandFactory);
-        var workspaceController = new WorkspaceController(workspaceModel, workspaceView);
-        var workspaceContext = WorkspaceContext.create(workspaceController, workspaceSession, workspaceState, workspaceHistory, actionManager, commandFactory);
-        workspaceController.bindContext(workspaceContext);
         editorContext.addWorkspace(workspaceContext);
 
         // Setup scene
@@ -121,7 +113,7 @@ public class UiApp extends Application {
         stage.setFullScreen(false);
 
 //        GraphLoader.deserialize(new File("btsxml/method-block.btsxml"), workspaceModel);
-        GraphLoader.deserialize(new File("btsxml/aslist.btsxml"), workspaceModel);
+        GraphLoader.deserialize(new File("btsxml/aslist.btsxml"), workspaceContext.controller().getModel());
 //        GraphLoader.deserialize(new File("btsxml/addition.btsxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("btsxml/file.btsxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("btsxml/string-to-text.btsxml"), workspaceModel);
@@ -133,7 +125,7 @@ public class UiApp extends Application {
             System.exit(0);  // Force JVM shutdown, triggering the shutdown hook
         });
 
-        var keyboardController = new KeyboardController(editorContext);
+        var keyboardController = new KeyboardController(actionManager, commandFactory, editorContext);
         scene.setOnKeyPressed(event -> keyboardController.handleShortcutTriggered(event));
 
         if (Config.showHelpOnStartup()) {

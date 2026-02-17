@@ -1,10 +1,12 @@
 package btscore.editor.commands;
 
+import blocksmith.app.outbound.GraphRepo;
 import java.io.File;
 import javafx.stage.FileChooser;
 import btscore.UiApp;
 import btscore.Config;
 import btscore.editor.context.Command;
+import btscore.editor.context.EditorContext;
 import btscore.graph.io.GraphLoader;
 import btscore.editor.context.ResetHistoryCommand;
 import btscore.editor.context.MarkSavedCommand;
@@ -18,9 +20,13 @@ import btscore.workspace.WorkspaceModel;
 public class OpenFileCommand implements Command, ResetHistoryCommand, MarkSavedCommand {
 
     private final WorkspaceModel workspaceModel;
+    private final GraphRepo graphRepo;
+    private final EditorContext context;
 
-    public OpenFileCommand(WorkspaceModel workspaceModel) {
+    public OpenFileCommand(WorkspaceModel workspaceModel, GraphRepo graphRepo, EditorContext context) {
         this.workspaceModel = workspaceModel;
+        this.graphRepo = graphRepo; 
+        this.context = context;
     }
 
     @Override

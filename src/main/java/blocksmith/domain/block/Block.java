@@ -21,14 +21,14 @@ public final class Block {
     private final String type;
     private final List<Param> params;
     private final List<Port> ports;
-    private final EditorMetadata metadata;
+    private final BlockLayout layout;
 
-    public Block(BlockId id, String type, Collection<Param> params, Collection<Port> ports, EditorMetadata metadata) {
+    public Block(BlockId id, String type, Collection<Param> params, Collection<Port> ports, BlockLayout layout) {
         this.id = Objects.requireNonNull(id);
         this.type = Objects.requireNonNull(type);
         this.params = List.copyOf(Objects.requireNonNull(params));
         this.ports = List.copyOf(Objects.requireNonNull(ports));
-        this.metadata = metadata;
+        this.layout = layout == null ? BlockLayout.createEmpty() : layout;
     }
 
     public BlockId id() {
@@ -47,8 +47,8 @@ public final class Block {
         return ports;
     }
 
-    public Optional<EditorMetadata> editorMetadata() {
-        return Optional.ofNullable(metadata);
+    public BlockLayout layout() {
+        return layout;
     }
 
     public Optional<Param> param(String valueId) {
@@ -95,17 +95,47 @@ public final class Block {
                 type,
                 updated,
                 ports,
-                metadata
+                layout
         );
     }
 
-    public Block withEditorMetadata(EditorMetadata metadata) {
+    public Block withLabel(String label) {
         return new Block(
                 id,
                 type,
                 params,
                 ports,
-                metadata
+                layout.withLabel(label)
+        );
+    }
+
+    public Block withPosition(double x, double y) {
+        return new Block(
+                id,
+                type,
+                params,
+                ports,
+                layout.withPosition(x, y)
+        );
+    }
+
+    public Block withSize(double width, double height) {
+        return new Block(
+                id,
+                type,
+                params,
+                ports,
+                layout.withSize(width, height)
+        );
+    }
+
+    public Block withLayout(BlockLayout layout) {
+        return new Block(
+                id,
+                type,
+                params,
+                ports,
+                layout
         );
     }
 

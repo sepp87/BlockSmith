@@ -1,5 +1,7 @@
 package btscore.graph.connection;
 
+import btscore.editor.context.ActionManager;
+import btscore.editor.context.CommandFactory;
 import btscore.graph.port.PortModel;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -9,8 +11,10 @@ import javafx.scene.shape.Line;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
+import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
 import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceState;
 import btscore.workspace.WorkspaceView;
 
 /**
@@ -19,13 +23,20 @@ import btscore.workspace.WorkspaceView;
  */
 public class PreConnection extends Line {
 
+    private final ActionManager actionManager;
+    private final CommandFactory commandFactory;
+    private final WorkspaceContext workspaceContext;
+
     private final WorkspaceController workspaceController;
     private final WorkspaceView workspaceView;
     private final WorkspaceModel workspaceModel;
 
     private final PortController startPortController;
 
-    public PreConnection(WorkspaceController workspaceController, PortController startPortController) {
+    public PreConnection(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context,  WorkspaceController workspaceController, PortController startPortController) {
+        this.actionManager = actionManager;
+        this.commandFactory = commandFactory;
+        this.workspaceContext = context;
         this.workspaceController = workspaceController;
         this.workspaceView = workspaceController.getView();
         this.workspaceModel = workspaceController.getModel();
@@ -85,13 +96,10 @@ public class PreConnection extends Line {
              * Where is multi connect?
              */
 
-
             var fromPort = endPortModel.getPortType() == PortType.OUTPUT ? endPortModel : startPortModel;
             var toPort = startPortModel.getPortType() == PortType.INPUT ? startPortModel : endPortModel;
-            var command = workspaceController.context().commandFactory().createAddConnectionCommand(fromPort, toPort);
-            workspaceController.context().actionManager().executeCommand(command);
-
-
+            var command = commandFactory.createAddConnectionCommand(fromPort, toPort);
+            actionManager.executeCommand(command);
 
         }
         /**

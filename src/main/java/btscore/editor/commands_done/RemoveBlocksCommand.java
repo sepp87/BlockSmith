@@ -1,7 +1,6 @@
 package btscore.editor.commands_done;
 
 import blocksmith.domain.block.BlockId;
-import blocksmith.ui.WorkspaceSession;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,7 +26,7 @@ import btscore.workspace.WorkspaceContext;
  */
 public class RemoveBlocksCommand implements UndoableCommand {
 
-    private final WorkspaceSession session;
+    private final WorkspaceModel session;
 
     private final WorkspaceController workspaceController;
     private final Collection<BlockController> blocks;
@@ -36,7 +35,7 @@ public class RemoveBlocksCommand implements UndoableCommand {
     private final Map<BlockGroupModel, List<BlockModel>> blockGroups = new TreeMap<>();
     private final Map<Integer, List<PortModel>> recordedTransmitters = new TreeMap<>(); // use treemap to ensure looping is done by index ascending
 
-    public RemoveBlocksCommand(WorkspaceController workspaceController, WorkspaceSession session) {
+    public RemoveBlocksCommand(WorkspaceController workspaceController, WorkspaceModel session) {
         this.workspaceController = workspaceController;
         this.blocks = workspaceController.getSelectedBlockControllers();
         this.session = session;

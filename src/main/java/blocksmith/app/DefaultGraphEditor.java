@@ -4,16 +4,11 @@ import blocksmith.app.connection.AddConnection;
 import blocksmith.app.connection.RemoveConnection;
 import blocksmith.app.group.RemoveGroup;
 import blocksmith.app.group.AddGroup;
-import blocksmith.app.block.RemoveBlock;
 import blocksmith.app.block.AddBlock;
-import blocksmith.app.block.MoveBlockRequest;
-import blocksmith.app.block.MoveBlocks;
-import blocksmith.app.block.RemoveAllBlocks;
-import blocksmith.app.block.SetParamValue;
-import blocksmith.app.inbound.GraphDesignSession;
+import blocksmith.domain.block.BlockPosition;
 import static blocksmith.app.logging.IdFormatter.shortId;
 import blocksmith.domain.block.BlockId;
-import blocksmith.domain.block.EditorMetadata;
+import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
@@ -22,36 +17,31 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import blocksmith.app.inbound.GraphEditor;
+import java.util.Objects;
 
 /**
  *
  * @author joost
  */
-public class GraphEditor implements GraphDesignSession {
+public class DefaultGraphEditor implements GraphEditor {
 
-    private static final Logger LOGGER = Logger.getLogger(GraphDesignSession.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GraphEditor.class.getName());
 
+    private Graph savepoint;
     private Graph graph;
     private final ArrayDeque<Graph> undoStack = new ArrayDeque<>();
     private final ArrayDeque<Graph> redoStack = new ArrayDeque<>();
 
     private final AddBlock addBlock;
-    private final RemoveBlock removeBlock;
-    private final RemoveAllBlocks removeAllBlocks;
-    private final SetParamValue setParamValue;
-    private final MoveBlocks moveBlocks;
     private final AddConnection addConnection;
     private final RemoveConnection removeConnection;
     private final AddGroup addGroup;
     private final RemoveGroup removeGroup;
 
-    public GraphEditor(
+    public DefaultGraphEditor(
             Graph graph,
             AddBlock addBlock,
-            RemoveBlock removeBlock,
-            RemoveAllBlocks removeAllBlocks,
-            SetParamValue setParamValue,
-            MoveBlocks moveBlocks,
             AddConnection addConnection,
             RemoveConnection removeConnection,
             AddGroup addGroup,
@@ -59,10 +49,6 @@ public class GraphEditor implements GraphDesignSession {
 
         this.graph = graph;
         this.addBlock = addBlock;
-        this.removeBlock = removeBlock;
-        this.removeAllBlocks = removeAllBlocks;
-        this.setParamValue = setParamValue;
-        this.moveBlocks = moveBlocks;
         this.addConnection = addConnection;
         this.removeConnection = removeConnection;
         this.addGroup = addGroup;
@@ -83,7 +69,7 @@ public class GraphEditor implements GraphDesignSession {
         graph = updated;
     }
 
-    public void addBlock(String type, EditorMetadata metadata) {
+    public void addBlock(String type, BlockLayout metadata) {
         var id = BlockId.create();
         mutate((graph) -> addBlock.execute(graph, id, type));
         LOGGER.log(Level.INFO, "Add block: {0} {1}",
@@ -92,12 +78,12 @@ public class GraphEditor implements GraphDesignSession {
     }
 
     public void removeBlock(BlockId id) {
-        mutate((graph) -> removeBlock.execute(graph, id));
+        mutate((graph) -> graph.withoutBlock(id));
         LOGGER.log(Level.INFO, "Remove block: {0}", shortId(id.value()));
     }
 
     public void removeAllBlocks(Collection<BlockId> blocks) {
-        mutate((graph) -> removeAllBlocks.execute(graph, blocks));
+        mutate((graph) -> graph.withoutBlocks(blocks));
         var shortIds = blocks.stream().map(id -> shortId(id.value())).toList();
         LOGGER.log(Level.INFO, "Remove all blocks: {0}", shortIds.toString());
     }
@@ -108,10 +94,17 @@ public class GraphEditor implements GraphDesignSession {
         );
     }
 
-    public void moveBlocks(Collection<MoveBlockRequest> requests) {
-        mutate((graph) -> moveBlocks.execute(graph, requests));
-        var shortIds = requests.stream().map(r -> shortId(r.id().value())).toList();
+    public void moveBlocks(Collection<BlockPosition> positions) {
+        mutate((graph) -> graph.moveBlocks(positions));
+        var shortIds = positions.stream().map(r -> shortId(r.id().value())).toList();
         LOGGER.log(Level.INFO, "Move blocks: {0}", shortIds.toString());
+    }
+
+    public void resizeBlock(BlockId id, double width, double height) {
+        mutate((graph) -> graph.resizeBlock(id, width, height));
+        LOGGER.log(Level.INFO, "Resize block: {0}, width: {1}, height: {2} ",
+                new Object[]{shortId(id.value()), width, height}
+        );
     }
 
     public void addConnection(PortRef from, PortRef to) {
@@ -173,5 +166,6 @@ public class GraphEditor implements GraphDesignSession {
     public boolean hasRedoableState() {
         return !redoStack.isEmpty();
     }
+
 
 }

@@ -2,7 +2,6 @@ package btscore.editor.commands_done;
 
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
-import blocksmith.ui.WorkspaceSession;
 import java.util.HashSet;
 import java.util.Set;
 import btscore.graph.connection.ConnectionModel;
@@ -19,19 +18,17 @@ import btscore.workspace.WorkspaceContext;
  */
 public class AddConnectionCommand implements UndoableCommand {
 
-    private final WorkspaceSession session;
     private final WorkspaceModel workspaceModel;
     private final PortModel fromPort;
     private final PortModel toPort;
     private final Set<ConnectionModel> removedConnections;
     private ConnectionModel newConnection;
 
-    public AddConnectionCommand(WorkspaceModel workspaceModel, PortModel fromPort, PortModel toPort, WorkspaceSession session) {
+    public AddConnectionCommand(WorkspaceModel workspaceModel, PortModel fromPort, PortModel toPort) {
         this.workspaceModel = workspaceModel;
         this.fromPort = fromPort;
         this.toPort = toPort;
         this.removedConnections = new HashSet<>();
-        this.session = session;
     }
 
     @Override
@@ -45,7 +42,7 @@ public class AddConnectionCommand implements UndoableCommand {
                 BlockId.from(toPort.getBlock().getId()),
                 toPort.nameProperty().get()
         );
-        session.addConnection(from, to);
+        workspaceModel.addConnection(from, to);
 
         // OLD STUFF
         System.out.println("CreateConnectionCommand.execute()");

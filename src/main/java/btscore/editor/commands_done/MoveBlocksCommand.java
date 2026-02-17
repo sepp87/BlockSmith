@@ -1,5 +1,7 @@
-package btscore.editor.commands_todo;
+package btscore.editor.commands_done;
 
+import blocksmith.domain.block.BlockPosition;
+import blocksmith.domain.block.BlockId;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
@@ -8,6 +10,8 @@ import btscore.graph.block.BlockController;
 import btscore.graph.block.BlockModel;
 import btscore.editor.context.UndoableCommand;
 import btscore.workspace.WorkspaceContext;
+import btscore.workspace.WorkspaceModel;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,12 +19,14 @@ import btscore.workspace.WorkspaceContext;
  */
 public class MoveBlocksCommand implements UndoableCommand {
 
+    private final WorkspaceModel workspaceModel;
     private final Collection<BlockController> blocks;
     private final Point2D delta;
     private final Map<String, Point2D> previousLocations = new TreeMap<>();
     private final Map<String, Point2D> currentLocations = new TreeMap<>();
 
-    public MoveBlocksCommand(Collection<BlockController> blocks, Point2D delta) {
+    public MoveBlocksCommand(WorkspaceModel workspaceModel, Collection<BlockController> blocks, Point2D delta) {
+        this.workspaceModel = workspaceModel;
         this.blocks = blocks;
         this.delta = delta;
         saveLocations();
@@ -40,12 +46,21 @@ public class MoveBlocksCommand implements UndoableCommand {
 
     @Override
     public boolean execute(WorkspaceContext context) {
+        var requests = new ArrayList<BlockPosition>();
+        
         for (BlockController blockController : blocks) {
             BlockModel blockModel = blockController.getModel();
             Point2D location = currentLocations.get(blockModel.getId());
             blockModel.layoutXProperty().set(location.getX());
             blockModel.layoutYProperty().set(location.getY());
+            var request = new BlockPosition(
+                    BlockId.from(blockModel.getId()), 
+                    location.getX(),
+                    location.getY()
+            );
+            requests.add(request);
         }
+        workspaceModel.moveBlocks(requests);
         return true;
     }
 

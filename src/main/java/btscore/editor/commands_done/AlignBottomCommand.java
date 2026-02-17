@@ -1,7 +1,6 @@
 package btscore.editor.commands_done;
 
 import blocksmith.ui.AlignmentPolicy;
-import blocksmith.ui.WorkspaceSession;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,6 +13,7 @@ import btscore.graph.block.BlockView;
 import btscore.workspace.WorkspaceController;
 import btscore.editor.context.UndoableCommand;
 import btscore.workspace.WorkspaceContext;
+import btscore.workspace.WorkspaceModel;
 
 /**
  *
@@ -21,13 +21,12 @@ import btscore.workspace.WorkspaceContext;
  */
 public class AlignBottomCommand implements UndoableCommand {
 
-    private final WorkspaceSession session;
+    private final WorkspaceModel workspaceModel;
     private final Collection<BlockController> blocks;
     private final Map<String, Double> previousLocations = new TreeMap<>();
 
-    public AlignBottomCommand(WorkspaceController workspace, WorkspaceSession session) {
-        this.session = session;
-
+    public AlignBottomCommand(WorkspaceController workspace, WorkspaceModel workspaceModel) {
+        this.workspaceModel = workspaceModel;
         this.blocks = workspace.getSelectedBlockControllers();
         System.out.println(blocks.size() + " number of blocks");
     }
@@ -37,7 +36,7 @@ public class AlignBottomCommand implements UndoableCommand {
         var views = blocks.stream().map(b -> b.getView()).toList();
         var align = new AlignmentPolicy();
         var requests = align.apply(views, AlignmentPolicy.Mode.BOTTOM);
-        session.moveBlocks(requests);
+        workspaceModel.moveBlocks(requests);
         
         // OLD STUFF
         

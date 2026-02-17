@@ -1,5 +1,11 @@
 package btscore.workspace;
 
+import blocksmith.domain.block.BlockPosition;
+import blocksmith.app.inbound.GraphEditor;
+import blocksmith.domain.block.BlockId;
+import blocksmith.domain.block.BlockLayout;
+import blocksmith.domain.connection.Connection;
+import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import java.io.File;
 import java.util.ArrayList;
@@ -19,12 +25,113 @@ import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import btscore.UiApp;
+import java.util.Collection;
+import java.util.Objects;
 
 /**
  *
  * @author Joost
  */
-public class WorkspaceModel {
+public class WorkspaceModel implements GraphEditor {
+
+    private Graph savepoint;
+    private final GraphEditor editor;
+
+    public WorkspaceModel(GraphEditor editor) {
+        this.editor = editor;
+    }
+
+    private void execute(Runnable action) {
+        action.run();
+        updateProjection();
+    }
+
+    private void updateProjection() {
+        var graph = editor.currentGraph();
+        updateFrom(graph);
+    }
+
+    @Override
+    public void addBlock(String type, BlockLayout metadata) {
+        execute(() -> editor.addBlock(type, metadata));
+    }
+
+    @Override
+    public void removeBlock(BlockId id) {
+        execute(() -> editor.removeBlock(id));
+    }
+
+    @Override
+    public void removeAllBlocks(Collection<BlockId> blocks) {
+        execute(() -> editor.removeAllBlocks(blocks));
+    }
+
+    @Override
+    public void setParamValue(BlockId id, String valueId, String value) {
+        execute(() -> editor.setParamValue(id, valueId, value));
+    }
+
+    @Override
+    public void moveBlocks(Collection<BlockPosition> requests) {
+        execute(() -> editor.moveBlocks(requests));
+    }
+
+    @Override
+    public void resizeBlock(BlockId id, double width, double height) {
+        execute(() -> editor.resizeBlock(id, width, height));
+    }
+
+    @Override
+    public void addConnection(PortRef from, PortRef to) {
+        execute(() -> editor.addConnection(from, to));
+    }
+
+    @Override
+    public void removeConnection(Connection connection) {
+        execute(() -> editor.removeConnection(connection));
+    }
+
+    @Override
+    public void addGroup(String label, Collection<BlockId> blocks) {
+        execute(() -> editor.addGroup(label, blocks));
+    }
+
+    public void removeGroup(String label, Collection<BlockId> blocks) {
+        execute(() -> editor.removeGroup(label, blocks));
+    }
+
+    @Override
+    public void undo() {
+        editor.undo();
+        updateProjection();
+    }
+
+    @Override
+    public void redo() {
+        editor.redo();
+        updateProjection();
+    }
+
+    public boolean hasUndoableState() {
+        return editor.hasUndoableState();
+    }
+
+    public boolean hasRedoableState() {
+        return editor.hasRedoableState();
+    }
+
+    @Override
+    public Graph currentGraph() {
+        return editor.currentGraph();
+    }
+
+    public void markSaved() {
+        savepoint = editor.currentGraph();
+    }
+
+    public boolean isSaved() {
+        return Objects.equals(editor.currentGraph(), savepoint);
+    }
 
     public static final double DEFAULT_ZOOM = 1.0;
     public static final double MAX_ZOOM = 1.5;
@@ -45,12 +152,12 @@ public class WorkspaceModel {
     private final ObservableSet<ConnectionModel> connectionModels = FXCollections.observableSet();
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
     private final ObservableMap<Class<?>, List<PortModel>> dataTransmittors = FXCollections.observableHashMap();
-    
+
     public void updateFrom(Graph graph) {
-        
+
     }
-    
-    public AutoConnectIndex getAutoConnectIndex(){
+
+    public AutoConnectIndex getAutoConnectIndex() {
         return wirelessIndex;
     }
 

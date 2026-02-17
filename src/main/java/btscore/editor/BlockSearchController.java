@@ -1,7 +1,6 @@
 package btscore.editor;
 
 import blocksmith.app.block.BlockDefLibrary;
-import blocksmith.ui.WorkspaceSession;
 import btscore.Launcher;
 import javafx.beans.value.ChangeListener;
 import static javafx.collections.FXCollections.observableArrayList;
@@ -12,14 +11,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import btscore.UiApp;
 import btscore.graph.block.BlockLibraryLoader;
 import btscore.utils.ListViewUtils;
 import btscore.utils.NodeHierarchyUtils;
 import btscore.editor.context.ActionManager;
+import btscore.editor.context.CommandFactory;
 import btscore.editor.context.EditorContext;
 import btscore.editor.context.EditorEventRouter;
-import btscore.workspace.WorkspaceState;
 import static btscore.utils.EditorUtils.onFreeSpace;
 import static btscore.utils.EventUtils.isDoubleClick;
 import btscore.utils.ListViewHoverSelectBehaviour;
@@ -34,6 +32,8 @@ public class BlockSearchController {
     private static final double OFFSET = 20;
     private static final int ROWS_VISIBLE = 17;
 
+    private final ActionManager actionManager;
+    private final CommandFactory commandFactory;
     private final EditorEventRouter eventRouter;
     private final EditorContext context;
     private final BlockSearchView view;
@@ -46,7 +46,10 @@ public class BlockSearchController {
 
     private final ChangeListener<Boolean> searchFieldFocusChangedListener;
 
-    public BlockSearchController(EditorEventRouter eventRouter, EditorContext context, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary) {
+    public BlockSearchController(ActionManager actionManager, CommandFactory commandFactory, EditorEventRouter eventRouter, EditorContext context, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary) {
+        this.actionManager = actionManager;
+        this.commandFactory = commandFactory;
+
         this.eventRouter = eventRouter;
         this.context = context;
 
@@ -169,8 +172,8 @@ public class BlockSearchController {
 //        System.out.println("Create block " + blockType);
         var location = context.sceneToWorkspace(creationPoint);
         var workspace = context.activeWorkspace();
-        var command = workspace.commandFactory().createAddBlockCommand(blockType, location);
-        workspace.actionManager().executeCommand(command);
+        var command = commandFactory.createAddBlockCommand(blockType, location);
+        actionManager.executeCommand(command);
         hideView();
     }
 

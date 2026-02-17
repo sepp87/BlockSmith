@@ -1,6 +1,6 @@
 package blocksmith.ui;
 
-import blocksmith.app.block.MoveBlockRequest;
+import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +24,7 @@ public class AlignmentPolicy {
         VERTICALLY
     }
 
-    public List<MoveBlockRequest> apply(Collection<? extends Pane> views, Mode mode) {
+    public List<BlockPosition> apply(Collection<? extends Pane> views, Mode mode) {
 
         if (views.isEmpty()) {
             return List.of();
@@ -32,12 +32,12 @@ public class AlignmentPolicy {
 
         var bounds = boundingBoxOf(views);
 
-        var result = new ArrayList<MoveBlockRequest>();
+        var result = new ArrayList<BlockPosition>();
         for (var view : views) {
             var id = BlockId.from(view.getId());
             var x = computeX(mode, bounds, view);
             var y = computeY(mode, bounds, view);
-            var request = new MoveBlockRequest(id, x, y);
+            var request = new BlockPosition(id, x, y);
             result.add(request);
         }
         return result;

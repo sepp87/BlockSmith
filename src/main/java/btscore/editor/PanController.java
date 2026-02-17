@@ -1,12 +1,9 @@
 package btscore.editor;
 
-import btscore.workspace.WorkspaceModel;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import btscore.UiApp;
 import btscore.editor.context.EditorContext;
 import btscore.editor.context.EditorEventRouter;
-import btscore.workspace.WorkspaceState;
 import static btscore.utils.EditorUtils.onFreeSpace;
 
 /**
@@ -40,8 +37,8 @@ public class PanController {
             workspace.state().setPanning();
             initialX = event.getSceneX();
             initialY = event.getSceneY();
-            initialTranslateX = workspace.model().translateXProperty().get();
-            initialTranslateY = workspace.model().translateYProperty().get();
+            initialTranslateX = workspace.controller().getModel().translateXProperty().get();
+            initialTranslateY = workspace.controller().getModel().translateYProperty().get();
         }
     }
 
@@ -49,8 +46,8 @@ public class PanController {
         var workspace = context.activeWorkspace();
         boolean isSecondary = event.getButton() == MouseButton.SECONDARY;
         if (workspace.state().isPanning() && isSecondary) {
-            workspace.model().translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
-            workspace.model().translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
+            workspace.controller().getModel().translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
+            workspace.controller().getModel().translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
         }
     }
 
