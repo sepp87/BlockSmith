@@ -35,7 +35,7 @@ public class AlignRightCommand implements UndoableCommand {
         var views = blocks.stream().map(b -> b.getView()).toList();
         var align = new AlignmentPolicy();
         var requests = align.apply(views, AlignmentPolicy.Mode.RIGHT);
-        session.moveBlocks(requests);
+        session.graphEditor().moveBlocks(requests);
 
         // OLD STUFF
         List<BlockView> blockViews = new ArrayList<>();

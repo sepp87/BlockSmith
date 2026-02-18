@@ -1,4 +1,4 @@
-package btscore.editor.commands_todo;
+package btscore.editor.commands_done;
 
 import blocksmith.domain.block.BlockId;
 import btscore.graph.block.BlockController;
@@ -31,7 +31,7 @@ public class ResizeBlockCommand implements UndoableCommand {
     @Override
     public boolean execute(WorkspaceContext context) {
         var id = BlockId.from(blockController.getModel().getId());
-        workspaceModel.resizeBlock(id, currentWidth, currentHeight);
+        workspaceModel.graphEditor().resizeBlock(id, currentWidth, currentHeight);
         blockController.getModel().widthProperty().set(currentWidth);
         blockController.getModel().heightProperty().set(currentHeight);
         return true;

@@ -51,6 +51,10 @@ public class WorkspaceController extends BaseController {
         this.selectionHelper = new SelectionHelper(actionManager, commandFactory, context, this, model, view, this);
         this.infoPanelHelper = new InfoPanelHelper(view);
 
+        model.getBlockModels().forEach(b -> addBlock(b));
+        model.getConnectionModels().forEach(c -> addConnection(c));
+        model.getBlockGroupModels().forEach(g -> addBlockGroup(g));
+        
         model.addBlockModelsListener(blockModelsListener);
         model.addConnectionModelsListener(connectionModelsListener);
         model.addBlockGroupModelsListener(blockGroupModelsListener);

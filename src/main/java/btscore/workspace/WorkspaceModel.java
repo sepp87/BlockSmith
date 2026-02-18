@@ -1,9 +1,7 @@
 package btscore.workspace;
 
-import blocksmith.domain.block.BlockPosition;
 import blocksmith.app.inbound.GraphEditor;
 import blocksmith.domain.block.BlockId;
-import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
@@ -25,106 +23,138 @@ import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import btscore.UiApp;
-import java.util.Collection;
 import java.util.Objects;
+import blocksmith.app.inbound.GraphMutationAndHistory;
+import blocksmith.app.logging.IdFormatter;
+import blocksmith.domain.block.Block;
+import blocksmith.domain.graph.GraphDiff;
+import blocksmith.domain.group.Group;
+import blocksmith.ui.BlockModelFactory;
+import blocksmith.ui.MethodBlockNew;
+import btscore.Launcher;
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Joost
  */
-public class WorkspaceModel implements GraphEditor {
+public class WorkspaceModel {
 
-    private Graph savepoint;
+    private final static Logger LOGGER = Logger.getLogger(WorkspaceModel.class.getName());
+
     private final GraphEditor editor;
+    private final BlockModelFactory blockFactory;
+    private Graph savepoint;
+    private Graph current;
 
-    public WorkspaceModel(GraphEditor editor) {
+    public WorkspaceModel(GraphEditor editor, BlockModelFactory blockFactory) {
         this.editor = editor;
+        this.blockFactory = blockFactory;
+        this.current = editor.currentGraph();
+        editor.setOnGraphUpdated(this::updateFrom);
+
+        addBlocksFromDomain(current.blocks());
+        var blockIndex = blockModels.stream().collect(Collectors.toMap(b -> BlockId.from(b.getId()), Function.identity()));
+        addConnectionsFromDomain(current.connections(), blockIndex);
+        addGroupsFromDomain(current.groups(), blockIndex);
     }
 
-    private void execute(Runnable action) {
-        action.run();
-        updateProjection();
+    private void updateFrom(Graph updated) {
+
+        var diff = GraphDiff.compare(current, updated);
+        current = updated;
+        LOGGER.log(Level.INFO, diff.toString());
+
+        if (!Launcher.DOMAIN_GRAPH) {
+            return;
+        }
+
+        var connectionIndex = connectionModels.stream().collect(Collectors.toMap(c -> {
+            var fromBlock = BlockId.from(c.getStartPort().getBlock().getId());
+            var fromPort = c.getStartPort().nameProperty().get();
+            var toBlock = BlockId.from(c.getEndPort().getBlock().getId());
+            var toPort = c.getStartPort().nameProperty().get();
+            var from = new PortRef(fromBlock, fromPort);
+            var to = new PortRef(toBlock, toPort);
+            var key = new Connection(from, to);
+            return key;
+        }, c -> c));
+        for (var connection : diff.removedConnections()) {
+            var model = connectionIndex.get(connection);
+            removeConnectionModel(model);
+        }
+
+        var blockIndex = blockModels.stream().collect(Collectors.toMap(b -> BlockId.from(b.getId()), Function.identity()));
+        for (var block : diff.removedBlocks()) {
+            var model = blockIndex.get(block.id());
+            removeBlockModel(model);
+        }
+
+        addBlocksFromDomain(diff.addedBlocks());
+
+        for (var block : diff.updatedBlocks()) {
+            var model = blockIndex.get(block.id());
+            if (model instanceof MethodBlockNew mbn) {
+                mbn.updateFrom(block);
+            }
+        }
+
+        addConnectionsFromDomain(diff.addedConnections(), blockIndex);
+
+        // remove connections
+        // remove blocks
+        // create blocks 
+        // update blocks
+        // create connections
     }
 
-    private void updateProjection() {
-        var graph = editor.currentGraph();
-        updateFrom(graph);
+    private void addBlocksFromDomain(Collection<Block> blocks) {
+        for (var block : blocks) {
+            var model = blockFactory.create(block.type(), block.id().toString());
+            model.updateFrom(block);
+            addBlockModel(model);
+        }
     }
 
-    @Override
-    public void addBlock(String type, BlockLayout metadata) {
-        execute(() -> editor.addBlock(type, metadata));
+    private void addConnectionsFromDomain(Collection<Connection> connections, Map<BlockId, BlockModel> blockIndex) {
+        for (var connection : connections) {
+
+            System.out.println("rOUTPUT " + IdFormatter.shortId(connection.from().blockId().value()) + "." + connection.from().valueId());
+            var fromBlock = blockIndex.get(connection.from().blockId());
+            var fromPort = fromBlock.getOutputPorts().stream()
+                    .filter(p -> p.nameProperty().get().equals(connection.from().valueId()))
+                    .findFirst()
+                    .get();
+            var toBlock = blockIndex.get(connection.to().blockId());
+            var toPort = toBlock.getInputPorts().stream()
+                    .filter(p -> p.nameProperty().get().equals(connection.to().valueId()))
+                    .findFirst()
+                    .get();
+
+            var model = new ConnectionModel(fromPort, toPort);
+            addConnectionModel(model);
+        }
     }
 
-    @Override
-    public void removeBlock(BlockId id) {
-        execute(() -> editor.removeBlock(id));
+    private void addGroupsFromDomain(Collection<Group> groups, Map<BlockId, BlockModel> blockIndex) {
+        for (var group : groups) {
+            var model = new BlockGroupModel(blockGroupIndex);
+            model.nameProperty().set(group.label());
+            group.blocks().forEach(b -> model.addBlock(blockIndex.get(b)));
+            addBlockGroupModel(model);
+        }
     }
 
-    @Override
-    public void removeAllBlocks(Collection<BlockId> blocks) {
-        execute(() -> editor.removeAllBlocks(blocks));
+    public GraphMutationAndHistory graphEditor() {
+        return editor;
     }
 
-    @Override
-    public void setParamValue(BlockId id, String valueId, String value) {
-        execute(() -> editor.setParamValue(id, valueId, value));
-    }
-
-    @Override
-    public void moveBlocks(Collection<BlockPosition> requests) {
-        execute(() -> editor.moveBlocks(requests));
-    }
-
-    @Override
-    public void resizeBlock(BlockId id, double width, double height) {
-        execute(() -> editor.resizeBlock(id, width, height));
-    }
-
-    @Override
-    public void addConnection(PortRef from, PortRef to) {
-        execute(() -> editor.addConnection(from, to));
-    }
-
-    @Override
-    public void removeConnection(Connection connection) {
-        execute(() -> editor.removeConnection(connection));
-    }
-
-    @Override
-    public void addGroup(String label, Collection<BlockId> blocks) {
-        execute(() -> editor.addGroup(label, blocks));
-    }
-
-    public void removeGroup(String label, Collection<BlockId> blocks) {
-        execute(() -> editor.removeGroup(label, blocks));
-    }
-
-    @Override
-    public void undo() {
-        editor.undo();
-        updateProjection();
-    }
-
-    @Override
-    public void redo() {
-        editor.redo();
-        updateProjection();
-    }
-
-    public boolean hasUndoableState() {
-        return editor.hasUndoableState();
-    }
-
-    public boolean hasRedoableState() {
-        return editor.hasRedoableState();
-    }
-
-    @Override
-    public Graph currentGraph() {
-        return editor.currentGraph();
-    }
-
+    // TODO switch to internal, so it is managed by the workspace
     public void markSaved() {
         savepoint = editor.currentGraph();
     }
@@ -152,10 +182,6 @@ public class WorkspaceModel implements GraphEditor {
     private final ObservableSet<ConnectionModel> connectionModels = FXCollections.observableSet();
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
     private final ObservableMap<Class<?>, List<PortModel>> dataTransmittors = FXCollections.observableHashMap();
-
-    public void updateFrom(Graph graph) {
-
-    }
 
     public AutoConnectIndex getAutoConnectIndex() {
         return wirelessIndex;

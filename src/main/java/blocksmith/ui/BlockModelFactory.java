@@ -4,6 +4,8 @@ import blocksmith.ui.control.TextInput;
 import blocksmith.ui.control.InputControl;
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.app.block.BlockFuncLibrary;
+import blocksmith.app.logging.IdFormatter;
+import blocksmith.domain.block.Block;
 import blocksmith.domain.value.ParamDef;
 import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.ParamInput.NumericType;
@@ -54,10 +56,12 @@ public class BlockModelFactory {
         var block = new MethodBlockNew(def, func, id);
 
         for (var input : def.inputs()) {
+            System.out.println("INPUT " + IdFormatter.shortId(UUID.fromString(id)) + "." + input.valueId());
             block.addInputPort(input.valueId(), ValueType.toDataType(input.valueType()));
         }
 
         for (var output : def.outputs()) {
+            System.out.println("OUTPUT " + IdFormatter.shortId(UUID.fromString(id)) + "." + output.valueId());
             block.addOutputPort(output.valueId(), ValueType.toDataType(output.valueType()));
         }
 
@@ -127,13 +131,13 @@ public class BlockModelFactory {
     private static InputControl<?> inferInputControlFrom(ValueType valueType) {
 
         Class<?> rawType = null;
-        
+
         if (valueType instanceof ValueType.ListType) {
             throw new IllegalArgumentException("Unsupported param type: " + valueType);
-            
+
         } else if (valueType instanceof ValueType.SimpleType simple) {
             rawType = simple.raw();
-            
+
         } else if (valueType instanceof ValueType.VarType var) {
             rawType = Object.class;
         }
@@ -163,7 +167,5 @@ public class BlockModelFactory {
 
         throw new IllegalArgumentException("Unsupported param type: " + rawType.getSimpleName());
     }
-
-
 
 }

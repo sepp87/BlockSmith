@@ -65,8 +65,8 @@ public class MenuBarController {
         var workspace = context.activeWorkspace();
         var controller = workspace.controller();
 
-        view.getUndoMenuItem().setDisable(!workspace.controller().getModel().hasUndoableState());
-        view.getRedoMenuItem().setDisable(!workspace.controller().getModel().hasRedoableState());
+        view.getUndoMenuItem().setDisable(!workspace.controller().getModel().graphEditor().hasUndoableState());
+        view.getRedoMenuItem().setDisable(!workspace.controller().getModel().graphEditor().hasRedoableState());
 
         boolean isGroupable = controller.areSelectedBlocksGroupable();
         view.getGroupMenuItem().disableProperty().set(!isGroupable);

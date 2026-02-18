@@ -36,7 +36,7 @@ public class AlignBottomCommand implements UndoableCommand {
         var views = blocks.stream().map(b -> b.getView()).toList();
         var align = new AlignmentPolicy();
         var requests = align.apply(views, AlignmentPolicy.Mode.BOTTOM);
-        workspaceModel.moveBlocks(requests);
+        workspaceModel.graphEditor().moveBlocks(requests);
         
         // OLD STUFF
         

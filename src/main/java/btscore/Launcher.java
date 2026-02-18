@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
  */
 public class Launcher {
 
+    public static boolean DOMAIN_GRAPH = false;
     public static boolean GRAPH_LOADER_V2 = false;
     public static boolean VALUE_TYPE_MAPPER = false;
     public static boolean BLOCK_DEF_LOADER = false;
@@ -33,6 +34,7 @@ public class Launcher {
 
             GRAPH_LOADER_V2 = true;
             BLOCK_DEF_LOADER = true;
+            DOMAIN_GRAPH = true;
             if (!BLOCK_DEF_LOADER) {
                 //Load all block types
                 BlockLibraryLoader.loadBlocks();

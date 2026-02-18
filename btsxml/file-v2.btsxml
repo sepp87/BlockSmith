@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<document xmlns="http://www.blocksmith.io/xml/v2" zoomFactor="1.5" translateX="136.75" translateY="33.25">
+    <blocks>
+        <block type="Input.file" id="638a89d9-822c-453f-b196-7600440ed8ff" x="51.0" y="203.0"/>
+    </blocks>
+    <connections/>
+    <values>
+        <value block="638a89d9-822c-453f-b196-7600440ed8ff" id="path" value="a"/>
+    </values>
+    <groups/>
+</document>

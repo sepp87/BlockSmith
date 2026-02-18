@@ -60,7 +60,7 @@ public class MoveBlocksCommand implements UndoableCommand {
             );
             requests.add(request);
         }
-        workspaceModel.moveBlocks(requests);
+        workspaceModel.graphEditor().moveBlocks(requests);
         return true;
     }
 

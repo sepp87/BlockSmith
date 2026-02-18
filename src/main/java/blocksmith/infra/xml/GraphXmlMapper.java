@@ -3,6 +3,7 @@ package blocksmith.infra.xml;
 import blocksmith.app.GraphDocument;
 import blocksmith.domain.block.BlockFactory;
 import blocksmith.domain.graph.Graph;
+import blocksmith.domain.graph.GraphId;
 import blocksmith.xml.v2.DocumentXml;
 import blocksmith.xml.v2.ObjectFactory;
 
@@ -35,7 +36,7 @@ public class GraphXmlMapper {
         var connections = connectionMapper.toDomain(document.getConnections().getConnection());
         var updatedBlocks = valueMapper.toDomain(blocks, document.getValues().getValue());
         var groups = groupMapper.toDomain(document.getGroups().getGroup());
-        var graph = Graph.withAll(updatedBlocks, connections, groups);
+        var graph = new Graph(GraphId.create(), updatedBlocks, connections, groups);
 
         return documentToDomain(document, graph);
     }

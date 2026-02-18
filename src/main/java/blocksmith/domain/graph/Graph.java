@@ -24,6 +24,13 @@ public final class Graph {
     private final List<Connection> connections;
     private final List<Group> groups;
 
+    /**
+     * 
+     * @param id
+     * @param blocks
+     * @param connections
+     * @param groups 
+     */
     public Graph(GraphId id, Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
         this.id = Objects.requireNonNull(id);
         this.blocks = toMap(blocks);
@@ -190,8 +197,8 @@ public final class Graph {
                 .toList();
     }
 
-    public static Graph withAll(Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
-        return withAll(blocks, connections, groups);
+    public Graph withAll(Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
+        return new Graph(id, blocks, connections, groups);
     }
 
     public static Graph createEmpty() {

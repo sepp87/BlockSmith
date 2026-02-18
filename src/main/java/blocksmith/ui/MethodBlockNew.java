@@ -1,5 +1,6 @@
 package blocksmith.ui;
 
+import blocksmith.domain.block.Block;
 import blocksmith.ui.control.InputControl;
 import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.value.ValueType;
@@ -30,13 +31,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javax.xml.namespace.QName;
-import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-@Block(
+@blocksmith.infra.blockloader.annotations.Block(
         type = "Core.methodBlock",
         category = "Core",
         description = "A generic block used to convert static methods and fields to blocks",
@@ -45,6 +45,7 @@ public class MethodBlockNew extends BlockModel {
 
     private final BlockDef def;
     private final BlockFunc func;
+    private Block domain;
     private final Map<String, InputControl<?>> inputControls = new HashMap<>();
     private Pane container;
     private ProgressIndicator spinner;
@@ -60,6 +61,24 @@ public class MethodBlockNew extends BlockModel {
         }
         this.def = def;
         this.func = func;
+    }
+
+    public void updateFrom(Block update) {
+        domain = update;
+        updateInputControlsFrom(update);
+        this.layoutXProperty().set(update.layout().x());
+        this.layoutYProperty().set(update.layout().y());
+        if (resizableProperty().get()) {
+            this.widthProperty().set(update.layout().width());
+            this.heightProperty().set(update.layout().height());
+        }
+    }
+
+    private void updateInputControlsFrom(Block block) {
+        for (var param : block.params()) {
+            var control = inputControls.get(param.valueId());
+            control.parseValue(param.value());
+        }
     }
 
     public void addInputControl(String name, InputControl control) {
@@ -337,6 +356,8 @@ public class MethodBlockNew extends BlockModel {
 
         block.isListOperator = this.isListOperator;
         block.isListWithUnknownReturnType = this.isListWithUnknownReturnType;
+
+        block.updateFrom(domain);
 
         return block;
     }

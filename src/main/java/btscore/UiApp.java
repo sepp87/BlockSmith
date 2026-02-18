@@ -28,6 +28,8 @@ import btscore.editor.context.ActionManager;
 import btscore.editor.context.CommandFactory;
 import btscore.graph.io.GraphLoader;
 import btscore.workspace.WorkspaceFactory;
+import java.nio.file.Path;
+import javafx.application.Platform;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
@@ -66,12 +68,38 @@ public class UiApp extends Application {
         var blockFuncLibrary = app.getBlockFuncLibrary();
         this.blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
         var graphRepo = app.getGraphRepo();
+        
+        var graphDoc = graphRepo.load(new File("btsxml/aslist-v2.btsxml").toPath());
 
+
+        
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
 
         // Initialize views
         var tabPane = new TabPane();
+        tabPane.setFocusTraversable(false);
+        tabPane.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            var header = tabPane.lookup(".tab-header-area");
+            if (header != null) {
+                header.setFocusTraversable(false);
+            }
+        });
+        tabPane.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            Platform.runLater(() -> {
+                tabPane.lookupAll(".tab").forEach(node
+                        -> node.setFocusTraversable(false)
+                );
+            });
+        });
+        tabPane.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+            if (isFocused) {
+                var selected = tabPane.getSelectionModel().getSelectedItem();
+                if (selected != null && selected.getContent() != null) {
+                    selected.getContent().requestFocus();
+                }
+            }
+        });
         BlockSearchView blockSearchView = new BlockSearchView();
         SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
         ZoomView zoomView = new ZoomView();
@@ -84,10 +112,12 @@ public class UiApp extends Application {
         var editorContext = new EditorContext(editorView);
         var commandFactory = new CommandFactory(editorContext, blockModelFactory, graphRepo);
         var actionManager = new ActionManager(editorContext, commandFactory);
-        var workspaceFactory = new WorkspaceFactory(graphEditorFactory, actionManager, commandFactory);
-        var workspaceContext = workspaceFactory.create(Graph.createEmpty());
+        var workspaceFactory = new WorkspaceFactory(graphEditorFactory, actionManager, commandFactory, blockModelFactory);
+        var workspaceContext = workspaceFactory.create(graphDoc.graph());
+        
         var workspaceTab = new Tab("New file");
         workspaceTab.setContent(workspaceContext.controller().getView());
+
         tabPane.getTabs().add(workspaceTab);
 
         // initialize EventRouter for Context
@@ -113,7 +143,7 @@ public class UiApp extends Application {
         stage.setFullScreen(false);
 
 //        GraphLoader.deserialize(new File("btsxml/method-block.btsxml"), workspaceModel);
-        GraphLoader.deserialize(new File("btsxml/aslist.btsxml"), workspaceContext.controller().getModel());
+//        GraphLoader.deserialize(new File("btsxml/aslist.btsxml"), workspaceContext.controller().getModel());
 //        GraphLoader.deserialize(new File("btsxml/addition.btsxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("btsxml/file.btsxml"), workspaceModel);
 //        GraphLoader.deserialize(new File("btsxml/string-to-text.btsxml"), workspaceModel);

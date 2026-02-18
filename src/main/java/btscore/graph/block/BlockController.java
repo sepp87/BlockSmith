@@ -16,7 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import btscore.UiApp;
 import btscore.editor.context.ActionManager;
-import btscore.editor.commands_todo.ResizeBlockCommand;
+import btscore.editor.commands_done.ResizeBlockCommand;
 import btscore.editor.BaseController;
 import btscore.editor.context.CommandFactory;
 import btscore.graph.block.ExceptionPanel.BlockException;

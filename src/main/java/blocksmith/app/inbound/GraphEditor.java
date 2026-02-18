@@ -1,10 +1,9 @@
-
 package blocksmith.app.inbound;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public interface GraphEditor extends GraphQuery, GraphMutation, GraphHistory{
-    
+public interface GraphEditor extends GraphMutationAndHistory, GraphQuery {
+
 }

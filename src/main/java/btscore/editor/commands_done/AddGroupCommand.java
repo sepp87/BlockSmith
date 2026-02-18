@@ -32,7 +32,7 @@ public class AddGroupCommand implements UndoableCommand {
     @Override
     public boolean execute(WorkspaceContext context) {
         var ids = workspaceController.getSelectedBlockControllers().stream().map(c -> BlockId.from(c.getModel().getId())).toList();
-        workspaceModel.addGroup(null, ids);
+        workspaceModel.graphEditor().addGroup(null, ids);
 
         // OLD STUFF
         boolean notGroupable = !workspaceController.areSelectedBlocksGroupable();

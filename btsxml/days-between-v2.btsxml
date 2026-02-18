@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<document xmlns="http://www.blocksmith.io/xml/v2" zoomFactor="0.8" translateX="-54.057131224763" translateY="108.70158301372089">
+    <blocks>
+        <block type="Input.text" id="09a8e1dd-3d51-4214-a591-0205b45647ff" x="766.7142857142858" y="209.81747000558065" width="-1.0" height="-1.0"/>
+        <block type="Date.daysBetween" id="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" x="437.57142857142867" y="363.85714285714283"/>
+        <block type="Input.string" id="343ba93b-e095-4f88-89fc-29a1c4cbe08e" x="113.85714285714285" y="442.42857142857133"/>
+        <block type="Input.string" id="d4b6778c-516c-4871-836d-d4c894fabab3" x="108.42857142857149" y="327.4285714285719"/>
+    </blocks>
+    <connections>
+        <connection fromBlock="343ba93b-e095-4f88-89fc-29a1c4cbe08e" fromPort="Object" toBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" toPort="end"/>
+        <connection fromBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" fromPort="long" toBlock="09a8e1dd-3d51-4214-a591-0205b45647ff" toPort="text"/>
+        <connection fromBlock="d4b6778c-516c-4871-836d-d4c894fabab3" fromPort="Object" toBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" toPort="start"/>
+    </connections>
+    <values>
+        <value block="343ba93b-e095-4f88-89fc-29a1c4cbe08e" id="string" value="2023-01-31"/>
+        <value block="d4b6778c-516c-4871-836d-d4c894fabab3" id="string" value="2022-11-03"/>
+    </values>
+    <groups/>
+</document>

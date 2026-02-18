@@ -45,7 +45,7 @@ public class RemoveBlocksCommand implements UndoableCommand {
     public boolean execute(WorkspaceContext context) {
 
         var ids = workspaceController.getSelectedBlockControllers().stream().map(c -> BlockId.from(c.getModel().getId())).toList();
-        session.removeAllBlocks(ids);
+        session.graphEditor().removeAllBlocks(ids);
 
         // OLD STUFF
         if (UiApp.LOG_METHOD_CALLS) {

@@ -8,6 +8,7 @@ import blocksmith.domain.graph.Graph;
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.ValueType;
 import blocksmith.domain.connection.PortRef;
+import blocksmith.domain.graph.GraphId;
 import blocksmith.domain.group.Group;
 import blocksmith.domain.value.Param;
 import btscore.workspace.WorkspaceModel;
@@ -29,7 +30,7 @@ public final class GraphMapper {
         var connections = connectionsToDomain(workspace);
         var groups = groupsToDomain(workspace);
 
-        return Graph.withAll(blocks, connections, groups);
+        return new Graph(GraphId.create(), blocks, connections, groups);
     }
 
     private static List<Block> blocksToDomain(WorkspaceModel workspace) {

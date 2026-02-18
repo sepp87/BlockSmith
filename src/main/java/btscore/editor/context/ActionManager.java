@@ -53,7 +53,7 @@ public class ActionManager {
 
     public void undo() {
         var workspace = context.activeWorkspace();
-        context.activeWorkspace().controller().getModel().undo();
+        context.activeWorkspace().controller().getModel().graphEditor().undo();
         var history = context.activeWorkspace().history();
         if (!history.undoStack().isEmpty()) {
             UndoableCommand command = history.undoStack().pop();
@@ -65,7 +65,7 @@ public class ActionManager {
 
     public void redo() {
         var workspace = context.activeWorkspace();
-        context.activeWorkspace().controller().getModel().redo();
+        context.activeWorkspace().controller().getModel().graphEditor().redo();
         var history = context.activeWorkspace().history();
         if (!history.redoStack().isEmpty()) {
             UndoableCommand command = history.redoStack().pop();

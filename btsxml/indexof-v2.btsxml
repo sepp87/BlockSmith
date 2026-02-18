@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<document xmlns="http://www.blocksmith.io/xml/v2" zoomFactor="1.0" translateX="-78.16663189534006" translateY="176.01127294489777">
+    <blocks>
+        <block type="Input.string" id="dc8a7abd-a8c9-411b-b886-d60f3e19cd15" x="172.1666259765625" y="177.9887237548828"/>
+        <block type="Input.string" id="1964870a-f8cc-4b3e-a8fe-b7f88555c408" x="211.1666259765625" y="345.9887390136719"/>
+        <block type="String.indexOf" id="b427e815-0f8e-454c-9a13-189c3efefdd0" x="516.1666259765625" y="229.9887237548828"/>
+    </blocks>
+    <connections>
+        <connection fromBlock="dc8a7abd-a8c9-411b-b886-d60f3e19cd15" fromPort="Object" toBlock="b427e815-0f8e-454c-9a13-189c3efefdd0" toPort="string"/>
+    </connections>
+    <values>
+        <value block="dc8a7abd-a8c9-411b-b886-d60f3e19cd15" id="string" value="abcadsfasdf"/>
+        <value block="1964870a-f8cc-4b3e-a8fe-b7f88555c408" id="string" value="a"/>
+    </values>
+    <groups/>
+</document>

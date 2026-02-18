@@ -31,7 +31,7 @@ import btscore.editor.commands_done.ZoomInCommand;
 import btscore.editor.commands_done.ZoomOutCommand;
 import btscore.editor.commands_done.ZoomToFitCommand;
 import btscore.editor.commands_done.MoveBlocksCommand;
-import btscore.editor.commands_todo.ResizeBlockCommand;
+import btscore.editor.commands_done.ResizeBlockCommand;
 import btscore.graph.block.BlockController;
 import btscore.graph.connection.ConnectionModel;
 import btscore.graph.group.BlockGroupModel;

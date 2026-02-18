@@ -13,6 +13,7 @@ import btscore.editor.context.UndoableCommand;
 import btscore.graph.connection.ConnectionModel;
 import btscore.graph.port.PortModel;
 import btscore.workspace.WorkspaceContext;
+import blocksmith.app.inbound.GraphMutationAndHistory;
 
 /**
  *
@@ -37,7 +38,7 @@ public class AddBlockCommand implements UndoableCommand {
 
     @Override
     public boolean execute(WorkspaceContext context) {
-        workspaceModel.addBlock(blockType, BlockLayout.create(location.getX(), location.getY()));
+        workspaceModel.graphEditor().addBlock(blockType, BlockLayout.create(location.getX(), location.getY()));
 
         // OLD STUFF
         if (blockModel == null) {

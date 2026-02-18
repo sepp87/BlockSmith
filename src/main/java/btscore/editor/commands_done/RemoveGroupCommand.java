@@ -28,7 +28,7 @@ public class RemoveGroupCommand implements UndoableCommand {
     @Override
     public boolean execute(WorkspaceContext context) {
         var ids = blocks.stream().map(b -> BlockId.from(b.getId())).toList();
-        workspaceModel.removeGroup(group.nameProperty().get(), ids);
+        workspaceModel.graphEditor().removeGroup(group.nameProperty().get(), ids);
         
         // OLD STUFF
         workspaceModel.removeBlockGroupModel(group);

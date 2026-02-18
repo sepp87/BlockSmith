@@ -36,7 +36,7 @@ public class RemoveConnectionCommand implements UndoableCommand {
                 connection.getEndPort().nameProperty().get()
         );
         var domain = new Connection(from, to);
-        workspaceModel.removeConnection(domain);
+        workspaceModel.graphEditor().removeConnection(domain);
 
         // OLD STUFF
         workspaceModel.removeConnectionModel(connection);

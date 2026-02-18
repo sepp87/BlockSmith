@@ -42,7 +42,7 @@ public class AddConnectionCommand implements UndoableCommand {
                 BlockId.from(toPort.getBlock().getId()),
                 toPort.nameProperty().get()
         );
-        workspaceModel.addConnection(from, to);
+        workspaceModel.graphEditor().addConnection(from, to);
 
         // OLD STUFF
         System.out.println("CreateConnectionCommand.execute()");

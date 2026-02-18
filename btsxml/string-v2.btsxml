@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<document xmlns="http://www.blocksmith.io/xml/v2" zoomFactor="1.0" translateX="0.0" translateY="0.0">
+    <blocks>
+        <block type="Input.string" id="69cf0ac2-8e56-433c-b17e-48e6ea3cc9ff" x="349.0" y="388.0"/>
+    </blocks>
+    <connections/>
+    <values>
+        <value block="69cf0ac2-8e56-433c-b17e-48e6ea3cc9ff" id="string" value="[1,2,3,4,5]"/>
+    </values>
+    <groups/>
+</document>

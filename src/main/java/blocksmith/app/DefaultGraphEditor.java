@@ -18,7 +18,10 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import blocksmith.app.inbound.GraphEditor;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import blocksmith.app.inbound.GraphMutationAndHistory;
 
 /**
  *
@@ -28,8 +31,8 @@ public class DefaultGraphEditor implements GraphEditor {
 
     private static final Logger LOGGER = Logger.getLogger(GraphEditor.class.getName());
 
-    private Graph savepoint;
     private Graph graph;
+    private final List<Consumer<Graph>> listeners = new ArrayList<>();
     private final ArrayDeque<Graph> undoStack = new ArrayDeque<>();
     private final ArrayDeque<Graph> redoStack = new ArrayDeque<>();
 
@@ -59,6 +62,14 @@ public class DefaultGraphEditor implements GraphEditor {
         return graph;
     }
 
+    public void setOnGraphUpdated(Consumer<Graph> listener) {
+        listeners.add(listener);
+    }
+
+    private void notifyGraphUpdated(Graph updated) {
+        listeners.forEach(c -> c.accept(graph));
+    }
+
     private void mutate(Function<Graph, Graph> action) {
         var updated = action.apply(graph);
         if (updated == graph) {
@@ -67,6 +78,7 @@ public class DefaultGraphEditor implements GraphEditor {
         undoStack.push(graph);
         redoStack.clear();
         graph = updated;
+        notifyGraphUpdated(updated);
     }
 
     public void addBlock(String type, BlockLayout metadata) {
@@ -108,12 +120,13 @@ public class DefaultGraphEditor implements GraphEditor {
     }
 
     public void addConnection(PortRef from, PortRef to) {
-        mutate((graph) -> addConnection.execute(graph, from, to));
         LOGGER.log(Level.INFO, "Add connection: {0}.{1} -> {2}.{3}",
                 new Object[]{
                     shortId(from.blockId().value()), from.valueId(),
                     shortId(to.blockId().value()), to.valueId()}
         );
+        mutate((graph) -> addConnection.execute(graph, from, to));
+
     }
 
     public void removeConnection(Connection connection) {
@@ -166,6 +179,5 @@ public class DefaultGraphEditor implements GraphEditor {
     public boolean hasRedoableState() {
         return !redoStack.isEmpty();
     }
-
 
 }
