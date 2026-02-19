@@ -98,7 +98,8 @@ public class DefaultGraphEditor implements GraphEditor {
         LOGGER.log(Level.INFO, "Remove all blocks: {0}", shortIds.toString());
     }
 
-    public void setParamValue(BlockId id, String valueId, String value) {
+    public void updateParamValue(BlockId id, String valueId, String value) {
+        mutate((graph) -> graph.updateParamValue(id, valueId, value));
         LOGGER.log(Level.INFO, "Set param value for block: {0}.{1}={2}",
                 new Object[]{shortId(id.value()), valueId, value}
         );
@@ -149,7 +150,7 @@ public class DefaultGraphEditor implements GraphEditor {
     }
 
     public void copyGraph(Collection<BlockId> blocks) {
-        
+
     }
 
     public void pasteGraph() {

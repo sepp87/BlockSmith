@@ -18,7 +18,7 @@ public interface GraphMutation {
 
     void removeAllBlocks(Collection<BlockId> ids);
 
-    void setParamValue(BlockId id, String valueId, String value);
+    void updateParamValue(BlockId id, String valueId, String value);
 
     void moveBlocks(Collection<BlockPosition> requests);
     
