@@ -1,6 +1,7 @@
 package btscore.editor.commands_done;
 
 import blocksmith.domain.block.BlockId;
+import btscore.Launcher;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -46,12 +47,16 @@ public class RemoveBlocksCommand implements UndoableCommand {
 
         var ids = workspaceController.getSelectedBlockControllers().stream().map(c -> BlockId.from(c.getModel().getId())).toList();
         session.graphEditor().removeAllBlocks(ids);
+        workspaceController.deselectAllBlocks();
+
+        if (Launcher.DOMAIN_GRAPH) {
+            return true;
+        }
 
         // OLD STUFF
         if (UiApp.LOG_METHOD_CALLS) {
             System.out.println("RemoveSelectedBlocksCommand.execute()");
         }
-        workspaceController.deselectAllBlocks();
 
         // first retrieve all groups, because they are removed if the number of grouped blocks is reduced below two
         WorkspaceModel workspaceModel = workspaceController.getModel();
@@ -129,6 +134,10 @@ public class RemoveBlocksCommand implements UndoableCommand {
 
     @Override
     public void undo() {
+        if (Launcher.DOMAIN_GRAPH) {
+            return;
+        }
+
         workspaceController.deselectAllBlocks();
 
         // first revive all blocks, because connections could have been between blocks that have both been removed and groups could have been removed, since the number of grouped blocks was reduced below two

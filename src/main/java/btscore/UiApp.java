@@ -1,7 +1,6 @@
 package btscore;
 
 import blocksmith.App;
-import blocksmith.domain.graph.Graph;
 import blocksmith.ui.BlockModelFactory;
 import btscore.editor.context.EditorContext;
 import javafx.application.Application;
@@ -26,9 +25,8 @@ import btscore.editor.BlockSearchController;
 import btscore.editor.BlockSearchView;
 import btscore.editor.context.ActionManager;
 import btscore.editor.context.CommandFactory;
-import btscore.graph.io.GraphLoader;
 import btscore.workspace.WorkspaceFactory;
-import java.nio.file.Path;
+import btscore.workspace.WorkspaceView;
 import javafx.application.Platform;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -68,11 +66,9 @@ public class UiApp extends Application {
         var blockFuncLibrary = app.getBlockFuncLibrary();
         this.blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
         var graphRepo = app.getGraphRepo();
-        
+
         var graphDoc = graphRepo.load(new File("btsxml/aslist-v2.btsxml").toPath());
 
-
-        
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
 
@@ -100,12 +96,13 @@ public class UiApp extends Application {
                 }
             }
         });
+        var workspaceView = new WorkspaceView();
         BlockSearchView blockSearchView = new BlockSearchView();
         SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
         ZoomView zoomView = new ZoomView();
         RadialMenuView radialMenuView = new RadialMenuView();
         MenuBarView menuBarView = new MenuBarView();
-        EditorView editorView = new EditorView(radialMenuView, tabPane, menuBarView, zoomView, selectionRectangleView, blockSearchView);
+        EditorView editorView = new EditorView(radialMenuView, workspaceView, tabPane, menuBarView, zoomView, selectionRectangleView, blockSearchView);
 
         // Create workspace
         var graphEditorFactory = app.getGraphEditorFactory();
@@ -114,9 +111,14 @@ public class UiApp extends Application {
         var actionManager = new ActionManager(editorContext, commandFactory);
         var workspaceFactory = new WorkspaceFactory(graphEditorFactory, actionManager, commandFactory, blockModelFactory);
         var workspaceContext = workspaceFactory.create(graphDoc.graph());
-        
+
         var workspaceTab = new Tab("New file");
-        workspaceTab.setContent(workspaceContext.controller().getView());
+//        workspaceTab.setContent(workspaceContext.controller().getView());
+        var newWorkspace = workspaceContext.controller().getView();
+        var index = editorView.getChildren().indexOf(workspaceView);
+
+        editorView.getChildren().remove(workspaceView);
+        editorView.getChildren().add(index, newWorkspace);
 
         tabPane.getTabs().add(workspaceTab);
 

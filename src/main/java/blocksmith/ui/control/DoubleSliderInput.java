@@ -11,7 +11,7 @@ public class DoubleSliderInput extends NumberSliderInput {
 
 
     public DoubleSliderInput() {
-        super(0, 0, 10, .0, false);
+        super(0, 0, 10, .1, false);
     }
 
 

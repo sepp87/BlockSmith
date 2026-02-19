@@ -2,6 +2,7 @@ package btscore.editor.commands_done;
 
 import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;
+import btscore.Launcher;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
@@ -47,14 +48,17 @@ public class MoveBlocksCommand implements UndoableCommand {
     @Override
     public boolean execute(WorkspaceContext context) {
         var requests = new ArrayList<BlockPosition>();
-        
+
         for (BlockController blockController : blocks) {
             BlockModel blockModel = blockController.getModel();
             Point2D location = currentLocations.get(blockModel.getId());
-            blockModel.layoutXProperty().set(location.getX());
-            blockModel.layoutYProperty().set(location.getY());
+            if (!Launcher.DOMAIN_GRAPH) {
+                blockModel.layoutXProperty().set(location.getX());
+                blockModel.layoutYProperty().set(location.getY());
+            }
+
             var request = new BlockPosition(
-                    BlockId.from(blockModel.getId()), 
+                    BlockId.from(blockModel.getId()),
                     location.getX(),
                     location.getY()
             );

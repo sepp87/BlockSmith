@@ -80,6 +80,7 @@ public abstract class NumberSliderInput extends InputControl<String> {
 
     @Override
     public void setValue(String newVal) {
+        newVal = newVal == null ? "0" : newVal;
         var newNum = Double.parseDouble(newVal);
         var oldNum = value.getValue().doubleValue();
         if (Double.compare(newNum, newNum) == 0) {

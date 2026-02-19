@@ -1,6 +1,7 @@
 package btscore.editor.commands_done;
 
 import blocksmith.ui.AlignmentPolicy;
+import btscore.Launcher;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -37,6 +38,10 @@ public class AlignLeftCommand implements UndoableCommand {
         var requests = align.apply(views, AlignmentPolicy.Mode.LEFT);
         session.graphEditor().moveBlocks(requests);
 
+        if (Launcher.DOMAIN_GRAPH) {
+            return true;
+        }
+
         // OLD STUFF
         List<BlockView> blockViews = new ArrayList<>();
         for (BlockController blockController : blocks) {
@@ -53,6 +58,11 @@ public class AlignLeftCommand implements UndoableCommand {
 
     @Override
     public void undo() {
+
+        if (Launcher.DOMAIN_GRAPH) {
+            return;
+        }
+
         for (BlockController blockController : blocks) {
             BlockModel blockModel = blockController.getModel();
             blockModel.layoutXProperty().set(previousLocations.get(blockModel.getId()));

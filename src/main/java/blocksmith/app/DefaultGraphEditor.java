@@ -8,7 +8,6 @@ import blocksmith.app.block.AddBlock;
 import blocksmith.domain.block.BlockPosition;
 import static blocksmith.app.logging.IdFormatter.shortId;
 import blocksmith.domain.block.BlockId;
-import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
@@ -21,7 +20,6 @@ import blocksmith.app.inbound.GraphEditor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import blocksmith.app.inbound.GraphMutationAndHistory;
 
 /**
  *
@@ -81,9 +79,9 @@ public class DefaultGraphEditor implements GraphEditor {
         notifyGraphUpdated(updated);
     }
 
-    public void addBlock(String type, BlockLayout metadata) {
+    public void addBlock(String type, double x, double y) {
         var id = BlockId.create();
-        mutate((graph) -> addBlock.execute(graph, id, type));
+        mutate((graph) -> addBlock.execute(graph, id, type, x, y));
         LOGGER.log(Level.INFO, "Add block: {0} {1}",
                 new Object[]{shortId(id.value()), type}
         );
@@ -150,6 +148,14 @@ public class DefaultGraphEditor implements GraphEditor {
         LOGGER.log(Level.INFO, "Remove group: {0}", shortIds.toString());
     }
 
+    public void copyGraph(Collection<BlockId> blocks) {
+        
+    }
+
+    public void pasteGraph() {
+
+    }
+
     public void undo() {
         if (undoStack.isEmpty()) {
             return;
@@ -159,6 +165,8 @@ public class DefaultGraphEditor implements GraphEditor {
 
         var previousGraph = undoStack.pop();
         graph = previousGraph;
+        notifyGraphUpdated(previousGraph);
+
     }
 
     public void redo() {
@@ -170,6 +178,8 @@ public class DefaultGraphEditor implements GraphEditor {
 
         var nextGraph = redoStack.pop();
         graph = nextGraph;
+        notifyGraphUpdated(nextGraph);
+
     }
 
     public boolean hasUndoableState() {

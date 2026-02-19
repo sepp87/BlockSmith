@@ -3,6 +3,7 @@ package btscore.editor.context;
 import btscore.workspace.WorkspaceContext;
 import btscore.editor.EditorView;
 import static btscore.utils.EditorUtils.onFreeSpace;
+import btscore.workspace.WorkspaceView;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.value.ChangeListener;
@@ -48,6 +49,11 @@ public class EditorContext {
         if (!isEditorFocused && onFreeSpace(event)) {
             editorView.requestFocus();
         }
+        
+//                boolean isWorkspaceFocused = editorView.getScene().focusOwnerProperty().get() instanceof WorkspaceView;
+//        if (!isWorkspaceFocused && onFreeSpace(event)) {
+//            activeWorkspace.controller().getView().requestFocus();
+//        }
     }
 
     public void addWorkspace(WorkspaceContext workspace) {

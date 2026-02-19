@@ -2,6 +2,7 @@ package btscore.editor.commands_done;
 
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
+import btscore.Launcher;
 import java.util.HashSet;
 import java.util.Set;
 import btscore.graph.connection.ConnectionModel;
@@ -44,6 +45,10 @@ public class AddConnectionCommand implements UndoableCommand {
         );
         workspaceModel.graphEditor().addConnection(from, to);
 
+        if (Launcher.DOMAIN_GRAPH) {
+            return true;
+        }
+
         // OLD STUFF
         System.out.println("CreateConnectionCommand.execute()");
         if (!toPort.isMultiDockAllowed()) { // remove all connections for the receiving (INPUT) port if multi dock is NOT allowed
@@ -65,6 +70,11 @@ public class AddConnectionCommand implements UndoableCommand {
 
     @Override
     public void undo() {
+
+        if (Launcher.DOMAIN_GRAPH) {
+            return;
+        }
+
         workspaceModel.removeConnectionModel(newConnection);
         for (ConnectionModel connection : removedConnections) {
             connection.revive();

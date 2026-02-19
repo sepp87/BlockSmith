@@ -1,5 +1,6 @@
 package btscore.editor.commands_todo;
 
+import btscore.Launcher;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +25,10 @@ public class CopyBlocksCommand implements Command {
 
     @Override
     public boolean execute(WorkspaceContext context) {
+        if (Launcher.DOMAIN_GRAPH) {
+            return true;
+        }
+
         Collection<BlockController> selectedBlockControllers = workspaceController.getSelectedBlockControllers();
         List<BlockModel> selectedBlockModels = new ArrayList<>();
         for (BlockController blockController : selectedBlockControllers) {

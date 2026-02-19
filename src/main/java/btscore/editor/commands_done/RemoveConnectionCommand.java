@@ -3,6 +3,7 @@ package btscore.editor.commands_done;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
+import btscore.Launcher;
 import btscore.graph.connection.ConnectionModel;
 import btscore.workspace.WorkspaceModel;
 import btscore.editor.context.UndoableCommand;
@@ -38,6 +39,11 @@ public class RemoveConnectionCommand implements UndoableCommand {
         var domain = new Connection(from, to);
         workspaceModel.graphEditor().removeConnection(domain);
 
+        
+        if(Launcher.DOMAIN_GRAPH) {
+            return true;
+        }
+        
         // OLD STUFF
         workspaceModel.removeConnectionModel(connection);
         if (connection.getEndPort().autoConnectableProperty().get()) {
@@ -54,6 +60,11 @@ public class RemoveConnectionCommand implements UndoableCommand {
 
     @Override
     public void undo() {
+        
+        if(Launcher.DOMAIN_GRAPH) {
+            return;
+        }
+        
         if (autoConnection != null) {
             workspaceModel.removeConnectionModel(autoConnection);
             autoConnection = null;

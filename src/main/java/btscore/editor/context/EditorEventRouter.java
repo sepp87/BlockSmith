@@ -37,5 +37,6 @@ public class EditorEventRouter {
                 handler.handle(event);
             }
         }
+//        event.consume();
     }
 }

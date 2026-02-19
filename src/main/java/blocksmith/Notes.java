@@ -8,11 +8,24 @@ public class Notes {
 
 }
 
+// TODO
+// - DONE Undo/Redo
+// - Save/New File
+// - Copy/Paste
+// - Viewport
+// - Delete old code
+// - Tabs
+// - Typing
+// - Improve MethodExecutor
+// - default "0" for range
+//
+//
 // Invariants
 // - valueId is unique within inputs/params
 // - valueId is unique within outputs
 // - params only set as strings, so only simple type String is allowed or var type if pass through is needed
 // - input ports can only have one incoming connection
+// - range default value is "0"
 //
 //
 //
@@ -83,3 +96,7 @@ public class Notes {
 // create Paint.color do not move or select, just pick a color, then BlockController.moveCompleted throws an exception
 // Number slider - Dark mode number slider expander labels not visible
 // Integer slider - format settings not to show decimals
+// 
+//
+// BIG UI BUGS
+// Tab Pane requesting constant focus and interrupting UI handling

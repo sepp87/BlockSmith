@@ -1,5 +1,6 @@
 package btscore.workspace;
 
+import blocksmith.app.GraphDocument;
 import blocksmith.app.inbound.GraphEditor;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
@@ -74,11 +75,12 @@ public class WorkspaceModel {
             return;
         }
 
+        // remove connections
         var connectionIndex = connectionModels.stream().collect(Collectors.toMap(c -> {
             var fromBlock = BlockId.from(c.getStartPort().getBlock().getId());
             var fromPort = c.getStartPort().nameProperty().get();
             var toBlock = BlockId.from(c.getEndPort().getBlock().getId());
-            var toPort = c.getStartPort().nameProperty().get();
+            var toPort = c.getEndPort().nameProperty().get();
             var from = new PortRef(fromBlock, fromPort);
             var to = new PortRef(toBlock, toPort);
             var key = new Connection(from, to);
@@ -89,14 +91,17 @@ public class WorkspaceModel {
             removeConnectionModel(model);
         }
 
+        // remove blocks
         var blockIndex = blockModels.stream().collect(Collectors.toMap(b -> BlockId.from(b.getId()), Function.identity()));
         for (var block : diff.removedBlocks()) {
             var model = blockIndex.get(block.id());
             removeBlockModel(model);
         }
 
+        // add blocks
         addBlocksFromDomain(diff.addedBlocks());
 
+        // update blocks
         for (var block : diff.updatedBlocks()) {
             var model = blockIndex.get(block.id());
             if (model instanceof MethodBlockNew mbn) {
@@ -104,6 +109,8 @@ public class WorkspaceModel {
             }
         }
 
+        // add connections
+        blockIndex = blockModels.stream().collect(Collectors.toMap(b -> BlockId.from(b.getId()), Function.identity()));
         addConnectionsFromDomain(diff.addedConnections(), blockIndex);
 
         // remove connections
@@ -161,6 +168,10 @@ public class WorkspaceModel {
 
     public boolean isSaved() {
         return Objects.equals(editor.currentGraph(), savepoint);
+    }
+    
+    public GraphDocument getDocument(){
+        return new GraphDocument(current, zoomFactor.get(), translateX.get(), translateY.get());
     }
 
     public static final double DEFAULT_ZOOM = 1.0;

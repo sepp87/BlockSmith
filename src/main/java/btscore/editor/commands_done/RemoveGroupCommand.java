@@ -1,6 +1,7 @@
 package btscore.editor.commands_done;
 
 import blocksmith.domain.block.BlockId;
+import btscore.Launcher;
 import java.util.ArrayList;
 import java.util.List;
 import btscore.graph.block.BlockModel;
@@ -30,6 +31,11 @@ public class RemoveGroupCommand implements UndoableCommand {
         var ids = blocks.stream().map(b -> BlockId.from(b.getId())).toList();
         workspaceModel.graphEditor().removeGroup(group.nameProperty().get(), ids);
         
+        
+        if(Launcher.DOMAIN_GRAPH) {
+            return true;
+        }
+        
         // OLD STUFF
         workspaceModel.removeBlockGroupModel(group);
         return true;
@@ -38,6 +44,12 @@ public class RemoveGroupCommand implements UndoableCommand {
 
     @Override
     public void undo() {
+        
+        
+        if(Launcher.DOMAIN_GRAPH) {
+            return;
+        }
+        
         group.revive();
         group.setBlocks(blocks);
         workspaceModel.addBlockGroupModel(group);

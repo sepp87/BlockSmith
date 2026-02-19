@@ -139,4 +139,14 @@ public final class Block {
         );
     }
 
+    public Block duplicate(BlockId id) {
+        return new Block(
+                id,
+                type,
+                params,
+                ports,
+                layout
+        );
+    }
+
 }

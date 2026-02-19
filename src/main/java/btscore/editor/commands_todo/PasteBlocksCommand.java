@@ -1,5 +1,6 @@
 package btscore.editor.commands_todo;
 
+import btscore.Launcher;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Bounds;
@@ -36,6 +37,10 @@ public class PasteBlocksCommand implements UndoableCommand {
 
     @Override
     public boolean execute(WorkspaceContext context) {
+
+        if (Launcher.DOMAIN_GRAPH) {
+            return true;
+        }
 
         if (pastedBlocks.isEmpty()) { // add the pasted blocks and connections again, since they were remove through undo
 
@@ -144,6 +149,10 @@ public class PasteBlocksCommand implements UndoableCommand {
      */
     @Override
     public void undo() {
+
+        if (Launcher.DOMAIN_GRAPH) {
+            return;
+        }
 
         // retrieve connected receivers before removing auto-connection, otherwise they are gone
         List<PortModel> connectedReceivers = new ArrayList<>();

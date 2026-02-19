@@ -14,6 +14,7 @@ import btscore.graph.connection.ConnectionModel;
 import btscore.graph.port.PortModel;
 import btscore.workspace.WorkspaceContext;
 import blocksmith.app.inbound.GraphMutationAndHistory;
+import blocksmith.domain.block.BlockPosition;
 
 /**
  *
@@ -38,8 +39,12 @@ public class AddBlockCommand implements UndoableCommand {
 
     @Override
     public boolean execute(WorkspaceContext context) {
-        workspaceModel.graphEditor().addBlock(blockType, BlockLayout.create(location.getX(), location.getY()));
+        workspaceModel.graphEditor().addBlock(blockType, location.getX(), location.getY());
 
+        if(Launcher.DOMAIN_GRAPH) {
+            return true;
+        }
+        
         // OLD STUFF
         if (blockModel == null) {
 
@@ -92,6 +97,10 @@ public class AddBlockCommand implements UndoableCommand {
      */
     @Override
     public void undo() {
+        
+        if(Launcher.DOMAIN_GRAPH) {
+            return ;
+        }
 
         // first unregister all transmitters, so receivers won't auto-connect to them again 
         List<PortModel> transmitters = blockModel.getTransmittingPorts();

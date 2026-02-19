@@ -24,13 +24,6 @@ public final class Graph {
     private final List<Connection> connections;
     private final List<Group> groups;
 
-    /**
-     * 
-     * @param id
-     * @param blocks
-     * @param connections
-     * @param groups 
-     */
     public Graph(GraphId id, Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
         this.id = Objects.requireNonNull(id);
         this.blocks = toMap(blocks);
@@ -69,7 +62,7 @@ public final class Graph {
     public Graph withBlock(Block block) {
         var updated = new ArrayList<Block>(blocks.values());
         updated.add(block);
-        return withAll(updated, connections, groups);
+        return replace(updated, connections, groups);
     }
 
     public Graph withoutBlock(BlockId id) {
@@ -117,7 +110,7 @@ public final class Graph {
                 .filter(g -> !g.isEmpty())
                 .toList();
 
-        return withAll(updatedBlocks, updatedConnections, updatedGroups);
+        return replace(updatedBlocks, updatedConnections, updatedGroups);
     }
 
     public Graph updateParamValue(BlockId id, String valueId, String value) {
@@ -140,7 +133,7 @@ public final class Graph {
         for (var pos : positions) {
             updatedBlocks.computeIfPresent(pos.id(), (k, v) -> v.withPosition(pos.x(), pos.y()));
         }
-        return withAll(updatedBlocks.values(), connections, groups);
+        return replace(updatedBlocks.values(), connections, groups);
     }
 
     public Graph resizeBlock(BlockId id, double width, double height) {
@@ -160,7 +153,7 @@ public final class Graph {
                 .map(b -> b.id().equals(toBlock) ? b.withParamDeactivated(toValue) : b)
                 .toList();
 
-        return withAll(updatedBlocks, updatedConnections, groups);
+        return replace(updatedBlocks, updatedConnections, groups);
     }
 
     public Graph withoutConnection(Connection connection) {
@@ -175,20 +168,20 @@ public final class Graph {
                 .map(b -> b.id().equals(toBlock) ? b.withParamActivated(toValue) : b)
                 .toList();
 
-        return withAll(updatedBlocks, updatedConnections, groups);
+        return replace(updatedBlocks, updatedConnections, groups);
 
     }
 
     public Graph withGroup(Group group) {
         var updated = new ArrayList<Group>(groups);
         updated.add(group);
-        return withAll(blocks.values(), connections, updated);
+        return replace(blocks.values(), connections, updated);
     }
 
     public Graph withoutGroup(Group group) {
         var updated = new ArrayList<Group>(groups);
         updated.remove(group);
-        return withAll(blocks.values(), connections, updated);
+        return replace(blocks.values(), connections, updated);
     }
 
     public List<Connection> connectionsOf(Block block) {
@@ -196,8 +189,8 @@ public final class Graph {
                 .filter(c -> c.from().blockId().equals(block.id()) || c.to().blockId().equals(block.id()))
                 .toList();
     }
-
-    public Graph withAll(Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
+    
+    private Graph replace(Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
         return new Graph(id, blocks, connections, groups);
     }
 

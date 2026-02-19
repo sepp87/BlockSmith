@@ -2,7 +2,6 @@ package blocksmith.app.inbound;
 
 import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;
-import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
 import java.util.Collection;
@@ -13,7 +12,7 @@ import java.util.Collection;
  */
 public interface GraphMutation {
 
-    void addBlock(String type, BlockLayout metadata);
+    void addBlock(String type, double x, double y);
 
     void removeBlock(BlockId id);
 

@@ -12,6 +12,8 @@ import btscore.workspace.WorkspaceModel;
 import btscore.editor.context.MarkSavedCommand;
 import btscore.graph.io.GraphSaverV2;
 import btscore.workspace.WorkspaceContext;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -41,6 +43,18 @@ public class SaveAsFileCommand implements Command, MarkSavedCommand {
 
         if (file != null) {
             Config.setLastOpenedDirectory(file);
+
+            if (Launcher.DOMAIN_GRAPH) {
+                try {
+                    var document = workspaceModel.getDocument();
+                    graphRepo.save(file.toPath(), document);
+                    workspaceModel.fileProperty().set(file);
+                    workspaceModel.markSaved();
+                } catch (Exception ex) {
+                    Logger.getLogger(SaveAsFileCommand.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return true;
+            }
             if (Launcher.GRAPH_LOADER_V2) {
                 GraphSaverV2.serialize(file, workspaceModel);
             } else {
