@@ -22,8 +22,10 @@ public class TabView extends HBox {
         var root = new HBox();
         labelButton = new Button(label);
         labelButton.setOnAction(e -> onTabContentRequested(id));
+        labelButton.setFocusTraversable(false);
         closeButton = new Button("X");
         closeButton.setOnAction(e -> onTabCloseRequested(id));
+        closeButton.setFocusTraversable(false);
         root.getChildren().addAll(labelButton, closeButton);
     }
 

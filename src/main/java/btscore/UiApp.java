@@ -97,12 +97,12 @@ public class UiApp extends Application {
             }
         });
         var workspaceView = new WorkspaceView();
-        BlockSearchView blockSearchView = new BlockSearchView();
-        SelectionRectangleView selectionRectangleView = new SelectionRectangleView();
-        ZoomView zoomView = new ZoomView();
-        RadialMenuView radialMenuView = new RadialMenuView();
-        MenuBarView menuBarView = new MenuBarView();
-        EditorView editorView = new EditorView(radialMenuView, workspaceView, tabPane, menuBarView, zoomView, selectionRectangleView, blockSearchView);
+        var blockSearchView = new BlockSearchView();
+        var selectionRectangleView = new SelectionRectangleView();
+        var zoomView = new ZoomView();
+        var radialMenuView = new RadialMenuView();
+        var menuBarView = new MenuBarView();
+        var editorView = new EditorView(radialMenuView, workspaceView, tabPane, menuBarView, zoomView, selectionRectangleView, blockSearchView);
 
         // Create workspace
         var graphEditorFactory = app.getGraphEditorFactory();

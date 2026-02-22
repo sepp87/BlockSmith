@@ -19,20 +19,25 @@ import javafx.scene.layout.StackPane;
 public class TabManagerView extends BorderPane {
 
     public static final String DEFAULT_TAB_LABEL = "New Workspace";
-    private final HBox tabsHeader;
+    private final HBox tabHeader;
     private final Pane contentRoot;
-    private final Map<String, TabView> tabs = new HashMap<>();
-    private final Map<String, Node> contents = new HashMap<>();
+    private final Map<String, TabEntry> tabs = new HashMap<>();
     private final List<Consumer<String>> tabShownListeners = new ArrayList<>();
     private final List<Consumer<String>> tabClosedListeners = new ArrayList<>();
+    private final List<String> tabOrder = new ArrayList<>();
+    private String active;
 
-    private String activeTabId;
+    private static record TabEntry(
+            TabView tab,
+            Node content) {
+
+    }
 
     public TabManagerView() {
 
-        tabsHeader = new HBox();
+        tabHeader = new HBox();
         contentRoot = new StackPane();
-        setTop(tabsHeader);
+        setTop(tabHeader);
         setCenter(contentRoot);
 
     }
@@ -44,12 +49,15 @@ public class TabManagerView extends BorderPane {
         tab.setOnTabContentRequested(this::showTab);
         tab.setOnTabCloseRequested(this::closeTab);
 
-        tabs.put(id, tab);
-        tabsHeader.getChildren().add(tab);
+        tabHeader.getChildren().add(tab);
 
         var view = content.view();
-        contents.put(id, view);
+        view.setVisible(false);
         contentRoot.getChildren().add(view);
+
+        tabOrder.add(id);
+        var entry = new TabEntry(tab, view);
+        tabs.put(id, entry);
 
         showTab(id);
 
@@ -57,49 +65,53 @@ public class TabManagerView extends BorderPane {
 
     private String labelOrDefault(TabContent content) {
         var label = content.label();
-        return label == null || label.isBlank() ? label : DEFAULT_TAB_LABEL;
+        return label == null || label.isBlank() ? DEFAULT_TAB_LABEL : label;
+    }
+
+    public void renameTab(String id, String label) {
+        tabs.get(id).tab.renameTab(label);
     }
 
     public void showTab(String id) {
 
-        if (activeTabId != null) {
-            var activeTab = tabs.get(activeTabId);
+        if (active != null) {
+            var previous = tabs.get(active);
             // TODO set css to inactive
-            var activeContent = contents.get(activeTabId);
-            activeContent.setVisible(false);
+            previous.content.setVisible(false);
         }
 
-        var tab = tabs.get(id);
+        var entry = tabs.get(id);
         // TODO set css to active
-        var content = contents.get(id);
-        content.setVisible(true);
+        entry.content.setVisible(true);
 
-        activeTabId = id;
+        active = id;
         onTabShown();
     }
 
     public void closeTab(String id) {
-        var nextActiveId = resolveNextActiveTabFrom(id);
+        var nextActiveId = resolveNextActiveFrom(id);
         nextActiveId.ifPresent(this::showTab);
 
-        var tab = tabs.get(id);
-        tabsHeader.getChildren().remove(tab);
-        tab.dispose();
+        tabOrder.remove(id);
+        var entry = tabs.remove(id);
+        tabHeader.getChildren().remove(entry.tab);
+        entry.tab.dispose();
 
-        var content = contents.get(id);
-        contentRoot.getChildren().remove(content);
+        contentRoot.getChildren().remove(entry.content);
         onTabClosed(id);
     }
 
-    private Optional<String> resolveNextActiveTabFrom(String id) {
-        if (id.equals(activeTabId)) {
-            var tab = tabs.get(id);
-            var index = tabsHeader.getChildren().indexOf(tab);
-            var iterator = tabsHeader.getChildren().listIterator(index);
-            if (iterator.hasNext()) {
-                return Optional.of(iterator.next().getId());
-            } else if (iterator.hasPrevious()) {
-                return Optional.of(iterator.previous().getId());
+    private Optional<String> resolveNextActiveFrom(String id) {
+        if (id.equals(active)) {
+            var size = tabOrder.size();
+            var index = tabOrder.indexOf(id);
+            var next = index + 1;
+            if (next < size) {
+                return Optional.of(tabOrder.get(next));
+            }
+            var previous = index - 1;
+            if (previous > -1) {
+                return Optional.of(tabOrder.get(previous));
             }
         }
         return Optional.empty();
@@ -114,11 +126,11 @@ public class TabManagerView extends BorderPane {
     }
 
     private void onTabShown() {
-        tabShownListeners.forEach(c -> c.accept(activeTabId));
+        tabShownListeners.forEach(c -> c.accept(active));
     }
 
     private void onTabClosed(String id) {
-        tabClosedListeners.forEach(c -> c.accept(activeTabId));
+        tabClosedListeners.forEach(c -> c.accept(id));
     }
 
 }
