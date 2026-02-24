@@ -16,8 +16,7 @@ public class EditorView extends AnchorPane {
 
     public EditorView(
             RadialMenuView radialMenuView,
-                        WorkspaceView workspaceView,
-            TabPane tabPane,
+            WorkspaceView workspaceView,
             MenuBarView menuBarView,
             ZoomView zoomView,
             SelectionRectangleView selectionRectangleView,
@@ -33,15 +32,9 @@ public class EditorView extends AnchorPane {
         AnchorPane.setTopAnchor(zoomView, 37.5);
         AnchorPane.setRightAnchor(zoomView, 10.);
 
-        AnchorPane.setTopAnchor(tabPane, 10.);
-        AnchorPane.setRightAnchor(tabPane, 0.);
-        AnchorPane.setBottomAnchor(tabPane, 0.);
-        AnchorPane.setLeftAnchor(tabPane, 0.);
-
         // create selection block
         this.getChildren().addAll(
-                                workspaceView,
-//                tabPane,
+                workspaceView,
                 radialMenuView,
                 menuBarView,
                 zoomView,

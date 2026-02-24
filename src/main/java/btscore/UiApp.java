@@ -2,6 +2,9 @@ package btscore;
 
 import blocksmith.App;
 import blocksmith.ui.BlockModelFactory;
+import blocksmith.ui.Editor;
+import blocksmith.ui.workspace.SaveDocument;
+import blocksmith.ui.workspace.WorkspaceFactoryNew;
 import btscore.editor.context.EditorContext;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -27,9 +30,6 @@ import btscore.editor.context.ActionManager;
 import btscore.editor.context.CommandFactory;
 import btscore.workspace.WorkspaceFactory;
 import btscore.workspace.WorkspaceView;
-import javafx.application.Platform;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 
 /**
  *
@@ -38,11 +38,6 @@ import javafx.scene.control.TabPane;
 public class UiApp extends Application {
 
     private static App app;
-    private static BlockModelFactory blockModelFactory;
-
-    public static BlockModelFactory getBlockModelFactory() {
-        return blockModelFactory;
-    }
 
     public static void setApp(App app) {
         UiApp.app = app;
@@ -64,63 +59,40 @@ public class UiApp extends Application {
 
         var blockDefLibrary = app.getBlockDefLibrary();
         var blockFuncLibrary = app.getBlockFuncLibrary();
-        this.blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
         var graphRepo = app.getGraphRepo();
+        var graphEditorFactory = app.getGraphEditorFactory();
+        var blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
+        var saveDocument = new SaveDocument(graphRepo);
+        var workspaceFactoryNew = new WorkspaceFactoryNew(graphRepo, graphEditorFactory, blockModelFactory, saveDocument);
+        var editor = new Editor(workspaceFactoryNew);
 
-        var graphDoc = graphRepo.load(new File("btsxml/aslist-v2.btsxml").toPath());
+        var path = new File("btsxml/aslist-v2.btsxml").toPath();
+        var document = graphRepo.load(path);
 
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
 
         // Initialize views
-        var tabPane = new TabPane();
-        tabPane.setFocusTraversable(false);
-        tabPane.skinProperty().addListener((obs, oldSkin, newSkin) -> {
-            var header = tabPane.lookup(".tab-header-area");
-            if (header != null) {
-                header.setFocusTraversable(false);
-            }
-        });
-        tabPane.skinProperty().addListener((obs, oldSkin, newSkin) -> {
-            Platform.runLater(() -> {
-                tabPane.lookupAll(".tab").forEach(node
-                        -> node.setFocusTraversable(false)
-                );
-            });
-        });
-        tabPane.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
-            if (isFocused) {
-                var selected = tabPane.getSelectionModel().getSelectedItem();
-                if (selected != null && selected.getContent() != null) {
-                    selected.getContent().requestFocus();
-                }
-            }
-        });
         var workspaceView = new WorkspaceView();
         var blockSearchView = new BlockSearchView();
         var selectionRectangleView = new SelectionRectangleView();
         var zoomView = new ZoomView();
         var radialMenuView = new RadialMenuView();
         var menuBarView = new MenuBarView();
-        var editorView = new EditorView(radialMenuView, workspaceView, tabPane, menuBarView, zoomView, selectionRectangleView, blockSearchView);
+        var editorView = new EditorView(radialMenuView, workspaceView, menuBarView, zoomView, selectionRectangleView, blockSearchView);
 
         // Create workspace
-        var graphEditorFactory = app.getGraphEditorFactory();
         var editorContext = new EditorContext(editorView);
         var commandFactory = new CommandFactory(editorContext, blockModelFactory, graphRepo);
         var actionManager = new ActionManager(editorContext, commandFactory);
-        var workspaceFactory = new WorkspaceFactory(graphEditorFactory, actionManager, commandFactory, blockModelFactory);
-        var workspaceContext = workspaceFactory.create(graphDoc.graph());
+        var workspaceFactory = new WorkspaceFactory(graphEditorFactory, actionManager, commandFactory, blockModelFactory, saveDocument);
+        var workspaceContext = workspaceFactory.openDocument(path, document);
 
-        var workspaceTab = new Tab("New file");
-//        workspaceTab.setContent(workspaceContext.controller().getView());
         var newWorkspace = workspaceContext.controller().getView();
         var index = editorView.getChildren().indexOf(workspaceView);
 
         editorView.getChildren().remove(workspaceView);
         editorView.getChildren().add(index, newWorkspace);
-
-        tabPane.getTabs().add(workspaceTab);
 
         // initialize EventRouter for Context
         EditorEventRouter eventRouter = new EditorEventRouter();

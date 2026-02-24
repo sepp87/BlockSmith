@@ -30,72 +30,22 @@ public class ActionManager {
 
     public void executeCommand(Command command) {
         var workspace = context.activeWorkspace();
-        var state = workspace.state();
-        var history = workspace.history();
-        boolean isSuccessful = command.execute(workspace);
-        if (isSuccessful) {
-
-            if (command instanceof UndoableCommand undoable) {
-                history.undoStack().push(undoable);
-                history.redoStack().clear();
-            } else if (command instanceof ResetHistoryCommand) {
-                resetHistory();
-            }
-
-            if (command instanceof MarkSavedCommand) {
-                var marker = history.undoStack().size();
-                state.setSavepoint(marker);
-                workspace.controller().getModel().markSaved();
-            }
-            updateSavableState();
-        }
+        command.execute(workspace);
     }
 
     public void undo() {
         var workspace = context.activeWorkspace();
-        context.activeWorkspace().controller().getModel().graphEditor().undo();
-        var history = context.activeWorkspace().history();
-        if (!history.undoStack().isEmpty()) {
-            UndoableCommand command = history.undoStack().pop();
-            command.undo();
-            history.redoStack().push(command);
-            updateSavableState();
-        }
+        workspace.controller().getModel().graphEditor().undo();
+
     }
 
     public void redo() {
         var workspace = context.activeWorkspace();
-        context.activeWorkspace().controller().getModel().graphEditor().redo();
-        var history = context.activeWorkspace().history();
-        if (!history.redoStack().isEmpty()) {
-            UndoableCommand command = history.redoStack().pop();
-            command.execute(workspace);
-            history.undoStack().push(command);
-            updateSavableState();
-        }
+        workspace.controller().getModel().graphEditor().redo();
+
     }
 
-    private void updateSavableState() {
-        var history = context.activeWorkspace().history();
-        var state = context.activeWorkspace().state();
-        var isSavable = history.undoStack().size() != state.getSavepoint();
-        state.setSavable(isSavable);
-    }
 
-    public void resetHistory() {
-        var history = context.activeWorkspace().history();
-        history.undoStack().clear();
-        history.redoStack().clear();
-    }
 
-    public boolean hasUndoableCommands() {
-        var history = context.activeWorkspace().history();
-        return !history.undoStack().isEmpty();
-    }
-
-    public boolean hasRedoableCommands() {
-        var history = context.activeWorkspace().history();
-        return !history.redoStack().isEmpty();
-    }
 
 }

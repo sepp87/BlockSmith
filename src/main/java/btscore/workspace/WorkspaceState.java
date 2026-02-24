@@ -12,8 +12,6 @@ import btscore.editor.context.EditorMode;
 public class WorkspaceState {
 
     private final ObjectProperty<EditorMode> mode = new SimpleObjectProperty<>(EditorMode.IDLE_MODE);
-    private boolean savable = false;
-    private int savepoint = -1;
 
     public WorkspaceState() {
         mode.addListener(this::printMode);
@@ -85,20 +83,5 @@ public class WorkspaceState {
         mode.set(EditorMode.GROUP_SELECTION_MODE);
     }
 
-    public boolean isSavable() {
-        return savable;
-    }
-
-    public void setSavable(boolean savable) {
-        this.savable = savable;
-    }
-
-    public int getSavepoint() {
-        return savepoint;
-    }
-
-    public void setSavepoint(int savepoint) {
-        this.savepoint = savepoint;
-    }
 
 }

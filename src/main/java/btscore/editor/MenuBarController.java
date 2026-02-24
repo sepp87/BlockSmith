@@ -55,8 +55,8 @@ public class MenuBarController {
 
     private void onFileMenuShown(Object b, Boolean o, Boolean n) {
         var workspace = context.activeWorkspace();
-        var state = workspace.state();
-        view.getSaveMenuItem().setDisable(!state.isSavable());
+        var model = workspace.controller().getModel();
+        view.getSaveMenuItem().setDisable(model.isSaved());
     }
 
     private final ChangeListener<Boolean> editMenuShownListener = this::onEditMenuShown;

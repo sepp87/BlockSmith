@@ -1,6 +1,7 @@
 package btscore.workspace;
 
 import blocksmith.app.GraphDocument;
+import blocksmith.app.GraphEditorFactory;
 import blocksmith.app.inbound.GraphEditor;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
@@ -26,15 +27,19 @@ import javafx.collections.SetChangeListener;
 import btscore.UiApp;
 import java.util.Objects;
 import blocksmith.app.inbound.GraphMutationAndHistory;
-import blocksmith.app.logging.IdFormatter;
+import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.group.Group;
 import blocksmith.ui.BlockModelFactory;
 import blocksmith.ui.MethodBlockNew;
+import blocksmith.ui.workspace.SaveDocument;
 import btscore.Launcher;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,25 +55,53 @@ public class WorkspaceModel {
 
     private final GraphEditor editor;
     private final BlockModelFactory blockFactory;
-    private Graph savepoint;
-    private Graph current;
+    private final SaveDocument saveDocument;
+    private GraphDocument document;
+    private Path documentPath;
+    private List<Consumer<Path>> documentPathListeners = new ArrayList<>();
 
-    public WorkspaceModel(GraphEditor editor, BlockModelFactory blockFactory) {
-        this.editor = editor;
+    private WorkspaceModel(Path documentPath, GraphDocument document, GraphEditorFactory editorFactory, BlockModelFactory blockFactory, SaveDocument saveDocument) {
+        this.documentPath = documentPath;
+        this.document = document;
+        this.editor = editorFactory.createDefault(document.graph());
+        this.zoomFactor.set(document.zoomFactor());
+        this.translateX.set(document.translateX());
+        this.translateY.set(document.translateY());
         this.blockFactory = blockFactory;
-        this.current = editor.currentGraph();
+        this.saveDocument = saveDocument;
+
         editor.setOnGraphUpdated(this::updateFrom);
 
-        addBlocksFromDomain(current.blocks());
+        var graph = editor.currentGraph();
+        addBlocksFromDomain(graph.blocks());
         var blockIndex = blockModels.stream().collect(Collectors.toMap(b -> BlockId.from(b.getId()), Function.identity()));
-        addConnectionsFromDomain(current.connections(), blockIndex);
-        addGroupsFromDomain(current.groups(), blockIndex);
+        addConnectionsFromDomain(graph.connections(), blockIndex);
+        addGroupsFromDomain(graph.groups(), blockIndex);
     }
 
-    private void updateFrom(Graph updated) {
+    public static WorkspaceModel newDocument(
+            GraphEditorFactory editorFactory,
+            BlockModelFactory blockFactory,
+            SaveDocument saveDocument
+    ) {
+        Path path = null;
+        var document = GraphDocument.createEmpty();
+        return new WorkspaceModel(path, document, editorFactory, blockFactory, saveDocument);
+    }
 
-        var diff = GraphDiff.compare(current, updated);
-        current = updated;
+    public static WorkspaceModel openDocument(
+            Path path,
+            GraphDocument document,
+            GraphEditorFactory editorFactory,
+            BlockModelFactory blockFactory,
+            SaveDocument saveDocument
+    ) {
+        return new WorkspaceModel(path, document, editorFactory, blockFactory, saveDocument);
+    }
+
+    private void updateFrom(Graph oldGraph, Graph newGraph) {
+
+        var diff = GraphDiff.compare(oldGraph, newGraph);
         LOGGER.log(Level.INFO, diff.toString());
 
         if (!Launcher.DOMAIN_GRAPH) {
@@ -131,7 +164,7 @@ public class WorkspaceModel {
     private void addConnectionsFromDomain(Collection<Connection> connections, Map<BlockId, BlockModel> blockIndex) {
         for (var connection : connections) {
 
-            System.out.println("rOUTPUT " + IdFormatter.shortId(connection.from().blockId().value()) + "." + connection.from().valueId());
+            System.out.println("rOUTPUT " + GraphLogFmt.port(connection.from()));
             var fromBlock = blockIndex.get(connection.from().blockId());
             var fromPort = fromBlock.getOutputPorts().stream()
                     .filter(p -> p.nameProperty().get().equals(connection.from().valueId()))
@@ -161,20 +194,34 @@ public class WorkspaceModel {
         return editor;
     }
 
-    // TODO switch to internal, so it is managed by the workspace
-    public void markSaved() {
-        savepoint = editor.currentGraph();
-    }
-
     public boolean isSaved() {
-        return Objects.equals(editor.currentGraph(), savepoint);
-    }
-    
-    public GraphDocument getDocument(){
-        return new GraphDocument(current, zoomFactor.get(), translateX.get(), translateY.get());
+        return Objects.equals(editor.currentGraph(), document.graph());
     }
 
-    public static final double DEFAULT_ZOOM = 1.0;
+    public void saveDocument(Path path) throws Exception {
+        var graph = editor.currentGraph();
+        var newVersion = new GraphDocument(graph, zoomFactor.get(), translateX.get(), translateY.get());
+        saveDocument.execute(path, newVersion);
+        document = newVersion;
+        if (!Objects.equals(documentPath, path)) {
+            documentPath = path;
+            onDocumentPathChanged();
+        }
+    }
+
+    public Optional<Path> documentPath() {
+        return Optional.ofNullable(documentPath);
+    }
+
+    public void setOnDocumentPathChanged(Consumer<Path> listener) {
+        documentPathListeners.add(listener);
+    }
+
+    private void onDocumentPathChanged() {
+        documentPathListeners.forEach(c -> c.accept(documentPath));
+    }
+
+    public static final double DEFAULT_ZOOM_FACTOR = 1.0;
     public static final double MAX_ZOOM = 1.5;
     public static final double MIN_ZOOM = 0.3;
     public static final double ZOOM_STEP = 0.1;
@@ -185,7 +232,7 @@ public class WorkspaceModel {
     private final BooleanProperty savable = new SimpleBooleanProperty(this, "savable", false);
     private final ObjectProperty<File> file = new SimpleObjectProperty(this, "file", null);
 
-    private final DoubleProperty zoomFactor = new SimpleDoubleProperty(DEFAULT_ZOOM);
+    private final DoubleProperty zoomFactor = new SimpleDoubleProperty(DEFAULT_ZOOM_FACTOR);
     private final DoubleProperty translateX = new SimpleDoubleProperty(0.);
     private final DoubleProperty translateY = new SimpleDoubleProperty(0.);
 
@@ -219,7 +266,7 @@ public class WorkspaceModel {
     }
 
     public void resetZoomFactor() {
-        zoomFactor.set(DEFAULT_ZOOM);
+        zoomFactor.set(DEFAULT_ZOOM_FACTOR);
     }
 
     // Increment zoom factor by the defined step size

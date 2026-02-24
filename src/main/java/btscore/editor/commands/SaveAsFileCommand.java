@@ -1,16 +1,12 @@
 package btscore.editor.commands;
 
-import blocksmith.app.outbound.GraphRepo;
 import java.io.File;
 import javafx.stage.FileChooser;
 import btscore.UiApp;
 import btscore.Config;
-import btscore.Launcher;
-import btscore.graph.io.GraphSaver;
 import btscore.editor.context.Command;
 import btscore.workspace.WorkspaceModel;
 import btscore.editor.context.MarkSavedCommand;
-import btscore.graph.io.GraphSaverV2;
 import btscore.workspace.WorkspaceContext;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,11 +18,9 @@ import java.util.logging.Logger;
 public class SaveAsFileCommand implements Command, MarkSavedCommand {
 
     private final WorkspaceModel workspaceModel;
-    private final GraphRepo graphRepo;
 
-    public SaveAsFileCommand(WorkspaceModel workspaceModel, GraphRepo graphRepo) {
+    public SaveAsFileCommand(WorkspaceModel workspaceModel) {
         this.workspaceModel = workspaceModel;
-        this.graphRepo = graphRepo;
     }
 
     @Override
@@ -44,23 +38,12 @@ public class SaveAsFileCommand implements Command, MarkSavedCommand {
         if (file != null) {
             Config.setLastOpenedDirectory(file);
 
-            if (Launcher.DOMAIN_GRAPH) {
-                try {
-                    var document = workspaceModel.getDocument();
-                    graphRepo.save(file.toPath(), document);
-                    workspaceModel.fileProperty().set(file);
-                    workspaceModel.markSaved();
-                } catch (Exception ex) {
-                    Logger.getLogger(SaveAsFileCommand.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                return true;
+            try {
+                workspaceModel.saveDocument(file.toPath());
+            } catch (Exception ex) {
+                Logger.getLogger(SaveAsFileCommand.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if (Launcher.GRAPH_LOADER_V2) {
-                GraphSaverV2.serialize(file, workspaceModel);
-            } else {
-                GraphSaver.serialize(file, workspaceModel);
 
-            }
         }
         return true;
 

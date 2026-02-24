@@ -1,5 +1,14 @@
 package btscore.graph.io;
 
+import blocksmith.app.block.BlockDefLibrary;
+import blocksmith.app.block.BlockFuncLibrary;
+import blocksmith.infra.AppPaths;
+import blocksmith.infra.blockloader.ClassIndex;
+import blocksmith.infra.blockloader.CompositeBlockDefLoader;
+import blocksmith.infra.blockloader.MethodBlockDefLoader;
+import blocksmith.infra.blockloader.MethodBlockFuncLoader;
+import blocksmith.infra.blockloader.MethodIndex;
+import blocksmith.ui.BlockModelFactory;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.control.NumberSliderInput;
 import btscore.Launcher;
@@ -24,7 +33,8 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 /**
- *
+ * TODO DEPRECATE
+ * 
  * @author joostmeulenkamp
  */
 public class GraphLoader {
@@ -85,7 +95,18 @@ public class GraphLoader {
             String blockIdentifier = blockTag.getType();
             if (Launcher.BLOCK_DEF_LOADER) {
                 try {
-                    var factory = UiApp.getBlockModelFactory();
+                    var paths = new AppPaths();
+                    var classIndex = new ClassIndex(paths);
+                    var methodIndex = new MethodIndex(classIndex.classes());
+
+                    var methodDefLoader = new MethodBlockDefLoader(methodIndex.methods());
+                    var compositeDefLoader = new CompositeBlockDefLoader(List.of(methodDefLoader));
+                    var defLibrary = new BlockDefLibrary(compositeDefLoader.load());
+
+                    var methodFuncLoader = new MethodBlockFuncLoader(methodIndex.methods());
+                    var funcLibrary = new BlockFuncLibrary(methodFuncLoader.load());
+                    
+                    var factory = new BlockModelFactory(defLibrary, funcLibrary);
                     var block = factory.create(blockIdentifier, blockTag.getUUID());
                     block.layoutXProperty().set(blockTag.getX());
                     block.layoutYProperty().set(blockTag.getY());

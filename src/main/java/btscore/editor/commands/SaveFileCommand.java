@@ -1,11 +1,7 @@
 package btscore.editor.commands;
 
-import blocksmith.app.outbound.GraphRepo;
-import java.io.File;
 import btscore.Config;
-import btscore.Launcher;
 import btscore.editor.context.Command;
-import btscore.graph.io.GraphSaver;
 import btscore.workspace.WorkspaceModel;
 import btscore.editor.context.MarkSavedCommand;
 import btscore.workspace.WorkspaceContext;
@@ -19,35 +15,25 @@ import java.util.logging.Logger;
 public class SaveFileCommand implements Command, MarkSavedCommand {
 
     private final WorkspaceModel workspaceModel;
-    private final GraphRepo graphRepo;
 
-    public SaveFileCommand(WorkspaceModel workspaceModel, GraphRepo graphRepo) {
+    public SaveFileCommand(WorkspaceModel workspaceModel) {
         this.workspaceModel = workspaceModel;
-        this.graphRepo = graphRepo;
     }
 
     @Override
     public boolean execute(WorkspaceContext context) {
 
-        File file = workspaceModel.fileProperty().get();
+        var path = workspaceModel.documentPath().orElse(null);
+        if (path != null) {
+            try {
+                workspaceModel.saveDocument(path);
+                Config.setLastOpenedDirectory(path.toFile());
 
-        if (file != null) {
-            Config.setLastOpenedDirectory(file);
-            if(Launcher.DOMAIN_GRAPH){
-                try {
-                    var document  = workspaceModel.getDocument();
-                    graphRepo.save(file.toPath(), document);
-                    return true;
-                } catch (Exception ex) {
-                    Logger.getLogger(SaveFileCommand.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            } catch (Exception ex) {
+                Logger.getLogger(SaveFileCommand.class.getName()).log(Level.SEVERE, null, ex);
             }
-            GraphSaver.serialize(file, workspaceModel);
-        } else {
-            new SaveAsFileCommand(workspaceModel, graphRepo).execute(context);
         }
-        return true;
-
+        return new SaveAsFileCommand(workspaceModel).execute(context);
     }
 
 }

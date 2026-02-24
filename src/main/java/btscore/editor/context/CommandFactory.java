@@ -66,9 +66,9 @@ public class CommandFactory {
             case OPEN_FILE ->
                 new OpenFileCommand(workspaceModel, graphRepo, context);
             case SAVE_FILE ->
-                new SaveFileCommand(workspaceModel, graphRepo);
+                new SaveFileCommand(workspaceModel);
             case SAVE_AS_FILE ->
-                new SaveAsFileCommand(workspaceModel, graphRepo);
+                new SaveAsFileCommand(workspaceModel);
             case COPY_BLOCKS ->
                 new CopyBlocksCommand(workspaceController);
             case PASTE_BLOCKS ->

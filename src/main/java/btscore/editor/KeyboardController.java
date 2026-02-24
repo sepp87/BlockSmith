@@ -35,7 +35,7 @@ public class KeyboardController {
 
     public void handleShortcutTriggered(KeyEvent event) {
         var workspace = context.activeWorkspace();
-        var state = workspace.state();
+        var model = workspace.controller().getModel();
 //        var session = workspace.sesion();
 //        var model = workspace.model();
 //        ActionManager actionManager = UiApp.getCurrentContext().getActionManager();
@@ -77,7 +77,7 @@ public class KeyboardController {
                     if (event.isShiftDown()) {
                         command = commandFactory.createCommand(Command.Id.SAVE_AS_FILE);
 
-                    } else if (state.isSavable()) {
+                    } else if (!model.isSaved()) {
                         command = commandFactory.createCommand(Command.Id.SAVE_FILE);
                     }
                 }

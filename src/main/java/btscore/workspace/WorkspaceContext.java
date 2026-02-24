@@ -10,16 +10,17 @@ public class WorkspaceContext {
 
     private final String id;
     private final WorkspaceState state;
-    private final WorkspaceHistory history;
+//    private final WorkspaceHistory history;
     private WorkspaceController controller;
 
     public WorkspaceContext(
-            WorkspaceState state, 
-            WorkspaceHistory history
+            WorkspaceState state
+//            , 
+//            WorkspaceHistory history
     ) {
         this.id = UUID.randomUUID().toString();
         this.state = state;
-        this.history = history;
+//        this.history = history;
     }
 
     public void attachController(WorkspaceController controller) {
@@ -35,9 +36,9 @@ public class WorkspaceContext {
         return state;
     }
     
-    public WorkspaceHistory history() {
-        return history;
-    }
+//    public WorkspaceHistory history() {
+//        return history;
+//    }
 
     public WorkspaceController controller() {
         return controller;

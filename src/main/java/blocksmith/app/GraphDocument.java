@@ -14,4 +14,13 @@ public record GraphDocument(
 
     public final static double DEFAULT_ZOOM_FACTOR = 1;
     public final static double DEFAULT_TRANSLATE = 0;
+
+    public static GraphDocument createEmpty() {
+        return new GraphDocument(
+                Graph.createEmpty(),
+                DEFAULT_ZOOM_FACTOR,
+                DEFAULT_TRANSLATE,
+                DEFAULT_TRANSLATE
+        );
+    }
 }

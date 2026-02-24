@@ -1,16 +1,15 @@
-
 package blocksmith.app.inbound;
 
 import blocksmith.domain.graph.Graph;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  *
  * @author joostmeulenkamp
  */
 public interface GraphQuery {
-    
+
     Graph currentGraph();
-    
-    void setOnGraphUpdated(Consumer<Graph> listener);
+
+    void setOnGraphUpdated(BiConsumer<Graph, Graph> listener);
 }

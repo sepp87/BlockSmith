@@ -4,8 +4,7 @@ import blocksmith.ui.control.TextInput;
 import blocksmith.ui.control.InputControl;
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.app.block.BlockFuncLibrary;
-import blocksmith.app.logging.IdFormatter;
-import blocksmith.domain.block.Block;
+import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.value.ParamDef;
 import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.ParamInput.NumericType;
@@ -56,12 +55,10 @@ public class BlockModelFactory {
         var block = new MethodBlockNew(def, func, id);
 
         for (var input : def.inputs()) {
-            System.out.println("INPUT " + IdFormatter.shortId(UUID.fromString(id)) + "." + input.valueId());
             block.addInputPort(input.valueId(), ValueType.toDataType(input.valueType()));
         }
 
         for (var output : def.outputs()) {
-            System.out.println("OUTPUT " + IdFormatter.shortId(UUID.fromString(id)) + "." + output.valueId());
             block.addOutputPort(output.valueId(), ValueType.toDataType(output.valueType()));
         }
 
