@@ -10,6 +10,7 @@ import blocksmith.domain.value.ValueType;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.GraphId;
 import blocksmith.domain.group.Group;
+import blocksmith.domain.group.GroupId;
 import blocksmith.domain.value.Param;
 import btscore.workspace.WorkspaceModel;
 import java.util.ArrayList;
@@ -126,9 +127,10 @@ public final class GraphMapper {
     private static List<Group> groupsToDomain(WorkspaceModel workspace) {
         var result = new ArrayList<Group>();
         for (var group : workspace.getBlockGroupModels()) {
+            var id = GroupId.from(group.getId());
             var label = group.nameProperty().get();
             var blocks = group.getBlocks().stream().map(b -> BlockId.from(b.getId())).toList();
-            var domain = new Group(label, blocks);
+            var domain = new Group(id,label, blocks);
             result.add(domain);
         }
         return result;

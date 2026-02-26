@@ -1,5 +1,6 @@
 package btscore.workspace;
 
+import blocksmith.app.inbound.GraphMutationAndHistory;
 import java.util.UUID;
 
 /**
@@ -10,13 +11,10 @@ public class WorkspaceContext {
 
     private final String id;
     private final WorkspaceState state;
-//    private final WorkspaceHistory history;
     private WorkspaceController controller;
 
     public WorkspaceContext(
             WorkspaceState state
-//            , 
-//            WorkspaceHistory history
     ) {
         this.id = UUID.randomUUID().toString();
         this.state = state;
@@ -35,13 +33,21 @@ public class WorkspaceContext {
     public WorkspaceState state() {
         return state;
     }
-    
-//    public WorkspaceHistory history() {
-//        return history;
-//    }
 
     public WorkspaceController controller() {
         return controller;
+    }
+
+    public WorkspaceModel model() {
+        return controller.getModel();
+    }
+
+    public WorkspaceView view() {
+        return controller.getView();
+    }
+
+    public GraphMutationAndHistory graphEditor() {
+        return controller.getModel().graphEditor();
     }
 
 }

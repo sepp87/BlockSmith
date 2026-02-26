@@ -1,14 +1,14 @@
 package btscore.editor.radialmenu;
 
-import btscore.editor.context.ActionManager;
+import btscore.command.CommandDispatcher;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.input.MouseEvent;
 import btscore.utils.NodeHierarchyUtils;
-import btscore.editor.context.EditorEventRouter;
-import btscore.editor.context.Command;
-import btscore.editor.context.CommandFactory;
-import btscore.editor.context.EditorContext;
+import btscore.editor.EditorEventRouter;
+import btscore.command.Command;
+import btscore.command.CommandFactory;
+import btscore.editor.EditorContext;
 import static btscore.utils.EditorUtils.onFreeSpace;
 import static btscore.utils.EventUtils.isRightClick;
 
@@ -18,17 +18,15 @@ import static btscore.utils.EventUtils.isRightClick;
  */
 public class RadialMenuController {
 
-    private final ActionManager actionManager;
-    private final CommandFactory commandFactory;
+    private final CommandDispatcher actionManager;
     private final EditorEventRouter eventRouter;
     private final EditorContext context;
     private final RadialMenuView view;
 
     private final ChangeListener<Boolean> visibilityToggledHandler;
 
-    public RadialMenuController(ActionManager actionManager, CommandFactory commandFactory, EditorEventRouter eventRouter, EditorContext context, RadialMenuView radialMenuView) {
+    public RadialMenuController(CommandDispatcher actionManager, CommandFactory commandFactory, EditorEventRouter eventRouter, EditorContext context, RadialMenuView radialMenuView) {
         this.actionManager = actionManager;
-        this.commandFactory = commandFactory;
         this.eventRouter = eventRouter;
         this.context = context;
         this.view = radialMenuView;

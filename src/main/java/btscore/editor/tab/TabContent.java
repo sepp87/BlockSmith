@@ -8,7 +8,7 @@ import javafx.scene.Node;
  * @author joost
  */
 public record TabContent(
-        UUID id,
+        String id,
         String label,
         Node view) {
 

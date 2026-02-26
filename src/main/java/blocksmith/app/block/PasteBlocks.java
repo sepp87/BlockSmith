@@ -6,6 +6,7 @@ import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.group.Group;
+import blocksmith.domain.group.GroupId;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,6 +35,7 @@ public class PasteBlocks {
         var blocks = copied.blocks()
                 .stream()
                 .map(b -> b.duplicate(newId.get(b.id())))
+                .map(b -> b.withPosition(b.layout().x() + 20, b.layout().y() + 20)) // offset pasted blocks
                 .toList();
 
         var connectionsWithoutDangling = copied.connections()
@@ -41,7 +43,7 @@ public class PasteBlocks {
                 .filter(c -> {
                     var from = c.from().blockId();
                     var isDangling = !newId.containsKey(from);
-                    var pointsToMissingBlock = !target.blocks().contains(from);
+                    var pointsToMissingBlock = !target.block(from).isPresent();
                     return isDangling && pointsToMissingBlock ? false : true;
                 })
                 .toList();
@@ -61,7 +63,8 @@ public class PasteBlocks {
                 .stream()
                 .map(g -> {
                     var newIds = g.blocks().stream().map(b -> newId.get(b)).toList();
-                    return new Group(g.label(), newIds);
+                    var groupId = GroupId.create();
+                    return new Group(groupId, g.label(), newIds);
                 })
                 .toList();
 

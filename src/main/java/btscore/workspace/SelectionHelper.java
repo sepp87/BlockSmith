@@ -1,22 +1,20 @@
 package btscore.workspace;
 
+import blocksmith.domain.block.BlockId;
 import btscore.graph.block.BlockController;
 import btscore.graph.block.BlockView;
 import btscore.graph.block.BlockModel;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.geometry.Point2D;
-import btscore.editor.BaseController;
-import btscore.editor.context.ActionManager;
-import btscore.editor.context.CommandFactory;
 
 /**
  *
  * @author Joost
  */
-public class SelectionHelper extends BaseController {
+public class SelectionHelper {
 
     private final WorkspaceModel model;
     private final WorkspaceView view;
@@ -24,11 +22,10 @@ public class SelectionHelper extends BaseController {
 
     private final ObservableSet<BlockController> selectedBlocks = FXCollections.observableSet();
 
-    public SelectionHelper(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceController controller, WorkspaceModel workspaceModel, WorkspaceView workspaceView, WorkspaceController workspaceController) {
-        super(actionManager, commandFactory, context);
-        this.model = workspaceModel;
-        this.view = workspaceView;
-        this.controller = workspaceController;
+    public SelectionHelper(WorkspaceModel model, WorkspaceView view, WorkspaceController controller) {
+        this.model = model;
+        this.view = view;
+        this.controller = controller;
     }
 
     public void selectAllBlocks() {
@@ -39,6 +36,9 @@ public class SelectionHelper extends BaseController {
             selectedBlocks.add(block);
         }
 
+        var ids = selectedBlocks.stream().map(c -> BlockId.from(c.getModel().getId())).toList();
+        model.selectionModel().setSelected(ids);
+
     }
 
     public void deselectAllBlocks() {
@@ -48,6 +48,7 @@ public class SelectionHelper extends BaseController {
         }
         this.selectedBlocks.clear();
 
+        model.selectionModel().setSelected(List.of());
     }
 
     public void rectangleSelect(Point2D selectionMin, Point2D selectionMax) {
@@ -68,8 +69,10 @@ public class SelectionHelper extends BaseController {
                 blockController.selectedProperty().set(false);
             }
         }
+        var ids = selectedBlocks.stream().map(c -> BlockId.from(c.getModel().getId())).toList();
+        model.selectionModel().setSelected(ids);
     }
-   
+
     public void updateSelection(BlockController block, boolean isModifierDown) {
         if (selectedBlocks.contains(block)) {
             if (isModifierDown) {
@@ -92,51 +95,27 @@ public class SelectionHelper extends BaseController {
 //                block.prepareMove();
             }
         }
+        var ids = selectedBlocks.stream().map(c -> BlockId.from(c.getModel().getId())).toList();
+        model.selectionModel().setSelected(ids);
     }
 
     public void selectBlock(BlockController block) {
         block.selectedProperty().set(true);
         selectedBlocks.add(block);
 
-//        if (workspaceController.getSelectedBlocks().contains(this)) {
-//            if (EventUtils.isModifierDown(event)) {
-//                // Remove this node from selection
-//                workspaceController.deselectBlock(this);
-//            } else {
-//                // Subscribe multiselection to MouseMove event
-//                for (Block block : workspaceController.getSelectedBlocks()) {
-//                    block.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
-//                    block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
-//                }
-//            }
-//        } else {
-//            if (EventUtils.isModifierDown(event)) {
-//                // add this node to selection
-//                workspaceController.selectBlock(this);
-//            } else {
-//                // Deselect all blocks that are selected and select only this block
-//                workspaceController.deselectAllBlocks();
-//                workspaceController.selectBlock(this);
-//                for (Block block : workspaceController.getSelectedBlocks()) {
-//                    //Add mouse dragged event handler so the block will move
-//                    //when the user starts dragging it
-//                    this.addEventHandler(MouseEvent.MOUSE_DRAGGED, blockDraggedHandler);
-//
-//                    //Get mouse position so there is a value to calculate 
-//                    //in the mouse dragged event
-//                    block.oldMousePosition = new Point2D(event.getSceneX(), event.getSceneY());
-//                }
-//            }
-//        }
-//        event.consume();
+        var ids = selectedBlocks.stream().map(c -> BlockId.from(c.getModel().getId())).toList();
+        model.selectionModel().setSelected(ids);
     }
 
     public void deselectBlock(BlockController block) {
         block.selectedProperty().set(false);
         selectedBlocks.remove(block);
+
+        var ids = selectedBlocks.stream().map(c -> BlockId.from(c.getModel().getId())).toList();
+        model.selectionModel().setSelected(ids);
     }
 
     public Collection<BlockController> getSelectedBlockControllers() {
-        return new ArrayList<>(selectedBlocks);
+        return List.copyOf(selectedBlocks);
     }
 }

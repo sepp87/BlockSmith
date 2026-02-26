@@ -2,9 +2,10 @@ package blocksmith.app;
 
 import blocksmith.app.connection.AddConnection;
 import blocksmith.app.connection.RemoveConnection;
-import blocksmith.app.group.RemoveGroup;
 import blocksmith.app.group.AddGroup;
 import blocksmith.app.block.AddBlock;
+import blocksmith.app.block.CopyBlocks;
+import blocksmith.app.block.PasteBlocks;
 import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
@@ -17,10 +18,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import blocksmith.app.inbound.GraphEditor;
 import blocksmith.app.logging.GraphLogFmt;
+import blocksmith.domain.block.Block;
+import blocksmith.domain.graph.GraphDiff;
+import blocksmith.domain.group.GroupId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  *
@@ -39,7 +42,8 @@ public class DefaultGraphEditor implements GraphEditor {
     private final AddConnection addConnection;
     private final RemoveConnection removeConnection;
     private final AddGroup addGroup;
-    private final RemoveGroup removeGroup;
+    private final CopyBlocks copyBlocks;
+    private final PasteBlocks pasteBlocks;
 
     public DefaultGraphEditor(
             Graph graph,
@@ -47,17 +51,19 @@ public class DefaultGraphEditor implements GraphEditor {
             AddConnection addConnection,
             RemoveConnection removeConnection,
             AddGroup addGroup,
-            RemoveGroup removeGroup) {
+            CopyBlocks copyBlocks,
+            PasteBlocks pasteBlocks) {
 
         this.graph = graph;
         this.addBlock = addBlock;
         this.addConnection = addConnection;
         this.removeConnection = removeConnection;
         this.addGroup = addGroup;
-        this.removeGroup = removeGroup;
+        this.copyBlocks = copyBlocks;
+        this.pasteBlocks = pasteBlocks;
     }
 
-    public Graph currentGraph() {
+    public Graph graphSnapshot() {
         return graph;
     }
 
@@ -96,7 +102,7 @@ public class DefaultGraphEditor implements GraphEditor {
 
     public void removeAllBlocks(Collection<BlockId> blocks) {
         mutate((graph) -> graph.withoutBlocks(blocks));
-        LOGGER.log(Level.INFO, "Remove all blocks: {0}", GraphLogFmt.blocks(blocks));
+        LOGGER.log(Level.INFO, "Remove all blocks: {0}", GraphLogFmt.blockIds(blocks));
     }
 
     public void updateParamValue(BlockId id, String valueId, String value) {
@@ -131,21 +137,34 @@ public class DefaultGraphEditor implements GraphEditor {
     }
 
     public void addGroup(String label, Collection<BlockId> blocks) {
-        mutate((graph) -> addGroup.execute(graph, label, blocks));
-        LOGGER.log(Level.INFO, "Add group: {0}", GraphLogFmt.blocks(blocks));
+        var id = GroupId.create();
+        mutate((graph) -> addGroup.execute(graph, id, label, blocks));
+        LOGGER.log(Level.INFO, "Add group: {0}", GraphLogFmt.blockIds(blocks));
     }
 
-    public void removeGroup(String label, Collection<BlockId> blocks) {
-        mutate((graph) -> removeGroup.execute(graph, label, blocks));
-        LOGGER.log(Level.INFO, "Remove group: {0}", GraphLogFmt.blocks(blocks));
+    public void removeGroup(GroupId id) {
+        mutate((graph) -> graph.withoutGroup(id));
+        LOGGER.log(Level.INFO, "Remove group: {0}", GraphLogFmt.group(id));
     }
 
-    public void copyGraph(Collection<BlockId> blocks) {
-
+    /**
+     *
+     * @param blocks to copy to the shared copy memory
+     */
+    public void copyBlocks(Collection<BlockId> blocks) {
+        copyBlocks.execute(graph, blocks);
+        LOGGER.log(Level.INFO, "Copy blocks: {0}", GraphLogFmt.blockIds(blocks));
     }
 
-    public void pasteGraph() {
-
+    /**
+     * paste blocks copied to the shared copy memory
+     */
+    public Collection<BlockId> pasteBlocks() {
+        var oldGraph = graph;
+        mutate((graph) -> pasteBlocks.execute(graph));
+        var diff = GraphDiff.compare(oldGraph, graph);
+        LOGGER.log(Level.INFO, "Paste blocks: <copied-blocks>, Connections: {0}", GraphLogFmt.connections(diff.addedConnections()));
+        return diff.addedBlocks().stream().map(Block::id).toList();
     }
 
     public void undo() {

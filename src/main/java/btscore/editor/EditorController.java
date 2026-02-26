@@ -1,9 +1,9 @@
 package btscore.editor;
 
+import blocksmith.ui.EditorModel;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import btscore.editor.context.EditorEventRouter;
 
 /**
  *
@@ -19,7 +19,7 @@ public class EditorController {
 
         this.eventRouter = eventRouter;
         this.view = editorView;
-
+        
         view.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler); // capture the event before the sub menu is removed from the radial menu when clicking on "Return To Main" from a sub menu 
         view.addEventFilter(MouseEvent.MOUSE_PRESSED, mousePressedHandler);
         view.addEventFilter(MouseEvent.MOUSE_DRAGGED, mouseDraggedHandler);

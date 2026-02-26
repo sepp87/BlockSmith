@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javafx.scene.Node;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -36,9 +37,17 @@ public class TabManagerView extends BorderPane {
     public TabManagerView() {
 
         tabHeader = new HBox();
-        contentRoot = new StackPane();
+        contentRoot = new AnchorPane();
         setTop(tabHeader);
+        tabHeader.getStyleClass().add("debug");
         setCenter(contentRoot);
+//        
+//                this.getStyleClass().add("debug");
+//                                contentRoot.getStyleClass().add("debug-2");
+
+                                this.setPickOnBounds(false);
+                      contentRoot.setPickOnBounds(false);
+
 
     }
 
@@ -52,6 +61,7 @@ public class TabManagerView extends BorderPane {
         tabHeader.getChildren().add(tab);
 
         var view = content.view();
+        view.setStyle("-fx-background-color: green;");
         view.setVisible(false);
         contentRoot.getChildren().add(view);
 

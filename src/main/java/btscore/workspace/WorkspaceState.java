@@ -3,7 +3,7 @@ package btscore.workspace;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import btscore.UiApp;
-import btscore.editor.context.EditorMode;
+import btscore.editor.EditorMode;
 
 /**
  *

@@ -9,7 +9,7 @@ import java.util.function.BiConsumer;
  */
 public interface GraphQuery {
 
-    Graph currentGraph();
+    Graph graphSnapshot();
 
     void setOnGraphUpdated(BiConsumer<Graph, Graph> listener);
 }

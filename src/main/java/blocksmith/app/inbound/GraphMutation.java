@@ -4,6 +4,7 @@ import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
+import blocksmith.domain.group.GroupId;
 import java.util.Collection;
 
 /**
@@ -30,7 +31,11 @@ public interface GraphMutation {
 
     void addGroup(String label, Collection<BlockId> blocks);
 
-    void removeGroup(String label, Collection<BlockId> blocks);
+    void removeGroup(GroupId id);
+    
+    void copyBlocks(Collection<BlockId> blocks);
+    
+    Collection<BlockId> pasteBlocks();
 
 //    void removeGroup();
 //    void ungroup(BlockId id);

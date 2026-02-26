@@ -16,9 +16,9 @@ import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
 import javafx.geometry.Point2D;
 import btscore.UiApp;
-import btscore.editor.BaseController;
-import btscore.editor.context.ActionManager;
-import btscore.editor.context.CommandFactory;
+import btscore.graph.BaseController;
+import btscore.command.CommandDispatcher;
+import btscore.command.CommandFactory;
 import btscore.graph.connection.ConnectionController;
 import btscore.graph.connection.ConnectionView;
 import btscore.graph.group.BlockGroupController;
@@ -43,18 +43,18 @@ public class WorkspaceController extends BaseController {
     private final Map<BlockGroupModel, BlockGroupController> blockGroups = new HashMap<>();
     private final Map<String, PortController> ports = new HashMap<>();
 
-    public WorkspaceController(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
+    public WorkspaceController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
         super(actionManager, commandFactory, context);
         this.model = workspaceModel;
         this.view = workspaceView;
         this.zoomHelper = new ZoomHelper(model, view);
-        this.selectionHelper = new SelectionHelper(actionManager, commandFactory, context, this, model, view, this);
+        this.selectionHelper = new SelectionHelper(model, view, this);
         this.infoPanelHelper = new InfoPanelHelper(view);
 
         model.getBlockModels().forEach(b -> addBlock(b));
         model.getConnectionModels().forEach(c -> addConnection(c));
         model.getBlockGroupModels().forEach(g -> addBlockGroup(g));
-        
+
         model.addBlockModelsListener(blockModelsListener);
         model.addConnectionModelsListener(connectionModelsListener);
         model.addBlockGroupModelsListener(blockGroupModelsListener);
@@ -282,6 +282,15 @@ public class WorkspaceController extends BaseController {
     /**
      * SELECTION
      */
+    public void updateSelection(String blockId, boolean isModifierDown) {
+        for (var block : blocks.values()) {
+            if (block.getModel().getId().equals(blockId)) {
+                selectionHelper.updateSelection(block, isModifierDown);
+                break;
+            }
+        }
+    }
+
     public void updateSelection(BlockController block, boolean isModifierDown) {
         selectionHelper.updateSelection(block, isModifierDown);
     }

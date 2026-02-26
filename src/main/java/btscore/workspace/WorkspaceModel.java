@@ -27,10 +27,10 @@ import javafx.collections.SetChangeListener;
 import btscore.UiApp;
 import java.util.Objects;
 import blocksmith.app.inbound.GraphMutationAndHistory;
-import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.group.Group;
+import blocksmith.domain.group.GroupId;
 import blocksmith.ui.BlockModelFactory;
 import blocksmith.ui.MethodBlockNew;
 import blocksmith.ui.workspace.SaveDocument;
@@ -56,6 +56,7 @@ public class WorkspaceModel {
     private final GraphEditor editor;
     private final BlockModelFactory blockFactory;
     private final SaveDocument saveDocument;
+    private final SelectionModel selectionModel;
     private GraphDocument document;
     private Path documentPath;
     private List<Consumer<Path>> documentPathListeners = new ArrayList<>();
@@ -69,10 +70,11 @@ public class WorkspaceModel {
         this.translateY.set(document.translateY());
         this.blockFactory = blockFactory;
         this.saveDocument = saveDocument;
+        this.selectionModel = new SelectionModel();
 
         editor.setOnGraphUpdated(this::updateFrom);
 
-        var graph = editor.currentGraph();
+        var graph = editor.graphSnapshot();
         addBlocksFromDomain(graph.blocks());
         var blockIndex = blockModels.stream().collect(Collectors.toMap(b -> BlockId.from(b.getId()), Function.identity()));
         addConnectionsFromDomain(graph.connections(), blockIndex);
@@ -97,6 +99,28 @@ public class WorkspaceModel {
             SaveDocument saveDocument
     ) {
         return new WorkspaceModel(path, document, editorFactory, blockFactory, saveDocument);
+    }
+
+    public SelectionModel selectionModel() {
+        return selectionModel;
+    }
+
+    public Graph graphSnapshot() {
+        return editor.graphSnapshot();
+    }
+
+    public boolean isSelectionGroupable() {
+        var selected = selectionModel.selected();
+        if (selected.size() < Group.MINIMUM_SIZE) {
+            return false;
+        }
+        var graph = graphSnapshot();
+        for (var block : selected) {
+            if (graph.groupOf(block).isPresent()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void updateFrom(Graph oldGraph, Graph newGraph) {
@@ -146,6 +170,40 @@ public class WorkspaceModel {
         blockIndex = blockModels.stream().collect(Collectors.toMap(b -> BlockId.from(b.getId()), Function.identity()));
         addConnectionsFromDomain(diff.addedConnections(), blockIndex);
 
+        // remove groups
+        var groupIndex = blockGroupModels.stream().collect(Collectors.toMap(g -> GroupId.from(g.getId()), Function.identity()));
+        for (var group : diff.removedGroups()) {
+            var model = groupIndex.get(group.id());
+            removeBlockGroupModel(model);
+        }
+
+        // add groups
+        addGroupsFromDomain(diff.addedGroups(), blockIndex);
+
+        // update groups
+        for (var group : diff.updatedGroups()) {
+            var model = groupIndex.get(group.id());
+
+            var oldBlocks = new ArrayList<>(model.getBlocks().stream().map(b -> BlockId.from(b.getId())).toList());
+            var newBlocks = new ArrayList<>(group.blocks());
+
+            var addedBlocks = new ArrayList<BlockId>();
+            for (var n : newBlocks) {
+                var contained = oldBlocks.remove(n);
+                if (!contained) {
+                    addedBlocks.add(n);
+                }
+            }
+            for (var block : addedBlocks) {
+                model.addBlock(blockIndex.get(block));
+            }
+
+            var removedBlocks = oldBlocks;
+            for (var block : removedBlocks) {
+                model.removeBlock(blockIndex.get(block));
+            }
+        }
+
         // remove connections
         // remove blocks
         // create blocks 
@@ -164,7 +222,6 @@ public class WorkspaceModel {
     private void addConnectionsFromDomain(Collection<Connection> connections, Map<BlockId, BlockModel> blockIndex) {
         for (var connection : connections) {
 
-            System.out.println("rOUTPUT " + GraphLogFmt.port(connection.from()));
             var fromBlock = blockIndex.get(connection.from().blockId());
             var fromPort = fromBlock.getOutputPorts().stream()
                     .filter(p -> p.nameProperty().get().equals(connection.from().valueId()))
@@ -183,7 +240,7 @@ public class WorkspaceModel {
 
     private void addGroupsFromDomain(Collection<Group> groups, Map<BlockId, BlockModel> blockIndex) {
         for (var group : groups) {
-            var model = new BlockGroupModel(blockGroupIndex);
+            var model = new BlockGroupModel(group.id().toString(),blockGroupIndex);
             model.nameProperty().set(group.label());
             group.blocks().forEach(b -> model.addBlock(blockIndex.get(b)));
             addBlockGroupModel(model);
@@ -195,11 +252,11 @@ public class WorkspaceModel {
     }
 
     public boolean isSaved() {
-        return Objects.equals(editor.currentGraph(), document.graph());
+        return Objects.equals(editor.graphSnapshot(), document.graph());
     }
 
     public void saveDocument(Path path) throws Exception {
-        var graph = editor.currentGraph();
+        var graph = editor.graphSnapshot();
         var newVersion = new GraphDocument(graph, zoomFactor.get(), translateX.get(), translateY.get());
         saveDocument.execute(path, newVersion);
         document = newVersion;

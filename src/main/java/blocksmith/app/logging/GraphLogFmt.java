@@ -1,9 +1,12 @@
 package blocksmith.app.logging;
 
+import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
+import blocksmith.domain.graph.Graph;
+import blocksmith.domain.group.GroupId;
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.PortDef;
 import java.util.Collection;
@@ -22,7 +25,12 @@ public final class GraphLogFmt {
         return shortId(id.value());
     }
 
-    public static String blocks(Collection<BlockId> ids) {
+    public static String blocks(Collection<Block> blocks) {
+        var ids = blocks.stream().map(b -> b.id()).toList();
+        return blockIds(ids);
+    }
+
+    public static String blockIds(Collection<BlockId> ids) {
         return ids.stream()
                 .map(GraphLogFmt::block)
                 .toList()
@@ -33,12 +41,23 @@ public final class GraphLogFmt {
         return block(ref.blockId()) + "." + ref.valueId();
     }
 
+    public static String connections(Collection<Connection> connections) {
+        return connections.stream()
+                .map(GraphLogFmt::connection)
+                .toList()
+                .toString();
+    }
+
     public static String connection(PortRef from, PortRef to) {
         return port(from) + " -> " + port(to);
     }
 
     public static String connection(Connection c) {
         return connection(c.from(), c.to());
+    }
+
+    public static String group(GroupId id) {
+        return shortId(id.value());
     }
 
     public static String movedBlocks(Collection<BlockPosition> positions) {

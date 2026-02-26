@@ -5,8 +5,8 @@ import blocksmith.app.GraphEditorFactory;
 import blocksmith.domain.graph.Graph;
 import blocksmith.ui.BlockModelFactory;
 import blocksmith.ui.workspace.SaveDocument;
-import btscore.editor.context.ActionManager;
-import btscore.editor.context.CommandFactory;
+import btscore.command.CommandDispatcher;
+import btscore.command.CommandFactory;
 import java.nio.file.Path;
 
 /**
@@ -16,14 +16,14 @@ import java.nio.file.Path;
 public class WorkspaceFactory {
 
     private final GraphEditorFactory graphEditorFactory;
-    private final ActionManager actionManager;
+    private final CommandDispatcher actionManager;
     private final CommandFactory commandFactory;
     private final BlockModelFactory blockFactory;
     private final SaveDocument saveDocument;
 
     public WorkspaceFactory(
             GraphEditorFactory graphEditorFactory,
-            ActionManager actionManager,
+            CommandDispatcher actionManager,
             CommandFactory commandFactory,
             BlockModelFactory blockFactory,
             SaveDocument saveDocument

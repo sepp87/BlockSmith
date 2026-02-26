@@ -870,3 +870,16 @@ Split between vertical and horizontal so vertical thumbs do not disappear
     -fx-pref-height: 3px; /* Make the line more visible */
 
 }
+
+
+.debug {
+    -fx-background-color: red;
+        -fx-border-width: 5;
+        -fx-border-color: red;
+
+}
+.debug-2 {
+    -fx-background-color: green;
+            -fx-border-width: 5;
+        -fx-border-color: green;
+}

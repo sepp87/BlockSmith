@@ -18,7 +18,6 @@ import blocksmith.app.block.CopyBlocks;
 import blocksmith.app.block.PasteBlocks;
 import blocksmith.app.clipboard.CopyMemory;
 import blocksmith.app.connection.RemoveConnection;
-import blocksmith.app.group.RemoveGroup;
 import blocksmith.app.outbound.GraphRepo;
 import blocksmith.domain.block.BlockFactory;
 import blocksmith.xml.v2.ObjectFactory;
@@ -66,14 +65,14 @@ public class App {
         var addConnection = new AddConnection();
         var removeConnection = new RemoveConnection();
         var addGroup = new AddGroup();
-        var removeGroup = new RemoveGroup();
         var copyMemory = new CopyMemory();
         var copyBlocks = new CopyBlocks(copyMemory);
         var pasteBlocks = new PasteBlocks(copyMemory);
         this.graphEditorFactory = new GraphEditorFactory(
                 addBlock, 
                 addConnection, removeConnection,
-                addGroup, removeGroup
+                addGroup, 
+                copyBlocks, pasteBlocks
         );
 
     }

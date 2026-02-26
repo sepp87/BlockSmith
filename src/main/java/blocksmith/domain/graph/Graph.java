@@ -5,6 +5,7 @@ import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.group.Group;
+import blocksmith.domain.group.GroupId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -22,20 +25,38 @@ public final class Graph {
     private final GraphId id;
     private final Map<BlockId, Block> blocks;
     private final List<Connection> connections;
-    private final List<Group> groups;
+    private final Map<GroupId, Group> groups;
+    private final Map<BlockId, GroupId> blocksToGroups;
 
     public Graph(GraphId id, Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
         this.id = Objects.requireNonNull(id);
-        this.blocks = toMap(blocks);
+        this.blocks = indexBlocks(blocks);
         this.connections = List.copyOf(Objects.requireNonNull(connections));
-        this.groups = List.copyOf(Objects.requireNonNull(groups));
+        this.groups = indexGroups(groups);
+        this.blocksToGroups = indexBlocksToGroups(groups);
     }
 
-    private Map<BlockId, Block> toMap(Collection<Block> blocks) {
+    private static Map<BlockId, Block> indexBlocks(Collection<Block> blocks) {
         // TODO check for duplicate ids
         Objects.requireNonNull(blocks);
-        var result = new HashMap<BlockId, Block>();
-        blocks.forEach(b -> result.put(b.id(), b));
+        return blocks.stream().collect(Collectors.toMap(Block::id, Function.identity()));
+    }
+
+    private static Map<GroupId, Group> indexGroups(Collection<Group> groups) {
+        // TODO check for duplicate ids
+        Objects.requireNonNull(groups);
+        return groups.stream().collect(Collectors.toMap(Group::id, Function.identity()));
+    }
+
+    private static Map<BlockId, GroupId> indexBlocksToGroups(Collection<Group> groups) {
+        // TODO check for duplicate ids
+        Objects.requireNonNull(groups);
+        var result = new HashMap<BlockId, GroupId>();
+        for (var group : groups) {
+            for (var block : group.blocks()) {
+                result.put(block, group.id());
+            }
+        }
         return Map.copyOf(result);
     }
 
@@ -52,17 +73,17 @@ public final class Graph {
     }
 
     public Collection<Group> groups() {
-        return groups;
+        return groups.values();
     }
 
     public Optional<Block> block(BlockId id) {
-        return blocks.values().stream().filter(b -> b.id().equals(id)).findFirst();
+        return Optional.ofNullable(blocks.get(id));
     }
 
     public Graph withBlock(Block block) {
         var updated = new ArrayList<Block>(blocks.values());
         updated.add(block);
-        return replace(updated, connections, groups);
+        return replace(updated, connections, groups.values());
     }
 
     public Graph withoutBlock(BlockId id) {
@@ -79,11 +100,19 @@ public final class Graph {
                 .filter(c -> !c.from().blockId().equals(id) && !c.to().blockId().equals(id))
                 .toList();
 
-        var updatedGroups = groups.stream()
-                .map(g -> g.withoutBlock(id))
-                .filter(g -> !g.isEmpty())
-                .toList();
+        var updatedGroups = new ArrayList<Group>(groups.values());
+        groupOf(id).ifPresent(groupId -> {
+            var group = groups.get(groupId);
+            updatedGroups.remove(group);
+            if (group.size() > Group.MINIMUM_SIZE) {
+                updatedGroups.add(group.withoutBlock(id));
+            }
+        });
 
+//        var updatedGroups = groups.values().stream()
+//                .map(g -> g.withoutBlock(id))
+//                .filter(g -> !g.isEmpty())
+//                .toList();
         return new Graph(this.id, updatedBlocks, updatedConnections, updatedGroups);
     }
 
@@ -100,29 +129,39 @@ public final class Graph {
                 .filter(c -> !ids.contains(c.from().blockId()) && !ids.contains(c.to().blockId()))
                 .toList();
 
-        var updatedGroups = groups.stream()
-                .map(g -> {
-                    for (var id : ids) {
-                        g = g.withoutBlock(id);
-                    }
-                    return g;
-                })
-                .filter(g -> !g.isEmpty())
-                .toList();
+        var updatedGroups = new ArrayList<Group>(groups.values());
+        for (var id : ids) {
+            groupOf(id).ifPresent(groupId -> {
+                var group = groups.get(groupId);
+                updatedGroups.remove(group);
+                if (group.size() > Group.MINIMUM_SIZE) {
+                    updatedGroups.add(group.withoutBlock(id));
+                }
+            });
+        }
 
+//        var updatedGroups = groups.values().stream()
+//                .map(g -> {
+//                    for (var id : ids) {
+//                        g = g.withoutBlock(id);
+//                    }
+//                    return g;
+//                })
+//                .filter(g -> !g.isEmpty())
+//                .toList();
         return replace(updatedBlocks, updatedConnections, updatedGroups);
     }
 
     public Graph updateParamValue(BlockId id, String valueId, String value) {
         var updatedBlocks = new HashMap<BlockId, Block>(blocks);
         updatedBlocks.computeIfPresent(id, (k, v) -> v.withParamValue(valueId, value));
-        return new Graph(this.id, updatedBlocks.values(), connections, groups);
+        return new Graph(this.id, updatedBlocks.values(), connections, groups.values());
     }
 
     public Graph renameBlock(BlockId id, String label) {
         var updatedBlocks = new HashMap<BlockId, Block>(blocks);
         updatedBlocks.computeIfPresent(id, (k, v) -> v.withLabel(label));
-        return new Graph(this.id, updatedBlocks.values(), connections, groups);
+        return new Graph(this.id, updatedBlocks.values(), connections, groups.values());
     }
 
     public Graph moveBlocks(Collection<BlockPosition> positions) {
@@ -133,13 +172,13 @@ public final class Graph {
         for (var pos : positions) {
             updatedBlocks.computeIfPresent(pos.id(), (k, v) -> v.withPosition(pos.x(), pos.y()));
         }
-        return replace(updatedBlocks.values(), connections, groups);
+        return replace(updatedBlocks.values(), connections, groups.values());
     }
 
     public Graph resizeBlock(BlockId id, double width, double height) {
         var updatedBlocks = new HashMap<BlockId, Block>(blocks);
         updatedBlocks.computeIfPresent(id, (k, v) -> v.withSize(width, height));
-        return new Graph(this.id, updatedBlocks.values(), connections, groups);
+        return new Graph(this.id, updatedBlocks.values(), connections, groups.values());
     }
 
     public Graph withConnection(Connection connection) {
@@ -153,7 +192,7 @@ public final class Graph {
                 .map(b -> b.id().equals(toBlock) ? b.withParamDeactivated(toValue) : b)
                 .toList();
 
-        return replace(updatedBlocks, updatedConnections, groups);
+        return replace(updatedBlocks, updatedConnections, groups.values());
     }
 
     public Graph withoutConnection(Connection connection) {
@@ -168,28 +207,41 @@ public final class Graph {
                 .map(b -> b.id().equals(toBlock) ? b.withParamActivated(toValue) : b)
                 .toList();
 
-        return replace(updatedBlocks, updatedConnections, groups);
+        return replace(updatedBlocks, updatedConnections, groups.values());
 
     }
 
+    public Optional<Group> group(GroupId id) {
+        return Optional.ofNullable(groups.get(id));
+    }
+
     public Graph withGroup(Group group) {
-        var updated = new ArrayList<Group>(groups);
+        var updated = new ArrayList<Group>(groups.values());
         updated.add(group);
         return replace(blocks.values(), connections, updated);
     }
 
-    public Graph withoutGroup(Group group) {
-        var updated = new ArrayList<Group>(groups);
-        updated.remove(group);
-        return replace(blocks.values(), connections, updated);
+    public Graph withoutGroup(GroupId id) {
+        var candidate = group(id);
+        if (candidate.isEmpty()) {
+            return this;
+        }
+        var updated = new HashMap<GroupId, Group>(groups);
+        updated.remove(id);
+
+        return replace(blocks.values(), connections, updated.values());
     }
 
-    public List<Connection> connectionsOf(Block block) {
+    public List<Connection> connectionsOf(BlockId block) {
         return connections.stream()
-                .filter(c -> c.from().blockId().equals(block.id()) || c.to().blockId().equals(block.id()))
+                .filter(c -> c.from().blockId().equals(block) || c.to().blockId().equals(block))
                 .toList();
     }
-    
+
+    public Optional<GroupId> groupOf(BlockId block) {
+        return Optional.ofNullable(blocksToGroups.get(block));
+    }
+
     private Graph replace(Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
         return new Graph(id, blocks, connections, groups);
     }

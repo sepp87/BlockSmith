@@ -4,9 +4,9 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.CubicCurve;
-import btscore.editor.BaseController;
-import btscore.editor.context.ActionManager;
-import btscore.editor.context.CommandFactory;
+import btscore.graph.BaseController;
+import btscore.command.CommandDispatcher;
+import btscore.command.CommandFactory;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
@@ -29,7 +29,7 @@ public class ConnectionController extends BaseController {
     private final PortController startPortController;
     private final PortController endPortController;
 
-    public ConnectionController(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceController workspaceController, ConnectionModel model, ConnectionView view) {
+    public ConnectionController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceController workspaceController, ConnectionModel model, ConnectionView view) {
         super(actionManager, commandFactory, context);
         this.workspaceController = workspaceController;
         this.model = model;

@@ -10,9 +10,9 @@ public class Notes {
 
 // TODO
 // - DONE Undo/Redo
+// - DONE Copy/Paste (todo paste point)
+// - DONE Viewport
 // - Save/New File
-// - Copy/Paste
-// - Viewport
 // - Delete old code
 // - Tabs
 // - Typing
@@ -30,15 +30,7 @@ public class Notes {
 //
 //
 // Questions
-// - GraphXmlMapper instantiating *XmlMappers 
-// - GraphXmlMapper inject with BlockFactory?
-// - BlockDef ensure Ports/Params are uniquely named
-// - BlockDefLibrary rename find to resolve(key)?
-// - Block inputs and params or only value slots?
-// - interface BlockMetadata, Value, Display go to adapters?
-// - interface rename Value to Slot? Arg? Val?
 // - resizable where to move this? textblock was resizable now it is not? resizable only for specific controls e.g. with resizable interface and only when one is present?
-// - Group where to persist when not in graph
 //
 // Serialization in XML 
 // - getBlock from blocks tags feels off as singular
@@ -52,6 +44,9 @@ public class Notes {
 // - DataSheetBlock
 // - ObserveFileBlock -> with SourceBlock
 //
+// REFACTOR CONTROL INPUT
+// - to become extendable (?)
+// - to use only strings
 //
 // BACKLOG
 // Domain - replace all JavaFx stuff with pure Java
@@ -99,4 +94,4 @@ public class Notes {
 // 
 //
 // BIG UI BUGS
-// Tab Pane requesting constant focus and interrupting UI handling
+// Translate scene coordinates to local coordinates of selection rectangle parent container

@@ -1,7 +1,7 @@
 package btscore.editor.radialmenu;
 
-import btscore.editor.context.Command;
-import static btscore.editor.context.Command.Id.*;
+import btscore.command.Command;
+import static btscore.command.Command.Id.*;
 import btscore.icons.FontAwesomeRegular;
 import btscore.icons.FontAwesomeSolid;
 import java.util.ArrayList;

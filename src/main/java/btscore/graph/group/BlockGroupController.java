@@ -9,11 +9,11 @@ import javafx.collections.SetChangeListener;
 import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
-import btscore.editor.context.ActionManager;
+import btscore.command.CommandDispatcher;
 import btscore.workspace.WorkspaceState;
-import btscore.editor.commands_done.RemoveGroupCommand;
-import btscore.editor.BaseController;
-import btscore.editor.context.CommandFactory;
+import btscore.command.workspace.RemoveGroupCommand;
+import btscore.graph.BaseController;
+import btscore.command.CommandFactory;
 import btscore.graph.block.BlockController;
 import btscore.graph.block.BlockModel;
 import btscore.graph.block.BlockView;
@@ -34,7 +34,7 @@ public class BlockGroupController extends BaseController {
 
     private final ObservableMap<BlockModel, BlockController> children;
 
-    public BlockGroupController(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context,WorkspaceController workspaceController, BlockGroupModel blockGroupModel, BlockGroupView blockGroupView) {
+    public BlockGroupController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context,WorkspaceController workspaceController, BlockGroupModel blockGroupModel, BlockGroupView blockGroupView) {
         super(actionManager, commandFactory, context);
         this.workspaceController = workspaceController;
         this.model = blockGroupModel;

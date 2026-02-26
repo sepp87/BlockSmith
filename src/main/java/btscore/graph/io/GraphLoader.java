@@ -30,11 +30,12 @@ import btscore.graph.block.BlockModel;
 import btscore.graph.connection.ConnectionModel;
 import btscore.graph.port.PortModel;
 import java.util.Collection;
+import java.util.UUID;
 import javax.xml.namespace.QName;
 
 /**
  * TODO DEPRECATE
- * 
+ *
  * @author joostmeulenkamp
  */
 public class GraphLoader {
@@ -105,7 +106,7 @@ public class GraphLoader {
 
                     var methodFuncLoader = new MethodBlockFuncLoader(methodIndex.methods());
                     var funcLibrary = new BlockFuncLibrary(methodFuncLoader.load());
-                    
+
                     var factory = new BlockModelFactory(defLibrary, funcLibrary);
                     var block = factory.create(blockIdentifier, blockTag.getUUID());
                     block.layoutXProperty().set(blockTag.getX());
@@ -218,7 +219,7 @@ public class GraphLoader {
 //                }
 //            }
 //            setBlocks(list);
-            BlockGroupModel group = new BlockGroupModel(workspaceModel.getBlockGroupIndex());
+            BlockGroupModel group = new BlockGroupModel(UUID.randomUUID().toString(), workspaceModel.getBlockGroupIndex());
             group.nameProperty().set(groupTag.getName());
             List<BlockReferenceTag> blockReferenceTagList = groupTag.getBlockReference();
             List<BlockModel> list = new ArrayList<>();

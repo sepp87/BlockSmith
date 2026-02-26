@@ -24,7 +24,8 @@ public class BlockGroupModel extends BaseModel {
     private final ObservableSet<BlockModel> readonlyBlocks = FXCollections.unmodifiableObservableSet(internalBlocks);
     private final BlockGroupIndex blockGroupIndex;
 
-    public BlockGroupModel(BlockGroupIndex blockGroupIndex) {
+    public BlockGroupModel(String id, BlockGroupIndex blockGroupIndex) {
+        this.id.set(id);
         this.blockGroupIndex = blockGroupIndex;
 
         nameProperty().set("Name group here...");

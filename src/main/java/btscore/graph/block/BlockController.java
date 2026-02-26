@@ -15,10 +15,10 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import btscore.UiApp;
-import btscore.editor.context.ActionManager;
-import btscore.editor.commands_done.ResizeBlockCommand;
-import btscore.editor.BaseController;
-import btscore.editor.context.CommandFactory;
+import btscore.command.CommandDispatcher;
+import btscore.command.workspace.ResizeBlockCommand;
+import btscore.graph.BaseController;
+import btscore.command.CommandFactory;
 import btscore.graph.block.ExceptionPanel.BlockException;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortModel;
@@ -50,7 +50,7 @@ public class BlockController extends BaseController {
     private double previousWidth = -1;
     private double previousHeight = -1;
 
-    public BlockController(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context,WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
+    public BlockController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context,WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
         super(actionManager, commandFactory, context);
         this.workspaceController = workspaceController;
         this.model = blockModel;

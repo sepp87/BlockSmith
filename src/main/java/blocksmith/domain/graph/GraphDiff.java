@@ -3,29 +3,23 @@ package blocksmith.domain.graph;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
+import blocksmith.domain.group.Group;
+import blocksmith.domain.group.GroupId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
-/**
- *
- * @param connectionsOnlyInA
- * @param blocks
- * @param connections
- * @param groups
- */
 public record GraphDiff(
-        Collection<Connection> removedConnections, // removed connections
-        Collection<Connection> addedConnections, // added connections
-        Collection<Block> removedBlocks, // removed blocks
-        Collection<Block> addedBlocks, // added blocks
-        Collection<Block> updatedBlocks
-        ) {
+        Collection<Connection> removedConnections,
+        Collection<Connection> addedConnections,
+        Collection<Block> removedBlocks,
+        Collection<Block> addedBlocks,
+        Collection<Block> updatedBlocks,
+        Collection<Group> removedGroups,
+        Collection<Group> addedGroups,
+        Collection<Group> updatedGroups) {
 
-    
-    
     // diff of graphs
     public static GraphDiff compare(Graph current, Graph updated) {
 
@@ -44,7 +38,7 @@ public record GraphDiff(
         var connectionsOnlyInA = connectionsA;
 
         // blocks
-        var blocksA = toMap(current.blocks());
+        var blocksA = indexBlocks(current.blocks());
         var blocksB = new ArrayList<>(updated.blocks());
 
         var blocksOnlyInB = new ArrayList<Block>();
@@ -65,14 +59,58 @@ public record GraphDiff(
         }
         var blocksOnlyInA = blocksA.values();
 
-        return new GraphDiff(connectionsOnlyInA, connectionsOnlyInB, blocksOnlyInA, blocksOnlyInB, updatedBlocks);
+        // groups
+        var groupsA = indexGroups(current.groups());
+        var groupsB = updated.groups();
+
+        var groupsOnlyInB = new ArrayList<Group>();
+        var updatedGroups = new ArrayList<Group>();
+        for (var b : groupsB) {
+            var a = groupsA.remove(b.id());
+            var contained = a != null;
+            if (!contained) {
+                groupsOnlyInB.add(b);
+                continue;
+            }
+            // in both maps, check if equals
+            if (a.size() != b.size() || !a.blocks().containsAll(b.blocks())) {
+                updatedGroups.add(b);
+            }
+
+        }
+        var groupsOnlyInA = groupsA.values();
+
+        return new GraphDiff(
+                connectionsOnlyInA,
+                connectionsOnlyInB,
+                blocksOnlyInA,
+                blocksOnlyInB, 
+                updatedBlocks,
+                groupsOnlyInA,
+                groupsOnlyInB, 
+                updatedGroups
+        );
     }
 
-    private static Map<BlockId, Block> toMap(Collection<Block> blocks) {
-        // TODO check for duplicate ids
-        Objects.requireNonNull(blocks);
+    private static Map<BlockId, Block> indexBlocks(Collection<Block> blocks) {
         var result = new HashMap<BlockId, Block>();
         blocks.forEach(b -> result.put(b.id(), b));
+        return result;
+    }
+
+    private static Map<GroupId, Group> indexGroups(Collection<Group> groups) {
+        var result = new HashMap<GroupId, Group>();
+        groups.forEach(g -> result.put(g.id(), g));
+        return result;
+    }
+
+    private static Map<BlockId, GroupId> indexBlocksToGroups(Collection<Group> groups) {
+        var result = new HashMap<BlockId, GroupId>();
+        for (var group : groups) {
+            for (var block : group.blocks()) {
+                result.put(block, group.id());
+            }
+        }
         return result;
     }
 

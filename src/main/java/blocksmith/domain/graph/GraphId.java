@@ -6,7 +6,7 @@ import java.util.UUID;
  *
  * @author joost
  */
-public record GraphId(UUID value) {
+public record GraphId(UUID value)  {
 
     public static GraphId from(String id) {
         return new GraphId(UUID.fromString(id));

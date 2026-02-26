@@ -1,7 +1,7 @@
 package btscore.graph.connection;
 
-import btscore.editor.context.ActionManager;
-import btscore.editor.context.CommandFactory;
+import btscore.command.CommandDispatcher;
+import btscore.command.CommandFactory;
 import btscore.graph.port.PortModel;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -23,7 +23,7 @@ import btscore.workspace.WorkspaceView;
  */
 public class PreConnection extends Line {
 
-    private final ActionManager actionManager;
+    private final CommandDispatcher actionManager;
     private final CommandFactory commandFactory;
     private final WorkspaceContext workspaceContext;
 
@@ -33,7 +33,7 @@ public class PreConnection extends Line {
 
     private final PortController startPortController;
 
-    public PreConnection(ActionManager actionManager, CommandFactory commandFactory, WorkspaceContext context,  WorkspaceController workspaceController, PortController startPortController) {
+    public PreConnection(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context,  WorkspaceController workspaceController, PortController startPortController) {
         this.actionManager = actionManager;
         this.commandFactory = commandFactory;
         this.workspaceContext = context;
