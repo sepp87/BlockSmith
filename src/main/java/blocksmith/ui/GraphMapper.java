@@ -43,7 +43,7 @@ public final class GraphMapper {
                 var ports = portsToDomain(methodBlock);
                 var params = paramsToDomain(methodBlock);
                 var editorMetadata = new BlockLayout(
-                        methodBlock.nameProperty().get(),
+                        methodBlock.labelProperty().get(),
                         methodBlock.layoutXProperty().get(),
                         methodBlock.layoutYProperty().get(),
                         methodBlock.resizableProperty().get() ? methodBlock.widthProperty().get() : null,
@@ -68,14 +68,14 @@ public final class GraphMapper {
         var result = new ArrayList<Port>();
 
         for (var input : block.getInputPorts()) {
-            var valueId = input.nameProperty().get();
+            var valueId = input.labelProperty().get();
             var valueType = valueTypeFromPort(block, valueId);
             var domain = new Port(Port.Direction.INPUT, valueId, input.getData(), valueType);
             result.add(domain);
         }
 
         for (var output : block.getOutputPorts()) {
-            var valueId = output.nameProperty().get();
+            var valueId = output.labelProperty().get();
             var valueType = valueTypeFromPort(block, valueId);
             var domain = new Port(Port.Direction.OUTPUT, valueId, output.getData(), valueType);
             result.add(domain);
@@ -110,11 +110,11 @@ public final class GraphMapper {
 
             var fromRef = new PortRef(
                     BlockId.from(from.getBlock().getId()),
-                    from.nameProperty().get()
+                    from.labelProperty().get()
             );
             var toRef = new PortRef(
                     BlockId.from(to.getBlock().getId()),
-                    to.nameProperty().get()
+                    to.labelProperty().get()
             );
 
             var domain = new Connection(fromRef, toRef);
@@ -128,7 +128,7 @@ public final class GraphMapper {
         var result = new ArrayList<Group>();
         for (var group : workspace.getBlockGroupModels()) {
             var id = GroupId.from(group.getId());
-            var label = group.nameProperty().get();
+            var label = group.labelProperty().get();
             var blocks = group.getBlocks().stream().map(b -> BlockId.from(b.getId())).toList();
             var domain = new Group(id,label, blocks);
             result.add(domain);

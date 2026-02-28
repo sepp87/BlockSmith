@@ -10,13 +10,13 @@ import btscore.command.workspace.AlignLeftCommand;
 import btscore.command.workspace.AlignRightCommand;
 import btscore.command.workspace.AlignTopCommand;
 import btscore.command.workspace.AlignVerticallyCommand;
-import btscore.command.app.CopyBlocksCommand;
+import btscore.command.workspace.CopyBlocksCommand;
 import btscore.command.workspace.AddGroupCommand;
 import btscore.command.app.HelpCommand;
 import btscore.command.app.NewFileCommand;
 import btscore.command.app.OpenFileCommand;
 import btscore.command.workspace.RectangleSelectCommand;
-import btscore.command.app.PasteBlocksCommand;
+import btscore.command.workspace.PasteBlocksCommand;
 import btscore.command.app.ReloadPluginsCommand;
 import btscore.command.workspace.RemoveBlocksCommand;
 import btscore.command.workspace.SaveAsFileCommand;
@@ -72,7 +72,7 @@ public class CommandFactory {
             case SAVE_AS_FILE ->
                 new SaveAsFileCommand(workspaceModel);
             case COPY_BLOCKS ->
-                new CopyBlocksCommand(workspaceController);
+                new CopyBlocksCommand(workspaceModel);
             case PASTE_BLOCKS ->
                 new PasteBlocksCommand(workspaceController, workspaceModel, context.getMousePositionOnWorkspace());
             case REMOVE_BLOCKS ->
@@ -82,19 +82,19 @@ public class CommandFactory {
             case DESELECT_ALL_BLOCKS ->
                 new DeselectAllBlocksCommand(workspaceController);
             case ADD_GROUP ->
-                new AddGroupCommand(workspaceController, workspaceModel);
+                new AddGroupCommand( workspaceModel);
             case ALIGN_LEFT ->
-                new AlignLeftCommand(workspaceController, workspaceModel);
+                new AlignLeftCommand(workspaceModel);
             case ALIGN_VERTICALLY ->
-                new AlignVerticallyCommand(workspaceController, workspaceModel);
+                new AlignVerticallyCommand( workspaceModel);
             case ALIGN_RIGHT ->
-                new AlignRightCommand(workspaceController, workspaceModel);
+                new AlignRightCommand(workspaceModel);
             case ALIGN_TOP ->
-                new AlignTopCommand(workspaceController, workspaceModel);
+                new AlignTopCommand(workspaceModel);
             case ALIGN_HORIZONTALLY ->
-                new AlignHorizontallyCommand(workspaceController, workspaceModel);
+                new AlignHorizontallyCommand(workspaceModel);
             case ALIGN_BOTTOM ->
-                new AlignBottomCommand(workspaceController, workspaceModel);
+                new AlignBottomCommand(workspaceModel);
             case ZOOM_TO_FIT ->
                 new ZoomToFitCommand(workspaceController);
             case ZOOM_IN ->
@@ -137,7 +137,7 @@ public class CommandFactory {
         var workspace = context.activeWorkspace();
         var workspaceModel = workspace.controller().getModel();
         var workspaceController = workspace.controller();
-        return new AddGroupCommand(workspaceController, workspaceModel);
+        return new AddGroupCommand(workspaceModel);
     }
 
     public Command createRemoveGroupCommand(BlockGroupModel group) {

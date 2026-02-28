@@ -52,7 +52,7 @@ public class BlockGroupController extends BaseController {
         model.getBlocks().addListener(blocksListener);
         
         // Bindings
-        view.getLabel().textProperty().bindBidirectional(model.nameProperty());
+        view.getLabel().textProperty().bindBidirectional(model.labelProperty());
     }
 
     public void setBlocks(Collection<BlockController> blocks) {
@@ -75,7 +75,7 @@ public class BlockGroupController extends BaseController {
         model.getBlocks().removeListener(blocksListener);
 
         // Bindings
-        view.getLabel().textProperty().unbindBidirectional(model.nameProperty());
+        view.getLabel().textProperty().unbindBidirectional(model.labelProperty());
 
 
         for (BlockController blockController : children.values()) {

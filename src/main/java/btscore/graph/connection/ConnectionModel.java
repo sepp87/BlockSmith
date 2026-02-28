@@ -69,7 +69,7 @@ public class ConnectionModel extends BaseModel {
     }
 
     @Override
-    public void remove() {
+    public void dispose() {
         startPort.removeConnection(this);
         endPort.removeConnection(this);
 
@@ -79,7 +79,7 @@ public class ConnectionModel extends BaseModel {
             endPort.getBlock().processSafely();
         }
         super.setActive(false);
-        super.remove();
+        super.dispose();
 
     }
 

@@ -1,11 +1,6 @@
 package btscore.command.workspace;
 
 import blocksmith.ui.AlignmentPolicy;
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
-import btscore.graph.block.BlockController;
-import btscore.workspace.WorkspaceController;
 import btscore.command.WorkspaceCommand;
 import btscore.workspace.WorkspaceModel;
 
@@ -16,21 +11,14 @@ import btscore.workspace.WorkspaceModel;
 public class AlignRightCommand implements WorkspaceCommand {
 
     private final WorkspaceModel session;
-    private final Collection<BlockController> blocks;
-    private final Map<String, Double> previousLocations = new TreeMap<>();
 
-    public AlignRightCommand(WorkspaceController workspace, WorkspaceModel session) {
+    public AlignRightCommand(WorkspaceModel session) {
         this.session = session;
-        this.blocks = workspace.getSelectedBlockControllers();
     }
 
     @Override
     public boolean execute() {
-        var views = blocks.stream().map(b -> b.getView()).toList();
-        var align = new AlignmentPolicy();
-        var requests = align.apply(views, AlignmentPolicy.Mode.RIGHT);
-        session.graphEditor().moveBlocks(requests);
-
+        session.alignmentService().align(AlignmentPolicy.Mode.RIGHT);
         return true;
     }
 

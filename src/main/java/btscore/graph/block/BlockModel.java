@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import btscore.graph.port.PortModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -22,6 +20,9 @@ import btscore.graph.block.ExceptionPanel.BlockException;
 import btscore.graph.connection.ConnectionModel;
 import btscore.graph.port.PortType;
 import blocksmith.infra.blockloader.annotations.Block;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Bounds;
 
 /**
  *
@@ -29,16 +30,25 @@ import blocksmith.infra.blockloader.annotations.Block;
  */
 public abstract class BlockModel extends BaseModel {
 
+    protected final ObjectProperty<Bounds> measuredBounds = new SimpleObjectProperty<>();
     protected final ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
     protected final ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
     protected final ObservableList<BlockException> exceptions = FXCollections.observableArrayList();
 
-    private final BooleanProperty grouped = new SimpleBooleanProperty(false);
 
     public BlockModel() {
         this.active.addListener(activeListener);
     }
 
+    public Bounds getMeasuredBounds() {
+        return measuredBounds.get();
+    }
+    
+    void setMeasuredBounds(Bounds bounds) {
+        measuredBounds.set(bounds);
+    }
+    
+    
     protected abstract void initialize();
 
     private final ChangeListener<Boolean> activeListener = (b, o, n) -> onActiveChanged();
@@ -77,10 +87,6 @@ public abstract class BlockModel extends BaseModel {
             result.addAll(port.getConnections());
         }
         return result;
-    }
-
-    public BooleanProperty groupedProperty() {
-        return grouped;
     }
 
     /**
@@ -232,7 +238,7 @@ public abstract class BlockModel extends BaseModel {
     }
 
     @Override
-    public void remove() {
+    public void dispose() {
         // clean up routine for sub-classes
         onRemoved();
 
@@ -243,13 +249,13 @@ public abstract class BlockModel extends BaseModel {
         this.active.removeListener(activeListener);
         for (PortModel port : inputPorts) {
             port.dataProperty().removeListener(inputDataListener);
-            port.remove();
+            port.dispose();
         }
         for (PortModel port : outputPorts) {
-            port.remove();
+            port.dispose();
         }
 
-        super.remove();
+        super.dispose();
     }
 
     protected abstract void onRemoved();

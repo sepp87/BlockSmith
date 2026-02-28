@@ -94,7 +94,7 @@ public class GraphSaverV2 {
             var blockTag = factory.createBlockXml();
             blockTag.setId(block.getId());
             blockTag.setType(block.type());
-            blockTag.setLabel(block.nameProperty().get());
+            blockTag.setLabel(block.labelProperty().get());
             blockTag.setX(block.layoutXProperty().get());
             blockTag.setY(block.layoutYProperty().get());
             if (block.resizableProperty().get()) {
@@ -114,9 +114,9 @@ public class GraphSaverV2 {
             var connectionTag = factory.createConnectionXml();
 
             connectionTag.setFromBlock(connection.getStartPort().getBlock().getId());
-            connectionTag.setFromPort(connection.getStartPort().nameProperty().get());
+            connectionTag.setFromPort(connection.getStartPort().labelProperty().get());
             connectionTag.setToBlock(connection.getEndPort().getBlock().getId());
-            connectionTag.setToPort(connection.getEndPort().nameProperty().get());
+            connectionTag.setToPort(connection.getEndPort().labelProperty().get());
 
             connectionsTag.getConnection().add(connectionTag);
         }
@@ -128,7 +128,7 @@ public class GraphSaverV2 {
         var groupsTag = factory.createGroupsXml();
         for (var group : groups) {
             var groupTag = factory.createGroupXml();
-            groupTag.setLabel(group.nameProperty().get());
+            groupTag.setLabel(group.labelProperty().get());
             var blockRefs = blockRefsToXml(group.getBlocks());
             groupTag.getBlock().addAll(blockRefs);
             groupsTag.getGroup().add(groupTag);

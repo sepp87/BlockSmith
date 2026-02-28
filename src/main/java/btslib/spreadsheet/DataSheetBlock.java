@@ -21,7 +21,7 @@ public class DataSheetBlock extends BlockModel {
     public DataSheetBlock() {
 //    public DataSheetBlock(WorkspaceModel workspace) {
 //        super(workspace);
-        nameProperty().set("Table");
+        labelProperty().set("Table");
         resizableProperty().set(true);
         addInputPort("data", DataSheet.class);
         addInputPort("showAll", Boolean.class);

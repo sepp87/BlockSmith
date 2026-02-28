@@ -2,12 +2,12 @@ package blocksmith.ui;
 
 import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;
+import btscore.graph.block.BlockModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.scene.layout.Pane;
 
 /**
  *
@@ -24,84 +24,70 @@ public class AlignmentPolicy {
         VERTICALLY
     }
 
-    public List<BlockPosition> apply(Collection<? extends Pane> views, Mode mode) {
+    public List<BlockPosition> apply(Collection<BlockModel> blocks, Mode mode) {
 
-        if (views.isEmpty()) {
+        if (blocks.isEmpty()) {
             return List.of();
         }
 
-        var bounds = boundingBoxOf(views);
+        var allBounds = blocks.stream().map(BlockModel::getMeasuredBounds).toList();
+        var bounds = boundsOf(allBounds);
 
         var result = new ArrayList<BlockPosition>();
-        for (var view : views) {
-            var id = BlockId.from(view.getId());
-            var x = computeX(mode, bounds, view);
-            var y = computeY(mode, bounds, view);
+        for (var block : blocks) {
+            var id = BlockId.from(block.getId());
+            var x = computeX(mode, bounds, block.getMeasuredBounds());
+            var y = computeY(mode, bounds, block.getMeasuredBounds());
             var request = new BlockPosition(id, x, y);
             result.add(request);
         }
         return result;
     }
 
-    private Double computeX(Mode mode, Bounds bounds, Pane view) {
+    private Double computeX(Mode mode, Bounds all, Bounds one) {
         return switch (mode) {
             case TOP ->
-                view.getLayoutX();
+                one.getMinX();
             case BOTTOM ->
-                view.getLayoutX();
+                one.getMinX();
             case LEFT ->
-                bounds.getMinX();
+                all.getMinX();
             case RIGHT ->
-                bounds.getMaxX() - view.getWidth();
+                all.getMaxX() - one.getWidth();
             case VERTICALLY ->
-                bounds.getMaxX() - bounds.getWidth() / 2 - view.getWidth() / 2;
+                all.getMaxX() - all.getWidth() / 2 - one.getWidth() / 2;
             case HORIZONTALLY ->
-                view.getLayoutX();
+                one.getMinX();
         };
     }
 
-    private Double computeY(Mode mode, Bounds bounds, Pane view) {
+    private Double computeY(Mode mode, Bounds all, Bounds one) {
         return switch (mode) {
             case TOP ->
-                bounds.getMinY();
+                all.getMinY();
             case BOTTOM ->
-                bounds.getMaxY() - view.getHeight();
+                all.getMaxY() - one.getHeight();
             case LEFT ->
-                view.getLayoutY();
+                one.getMinY();
             case RIGHT ->
-                view.getLayoutY();
+                one.getMinY();
             case VERTICALLY ->
-                view.getLayoutY();
+                one.getMinY();
             case HORIZONTALLY ->
-                bounds.getMaxY() - bounds.getHeight() / 2 - view.getHeight() / 2;
+                all.getMaxY() - all.getHeight() / 2 - one.getHeight() / 2;
         };
     }
 
-    private static Bounds boundingBoxOf(Collection<? extends Pane> panes) {
+    private static Bounds boundsOf(Collection<Bounds> bounds) {
 
-        double minLeft = Double.MAX_VALUE;
-        double minTop = Double.MAX_VALUE;
-        double maxLeft = Double.MIN_VALUE;
-        double maxTop = Double.MIN_VALUE;
+        double minX = bounds.stream().map(b -> b.getMinX()).reduce(Double.POSITIVE_INFINITY, Math::min);
+        double minY = bounds.stream().map(b -> b.getMinY()).reduce(Double.POSITIVE_INFINITY, Math::min);
+        double maxX = bounds.stream().map(b -> b.getMaxX()).reduce(Double.NEGATIVE_INFINITY, Math::max);
+        double maxY = bounds.stream().map(b -> b.getMaxY()).reduce(Double.NEGATIVE_INFINITY, Math::max);
 
-        for (var pane : panes) {
-            if (pane.getLayoutX() < minLeft) {
-                minLeft = pane.getLayoutX();
-            }
-            if (pane.getLayoutY() < minTop) {
-                minTop = pane.getLayoutY();
-            }
-
-            if ((pane.getLayoutX() + pane.getWidth()) > maxLeft) {
-                maxLeft = pane.getLayoutX() + pane.getWidth();
-            }
-            if ((pane.getLayoutY() + pane.getHeight()) > maxTop) {
-                maxTop = pane.getLayoutY() + pane.getHeight();
-            }
-        }
-        return new BoundingBox(minLeft, minTop, maxLeft - minLeft, maxTop - minTop);
-
+        return new BoundingBox(minX, minY, maxX - minX, maxY - minY);
     }
+
 }
 
 //public enum Alignment {

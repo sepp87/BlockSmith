@@ -72,21 +72,6 @@ public class WorkspaceController extends BaseController {
         return ports.get(id);
     }
 
-    public boolean areSelectedBlocksGroupable() {
-        List<BlockController> groupedBlocks = new ArrayList<>();
-        Collection<BlockController> selectedBlocks = getSelectedBlockControllers();
-        if (selectedBlocks.size() < 2) {
-            return false;
-        }
-        for (BlockController block : selectedBlocks) {
-            if (block.getModel().groupedProperty().get()) {
-                groupedBlocks.add(block);
-                return false;
-            }
-        }
-        return true;
-    }
-
     /**
      * BLOCKS
      */

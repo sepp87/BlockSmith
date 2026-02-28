@@ -24,7 +24,7 @@ import blocksmith.infra.blockloader.annotations.Block;
 public class TemplateBlock extends BlockModel {
 
     public TemplateBlock() {
-        this.nameProperty().set("Template");
+        this.labelProperty().set("Template");
         addInputPort("Object", Object.class);
         addOutputPort("String", String.class);
         initialize();

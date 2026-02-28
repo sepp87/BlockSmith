@@ -181,14 +181,14 @@ public class InfoPanel extends Pane {
         for (PortModel port : ports) {
             Label label = new Label();
             label.textProperty().bind(Bindings.createStringBinding(()
-                    -> buildPortDescription(port), port.nameProperty(), port.dataTypeProperty()));
+                    -> buildPortDescription(port), port.labelProperty(), port.dataTypeProperty()));
             result.add(label);
         }
         return result;
     }
 
     private String buildPortDescription(PortModel portModel) {
-        return portModel.nameProperty().get() + " : " + portModel.getDataType().getSimpleName();
+        return portModel.labelProperty().get() + " : " + portModel.getDataType().getSimpleName();
     }
 
     private Path buildTail() {

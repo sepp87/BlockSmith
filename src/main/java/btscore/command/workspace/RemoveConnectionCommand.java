@@ -27,11 +27,11 @@ public class RemoveConnectionCommand implements WorkspaceCommand {
     public boolean execute() {
         var from = PortRef.of(
                 BlockId.from(connection.getStartPort().getBlock().getId()),
-                connection.getStartPort().nameProperty().get()
+                connection.getStartPort().labelProperty().get()
         );
         var to = PortRef.of(
                 BlockId.from(connection.getEndPort().getBlock().getId()),
-                connection.getEndPort().nameProperty().get()
+                connection.getEndPort().labelProperty().get()
         );
         var domain = new Connection(from, to);
         workspaceModel.graphEditor().removeConnection(domain);

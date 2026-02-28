@@ -1,4 +1,4 @@
-package btscore.command.app;
+package btscore.command.workspace;
 
 import javafx.geometry.Point2D;
 import btscore.workspace.WorkspaceController;

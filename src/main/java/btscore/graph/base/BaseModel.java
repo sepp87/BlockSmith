@@ -49,7 +49,7 @@ public abstract class BaseModel implements Comparable<BaseModel> {
         return UUID.fromString(id.get());
     }
 
-    public StringProperty nameProperty() {
+    public StringProperty labelProperty() {
         return name;
     }
 
@@ -89,7 +89,7 @@ public abstract class BaseModel implements Comparable<BaseModel> {
         return removed;
     }
 
-    public void remove() {
+    public void dispose() {
         removed.set(true);
     }
     

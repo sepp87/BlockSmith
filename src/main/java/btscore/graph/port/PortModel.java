@@ -32,7 +32,7 @@ public class PortModel extends BaseModel {
     private final BlockModel block;
 
     public PortModel(String name, PortType portType, Class<?> type, BlockModel block, boolean multiDockAllowed) {
-        this.nameProperty().set(name);
+        this.labelProperty().set(name);
         this.portType = portType;
         this.index = (portType == PortType.INPUT) ? block.getInputPorts().size() : block.getOutputPorts().size();
         this.block = block;
@@ -180,10 +180,10 @@ public class PortModel extends BaseModel {
     }
 
     @Override
-    public void remove() {
+    public void dispose() {
         data.removeListener(dataListener);
         connections.clear();
-        super.remove();
+        super.dispose();
     }
 
     @Override

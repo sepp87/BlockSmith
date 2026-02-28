@@ -24,7 +24,7 @@ public class PortController {
         this.view = view;
 
         model.activeProperty().addListener(activeListener);
-        model.nameProperty().addListener(toolTipSourceListener);
+        model.labelProperty().addListener(toolTipSourceListener);
         model.dataTypeProperty().addListener(toolTipSourceListener);
 
         view.idProperty().bind(model.idProperty());
@@ -43,7 +43,7 @@ public class PortController {
     }
 
     private void setToolTip() {
-        view.getTooltip().setText(model.nameProperty().get() + " : " + model.dataTypeProperty().get().getSimpleName());
+        view.getTooltip().setText(model.labelProperty().get() + " : " + model.dataTypeProperty().get().getSimpleName());
     }
 
     private void handlePortClicked(MouseEvent event) {
@@ -73,7 +73,7 @@ public class PortController {
 
     public void remove() {
         model.activeProperty().removeListener(activeListener);
-        model.nameProperty().removeListener(toolTipSourceListener);
+        model.labelProperty().removeListener(toolTipSourceListener);
         model.dataTypeProperty().removeListener(toolTipSourceListener);
 
         view.setOnMouseClicked(null);

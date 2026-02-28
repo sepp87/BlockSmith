@@ -146,7 +146,7 @@ public class MethodBlockNew extends BlockModel {
             if (!port.isConnected()) {
                 continue;
             }
-            String key = port.nameProperty().get();
+            String key = port.labelProperty().get();
             var control = inputControls.get(key);
             if (control == null) {
                 continue;
@@ -172,7 +172,7 @@ public class MethodBlockNew extends BlockModel {
             if (port.isConnected()) {
                 continue;
             }
-            String key = port.nameProperty().get();
+            String key = port.labelProperty().get();
             var control = inputControls.get(key);
             if (control == null) {
                 continue;
@@ -225,7 +225,7 @@ public class MethodBlockNew extends BlockModel {
 
         if (!inputControls.isEmpty()) {
             for (var input : inputPorts) {
-                var valueId = input.nameProperty().get();
+                var valueId = input.labelProperty().get();
                 var control = inputControls.get(valueId);
                 if (control == null) {
                     continue;
@@ -277,7 +277,7 @@ public class MethodBlockNew extends BlockModel {
                 PortModel port = this.outputPorts.get(0);
                 Class<?> type = classes.iterator().next();
                 port.dataTypeProperty().set(type);
-                port.nameProperty().set(type.getSimpleName());
+                port.labelProperty().set(type.getSimpleName());
             });
         }
     }

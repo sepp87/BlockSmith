@@ -35,11 +35,11 @@ public class AddConnectionCommand implements WorkspaceCommand {
 
         var from = new PortRef(
                 BlockId.from(fromPort.getBlock().getId()),
-                fromPort.nameProperty().get()
+                fromPort.labelProperty().get()
         );
         var to = new PortRef(
                 BlockId.from(toPort.getBlock().getId()),
-                toPort.nameProperty().get()
+                toPort.labelProperty().get()
         );
         workspaceModel.graphEditor().addConnection(from, to);
 

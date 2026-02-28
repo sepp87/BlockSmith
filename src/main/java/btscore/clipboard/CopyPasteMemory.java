@@ -58,7 +58,7 @@ public class CopyPasteMemory {
             return;
         }
         for (BlockModel block : clipboard.blockModels) {
-            block.remove();
+            block.dispose();
         }
         clipboard = null;
     }

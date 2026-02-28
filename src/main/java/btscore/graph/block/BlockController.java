@@ -16,7 +16,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import btscore.UiApp;
 import btscore.command.CommandDispatcher;
-import btscore.command.workspace.ResizeBlockCommand;
 import btscore.graph.BaseController;
 import btscore.command.CommandFactory;
 import btscore.graph.block.ExceptionPanel.BlockException;
@@ -27,6 +26,9 @@ import btscore.graph.port.PortView;
 import btscore.utils.EventUtils;
 import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
+import java.util.function.Consumer;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 
 /**
  *
@@ -50,7 +52,9 @@ public class BlockController extends BaseController {
     private double previousWidth = -1;
     private double previousHeight = -1;
 
-    public BlockController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context,WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
+//    private final ChangeListener<Bounds> boundsListener;
+
+    public BlockController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
         super(actionManager, commandFactory, context);
         this.workspaceController = workspaceController;
         this.model = blockModel;
@@ -74,10 +78,16 @@ public class BlockController extends BaseController {
         view.layoutXProperty().addListener(transformListener);
         view.layoutYProperty().addListener(transformListener);
 
+//        boundsListener = (b, o, n) -> model.setMeasuredBounds(new BoundingBox(view.getLayoutX(), view.getLayoutY(), view.getWidth(), view.getHeight()));
+//        view.boundsInParentProperty().addListener(boundsListener);
+
+        Consumer<Bounds> boundsSub = (bounds) -> model.setMeasuredBounds(new BoundingBox(view.getLayoutX(), view.getLayoutY(), view.getWidth(), view.getHeight()));
+        view.boundsInParentProperty().subscribe(boundsSub);
+
         view.idProperty().bind(model.idProperty());
         view.layoutXProperty().bindBidirectional(model.layoutXProperty());
         view.layoutYProperty().bindBidirectional(model.layoutYProperty());
-        view.getCaptionLabel().textProperty().bindBidirectional(model.nameProperty());
+        view.getCaptionLabel().textProperty().bindBidirectional(model.labelProperty());
 
         view.addControlToBlock(model.getCustomization());
 
@@ -92,6 +102,7 @@ public class BlockController extends BaseController {
             resizeButton.setOnMouseDragged(this::handleResizeUpdated);
             resizeButton.setOnMouseReleased(this::handleResizeFinished);
         }
+
     }
 
     private void addPorts(List<PortModel> portModels, PortType portType) {
@@ -185,7 +196,7 @@ public class BlockController extends BaseController {
         if (!event.isDragDetect()) {
             Collection<BlockController> blockControllers = workspaceController.getSelectedBlockControllers();
             Point2D delta = updatedPoint.subtract(startPoint);
-            
+
             var command = commandFactory.createMoveBlocksCommand(blockControllers, delta);
             actionManager.executeCommand(command);
         }
@@ -308,7 +319,7 @@ public class BlockController extends BaseController {
         view.idProperty().unbind();
         view.layoutXProperty().unbindBidirectional(model.layoutXProperty());
         view.layoutYProperty().unbindBidirectional(model.layoutYProperty());
-        view.getCaptionLabel().textProperty().unbindBidirectional(model.nameProperty());
+        view.getCaptionLabel().textProperty().unbindBidirectional(model.labelProperty());
         view.getCaptionLabel().remove();
 
         if (model.resizableProperty().get()) {

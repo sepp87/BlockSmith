@@ -10,18 +10,15 @@ import blocksmith.domain.graph.Graph;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.beans.property.BooleanProperty;
 import btscore.graph.group.BlockGroupModel;
 import btscore.graph.connection.ConnectionModel;
 import btscore.graph.block.BlockModel;
 import btscore.graph.port.PortModel;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import btscore.UiApp;
@@ -31,6 +28,7 @@ import blocksmith.domain.block.Block;
 import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.group.Group;
 import blocksmith.domain.group.GroupId;
+import blocksmith.ui.AlignmentService;
 import blocksmith.ui.BlockModelFactory;
 import blocksmith.ui.MethodBlockNew;
 import blocksmith.ui.workspace.SaveDocument;
@@ -56,7 +54,11 @@ public class WorkspaceModel {
     private final GraphEditor editor;
     private final BlockModelFactory blockFactory;
     private final SaveDocument saveDocument;
+
     private final SelectionModel selectionModel;
+    private final GraphProjection graphProjection;
+    private final AlignmentService alignmentService;
+
     private GraphDocument document;
     private Path documentPath;
     private List<Consumer<Path>> documentPathListeners = new ArrayList<>();
@@ -70,9 +72,14 @@ public class WorkspaceModel {
         this.translateY.set(document.translateY());
         this.blockFactory = blockFactory;
         this.saveDocument = saveDocument;
+
         this.selectionModel = new SelectionModel();
+        var mapper = new GraphProjectionMapper(blockFactory);
+        this.graphProjection = new GraphProjection(mapper, editor.graphSnapshot());
+        this.alignmentService = new AlignmentService(selectionModel, this, editor);
 
         editor.setOnGraphUpdated(this::updateFrom);
+        editor.setOnGraphUpdated(graphProjection::updateFrom);
 
         var graph = editor.graphSnapshot();
         addBlocksFromDomain(graph.blocks());
@@ -101,8 +108,17 @@ public class WorkspaceModel {
         return new WorkspaceModel(path, document, editorFactory, blockFactory, saveDocument);
     }
 
+    public Collection<BlockModel> blocks(Collection<BlockId> ids) {
+        var blockIndex = blockModels.stream().collect(Collectors.toMap(b -> BlockId.from(b.getId()), Function.identity()));
+        return ids.stream().map(blockIndex::get).toList();
+    }
+
     public SelectionModel selectionModel() {
         return selectionModel;
+    }
+
+    public AlignmentService alignmentService() {
+        return alignmentService;
     }
 
     public Graph graphSnapshot() {
@@ -135,9 +151,9 @@ public class WorkspaceModel {
         // remove connections
         var connectionIndex = connectionModels.stream().collect(Collectors.toMap(c -> {
             var fromBlock = BlockId.from(c.getStartPort().getBlock().getId());
-            var fromPort = c.getStartPort().nameProperty().get();
+            var fromPort = c.getStartPort().labelProperty().get();
             var toBlock = BlockId.from(c.getEndPort().getBlock().getId());
-            var toPort = c.getEndPort().nameProperty().get();
+            var toPort = c.getEndPort().labelProperty().get();
             var from = new PortRef(fromBlock, fromPort);
             var to = new PortRef(toBlock, toPort);
             var key = new Connection(from, to);
@@ -224,12 +240,12 @@ public class WorkspaceModel {
 
             var fromBlock = blockIndex.get(connection.from().blockId());
             var fromPort = fromBlock.getOutputPorts().stream()
-                    .filter(p -> p.nameProperty().get().equals(connection.from().valueId()))
+                    .filter(p -> p.labelProperty().get().equals(connection.from().valueId()))
                     .findFirst()
                     .get();
             var toBlock = blockIndex.get(connection.to().blockId());
             var toPort = toBlock.getInputPorts().stream()
-                    .filter(p -> p.nameProperty().get().equals(connection.to().valueId()))
+                    .filter(p -> p.labelProperty().get().equals(connection.to().valueId()))
                     .findFirst()
                     .get();
 
@@ -240,8 +256,8 @@ public class WorkspaceModel {
 
     private void addGroupsFromDomain(Collection<Group> groups, Map<BlockId, BlockModel> blockIndex) {
         for (var group : groups) {
-            var model = new BlockGroupModel(group.id().toString(),blockGroupIndex);
-            model.nameProperty().set(group.label());
+            var model = new BlockGroupModel(group.id().toString());
+            model.labelProperty().set(group.label());
             group.blocks().forEach(b -> model.addBlock(blockIndex.get(b)));
             addBlockGroupModel(model);
         }
@@ -283,10 +299,6 @@ public class WorkspaceModel {
     public static final double MIN_ZOOM = 0.3;
     public static final double ZOOM_STEP = 0.1;
 
-    private final BlockGroupIndex blockGroupIndex = new BlockGroupIndex();
-    private final AutoConnectIndex wirelessIndex = new AutoConnectIndex();
-
-    private final BooleanProperty savable = new SimpleBooleanProperty(this, "savable", false);
     private final ObjectProperty<File> file = new SimpleObjectProperty(this, "file", null);
 
     private final DoubleProperty zoomFactor = new SimpleDoubleProperty(DEFAULT_ZOOM_FACTOR);
@@ -296,15 +308,6 @@ public class WorkspaceModel {
     private final ObservableSet<BlockModel> blockModels = FXCollections.observableSet();
     private final ObservableSet<ConnectionModel> connectionModels = FXCollections.observableSet();
     private final ObservableSet<BlockGroupModel> blockGroupModels = FXCollections.observableSet();
-    private final ObservableMap<Class<?>, List<PortModel>> dataTransmittors = FXCollections.observableHashMap();
-
-    public AutoConnectIndex getAutoConnectIndex() {
-        return wirelessIndex;
-    }
-
-    public BooleanProperty savableProperty() {
-        return savable;
-    }
 
     public ObjectProperty<File> fileProperty() {
         return file;
@@ -354,24 +357,15 @@ public class WorkspaceModel {
      * BLOCKS
      */
     public void addBlockModel(BlockModel blockModel) {
-        List<PortModel> transmittingPorts = blockModel.getTransmittingPorts();
-        for (PortModel port : transmittingPorts) {
-            dataTransmittors.computeIfAbsent(port.getDataType(), dataType -> new ArrayList<>()).add(port);
-        }
+
         blockModels.add(blockModel);
         blockModel.setActive(true); // blocks and connections are first activated when added to the workspace to avoid unnecessary processing e.g. during copy & paste
     }
 
     public void removeBlockModel(BlockModel blockModel) {
-        List<PortModel> transmittingPorts = blockModel.getTransmittingPorts();
-        for (PortModel port : transmittingPorts) {
-            List<PortModel> list = dataTransmittors.get(port.getDataType());
-            if (list != null) {
-                list.remove(port);
-            }
-        }
+
         blockModels.remove(blockModel);
-        blockModel.remove();
+        blockModel.dispose();
     }
 
     public ObservableSet<BlockModel> getBlockModels() {
@@ -403,7 +397,7 @@ public class WorkspaceModel {
 
     public void removeConnectionModel(ConnectionModel connectionModel) {
         connectionModels.remove(connectionModel);
-        connectionModel.remove();
+        connectionModel.dispose();
     }
 
     public ObservableSet<ConnectionModel> getConnectionModels() {
@@ -438,7 +432,7 @@ public class WorkspaceModel {
             System.out.println("WorkspaceModel.removeBlockGroupModel()");
         }
         blockGroupModels.remove(blockGroupModel);
-        blockGroupModel.remove();
+        blockGroupModel.dispose();
     }
 
     public ObservableSet<BlockGroupModel> getBlockGroupModels() {
@@ -458,28 +452,6 @@ public class WorkspaceModel {
             System.out.println("WorkspaceModel.addBlockGroupModel()");
         }
         blockGroupModels.add(blockGroupModel);
-    }
-
-    public BlockGroupModel removeBlockFromGroup(BlockModel blockModel) {
-        if (UiApp.LOG_METHOD_CALLS) {
-            System.out.println("WorkspaceModel.removeBlockFromGroup()");
-        }
-        BlockGroupModel blockGroupModel = blockGroupIndex.getBlockGroup(blockModel);
-        if (blockGroupModel != null) {
-            blockGroupModel.removeBlock(blockModel);
-            if (blockGroupModel.getBlocks().size() <= 1) {
-                removeBlockGroupModel(blockGroupModel);
-            }
-        }
-        return blockGroupModel;
-    }
-
-    public BlockGroupIndex getBlockGroupIndex() {
-        return blockGroupIndex;
-    }
-
-    public BlockGroupModel getBlockGroup(BlockModel block) {
-        return blockGroupIndex.getBlockGroup(block);
     }
 
 }

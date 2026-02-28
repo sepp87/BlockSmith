@@ -41,7 +41,7 @@ public class ObserveFileBlock extends BlockModel {
     private long lastModifiedTime = 0;  // Track last modified time
     
     public ObserveFileBlock() {
-        nameProperty().set("Observe");
+        labelProperty().set("Observe");
         addInputPort("observed", File.class);
         addOutputPort("updated", File.class);
 

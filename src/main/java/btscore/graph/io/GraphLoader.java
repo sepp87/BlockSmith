@@ -65,18 +65,6 @@ public class GraphLoader {
             GroupsTag groups = documentTag.getGroups();
             deserializeGroups(groups, workspaceModel);
 
-            // register all transmitting ports, first after deserializing all blocks and connections
-            Collection<BlockModel> blocks = workspaceModel.getBlockModels();
-            Collection<ConnectionModel> autoConnections = workspaceModel.getAutoConnectIndex().registerAllTransmitters(blocks);
-            if (!autoConnections.isEmpty() && UiApp.LOG_POTENTIAL_BUGS) {
-                /**
-                 * Edge case (which should not occur) - The end user opens and
-                 * edits a .btsxml file in a text editor and removes
-                 * auto-generated connections manually.
-                 */
-                System.out.println(autoConnections.size() + " AUTO CONNECTIONS GENERATED ON LOADING FROM FILE");
-            }
-
             // set file reference for quick save
             workspaceModel.fileProperty().set(file);
 
@@ -219,8 +207,8 @@ public class GraphLoader {
 //                }
 //            }
 //            setBlocks(list);
-            BlockGroupModel group = new BlockGroupModel(UUID.randomUUID().toString(), workspaceModel.getBlockGroupIndex());
-            group.nameProperty().set(groupTag.getName());
+            BlockGroupModel group = new BlockGroupModel(UUID.randomUUID().toString());
+            group.labelProperty().set(groupTag.getName());
             List<BlockReferenceTag> blockReferenceTagList = groupTag.getBlockReference();
             List<BlockModel> list = new ArrayList<>();
             for (BlockReferenceTag blockReferenceTag : blockReferenceTagList) {

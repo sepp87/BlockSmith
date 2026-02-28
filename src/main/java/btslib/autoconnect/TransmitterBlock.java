@@ -21,7 +21,7 @@ import blocksmith.infra.blockloader.annotations.Block;
 public class TransmitterBlock extends BlockModel {
 
     public TransmitterBlock() {
-        this.nameProperty().set("Transmitter");
+        this.labelProperty().set("Transmitter");
         addOutputPort("Client", HttpClient.class).autoConnectableProperty().set(true);
         initialize();
     }

@@ -21,7 +21,7 @@ import blocksmith.infra.blockloader.annotations.Block;
 public class ReceiverBlock extends BlockModel {
 
     public ReceiverBlock() {
-        this.nameProperty().set("Receiver");
+        this.labelProperty().set("Receiver");
         addInputPort("Client", HttpClient.class).autoConnectableProperty().set(true);
         initialize();
         

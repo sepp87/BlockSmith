@@ -87,10 +87,10 @@ public class BlockFactory {
 
             // set the name
             if (!info.name().equals("") && info.icon().equals(FontAwesomeSolid.NULL)) {
-                blockModel.nameProperty().set(info.name());
+                blockModel.labelProperty().set(info.name());
             } else {
                 String shortName = info.type().split("\\.")[1];
-                blockModel.nameProperty().set(shortName);
+                blockModel.labelProperty().set(shortName);
             }
 
             // If first input parameter is of type list, then this is a list operator block

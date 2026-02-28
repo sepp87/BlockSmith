@@ -203,7 +203,7 @@ public class MethodBlock extends BlockModel {
                 PortModel port = this.outputPorts.get(0);
                 Class<?> type = classes.iterator().next();
                 port.dataTypeProperty().set(type);
-                port.nameProperty().set(type.getSimpleName());
+                port.labelProperty().set(type.getSimpleName());
             });
         }
     }

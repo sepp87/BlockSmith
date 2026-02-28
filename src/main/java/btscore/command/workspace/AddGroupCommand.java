@@ -14,15 +14,10 @@ import btscore.workspace.WorkspaceModel;
  */
 public class AddGroupCommand implements WorkspaceCommand {
 
-    private final WorkspaceController workspaceController;
     private final WorkspaceModel workspaceModel;
-    private final Collection<BlockController> blocks;
-    private BlockGroupModel group;
 
-    public AddGroupCommand(WorkspaceController workspaceController, WorkspaceModel workspaceModel) {
-        this.workspaceController = workspaceController;
+    public AddGroupCommand( WorkspaceModel workspaceModel) {
         this.workspaceModel = workspaceModel;
-        this.blocks = workspaceController.getSelectedBlockControllers();
     }
 
     @Override
@@ -30,11 +25,11 @@ public class AddGroupCommand implements WorkspaceCommand {
 
         boolean notGroupable = !workspaceModel.isSelectionGroupable();
         // do not execute if selected blocks is less than two
-        if (notGroupable || blocks.size() < 2) {
+        if (notGroupable) {
             return false;
         }
 
-        var ids = workspaceController.getSelectedBlockControllers().stream().map(c -> BlockId.from(c.getModel().getId())).toList();
+        var ids = workspaceModel.selectionModel().selected();
         workspaceModel.graphEditor().addGroup(null, ids);
 
         return true;
