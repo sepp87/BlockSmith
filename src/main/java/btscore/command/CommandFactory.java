@@ -74,19 +74,19 @@ public class CommandFactory {
             case COPY_BLOCKS ->
                 new CopyBlocksCommand(workspaceModel);
             case PASTE_BLOCKS ->
-                new PasteBlocksCommand(workspaceController, workspaceModel, context.getMousePositionOnWorkspace());
+                new PasteBlocksCommand(workspaceModel, context.getMousePositionOnWorkspace());
             case REMOVE_BLOCKS ->
-                new RemoveBlocksCommand(workspaceController, workspaceModel);
+                new RemoveBlocksCommand(workspaceModel);
             case SELECT_ALL_BLOCKS ->
-                new SelectAllBlocksCommand(workspaceController);
+                new SelectAllBlocksCommand(workspaceModel);
             case DESELECT_ALL_BLOCKS ->
-                new DeselectAllBlocksCommand(workspaceController);
+                new DeselectAllBlocksCommand(workspaceModel);
             case ADD_GROUP ->
-                new AddGroupCommand( workspaceModel);
+                new AddGroupCommand(workspaceModel);
             case ALIGN_LEFT ->
                 new AlignLeftCommand(workspaceModel);
             case ALIGN_VERTICALLY ->
-                new AlignVerticallyCommand( workspaceModel);
+                new AlignVerticallyCommand(workspaceModel);
             case ALIGN_RIGHT ->
                 new AlignRightCommand(workspaceModel);
             case ALIGN_TOP ->
@@ -96,11 +96,11 @@ public class CommandFactory {
             case ALIGN_BOTTOM ->
                 new AlignBottomCommand(workspaceModel);
             case ZOOM_TO_FIT ->
-                new ZoomToFitCommand(workspaceController);
+                new ZoomToFitCommand(workspaceController); // <----------------------
             case ZOOM_IN ->
-                new ZoomInCommand(workspaceController);
+                new ZoomInCommand(workspaceController); // <----------------------
             case ZOOM_OUT ->
-                new ZoomOutCommand(workspaceController);
+                new ZoomOutCommand(workspaceController); // <----------------------
             case RELOAD_PLUGINS ->
                 new ReloadPluginsCommand();
             case HELP ->
@@ -116,9 +116,8 @@ public class CommandFactory {
 
     public Command createRemoveBlocksCommand() {
         var workspace = context.activeWorkspace();
-        var workspaceController = workspace.controller();
         var workspaceModel = workspace.controller().getModel();
-        return new RemoveBlocksCommand(workspaceController, workspaceModel);
+        return new RemoveBlocksCommand(workspaceModel);
     }
 
     public Command createAddConnectionCommand(PortModel from, PortModel to) {
@@ -163,7 +162,7 @@ public class CommandFactory {
         var workspaceController = workspace.controller();
         return new UpdateSelectionCommand(workspaceController, block, isModifierDown);
     }
-    
+
     public Command createMoveBlocksCommand(Collection<BlockController> blocks, Point2D delta) {
         var workspace = context.activeWorkspace();
         var workspaceModel = workspace.controller().getModel();
@@ -175,5 +174,5 @@ public class CommandFactory {
         var workspaceModel = workspace.controller().getModel();
         return new ResizeBlockCommand(workspaceModel, blockController, width, height);
     }
-    
+
 }

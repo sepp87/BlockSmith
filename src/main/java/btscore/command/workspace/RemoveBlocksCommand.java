@@ -1,6 +1,5 @@
 package btscore.command.workspace;
 
-import blocksmith.domain.block.BlockId;
 import btscore.workspace.WorkspaceController;
 import btscore.workspace.WorkspaceModel;
 import btscore.command.WorkspaceCommand;
@@ -13,19 +12,19 @@ public class RemoveBlocksCommand implements WorkspaceCommand {
 
     private final WorkspaceModel session;
 
-    private final WorkspaceController workspaceController;
+//    private final WorkspaceController workspaceController;
 
-    public RemoveBlocksCommand(WorkspaceController workspaceController, WorkspaceModel session) {
-        this.workspaceController = workspaceController;
+    public RemoveBlocksCommand( WorkspaceModel session) {
+//        this.workspaceController = workspaceController;
         this.session = session;
     }
 
     @Override
     public boolean execute() {
 
-        var ids = workspaceController.getSelectedBlockControllers().stream().map(c -> BlockId.from(c.getModel().getId())).toList();
+        var ids = session.selectionModel().selected();
         session.graphEditor().removeAllBlocks(ids);
-        workspaceController.deselectAllBlocks();
+        session.selectionModel().deselectAll();
 
         return true;
 

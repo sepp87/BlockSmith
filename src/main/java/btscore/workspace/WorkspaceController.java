@@ -1,6 +1,9 @@
 package btscore.workspace;
 
 import blocksmith.app.inbound.GraphMutation;
+import blocksmith.domain.block.BlockId;
+import blocksmith.domain.connection.Connection;
+import blocksmith.domain.group.GroupId;
 import java.util.ArrayList;
 import btscore.graph.group.BlockGroupModel;
 import btscore.graph.connection.PreConnection;
@@ -34,9 +37,15 @@ public class WorkspaceController extends BaseController {
     private final WorkspaceModel model;
     private final WorkspaceView view;
 
+    private final SelectionModel selection;
+
     private final ZoomHelper zoomHelper;
     private final SelectionHelper selectionHelper;
     private final InfoPanelHelper infoPanelHelper;
+
+    private final Map<BlockId, BlockController> blockIndex = new HashMap<>();
+    private final Map<Connection, ConnectionController> connectionIndex = new HashMap<>();
+    private final Map<GroupId, BlockGroupController> groupIndex = new HashMap<>();
 
     private final Map<BlockModel, BlockController> blocks = new HashMap<>();
     private final Map<ConnectionModel, ConnectionController> connections = new HashMap<>();
@@ -47,8 +56,9 @@ public class WorkspaceController extends BaseController {
         super(actionManager, commandFactory, context);
         this.model = workspaceModel;
         this.view = workspaceView;
+        this.selection = workspaceModel.selectionModel();
         this.zoomHelper = new ZoomHelper(model, view);
-        this.selectionHelper = new SelectionHelper(model, view, this);
+        this.selectionHelper = new SelectionHelper(model,  this);
         this.infoPanelHelper = new InfoPanelHelper(view);
 
         model.getBlockModels().forEach(b -> addBlock(b));
@@ -58,6 +68,15 @@ public class WorkspaceController extends BaseController {
         model.addBlockModelsListener(blockModelsListener);
         model.addConnectionModelsListener(connectionModelsListener);
         model.addBlockGroupModelsListener(blockGroupModelsListener);
+
+        selection.setOnSelectionChanged(this::onSelectionChanged);
+    }
+
+    private void onSelectionChanged(Collection<BlockId> ids) {
+        for (var entry : blockIndex.entrySet()) {
+            var isSelected = ids.contains(entry.getKey());
+            entry.getValue().selectedProperty().set(isSelected);
+        }
     }
 
     public void registerPort(PortController portController) {
@@ -96,6 +115,7 @@ public class WorkspaceController extends BaseController {
         view.getBlockLayer().getChildren().add(blockView);
         BlockController blockController = new BlockController(actionManager, commandFactory, workspaceContext, this, blockModel, blockView);
         blocks.put(blockModel, blockController);
+        blockIndex.put(BlockId.from(blockModel.getId()), blockController);
     }
 
     private void removeBlock(BlockModel blockModel) {
@@ -103,7 +123,7 @@ public class WorkspaceController extends BaseController {
             System.out.println("WorkspaceController.removeBlock()");
         }
         BlockController blockController = blocks.remove(blockModel);
-        selectionHelper.deselectBlock(blockController); // deselect in case the block was selected
+        blockIndex.remove(BlockId.from(blockModel.getId()));
         view.getBlockLayer().getChildren().remove(blockController.getView());
         blockController.remove();
         // controller remove itself
@@ -142,7 +162,7 @@ public class WorkspaceController extends BaseController {
         BlockGroupController blockGroupController = new BlockGroupController(actionManager, commandFactory, workspaceContext, this, blockGroupModel, blockGroupView);
         List<BlockController> blockControllers = new ArrayList<>();
         for (BlockModel blockModel : blockGroupModel.getBlocks()) {
-            blockControllers.add(blocks.get(blockModel));
+            blockControllers.add(blockIndex.get(BlockId.from(blockModel.getId())));
         }
         blockGroupController.setBlocks(blockControllers);
         blockGroups.put(blockGroupModel, blockGroupController);
@@ -178,13 +198,10 @@ public class WorkspaceController extends BaseController {
             System.out.println("WorkspaceController.addConnection()");
         }
         ConnectionView connectionView = new ConnectionView();
-        int position = blockGroups.size() + 1; // connections should be placed above groups, otherwise the remove button is not shown
-//        view.getChildren().add(position, connectionView);
         view.getConnectionLayer().getChildren().add(connectionView);
 
         ConnectionController connectionController = new ConnectionController(actionManager, commandFactory, workspaceContext, this, connectionModel, connectionView);
         connections.put(connectionModel, connectionController);
-//        view.getChildren().add(0, connectionModel);
     }
 
     private void removeConnection(ConnectionModel connectionModel) {
@@ -195,8 +212,6 @@ public class WorkspaceController extends BaseController {
         view.getConnectionLayer().getChildren().remove(connectionController.getView());
         connectionController.remove();
 
-//        view.getChildren().remove(connectionModel);
-//        connectionModel.remove();
     }
 
     private PreConnection preConnection = null;
@@ -241,7 +256,11 @@ public class WorkspaceController extends BaseController {
     }
 
     public void zoomToFit() {
-        Collection<BlockController> blockControllers = !getSelectedBlockControllers().isEmpty() ? getSelectedBlockControllers() : blocks.values();
+        Collection<BlockController> blockControllers
+                = !selection.selected().isEmpty()
+                ? selection.selected().stream().map(id -> blockIndex.get(id)).toList()
+                : blocks.values();
+
         zoomHelper.zoomToFitBlockControllers(blockControllers);
     }
 
@@ -257,11 +276,15 @@ public class WorkspaceController extends BaseController {
     }
 
     public Collection<BlockController> getBlockControllers() {
-        return blocks.values();
+        return blockIndex.values();
+    }
+    
+    public BlockController getBlockController(BlockId id) {
+        return blockIndex.get(id);
     }
 
     public BlockController getBlockController(BlockModel blockModel) {
-        return blocks.get(blockModel);
+        return blockIndex.get(BlockId.from(blockModel.getId()));
     }
 
     /**
@@ -280,21 +303,8 @@ public class WorkspaceController extends BaseController {
         selectionHelper.updateSelection(block, isModifierDown);
     }
 
-    public void selectBlock(BlockModel blockModel) {
-        BlockController blockController = blocks.get(blockModel);
-        selectionHelper.selectBlock(blockController);
-    }
-
-    public void selectBlock(BlockController block) {
-        selectionHelper.selectBlock(block);
-    }
-
-    public void selectAllBlocks() {
-        selectionHelper.selectAllBlocks();
-    }
-
-    public void deselectAllBlocks() {
-        selectionHelper.deselectAllBlocks();
+    public void selectBlocks(Collection<BlockController> blocks) {
+        selectionHelper.selectBlocks(blocks);
     }
 
     public void rectangleSelect(Point2D selectionMin, Point2D selectionMax) {

@@ -86,5 +86,9 @@ public class GraphProjection {
     public Collection<BlockModel> blocks(Collection<BlockId> ids) {
         return ids.stream().map(blocks::get).toList();
     }
+    
+    public Collection<BlockModel> blocks() {
+        return blocks.values();
+    }
 
 }

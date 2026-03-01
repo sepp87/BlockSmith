@@ -2,6 +2,7 @@ package btscore.command.workspace;
 
 import btscore.command.WorkspaceCommand;
 import btscore.workspace.WorkspaceController;
+import btscore.workspace.WorkspaceModel;
 
 /**
  *
@@ -9,15 +10,15 @@ import btscore.workspace.WorkspaceController;
  */
 public class SelectAllBlocksCommand implements WorkspaceCommand {
 
-    private final WorkspaceController workspaceController;
+    private final WorkspaceModel workspaceController;
 
-    public SelectAllBlocksCommand(WorkspaceController workspaceController) {
+    public SelectAllBlocksCommand(WorkspaceModel workspaceController) {
         this.workspaceController = workspaceController;
     }
 
     @Override
     public boolean execute() {
-        workspaceController.selectAllBlocks();
+        workspaceController.selectionModel().selectAll();
         return true;
     }
 

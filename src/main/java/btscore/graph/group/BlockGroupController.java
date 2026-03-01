@@ -26,7 +26,6 @@ import btscore.workspace.WorkspaceController;
  */
 public class BlockGroupController extends BaseController {
 
-
     private final WorkspaceController workspaceController;
 
     private final BlockGroupModel model;
@@ -34,7 +33,7 @@ public class BlockGroupController extends BaseController {
 
     private final ObservableMap<BlockModel, BlockController> children;
 
-    public BlockGroupController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context,WorkspaceController workspaceController, BlockGroupModel blockGroupModel, BlockGroupView blockGroupView) {
+    public BlockGroupController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceController workspaceController, BlockGroupModel blockGroupModel, BlockGroupView blockGroupView) {
         super(actionManager, commandFactory, context);
         this.workspaceController = workspaceController;
         this.model = blockGroupModel;
@@ -50,7 +49,7 @@ public class BlockGroupController extends BaseController {
 
         // Listeners
         model.getBlocks().addListener(blocksListener);
-        
+
         // Bindings
         view.getLabel().textProperty().bindBidirectional(model.labelProperty());
     }
@@ -76,7 +75,6 @@ public class BlockGroupController extends BaseController {
 
         // Bindings
         view.getLabel().textProperty().unbindBidirectional(model.labelProperty());
-
 
         for (BlockController blockController : children.values()) {
             removeListeners(blockController);
@@ -106,7 +104,7 @@ public class BlockGroupController extends BaseController {
     }
 
     private void handleBinButtonClicked(ActionEvent event) {
-       var command =  commandFactory.createRemoveGroupCommand(model);
+        var command = commandFactory.createRemoveGroupCommand(model);
         actionManager.executeCommand(command);
     }
 
@@ -121,9 +119,10 @@ public class BlockGroupController extends BaseController {
     }
 
     private void handleGroupPressed(MouseEvent event) {
+        workspaceController.selectBlocks(children.values());
+
         for (BlockController blockController : children.values()) {
             blockController.startPoint = new Point2D(event.getSceneX(), event.getSceneY());
-            workspaceController.selectBlock(blockController);
         }
         workspaceContext.state().setSelectingBlockGroup(); // prevent group from being deselected
     }

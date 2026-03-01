@@ -73,7 +73,7 @@ public class WorkspaceModel {
         this.blockFactory = blockFactory;
         this.saveDocument = saveDocument;
 
-        this.selectionModel = new SelectionModel();
+        this.selectionModel = new SelectionModel(editor);
         var mapper = new GraphProjectionMapper(blockFactory);
         this.graphProjection = new GraphProjection(mapper, editor.graphSnapshot());
         this.alignmentService = new AlignmentService(selectionModel, this, editor);

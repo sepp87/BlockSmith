@@ -53,7 +53,6 @@ public class BlockController extends BaseController {
     private double previousHeight = -1;
 
 //    private final ChangeListener<Bounds> boundsListener;
-
     public BlockController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
         super(actionManager, commandFactory, context);
         this.workspaceController = workspaceController;
@@ -68,7 +67,9 @@ public class BlockController extends BaseController {
         view.setOnMouseEntered(this::handleMouseEntered);
         view.setOnMouseExited(this::handleMouseExited);
         view.getContentGrid().setOnMouseEntered(model.onMouseEntered());
+        view.getContentGrid().setOnMouseClicked(eh -> System.out.println("CLICKED"));
         view.getContentGrid().setOnMousePressed(this::handleMoveStartedAndUpdateSelection);
+        view.getContentGrid().setOnDragDetected(this::handleDragDetected);
         view.getContentGrid().setOnMouseDragged(this::handleMoveUpdated);
         view.getContentGrid().setOnMouseReleased(this::handleMoveFinished);
 
@@ -80,7 +81,6 @@ public class BlockController extends BaseController {
 
 //        boundsListener = (b, o, n) -> model.setMeasuredBounds(new BoundingBox(view.getLayoutX(), view.getLayoutY(), view.getWidth(), view.getHeight()));
 //        view.boundsInParentProperty().addListener(boundsListener);
-
         Consumer<Bounds> boundsSub = (bounds) -> model.setMeasuredBounds(new BoundingBox(view.getLayoutX(), view.getLayoutY(), view.getWidth(), view.getHeight()));
         view.boundsInParentProperty().subscribe(boundsSub);
 
@@ -169,16 +169,40 @@ public class BlockController extends BaseController {
         }
     }
 
+    private boolean drag_to_move = false;
+
     private void handleMoveStartedAndUpdateSelection(MouseEvent event) {
+
+        drag_to_move = false;
         view.toFront();
         startPoint = new Point2D(event.getSceneX(), event.getSceneY());
         updatedPoint = startPoint;
-        var command = actionManager.getCommandFactory().createUpdateSelectionCommand(this, EventUtils.isModifierDown(event));
-        actionManager.executeCommand(command);
+        event.consume();
+
+    }
+
+    private void handleDragDetected(MouseEvent event) {
+        var drag_to_duplicate = EventUtils.isModifierDown(event);
+
+        if (drag_to_duplicate) {
+
+        } else {
+            drag_to_move = true;
+            var isSelected = this.selected.get();
+            if (!isSelected) {
+                var command = actionManager.getCommandFactory().createUpdateSelectionCommand(this, false);
+                actionManager.executeCommand(command);
+            }
+        }
         event.consume();
     }
 
     public void handleMoveUpdated(MouseEvent event) {
+
+        if (drag_to_move) {
+            return;
+        }
+
         double scale = workspaceController.getZoomFactor();
         double deltaX = (event.getSceneX() - updatedPoint.getX()) / scale;
         double deltaY = (event.getSceneY() - updatedPoint.getY()) / scale;
@@ -190,16 +214,29 @@ public class BlockController extends BaseController {
             blockModel.layoutYProperty().set(y + deltaY);
         }
         updatedPoint = new Point2D(event.getSceneX(), event.getSceneY());
+
+        event.consume();
+
     }
 
     public void handleMoveFinished(MouseEvent event) {
-        if (!event.isDragDetect()) {
-            Collection<BlockController> blockControllers = workspaceController.getSelectedBlockControllers();
-            Point2D delta = updatedPoint.subtract(startPoint);
+        try {
+            if (drag_to_move) {
+                Collection<BlockController> blockControllers = workspaceController.getSelectedBlockControllers();
+                Point2D delta = updatedPoint.subtract(startPoint);
 
-            var command = commandFactory.createMoveBlocksCommand(blockControllers, delta);
-            actionManager.executeCommand(command);
+                var command = commandFactory.createMoveBlocksCommand(blockControllers, delta);
+                actionManager.executeCommand(command);
+
+            } else {
+                var command = actionManager.getCommandFactory().createUpdateSelectionCommand(this, EventUtils.isModifierDown(event));
+                actionManager.executeCommand(command);
+            }
+        } finally {
+            drag_to_move = false;
         }
+
+        event.consume();
     }
 
     private final ListChangeListener<BlockException> exceptionsListener = this::onExceptionsChanged;
