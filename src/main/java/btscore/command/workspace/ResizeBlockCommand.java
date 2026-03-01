@@ -11,28 +11,21 @@ import btscore.workspace.WorkspaceModel;
  */
 public class ResizeBlockCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel workspaceModel;
-    private final BlockController blockController;
-    private final double previousWidth;
-    private final double previousHeight;
-    private final double currentWidth;
-    private final double currentHeight;
+    private final WorkspaceModel workspace;
+    private final BlockId id;
+    private final double width;
+    private final double height;
 
-    public ResizeBlockCommand(WorkspaceModel workspaceModel, BlockController blockController, double width, double height) {
-        this.workspaceModel = workspaceModel;
-        this.blockController = blockController;
-        this.previousWidth = blockController.getPreviousWidth();
-        this.previousHeight = blockController.getPreviousHeight();
-        this.currentWidth = width;
-        this.currentHeight = height;
+    public ResizeBlockCommand(WorkspaceModel workspace, BlockId block, double width, double height) {
+        this.workspace = workspace;
+        this.id = block;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
     public boolean execute() {
-        var id = BlockId.from(blockController.getModel().getId());
-        workspaceModel.graphEditor().resizeBlock(id, currentWidth, currentHeight);
-        
-        
+        workspace.graphEditor().resizeBlock(id, width, height);
         return true;
 
     }

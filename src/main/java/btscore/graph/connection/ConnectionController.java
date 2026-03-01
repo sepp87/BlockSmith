@@ -131,7 +131,7 @@ public class ConnectionController extends BaseController {
             return;
         }
 
-        var command = commandFactory.createRemoveConnectionCommand(model);
+        var command = commandFactory.createRemoveConnectionCommand(model.toDomain());
         actionManager.executeCommand(command);
 
     }

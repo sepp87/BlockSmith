@@ -126,7 +126,6 @@ public class DefaultGraphEditor implements GraphEditor {
 
     public void addConnection(PortRef from, PortRef to) {
         LOGGER.log(Level.INFO, "Add connection: {0}", GraphLogFmt.connection(from, to));
-
         mutate((graph) -> addConnection.execute(graph, from, to));
 
     }

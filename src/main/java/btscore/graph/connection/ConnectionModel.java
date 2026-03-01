@@ -1,5 +1,8 @@
 package btscore.graph.connection;
 
+import blocksmith.domain.block.BlockId;
+import blocksmith.domain.connection.Connection;
+import blocksmith.domain.connection.PortRef;
 import btscore.graph.port.PortModel;
 import btsxml.ConnectionTag;
 import btscore.UiApp;
@@ -116,4 +119,15 @@ public class ConnectionModel extends BaseModel {
         return TypeCastUtils.isCastableTo(outputType, inputType);
     }
 
+    public Connection toDomain() {
+        var from = PortRef.of(
+                BlockId.from(startPort.getBlock().getId()),
+                startPort.labelProperty().get()
+        );
+        var to = PortRef.of(
+                BlockId.from(endPort.getBlock().getId()),
+                endPort.labelProperty().get()
+        );
+        return new Connection(from, to);
+    }
 }

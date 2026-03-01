@@ -40,7 +40,7 @@ public abstract class BlockModel extends BaseModel {
         this.active.addListener(activeListener);
     }
 
-    public Bounds getMeasuredBounds() {
+    public Bounds measuredBounds() {
         return measuredBounds.get();
     }
     

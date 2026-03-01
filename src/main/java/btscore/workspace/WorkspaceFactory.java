@@ -2,7 +2,6 @@ package btscore.workspace;
 
 import blocksmith.app.GraphDocument;
 import blocksmith.app.GraphEditorFactory;
-import blocksmith.domain.graph.Graph;
 import blocksmith.ui.BlockModelFactory;
 import blocksmith.ui.workspace.SaveDocument;
 import btscore.command.CommandDispatcher;

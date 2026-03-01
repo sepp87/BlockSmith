@@ -1,5 +1,7 @@
 package btscore.graph.group;
 
+import blocksmith.domain.block.BlockId;
+import blocksmith.domain.group.GroupId;
 import java.util.Collection;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -10,8 +12,6 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import btscore.command.CommandDispatcher;
-import btscore.workspace.WorkspaceState;
-import btscore.command.workspace.RemoveGroupCommand;
 import btscore.graph.BaseController;
 import btscore.command.CommandFactory;
 import btscore.graph.block.BlockController;
@@ -104,7 +104,8 @@ public class BlockGroupController extends BaseController {
     }
 
     private void handleBinButtonClicked(ActionEvent event) {
-        var command = commandFactory.createRemoveGroupCommand(model);
+        var id = GroupId.from(model.getId());
+        var command = commandFactory.createRemoveGroupCommand(id);
         actionManager.executeCommand(command);
     }
 
@@ -119,8 +120,9 @@ public class BlockGroupController extends BaseController {
     }
 
     private void handleGroupPressed(MouseEvent event) {
-        workspaceController.selectBlocks(children.values());
-
+        var blocks = children.values().stream().map(b -> BlockId.from(b.getModel().getId())).toList();
+        workspaceContext.model().selectionModel().select(blocks);
+        
         for (BlockController blockController : children.values()) {
             blockController.startPoint = new Point2D(event.getSceneX(), event.getSceneY());
         }

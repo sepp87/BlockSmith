@@ -1,6 +1,5 @@
 package btscore.workspace;
 
-import blocksmith.app.inbound.GraphMutation;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.group.GroupId;
@@ -40,7 +39,6 @@ public class WorkspaceController extends BaseController {
     private final SelectionModel selection;
 
     private final ZoomHelper zoomHelper;
-    private final SelectionHelper selectionHelper;
     private final InfoPanelHelper infoPanelHelper;
 
     private final Map<BlockId, BlockController> blockIndex = new HashMap<>();
@@ -58,7 +56,6 @@ public class WorkspaceController extends BaseController {
         this.view = workspaceView;
         this.selection = workspaceModel.selectionModel();
         this.zoomHelper = new ZoomHelper(model, view);
-        this.selectionHelper = new SelectionHelper(model,  this);
         this.infoPanelHelper = new InfoPanelHelper(view);
 
         model.getBlockModels().forEach(b -> addBlock(b));
@@ -287,32 +284,6 @@ public class WorkspaceController extends BaseController {
         return blockIndex.get(BlockId.from(blockModel.getId()));
     }
 
-    /**
-     * SELECTION
-     */
-    public void updateSelection(String blockId, boolean isModifierDown) {
-        for (var block : blocks.values()) {
-            if (block.getModel().getId().equals(blockId)) {
-                selectionHelper.updateSelection(block, isModifierDown);
-                break;
-            }
-        }
-    }
 
-    public void updateSelection(BlockController block, boolean isModifierDown) {
-        selectionHelper.updateSelection(block, isModifierDown);
-    }
-
-    public void selectBlocks(Collection<BlockController> blocks) {
-        selectionHelper.selectBlocks(blocks);
-    }
-
-    public void rectangleSelect(Point2D selectionMin, Point2D selectionMax) {
-        selectionHelper.rectangleSelect(selectionMin, selectionMax);
-    }
-
-    public Collection<BlockController> getSelectedBlockControllers() {
-        return selectionHelper.getSelectedBlockControllers();
-    }
 
 }

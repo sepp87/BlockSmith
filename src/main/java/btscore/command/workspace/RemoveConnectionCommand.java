@@ -13,29 +13,17 @@ import btscore.command.WorkspaceCommand;
  */
 public class RemoveConnectionCommand implements WorkspaceCommand {
 
+    private final WorkspaceModel workspace;
+    private final Connection connection;
 
-    private final WorkspaceModel workspaceModel;
-    private final ConnectionModel connection;
-    private ConnectionModel autoConnection;
-
-    public RemoveConnectionCommand(WorkspaceModel workspaceModel, ConnectionModel connection) {
-        this.workspaceModel = workspaceModel;
+    public RemoveConnectionCommand(WorkspaceModel workspace, Connection connection) {
+        this.workspace = workspace;
         this.connection = connection;
     }
 
     @Override
     public boolean execute() {
-        var from = PortRef.of(
-                BlockId.from(connection.getStartPort().getBlock().getId()),
-                connection.getStartPort().labelProperty().get()
-        );
-        var to = PortRef.of(
-                BlockId.from(connection.getEndPort().getBlock().getId()),
-                connection.getEndPort().labelProperty().get()
-        );
-        var domain = new Connection(from, to);
-        workspaceModel.graphEditor().removeConnection(domain);
-
+        workspace.graphEditor().removeConnection(connection);
         return true;
 
     }

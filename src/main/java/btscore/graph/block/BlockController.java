@@ -1,5 +1,6 @@
 package btscore.graph.block;
 
+import blocksmith.domain.block.BlockId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,7 +68,6 @@ public class BlockController extends BaseController {
         view.setOnMouseEntered(this::handleMouseEntered);
         view.setOnMouseExited(this::handleMouseExited);
         view.getContentGrid().setOnMouseEntered(model.onMouseEntered());
-        view.getContentGrid().setOnMouseClicked(eh -> System.out.println("CLICKED"));
         view.getContentGrid().setOnMousePressed(this::handleMoveStartedAndUpdateSelection);
         view.getContentGrid().setOnDragDetected(this::handleDragDetected);
         view.getContentGrid().setOnMouseDragged(this::handleMoveUpdated);
@@ -79,8 +79,6 @@ public class BlockController extends BaseController {
         view.layoutXProperty().addListener(transformListener);
         view.layoutYProperty().addListener(transformListener);
 
-//        boundsListener = (b, o, n) -> model.setMeasuredBounds(new BoundingBox(view.getLayoutX(), view.getLayoutY(), view.getWidth(), view.getHeight()));
-//        view.boundsInParentProperty().addListener(boundsListener);
         Consumer<Bounds> boundsSub = (bounds) -> model.setMeasuredBounds(new BoundingBox(view.getLayoutX(), view.getLayoutY(), view.getWidth(), view.getHeight()));
         view.boundsInParentProperty().subscribe(boundsSub);
 
@@ -190,7 +188,8 @@ public class BlockController extends BaseController {
             drag_to_move = true;
             var isSelected = this.selected.get();
             if (!isSelected) {
-                var command = actionManager.getCommandFactory().createUpdateSelectionCommand(this, false);
+                var id = BlockId.from(model.getId());
+                var command = actionManager.getCommandFactory().createUpdateSelectionCommand(id, false);
                 actionManager.executeCommand(command);
             }
         }
@@ -199,15 +198,18 @@ public class BlockController extends BaseController {
 
     public void handleMoveUpdated(MouseEvent event) {
 
-        if (drag_to_move) {
+        if (!drag_to_move) {
             return;
         }
 
         double scale = workspaceController.getZoomFactor();
         double deltaX = (event.getSceneX() - updatedPoint.getX()) / scale;
         double deltaY = (event.getSceneY() - updatedPoint.getY()) / scale;
-        for (BlockController block : workspaceController.getSelectedBlockControllers()) {
-            BlockModel blockModel = block.getModel();
+        
+        var ids = workspaceContext.model().selectionModel().selected();
+        var blocks = workspaceContext.model().blocks(ids);
+        
+        for (var blockModel : blocks) {
             double x = blockModel.layoutXProperty().get();
             double y = blockModel.layoutYProperty().get();
             blockModel.layoutXProperty().set(x + deltaX);
@@ -222,14 +224,16 @@ public class BlockController extends BaseController {
     public void handleMoveFinished(MouseEvent event) {
         try {
             if (drag_to_move) {
-                Collection<BlockController> blockControllers = workspaceController.getSelectedBlockControllers();
+                var workspace = workspaceContext.model();
+                var ids = workspace.selectionModel().selected();
                 Point2D delta = updatedPoint.subtract(startPoint);
 
-                var command = commandFactory.createMoveBlocksCommand(blockControllers, delta);
+                var command = commandFactory.createMoveBlocksCommand(ids, delta);
                 actionManager.executeCommand(command);
 
             } else {
-                var command = actionManager.getCommandFactory().createUpdateSelectionCommand(this, EventUtils.isModifierDown(event));
+                var id = BlockId.from(model.getId());
+                var command = actionManager.getCommandFactory().createUpdateSelectionCommand(id, EventUtils.isModifierDown(event));
                 actionManager.executeCommand(command);
             }
         } finally {
@@ -309,7 +313,8 @@ public class BlockController extends BaseController {
         if (!event.isDragDetect()) {
             double newWidth = model.widthProperty().get();
             double newHeight = model.heightProperty().get();
-            var command = commandFactory.createResizeBlockCommand(this, newWidth, newHeight);
+            var id = BlockId.from(model.getId());
+            var command = commandFactory.createResizeBlockCommand(id, newWidth, newHeight);
             actionManager.executeCommand(command);
         }
     }

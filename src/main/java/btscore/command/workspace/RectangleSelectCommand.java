@@ -3,6 +3,9 @@ package btscore.command.workspace;
 import javafx.geometry.Point2D;
 import btscore.command.WorkspaceCommand;
 import btscore.workspace.WorkspaceController;
+import btscore.workspace.WorkspaceModel;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 
 /**
  *
@@ -10,19 +13,18 @@ import btscore.workspace.WorkspaceController;
  */
 public class RectangleSelectCommand implements WorkspaceCommand {
 
-    private final WorkspaceController workspaceController;
-    private final Point2D selectionMin;
-    private final Point2D selectionMax;
+    private final WorkspaceModel workspace;
+    private final Bounds rectOnWorkspace;
 
-    public RectangleSelectCommand(WorkspaceController workspaceController, Point2D selectionMin, Point2D selectionMax) {
-        this.workspaceController = workspaceController;
-        this.selectionMin = workspaceController.getView().sceneToLocal(selectionMin);
-        this.selectionMax = workspaceController.getView().sceneToLocal(selectionMax);
+    public RectangleSelectCommand(WorkspaceModel workspace, Bounds rectOnWorkspace) {
+        this.workspace = workspace;
+        this.rectOnWorkspace = rectOnWorkspace;
     }
 
     @Override
     public boolean execute() {
-        workspaceController.rectangleSelect(selectionMin, selectionMax);
+
+        workspace.selectionService().rectangleSelect(rectOnWorkspace);
         return true;
 
     }

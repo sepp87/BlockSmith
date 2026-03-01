@@ -58,6 +58,7 @@ public class WorkspaceModel {
     private final SelectionModel selectionModel;
     private final GraphProjection graphProjection;
     private final AlignmentService alignmentService;
+    private final SelectionService selectionService;
 
     private GraphDocument document;
     private Path documentPath;
@@ -77,6 +78,7 @@ public class WorkspaceModel {
         var mapper = new GraphProjectionMapper(blockFactory);
         this.graphProjection = new GraphProjection(mapper, editor.graphSnapshot());
         this.alignmentService = new AlignmentService(selectionModel, this, editor);
+        this.selectionService = new SelectionService(selectionModel, this);
 
         editor.setOnGraphUpdated(this::updateFrom);
         editor.setOnGraphUpdated(graphProjection::updateFrom);
@@ -113,12 +115,20 @@ public class WorkspaceModel {
         return ids.stream().map(blockIndex::get).toList();
     }
 
+    public Collection<BlockModel> blocks() {
+        return blockModels;
+    }
+
     public SelectionModel selectionModel() {
         return selectionModel;
     }
 
     public AlignmentService alignmentService() {
         return alignmentService;
+    }
+    
+    public SelectionService selectionService() {
+        return selectionService;
     }
 
     public Graph graphSnapshot() {

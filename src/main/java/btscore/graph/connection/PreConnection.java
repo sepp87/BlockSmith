@@ -14,7 +14,6 @@ import btscore.graph.port.PortView;
 import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
 import btscore.workspace.WorkspaceModel;
-import btscore.workspace.WorkspaceState;
 import btscore.workspace.WorkspaceView;
 
 /**
@@ -75,7 +74,7 @@ public class PreConnection extends Line {
             createConnection(portController);
 
         } else {
-            remove();
+            dispose();
         }
         event.consume();
     }
@@ -98,7 +97,7 @@ public class PreConnection extends Line {
 
             var fromPort = endPortModel.getPortType() == PortType.OUTPUT ? endPortModel : startPortModel;
             var toPort = startPortModel.getPortType() == PortType.INPUT ? startPortModel : endPortModel;
-            var command = commandFactory.createAddConnectionCommand(fromPort, toPort);
+            var command = commandFactory.createAddConnectionCommand(fromPort.toDomain(), toPort.toDomain());
             actionManager.executeCommand(command);
 
         }
@@ -107,11 +106,11 @@ public class PreConnection extends Line {
          * made.
          */
 
-        remove();
+        dispose();
 
     }
 
-    private void remove() {
+    private void dispose() {
         workspaceController.removePreConnection(this);
         startXProperty().unbind();
         startYProperty().unbind();

@@ -30,14 +30,14 @@ public class AlignmentPolicy {
             return List.of();
         }
 
-        var allBounds = blocks.stream().map(BlockModel::getMeasuredBounds).toList();
+        var allBounds = blocks.stream().map(BlockModel::measuredBounds).toList();
         var bounds = boundsOf(allBounds);
 
         var result = new ArrayList<BlockPosition>();
         for (var block : blocks) {
             var id = BlockId.from(block.getId());
-            var x = computeX(mode, bounds, block.getMeasuredBounds());
-            var y = computeY(mode, bounds, block.getMeasuredBounds());
+            var x = computeX(mode, bounds, block.measuredBounds());
+            var y = computeY(mode, bounds, block.measuredBounds());
             var request = new BlockPosition(id, x, y);
             result.add(request);
         }

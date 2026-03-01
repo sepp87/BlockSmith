@@ -17,32 +17,19 @@ import btscore.command.WorkspaceCommand;
  */
 public class AddConnectionCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel workspaceModel;
-    private final PortModel fromPort;
-    private final PortModel toPort;
-    private final Set<ConnectionModel> removedConnections;
-    private ConnectionModel newConnection;
+    private final WorkspaceModel workspace;
+    private final PortRef from;
+    private final PortRef to;
 
-    public AddConnectionCommand(WorkspaceModel workspaceModel, PortModel fromPort, PortModel toPort) {
-        this.workspaceModel = workspaceModel;
-        this.fromPort = fromPort;
-        this.toPort = toPort;
-        this.removedConnections = new HashSet<>();
+    public AddConnectionCommand(WorkspaceModel workspace, PortRef from, PortRef to) {
+        this.workspace = workspace;
+        this.from = from;
+        this.to = to;
     }
 
     @Override
     public boolean execute() {
-
-        var from = new PortRef(
-                BlockId.from(fromPort.getBlock().getId()),
-                fromPort.labelProperty().get()
-        );
-        var to = new PortRef(
-                BlockId.from(toPort.getBlock().getId()),
-                toPort.labelProperty().get()
-        );
-        workspaceModel.graphEditor().addConnection(from, to);
-
+        workspace.graphEditor().addConnection(from, to);
         return true;
     }
 

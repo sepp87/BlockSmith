@@ -10,6 +10,7 @@ import btscore.command.Command;
 import btscore.command.CommandFactory;
 import btscore.editor.EditorContext;
 import static btscore.utils.EditorUtils.onFreeSpace;
+import javafx.geometry.BoundingBox;
 
 /**
  *
@@ -114,9 +115,11 @@ public class SelectionRectangleController {
     }
 
     private void updateSelection() {
-        Point2D selectionMin = view.getParent().localToScene(view.getLayoutX(), view.getLayoutY());
-        Point2D selectionMax = view.getParent().localToScene(view.getLayoutX() + view.getWidth(), view.getLayoutY() + view.getHeight());
-        var command = commandFactory.createRectangleSelectCommand(selectionMin, selectionMax);
+
+        var rectOnScene = view.getParent().localToScene(view.getBoundsInParent());
+        var rectOnWorkspace = context.activeWorkspace().view().sceneToLocal(rectOnScene);
+
+        var command = commandFactory.createRectangleSelectCommand(rectOnWorkspace);
         actionManager.executeCommand(command);
     }
 

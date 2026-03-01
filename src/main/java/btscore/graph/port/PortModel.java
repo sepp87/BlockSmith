@@ -1,5 +1,7 @@
 package btscore.graph.port;
 
+import blocksmith.domain.block.BlockId;
+import blocksmith.domain.connection.PortRef;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
@@ -190,5 +192,12 @@ public class PortModel extends BaseModel {
     public void revive() {
         data.addListener(dataListener);
         super.revive();
+    }
+
+    public PortRef toDomain() {
+        return new PortRef(
+                BlockId.from(getBlock().getId()),
+                labelProperty().get()
+        );
     }
 }
