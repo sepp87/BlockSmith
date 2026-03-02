@@ -11,11 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public record GraphDiff(
-        Collection<Connection> removedConnections,
-        Collection<Connection> addedConnections,
         Collection<Block> removedBlocks,
         Collection<Block> addedBlocks,
         Collection<Block> updatedBlocks,
+        Collection<Connection> removedConnections,
+        Collection<Connection> addedConnections,
         Collection<Group> removedGroups,
         Collection<Group> addedGroups,
         Collection<Group> updatedGroups) {
@@ -81,13 +81,13 @@ public record GraphDiff(
         var groupsOnlyInA = groupsA.values();
 
         return new GraphDiff(
+                blocksOnlyInA,
+                blocksOnlyInB,
+                updatedBlocks,
                 connectionsOnlyInA,
                 connectionsOnlyInB,
-                blocksOnlyInA,
-                blocksOnlyInB, 
-                updatedBlocks,
                 groupsOnlyInA,
-                groupsOnlyInB, 
+                groupsOnlyInB,
                 updatedGroups
         );
     }

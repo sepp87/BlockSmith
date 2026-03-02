@@ -1,17 +1,22 @@
 package btscore.workspace;
 
+import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
+import blocksmith.domain.group.Group;
 import blocksmith.domain.group.GroupId;
 import blocksmith.ui.MethodBlockNew;
 import btscore.graph.block.BlockModel;
 import btscore.graph.connection.ConnectionModel;
 import btscore.graph.group.BlockGroupModel;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  *
@@ -24,6 +29,7 @@ public class GraphProjection {
     private final Map<GroupId, BlockGroupModel> groups = new HashMap<>();
 
     private final GraphProjectionMapper mapper;
+    private final List<Consumer<GraphProjectionDiff>> listeners = new ArrayList<>();
 
     public GraphProjection(GraphProjectionMapper mapper, Graph graph) {
         this.mapper = mapper;
@@ -81,14 +87,35 @@ public class GraphProjection {
             projection.updateFrom(group, blocks);
         }
 
+        var projectionDiff = new GraphProjectionDiff(
+                diff.addedBlocks().stream().map(Block::id).toList(),
+                diff.removedBlocks().stream().map(Block::id).toList(),
+                diff.updatedBlocks().stream().map(Block::id).toList(),
+                diff.addedConnections(),
+                diff.removedConnections(),
+                diff.addedGroups().stream().map(Group::id).toList(),
+                diff.removedGroups().stream().map(Group::id).toList(),
+                diff.updatedGroups().stream().map(Group::id).toList()
+        );
+
+        projectionChanged(projectionDiff);
+
     }
 
     public Collection<BlockModel> blocks(Collection<BlockId> ids) {
         return ids.stream().map(blocks::get).toList();
     }
-    
+
     public Collection<BlockModel> blocks() {
         return blocks.values();
+    }
+
+    public void addProjectionListener(Consumer<GraphProjectionDiff> listener) {
+        listeners.add(listener);
+    }
+
+    private void projectionChanged(GraphProjectionDiff diff) {
+        listeners.forEach(c -> c.accept(diff));
     }
 
 }

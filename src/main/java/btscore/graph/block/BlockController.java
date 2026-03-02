@@ -2,7 +2,6 @@ package btscore.graph.block;
 
 import blocksmith.domain.block.BlockId;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -19,14 +18,17 @@ import btscore.UiApp;
 import btscore.command.CommandDispatcher;
 import btscore.graph.BaseController;
 import btscore.command.CommandFactory;
+import btscore.command.WorkspaceCommandBus;
 import btscore.graph.block.ExceptionPanel.BlockException;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortModel;
 import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
 import btscore.utils.EventUtils;
+import btscore.workspace.GraphProjection;
 import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
+import btscore.workspace.WorkspaceSession;
 import java.util.function.Consumer;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -37,6 +39,7 @@ import javafx.geometry.Bounds;
  */
 public class BlockController extends BaseController {
 
+    private final GraphProjection projection;
     private final WorkspaceController workspaceController;
     private final BlockModel model;
     private final BlockView view;
@@ -54,8 +57,9 @@ public class BlockController extends BaseController {
     private double previousHeight = -1;
 
 //    private final ChangeListener<Bounds> boundsListener;
-    public BlockController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
-        super(actionManager, commandFactory, context);
+    public BlockController(WorkspaceCommandBus commandBus, WorkspaceSession session, GraphProjection projection, WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
+        super( commandBus, session);
+        this.projection = projection;
         this.workspaceController = workspaceController;
         this.model = blockModel;
         this.view = blockView;
@@ -189,8 +193,8 @@ public class BlockController extends BaseController {
             var isSelected = this.selected.get();
             if (!isSelected) {
                 var id = BlockId.from(model.getId());
-                var command = actionManager.getCommandFactory().createUpdateSelectionCommand(id, false);
-                actionManager.executeCommand(command);
+                var command = commands.factory().createUpdateSelectionCommand(id, false);
+                commands.execute(command);
             }
         }
         event.consume();
@@ -202,13 +206,13 @@ public class BlockController extends BaseController {
             return;
         }
 
-        double scale = workspaceController.getZoomFactor();
+        double scale = session.zoomFactorProperty().get();
         double deltaX = (event.getSceneX() - updatedPoint.getX()) / scale;
         double deltaY = (event.getSceneY() - updatedPoint.getY()) / scale;
-        
-        var ids = workspaceContext.model().selectionModel().selected();
-        var blocks = workspaceContext.model().blocks(ids);
-        
+
+        var ids = session.selectionModel().selected();
+        var blocks = UiApp.SWITCH_PROJECTION ? projection.blocks(ids) : session.blocks(ids);
+
         for (var blockModel : blocks) {
             double x = blockModel.layoutXProperty().get();
             double y = blockModel.layoutYProperty().get();
@@ -224,17 +228,19 @@ public class BlockController extends BaseController {
     public void handleMoveFinished(MouseEvent event) {
         try {
             if (drag_to_move) {
-                var workspace = workspaceContext.model();
-                var ids = workspace.selectionModel().selected();
+                var ids = session.selectionModel().selected();
                 Point2D delta = updatedPoint.subtract(startPoint);
+                double dX = delta.getX() / session.zoomFactorProperty().get();
+                double dY = delta.getY() / session.zoomFactorProperty().get();
+                delta = new Point2D(dX, dY);
 
-                var command = commandFactory.createMoveBlocksCommand(ids, delta);
-                actionManager.executeCommand(command);
+                var command = commands.factory().createMoveBlocksCommand(ids, delta);
+                commands.execute(command);
 
             } else {
                 var id = BlockId.from(model.getId());
-                var command = actionManager.getCommandFactory().createUpdateSelectionCommand(id, EventUtils.isModifierDown(event));
-                actionManager.executeCommand(command);
+                var command = commands.factory().createUpdateSelectionCommand(id, EventUtils.isModifierDown(event));
+                commands.execute(command);
             }
         } finally {
             drag_to_move = false;
@@ -299,7 +305,7 @@ public class BlockController extends BaseController {
     }
 
     private void handleResizeUpdated(MouseEvent event) {
-        double scale = workspaceController.getZoomFactor();
+        double scale = session.zoomFactorProperty().get();
         double deltaX = (event.getSceneX() - updatedPoint.getX()) / scale;
         double deltaY = (event.getSceneY() - updatedPoint.getY()) / scale;
         double newWidth = model.widthProperty().get() + deltaX;
@@ -314,8 +320,8 @@ public class BlockController extends BaseController {
             double newWidth = model.widthProperty().get();
             double newHeight = model.heightProperty().get();
             var id = BlockId.from(model.getId());
-            var command = commandFactory.createResizeBlockCommand(id, newWidth, newHeight);
-            actionManager.executeCommand(command);
+            var command = commands.factory().createResizeBlockCommand(id, newWidth, newHeight);
+            commands.execute(command);
         }
     }
 

@@ -38,7 +38,7 @@ public class WorkspaceContext {
         return controller;
     }
 
-    public WorkspaceModel model() {
+    public WorkspaceSession session() {
         return controller.getModel();
     }
 
@@ -48,6 +48,10 @@ public class WorkspaceContext {
 
     public GraphMutationAndHistory graphEditor() {
         return controller.getModel().graphEditor();
+    }
+    
+    public ZoomService zoomService() {
+        return controller.zoomService();
     }
 
 }

@@ -1,8 +1,7 @@
 package btscore.command.workspace;
 
 import btscore.command.Command;
-import btscore.workspace.WorkspaceContext;
-import btscore.workspace.WorkspaceController;
+import btscore.workspace.ZoomService;
 
 /**
  *
@@ -10,15 +9,15 @@ import btscore.workspace.WorkspaceController;
  */
 public class ZoomToFitCommand implements Command {
 
-    private final WorkspaceController workspace;
+    private final ZoomService zoomService;
 
-    public ZoomToFitCommand(WorkspaceController workspace) {
-        this.workspace = workspace;
+    public ZoomToFitCommand(ZoomService zoomService) {
+        this.zoomService = zoomService;
     }
 
     @Override
     public boolean execute() {
-        workspace.zoomToFit();
+        zoomService.zoomToFit();
         return true;
     }
 

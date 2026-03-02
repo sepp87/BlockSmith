@@ -1,7 +1,7 @@
 package btscore.command.workspace;
 
 import blocksmith.domain.group.GroupId;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import btscore.command.WorkspaceCommand;
 
 /**
@@ -10,10 +10,10 @@ import btscore.command.WorkspaceCommand;
  */
 public class RemoveGroupCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel workspace;
+    private final WorkspaceSession workspace;
     private final GroupId id;
 
-    public RemoveGroupCommand(WorkspaceModel workspace, GroupId group) {
+    public RemoveGroupCommand(WorkspaceSession workspace, GroupId group) {
         this.workspace = workspace;
         this.id = group;
     }

@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import btsxml.*;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import btscore.graph.group.BlockGroupModel;
 import btscore.graph.block.BlockModel;
 import btscore.graph.connection.ConnectionModel;
@@ -30,7 +30,7 @@ public class GraphSaver {
         return objectFactory;
     }
 
-    public static void serialize(File file, WorkspaceModel workspaceModel) {
+    public static void serialize(File file, WorkspaceSession workspaceModel) {
         try {
 
             ObjectFactory factory = getObjectFactory();

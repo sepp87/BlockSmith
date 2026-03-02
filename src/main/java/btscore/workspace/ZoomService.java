@@ -1,10 +1,9 @@
 package btscore.workspace;
 
-import btscore.graph.block.BlockController;
-import btscore.graph.block.BlockView;
-import java.util.ArrayList;
+import blocksmith.ui.geom.GeomUtils;
+import btscore.UiApp;
+import btscore.graph.block.BlockModel;
 import java.util.Collection;
-import java.util.List;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
@@ -13,14 +12,16 @@ import javafx.scene.Scene;
  *
  * @author joostmeulenkamp
  */
-public class ZoomHelper {
+public class ZoomService {
 
-    private final WorkspaceModel model;
+    private final WorkspaceSession model;
     private final WorkspaceView view;
+    private final GraphProjection projection;
 
-    public ZoomHelper(WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
+    public ZoomService(WorkspaceSession workspaceModel, WorkspaceView workspaceView, GraphProjection projection) {
         this.model = workspaceModel;
         this.view = workspaceView;
+        this.projection = projection;
 
         view.scaleXProperty().bind(model.zoomFactorProperty());
         view.scaleYProperty().bind(model.zoomFactorProperty());
@@ -78,32 +79,40 @@ public class ZoomHelper {
         model.translateYProperty().set(newTranslateY);
         model.zoomFactorProperty().set(newScale);
     }
-
-    public void zoomToFitBlockControllers(Collection<BlockController> blockControllers) {
+    
+    public void zoomToFit() {
+        var ids = model.selectionModel().selected();
+        
+        if(ids.isEmpty()) { // zoom to fit all
+            var all = UiApp.SWITCH_PROJECTION ? projection.blocks() : model.blocks();
+            zoomToFit(all);
+            
+        } else {
+            var selection = UiApp.SWITCH_PROJECTION ? projection.blocks(ids) : model.blocks(ids);
+            zoomToFit(selection);
+        }
+    }
+    
+    public void zoomToFit(Collection<BlockModel> blockControllers) {
 
         Scene scene = view.getScene();
         if (blockControllers.isEmpty()) {
             return;
         }
-
-        List<BlockView> blockViews = new ArrayList<>();
-        for (BlockController blockController : blockControllers) {
-            blockViews.add(blockController.getView());
-        }
-
+        
         //Zoom to fit        
-        Bounds boundingBox = view.localToParent(BlockView.getBoundingBoxOfBlocks(blockViews));
+        Bounds boundingBox = view.localToParent(GeomUtils.boundsOf(blockControllers.stream().map(b -> b.measuredBounds()).toList()));
         double ratioX = boundingBox.getWidth() / scene.getWidth();
         double ratioY = boundingBox.getHeight() / scene.getHeight();
         double ratio = Math.max(ratioX, ratioY);
         // multiply, round and divide by 10 to reach zoom step of 0.1 and substract by 1 to zoom a bit more out so the blocks don't touch the border
         double scale = Math.ceil((model.zoomFactorProperty().get() / ratio) * 10 - 1) / 10;
-        scale = scale < WorkspaceModel.MIN_ZOOM ? WorkspaceModel.MIN_ZOOM : scale;
-        scale = scale > WorkspaceModel.MAX_ZOOM ? WorkspaceModel.MAX_ZOOM : scale;
+        scale = scale < WorkspaceSession.MIN_ZOOM ? WorkspaceSession.MIN_ZOOM : scale;
+        scale = scale > WorkspaceSession.MAX_ZOOM ? WorkspaceSession.MAX_ZOOM : scale;
         model.zoomFactorProperty().set(scale);
 
         //Pan to fit
-        boundingBox = view.localToParent(BlockView.getBoundingBoxOfBlocks(blockViews));
+        boundingBox = view.localToParent(GeomUtils.boundsOf(blockControllers.stream().map(b -> b.measuredBounds()).toList()));
         double dx = (boundingBox.getMinX() + boundingBox.getWidth() / 2) - scene.getWidth() / 2;
         double dy = (boundingBox.getMinY() + boundingBox.getHeight() / 2) - scene.getHeight() / 2;
         double newTranslateX = model.translateXProperty().get() - dx;

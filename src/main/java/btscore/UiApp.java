@@ -3,7 +3,7 @@ package btscore;
 import blocksmith.App;
 import blocksmith.ui.BlockModelFactory;
 import blocksmith.ui.workspace.SaveDocument;
-import blocksmith.ui.workspace.WorkspaceFactoryNew;
+import blocksmith.ui.workspace.WorkspaceSessionFactory;
 import btscore.editor.EditorContext;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -29,10 +29,7 @@ import btscore.command.CommandDispatcher;
 import btscore.command.CommandFactory;
 import btscore.editor.tab.TabContent;
 import btscore.editor.tab.TabManagerView;
-import btscore.workspace.WorkspaceContext;
-import btscore.workspace.WorkspaceController;
-import btscore.workspace.WorkspaceFactory;
-import btscore.workspace.WorkspaceState;
+import btscore.workspace.FxWorkspaceFactory;
 import btscore.workspace.WorkspaceView;
 
 /**
@@ -41,6 +38,7 @@ import btscore.workspace.WorkspaceView;
  */
 public class UiApp extends Application {
 
+    public static final boolean SWITCH_PROJECTION = true;
     public static final boolean USE_TAB_MANAGER = true;
     private static App app;
 
@@ -97,25 +95,16 @@ public class UiApp extends Application {
                     selectionRectangleView,
                     blockSearchView
             );
-            
-            
-            var wfn = new WorkspaceFactoryNew(graphRepo, graphEditorFactory, blockModelFactory, saveDocument);
+
+            var wfn = new WorkspaceSessionFactory(graphRepo, graphEditorFactory, blockModelFactory, saveDocument);
 
             var editorContext = new EditorContext(editorView);
             var commandFactory = new CommandFactory(editorContext, blockModelFactory, graphRepo);
             var actionManager = new CommandDispatcher(editorContext, commandFactory);
-            var workspaceFactory = new WorkspaceFactory(graphEditorFactory, actionManager, commandFactory, blockModelFactory, saveDocument);
-            var workspaceContext = workspaceFactory.openDocument(path, document);
-            
-            // action manager needs to editor context to resolve current workspace
-            //
-            
-            var wm = wfn.openDocument(path);
-            var ws = new WorkspaceState();
-            var wv = new WorkspaceView();
-            var wConte = new WorkspaceContext(ws);
-            var wContr = new WorkspaceController(actionManager, commandFactory, wConte, wm, wv);
-            
+            var workspaceFactory = new FxWorkspaceFactory(wfn,  commandFactory, blockModelFactory);
+            var workspaceContext = workspaceFactory.openDocument(path);
+
+
             // initialize EventRouter for Context
             EditorEventRouter eventRouter = new EditorEventRouter();
 
@@ -130,9 +119,9 @@ public class UiApp extends Application {
 
             // initialize ActionManager for Context
             editorContext.setOnActiveWorkspaceChanged(wContext -> {
-                zoomController.bindZoomLabel(wContext.model().zoomFactorProperty());
+                zoomController.bindZoomLabel(wContext.session().zoomFactorProperty());
                 var id = wContext.id();
-                var docPath = wContext.model().documentPath().orElse(null);
+                var docPath = wContext.session().documentPath().orElse(null);
                 var label = docPath == null ? null : docPath.getFileName().toString();
                 var view = wContext.view();
                 var tabContent = new TabContent(id, label, view);
@@ -176,13 +165,15 @@ public class UiApp extends Application {
                     blockSearchView
             );
 
+            var wfn = new WorkspaceSessionFactory(graphRepo, graphEditorFactory, blockModelFactory, saveDocument);
+
             var editorContext = new EditorContext(editorView);
             var commandFactory = new CommandFactory(editorContext, blockModelFactory, graphRepo);
             var actionManager = new CommandDispatcher(editorContext, commandFactory);
-            var workspaceFactory = new WorkspaceFactory(graphEditorFactory, actionManager, commandFactory, blockModelFactory, saveDocument);
-            var workspaceContext = workspaceFactory.openDocument(path, document);
+            var workspaceFactory = new FxWorkspaceFactory(wfn,  commandFactory,blockModelFactory);
+            var workspaceContext = workspaceFactory.openDocument(path);
 
-            var newWorkspace = workspaceContext.controller().getView();
+            var newWorkspace = workspaceContext.view();
             var index = editorView.getChildren().indexOf(workspaceView);
 //
             editorView.getChildren().remove(workspaceView);
@@ -192,7 +183,7 @@ public class UiApp extends Application {
 
             // Initialize controllers
             var zoomController = new ZoomController(actionManager, commandFactory, eventRouter, editorContext, zoomView);
-            zoomController.bindZoomLabel(workspaceContext.controller().getModel().zoomFactorProperty());
+            zoomController.bindZoomLabel(workspaceContext.session().zoomFactorProperty());
             var blockSearchController = new BlockSearchController(actionManager, commandFactory, eventRouter, editorContext, blockSearchView, blockDefLibrary);
             var selectionRectangleController = new SelectionRectangleController(actionManager, commandFactory, eventRouter, editorContext, selectionRectangleView);
             var panController = new PanController(eventRouter, editorContext);

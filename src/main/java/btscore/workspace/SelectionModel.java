@@ -54,7 +54,7 @@ public class SelectionModel {
         select(ids);
     }
 
-    public void setOnSelectionChanged(Consumer<Collection<BlockId>> listener) {
+    public void addSelectionListener(Consumer<Collection<BlockId>> listener) {
         listeners.add(listener);
     }
 

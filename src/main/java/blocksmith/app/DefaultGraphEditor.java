@@ -67,7 +67,7 @@ public class DefaultGraphEditor implements GraphEditor {
         return graph;
     }
 
-    public void setOnGraphUpdated(BiConsumer<Graph, Graph> listener) {
+    public void addGraphListener(BiConsumer<Graph, Graph> listener) {
         listeners.add(listener);
     }
 

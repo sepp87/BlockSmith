@@ -2,6 +2,7 @@ package btscore.command.workspace;
 
 import btscore.command.WorkspaceCommand;
 import btscore.workspace.WorkspaceController;
+import btscore.workspace.ZoomService;
 
 /**
  *
@@ -9,15 +10,15 @@ import btscore.workspace.WorkspaceController;
  */
 public class ZoomInCommand implements WorkspaceCommand {
 
-    private final WorkspaceController workspace;
+    private final ZoomService zoomService;
 
-    public ZoomInCommand(WorkspaceController workspace) {
-        this.workspace = workspace;
+    public ZoomInCommand(ZoomService zoomService) {
+        this.zoomService = zoomService;
     }
 
     @Override
     public boolean execute() {
-        workspace.zoomIn();
+        zoomService.zoomIn();
         return true;
     }
 

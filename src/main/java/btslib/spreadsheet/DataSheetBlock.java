@@ -2,7 +2,7 @@ package btslib.spreadsheet;
 
 import javafx.scene.layout.Region;
 import btscore.graph.block.BlockModel;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import blocksmith.infra.blockloader.annotations.Block;
 
 /**

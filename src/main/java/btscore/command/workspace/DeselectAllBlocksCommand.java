@@ -3,7 +3,7 @@ package btscore.command.workspace;
 import btscore.command.Command;
 import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 
 /**
  *
@@ -11,9 +11,9 @@ import btscore.workspace.WorkspaceModel;
  */
 public class DeselectAllBlocksCommand implements Command {
 
-    private final WorkspaceModel workspace;
+    private final WorkspaceSession workspace;
 
-    public DeselectAllBlocksCommand(WorkspaceModel workspace) {
+    public DeselectAllBlocksCommand(WorkspaceSession workspace) {
         this.workspace = workspace;
     }
 

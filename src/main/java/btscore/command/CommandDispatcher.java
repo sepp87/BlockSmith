@@ -38,13 +38,13 @@ public class CommandDispatcher {
 
     public void undo() {
         var workspace = context.activeWorkspace();
-        workspace.controller().getModel().graphEditor().undo();
+        workspace.session().graphEditor().undo();
 
     }
 
     public void redo() {
         var workspace = context.activeWorkspace();
-        workspace.controller().getModel().graphEditor().redo();
+        workspace.session().graphEditor().redo();
 
     }
 

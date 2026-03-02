@@ -2,6 +2,7 @@ package btscore.graph.connection;
 
 import btscore.command.CommandDispatcher;
 import btscore.command.CommandFactory;
+import btscore.command.WorkspaceCommandBus;
 import btscore.graph.port.PortModel;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -13,7 +14,7 @@ import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
 import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import btscore.workspace.WorkspaceView;
 
 /**
@@ -22,20 +23,18 @@ import btscore.workspace.WorkspaceView;
  */
 public class PreConnection extends Line {
 
-    private final CommandDispatcher actionManager;
-    private final CommandFactory commandFactory;
-    private final WorkspaceContext workspaceContext;
+    private final WorkspaceCommandBus commands;
+    private final WorkspaceSession session;
 
     private final WorkspaceController workspaceController;
     private final WorkspaceView workspaceView;
-    private final WorkspaceModel workspaceModel;
+    private final WorkspaceSession workspaceModel;
 
     private final PortController startPortController;
 
-    public PreConnection(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context,  WorkspaceController workspaceController, PortController startPortController) {
-        this.actionManager = actionManager;
-        this.commandFactory = commandFactory;
-        this.workspaceContext = context;
+    public PreConnection(WorkspaceCommandBus commands, WorkspaceSession session,  WorkspaceController workspaceController, PortController startPortController) {
+        this.commands = commands;
+        this.session = session;
         this.workspaceController = workspaceController;
         this.workspaceView = workspaceController.getView();
         this.workspaceModel = workspaceController.getModel();
@@ -97,8 +96,8 @@ public class PreConnection extends Line {
 
             var fromPort = endPortModel.getPortType() == PortType.OUTPUT ? endPortModel : startPortModel;
             var toPort = startPortModel.getPortType() == PortType.INPUT ? startPortModel : endPortModel;
-            var command = commandFactory.createAddConnectionCommand(fromPort.toDomain(), toPort.toDomain());
-            actionManager.executeCommand(command);
+            var command = commands.factory().createAddConnectionCommand(fromPort.toDomain(), toPort.toDomain());
+            commands.execute(command);
 
         }
         /**

@@ -2,7 +2,7 @@ package btscore.command.workspace;
 
 import blocksmith.domain.block.BlockId;
 import btscore.command.WorkspaceCommand;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import java.util.List;
 
 /**
@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class UpdateSelectionCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel workspace;
+    private final WorkspaceSession workspace;
     private final BlockId block;
     private final boolean isModifierDown;
 
-    public UpdateSelectionCommand(WorkspaceModel workspace, BlockId block, boolean isModifierDown) {
+    public UpdateSelectionCommand(WorkspaceSession workspace, BlockId block, boolean isModifierDown) {
         this.workspace = workspace;
         this.block = block;
         this.isModifierDown = isModifierDown;

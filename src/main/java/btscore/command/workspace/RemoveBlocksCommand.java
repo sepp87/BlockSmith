@@ -1,7 +1,7 @@
 package btscore.command.workspace;
 
 import btscore.workspace.WorkspaceController;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import btscore.command.WorkspaceCommand;
 
 /**
@@ -10,11 +10,11 @@ import btscore.command.WorkspaceCommand;
  */
 public class RemoveBlocksCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel session;
+    private final WorkspaceSession session;
 
 //    private final WorkspaceController workspaceController;
 
-    public RemoveBlocksCommand( WorkspaceModel session) {
+    public RemoveBlocksCommand( WorkspaceSession session) {
 //        this.workspaceController = workspaceController;
         this.session = session;
     }

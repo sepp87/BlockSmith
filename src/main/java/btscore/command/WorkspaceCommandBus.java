@@ -1,6 +1,6 @@
 package btscore.command;
 
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import java.util.logging.Logger;
 
 /**
@@ -10,26 +10,34 @@ import java.util.logging.Logger;
 public class WorkspaceCommandBus {
 
     private final static Logger LOGGER = Logger.getLogger(WorkspaceCommandBus.class.getName());
-    
-    private final WorkspaceModel workspace;
+
     private final CommandFactory factory;
-    
-    public WorkspaceCommandBus(WorkspaceModel workspace, CommandFactory factory){
-        this.workspace = workspace;
+    private final WorkspaceSession session;
+
+    public WorkspaceCommandBus(CommandFactory factory, WorkspaceSession session) {
         this.factory = factory;
+        this.session = session;
     }
-    
+
     public void execute(WorkspaceCommand.Id commandId) {
         var command = factory.createCommand(commandId);
-        if(command instanceof WorkspaceCommand workspaceCommand) {
+        if (command instanceof WorkspaceCommand workspaceCommand) {
             execute(workspaceCommand);
         } else {
-            LOGGER.info("Command does NOT have workspace scope");
+            LOGGER.severe("Command does NOT have workspace scope");
         }
     }
-    
-    public void execute(WorkspaceCommand command) {
-        command.execute();
+
+    public void execute(Command command) {
+        if (command instanceof WorkspaceCommand) {
+            command.execute();
+        } else {
+            LOGGER.severe("Command does NOT have workspace scope");
+        }
     }
-    
+
+    public CommandFactory factory() {
+        return factory;
+    }
+
 }

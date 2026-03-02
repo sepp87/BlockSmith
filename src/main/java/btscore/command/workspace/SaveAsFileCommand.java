@@ -5,7 +5,7 @@ import javafx.stage.FileChooser;
 import btscore.UiApp;
 import btscore.Config;
 import btscore.command.Command;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import btscore.command.WorkspaceCommand;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,9 +16,9 @@ import java.util.logging.Logger;
  */
 public class SaveAsFileCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel workspaceModel;
+    private final WorkspaceSession workspaceModel;
 
-    public SaveAsFileCommand(WorkspaceModel workspaceModel) {
+    public SaveAsFileCommand(WorkspaceSession workspaceModel) {
         this.workspaceModel = workspaceModel;
     }
 

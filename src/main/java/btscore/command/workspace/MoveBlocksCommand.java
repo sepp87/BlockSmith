@@ -10,7 +10,7 @@ import javafx.geometry.Point2D;
 import btscore.graph.block.BlockController;
 import btscore.graph.block.BlockModel;
 import btscore.command.WorkspaceCommand;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import java.util.ArrayList;
 import javax.lang.model.element.UnknownElementException;
 
@@ -20,11 +20,11 @@ import javax.lang.model.element.UnknownElementException;
  */
 public class MoveBlocksCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel workspace;
+    private final WorkspaceSession workspace;
     private final Collection<BlockId> ids;
     private final Point2D delta;
 
-    public MoveBlocksCommand(WorkspaceModel workspace, Collection<BlockId> blocks, Point2D delta) {
+    public MoveBlocksCommand(WorkspaceSession workspace, Collection<BlockId> blocks, Point2D delta) {
         this.workspace = workspace;
         this.ids = blocks;
         this.delta = delta;

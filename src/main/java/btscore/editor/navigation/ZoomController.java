@@ -1,6 +1,6 @@
 package btscore.editor.navigation;
 
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -115,9 +115,9 @@ public class ZoomController {
             double newScale;
             // Adjust zoom factor based on scroll direction
             if (event.getDeltaY() > 0) {
-                newScale = workspace.controller().getModel().getIncrementedZoomFactor();
+                newScale = workspace.session().getIncrementedZoomFactor();
             } else {
-                newScale = workspace.controller().getModel().getDecrementedZoomFactor();
+                newScale = workspace.session().getDecrementedZoomFactor();
             }
             Point2D pivotPoint = new Point2D(event.getSceneX(), event.getSceneY());
 

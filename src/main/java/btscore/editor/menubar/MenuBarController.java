@@ -52,7 +52,7 @@ public class MenuBarController {
 
     private void onFileMenuShown(Object b, Boolean o, Boolean n) {
         var workspace = context.activeWorkspace();
-        var model = workspace.controller().getModel();
+        var model = workspace.session();
         view.getSaveMenuItem().setDisable(model.isSaved());
     }
 
@@ -62,8 +62,8 @@ public class MenuBarController {
         var workspace = context.activeWorkspace();
         var controller = workspace.controller();
 
-        view.getUndoMenuItem().setDisable(!workspace.controller().getModel().graphEditor().hasUndoableState());
-        view.getRedoMenuItem().setDisable(!workspace.controller().getModel().graphEditor().hasRedoableState());
+        view.getUndoMenuItem().setDisable(!workspace.session().graphEditor().hasUndoableState());
+        view.getRedoMenuItem().setDisable(!workspace.session().graphEditor().hasRedoableState());
 
         boolean isGroupable = controller.getModel().isSelectionGroupable();
         view.getGroupMenuItem().disableProperty().set(!isGroupable);

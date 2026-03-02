@@ -2,6 +2,7 @@ package blocksmith.ui;
 
 import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;
+import blocksmith.ui.geom.GeomUtils;
 import btscore.graph.block.BlockModel;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +32,7 @@ public class AlignmentPolicy {
         }
 
         var allBounds = blocks.stream().map(BlockModel::measuredBounds).toList();
-        var bounds = boundsOf(allBounds);
+        var bounds = GeomUtils.boundsOf(allBounds);
 
         var result = new ArrayList<BlockPosition>();
         for (var block : blocks) {
@@ -78,15 +79,7 @@ public class AlignmentPolicy {
         };
     }
 
-    private static Bounds boundsOf(Collection<Bounds> bounds) {
 
-        double minX = bounds.stream().map(b -> b.getMinX()).reduce(Double.POSITIVE_INFINITY, Math::min);
-        double minY = bounds.stream().map(b -> b.getMinY()).reduce(Double.POSITIVE_INFINITY, Math::min);
-        double maxX = bounds.stream().map(b -> b.getMaxX()).reduce(Double.NEGATIVE_INFINITY, Math::max);
-        double maxY = bounds.stream().map(b -> b.getMaxY()).reduce(Double.NEGATIVE_INFINITY, Math::max);
-
-        return new BoundingBox(minX, minY, maxX - minX, maxY - minY);
-    }
 
 }
 

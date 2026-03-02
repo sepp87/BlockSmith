@@ -12,7 +12,7 @@ import blocksmith.domain.graph.GraphId;
 import blocksmith.domain.group.Group;
 import blocksmith.domain.group.GroupId;
 import blocksmith.domain.value.Param;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +26,7 @@ public final class GraphMapper {
 
     }
 
-    public static Graph toDomain(WorkspaceModel workspace) {
+    public static Graph toDomain(WorkspaceSession workspace) {
         var blocks = blocksToDomain(workspace);
         var connections = connectionsToDomain(workspace);
         var groups = groupsToDomain(workspace);
@@ -34,7 +34,7 @@ public final class GraphMapper {
         return new Graph(GraphId.create(), blocks, connections, groups);
     }
 
-    private static List<Block> blocksToDomain(WorkspaceModel workspace) {
+    private static List<Block> blocksToDomain(WorkspaceSession workspace) {
         var result = new ArrayList<Block>();
 
         for (var block : workspace.getBlockModels()) {
@@ -100,7 +100,7 @@ public final class GraphMapper {
         return block.getBlockDef().inputs().stream().filter(e -> e.valueId().equals(valueId)).findFirst().get().valueType();
     }
 
-    private static List<Connection> connectionsToDomain(WorkspaceModel workspace) {
+    private static List<Connection> connectionsToDomain(WorkspaceSession workspace) {
         var result = new ArrayList<Connection>();
 
         for (var connection : workspace.getConnectionModels()) {
@@ -124,7 +124,7 @@ public final class GraphMapper {
         return result;
     }
 
-    private static List<Group> groupsToDomain(WorkspaceModel workspace) {
+    private static List<Group> groupsToDomain(WorkspaceSession workspace) {
         var result = new ArrayList<Group>();
         for (var group : workspace.getBlockGroupModels()) {
             var id = GroupId.from(group.getId());

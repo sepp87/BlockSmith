@@ -3,7 +3,7 @@ package btscore.command.workspace;
 import blocksmith.domain.block.BlockId;
 import btscore.command.WorkspaceCommand;
 import btscore.workspace.WorkspaceController;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 
 /**
  *
@@ -11,9 +11,9 @@ import btscore.workspace.WorkspaceModel;
  */
 public class CopyBlocksCommand implements WorkspaceCommand {
     
-    private final WorkspaceModel workspace;
+    private final WorkspaceSession workspace;
     
-    public CopyBlocksCommand(WorkspaceModel workspace) {
+    public CopyBlocksCommand(WorkspaceSession workspace) {
         this.workspace = workspace;
     }
     

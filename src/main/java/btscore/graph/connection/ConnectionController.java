@@ -7,12 +7,14 @@ import javafx.scene.shape.CubicCurve;
 import btscore.graph.BaseController;
 import btscore.command.CommandDispatcher;
 import btscore.command.CommandFactory;
+import btscore.command.WorkspaceCommandBus;
 import btscore.graph.port.PortController;
 import btscore.graph.port.PortType;
 import btscore.graph.port.PortView;
 import static btscore.utils.EventUtils.isLeftClick;
 import btscore.workspace.WorkspaceContext;
 import btscore.workspace.WorkspaceController;
+import btscore.workspace.WorkspaceSession;
 import btscore.workspace.WorkspaceState;
 
 /**
@@ -29,8 +31,8 @@ public class ConnectionController extends BaseController {
     private final PortController startPortController;
     private final PortController endPortController;
 
-    public ConnectionController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceController workspaceController, ConnectionModel model, ConnectionView view) {
-        super(actionManager, commandFactory, context);
+    public ConnectionController(WorkspaceCommandBus commands, WorkspaceSession session, WorkspaceController workspaceController, ConnectionModel model, ConnectionView view) {
+        super(commands, session);
         this.workspaceController = workspaceController;
         this.model = model;
         this.view = view;
@@ -131,8 +133,8 @@ public class ConnectionController extends BaseController {
             return;
         }
 
-        var command = commandFactory.createRemoveConnectionCommand(model.toDomain());
-        actionManager.executeCommand(command);
+        var command = commands.factory().createRemoveConnectionCommand(model.toDomain());
+        commands.execute(command);
 
     }
 

@@ -16,11 +16,9 @@ import java.util.List;
 import java.util.Map;
 import javafx.collections.SetChangeListener;
 import javafx.collections.SetChangeListener.Change;
-import javafx.geometry.Point2D;
 import btscore.UiApp;
 import btscore.graph.BaseController;
-import btscore.command.CommandDispatcher;
-import btscore.command.CommandFactory;
+import btscore.command.WorkspaceCommandBus;
 import btscore.graph.connection.ConnectionController;
 import btscore.graph.connection.ConnectionView;
 import btscore.graph.group.BlockGroupController;
@@ -33,12 +31,12 @@ import btscore.graph.port.PortController;
  */
 public class WorkspaceController extends BaseController {
 
-    private final WorkspaceModel model;
+    private final WorkspaceState state;
+    private final WorkspaceSession model;
     private final WorkspaceView view;
+    private final GraphProjection projection;
 
-    private final SelectionModel selection;
-
-    private final ZoomHelper zoomHelper;
+    private final ZoomService zoomService;
     private final InfoPanelHelper infoPanelHelper;
 
     private final Map<BlockId, BlockController> blockIndex = new HashMap<>();
@@ -50,12 +48,13 @@ public class WorkspaceController extends BaseController {
     private final Map<BlockGroupModel, BlockGroupController> blockGroups = new HashMap<>();
     private final Map<String, PortController> ports = new HashMap<>();
 
-    public WorkspaceController(CommandDispatcher actionManager, CommandFactory commandFactory, WorkspaceContext context, WorkspaceModel workspaceModel, WorkspaceView workspaceView) {
-        super(actionManager, commandFactory, context);
-        this.model = workspaceModel;
+    public WorkspaceController(WorkspaceCommandBus commands, WorkspaceSession session, WorkspaceState state, WorkspaceView workspaceView, GraphProjection projection) {
+        super(commands, session);
+        this.state = state;
+        this.model = session;
         this.view = workspaceView;
-        this.selection = workspaceModel.selectionModel();
-        this.zoomHelper = new ZoomHelper(model, view);
+        this.projection = projection;
+        this.zoomService = new ZoomService(model, view, projection);
         this.infoPanelHelper = new InfoPanelHelper(view);
 
         model.getBlockModels().forEach(b -> addBlock(b));
@@ -66,7 +65,15 @@ public class WorkspaceController extends BaseController {
         model.addConnectionModelsListener(connectionModelsListener);
         model.addBlockGroupModelsListener(blockGroupModelsListener);
 
-        selection.setOnSelectionChanged(this::onSelectionChanged);
+        session.selectionModel().addSelectionListener(this::onSelectionChanged);
+    }
+
+    public void updateFrom(GraphProjectionDiff diff) {
+
+    }
+
+    public ZoomService zoomService() {
+        return zoomService;
     }
 
     private void onSelectionChanged(Collection<BlockId> ids) {
@@ -110,7 +117,7 @@ public class WorkspaceController extends BaseController {
         }
         BlockView blockView = new BlockView();
         view.getBlockLayer().getChildren().add(blockView);
-        BlockController blockController = new BlockController(actionManager, commandFactory, workspaceContext, this, blockModel, blockView);
+        BlockController blockController = new BlockController(commands, session, projection, this, blockModel, blockView);
         blocks.put(blockModel, blockController);
         blockIndex.put(BlockId.from(blockModel.getId()), blockController);
     }
@@ -156,7 +163,7 @@ public class WorkspaceController extends BaseController {
         }
         BlockGroupView blockGroupView = new BlockGroupView();
         view.getGroupLayer().getChildren().add(0, blockGroupView);
-        BlockGroupController blockGroupController = new BlockGroupController(actionManager, commandFactory, workspaceContext, this, blockGroupModel, blockGroupView);
+        BlockGroupController blockGroupController = new BlockGroupController(commands, session, state, this, blockGroupModel, blockGroupView);
         List<BlockController> blockControllers = new ArrayList<>();
         for (BlockModel blockModel : blockGroupModel.getBlocks()) {
             blockControllers.add(blockIndex.get(BlockId.from(blockModel.getId())));
@@ -197,7 +204,7 @@ public class WorkspaceController extends BaseController {
         ConnectionView connectionView = new ConnectionView();
         view.getConnectionLayer().getChildren().add(connectionView);
 
-        ConnectionController connectionController = new ConnectionController(actionManager, commandFactory, workspaceContext, this, connectionModel, connectionView);
+        ConnectionController connectionController = new ConnectionController(commands, session, this, connectionModel, connectionView);
         connections.put(connectionModel, connectionController);
     }
 
@@ -219,7 +226,7 @@ public class WorkspaceController extends BaseController {
             System.out.println("WorkspaceController.initiateConnection()");
         }
         if (preConnection == null) {
-            preConnection = new PreConnection(actionManager, commandFactory, workspaceContext, WorkspaceController.this, portController);
+            preConnection = new PreConnection(commands, session, WorkspaceController.this, portController);
             view.getConnectionLayer().getChildren().add(0, preConnection);
         }
     }
@@ -234,37 +241,9 @@ public class WorkspaceController extends BaseController {
     }
 
     /**
-     * ZOOMING
-     */
-    public double getZoomFactor() {
-        return model.zoomFactorProperty().get();
-    }
-
-    public void zoomIn() {
-        zoomHelper.zoomIn();
-    }
-
-    public void zoomOut() {
-        zoomHelper.zoomOut();
-    }
-
-    public void applyZoom(double newScale, Point2D pivotPoint) {
-        zoomHelper.applyZoom(newScale, pivotPoint);
-    }
-
-    public void zoomToFit() {
-        Collection<BlockController> blockControllers
-                = !selection.selected().isEmpty()
-                ? selection.selected().stream().map(id -> blockIndex.get(id)).toList()
-                : blocks.values();
-
-        zoomHelper.zoomToFitBlockControllers(blockControllers);
-    }
-
-    /**
      * GETTERS
      */
-    public WorkspaceModel getModel() {
+    public WorkspaceSession getModel() {
         return model;
     }
 
@@ -272,18 +251,8 @@ public class WorkspaceController extends BaseController {
         return view;
     }
 
-    public Collection<BlockController> getBlockControllers() {
-        return blockIndex.values();
-    }
-    
-    public BlockController getBlockController(BlockId id) {
-        return blockIndex.get(id);
-    }
-
     public BlockController getBlockController(BlockModel blockModel) {
         return blockIndex.get(BlockId.from(blockModel.getId()));
     }
-
-
 
 }

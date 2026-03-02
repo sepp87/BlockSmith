@@ -4,7 +4,7 @@ import btscore.UiApp;
 import btscore.workspace.WorkspaceContext;
 import btscore.editor.EditorView;
 import static btscore.utils.EditorUtils.onFreeSpace;
-import btscore.workspace.WorkspaceFactory;
+import btscore.workspace.FxWorkspaceFactory;
 import btscore.workspace.WorkspaceView;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,11 +78,11 @@ public class EditorContext {
     }
 
     public Point2D getMousePositionOnWorkspace() {
-        return activeWorkspace.controller().getView().sceneToLocal(mousePosition);
+        return activeWorkspace.view().sceneToLocal(mousePosition);
     }
 
     public Point2D sceneToWorkspace(Point2D sceneCoordinates) {
-        return activeWorkspace.controller().getView().sceneToLocal(sceneCoordinates);
+        return activeWorkspace.view().sceneToLocal(sceneCoordinates);
     }
 
 }

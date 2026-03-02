@@ -11,5 +11,5 @@ public interface GraphQuery {
 
     Graph graphSnapshot();
 
-    void setOnGraphUpdated(BiConsumer<Graph, Graph> listener);
+    void addGraphListener(BiConsumer<Graph, Graph> listener);
 }

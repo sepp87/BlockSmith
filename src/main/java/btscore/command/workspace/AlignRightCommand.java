@@ -2,7 +2,7 @@ package btscore.command.workspace;
 
 import blocksmith.ui.AlignmentPolicy;
 import btscore.command.WorkspaceCommand;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 
 /**
  *
@@ -10,9 +10,9 @@ import btscore.workspace.WorkspaceModel;
  */
 public class AlignRightCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel session;
+    private final WorkspaceSession session;
 
-    public AlignRightCommand(WorkspaceModel session) {
+    public AlignRightCommand(WorkspaceSession session) {
         this.session = session;
     }
 

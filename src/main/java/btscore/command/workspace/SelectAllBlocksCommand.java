@@ -2,7 +2,7 @@ package btscore.command.workspace;
 
 import btscore.command.WorkspaceCommand;
 import btscore.workspace.WorkspaceController;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 
 /**
  *
@@ -10,9 +10,9 @@ import btscore.workspace.WorkspaceModel;
  */
 public class SelectAllBlocksCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel workspaceController;
+    private final WorkspaceSession workspaceController;
 
-    public SelectAllBlocksCommand(WorkspaceModel workspaceController) {
+    public SelectAllBlocksCommand(WorkspaceSession workspaceController) {
         this.workspaceController = workspaceController;
     }
 

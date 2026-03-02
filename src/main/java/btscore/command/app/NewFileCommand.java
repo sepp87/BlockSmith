@@ -1,7 +1,7 @@
 package btscore.command.app;
 
 import btscore.command.AppCommand;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 
 /**
  *
@@ -9,9 +9,9 @@ import btscore.workspace.WorkspaceModel;
  */
 public class NewFileCommand implements AppCommand {
 
-    private final WorkspaceModel workspaceModel;
+    private final WorkspaceSession workspaceModel;
 
-    public NewFileCommand(WorkspaceModel workspaceModel) {
+    public NewFileCommand(WorkspaceSession workspaceModel) {
         this.workspaceModel = workspaceModel;
     }
 

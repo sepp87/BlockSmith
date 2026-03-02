@@ -37,8 +37,8 @@ public class PanController {
             workspace.state().setPanning();
             initialX = event.getSceneX();
             initialY = event.getSceneY();
-            initialTranslateX = workspace.controller().getModel().translateXProperty().get();
-            initialTranslateY = workspace.controller().getModel().translateYProperty().get();
+            initialTranslateX = workspace.session().translateXProperty().get();
+            initialTranslateY = workspace.session().translateYProperty().get();
         }
     }
 
@@ -46,8 +46,8 @@ public class PanController {
         var workspace = context.activeWorkspace();
         boolean isSecondary = event.getButton() == MouseButton.SECONDARY;
         if (workspace.state().isPanning() && isSecondary) {
-            workspace.controller().getModel().translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
-            workspace.controller().getModel().translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
+            workspace.session().translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
+            workspace.session().translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
         }
     }
 

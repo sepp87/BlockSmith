@@ -7,7 +7,7 @@ import btscore.UiApp;
 import btscore.Config;
 import btscore.command.AppCommand;
 import btscore.graph.io.GraphLoader;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 
 /**
  *
@@ -15,10 +15,10 @@ import btscore.workspace.WorkspaceModel;
  */
 public class OpenFileCommand implements AppCommand {
 
-    private final WorkspaceModel workspaceModel;
+    private final WorkspaceSession workspaceModel;
     private final GraphRepo graphRepo;
 
-    public OpenFileCommand(WorkspaceModel workspaceModel, GraphRepo graphRepo) {
+    public OpenFileCommand(WorkspaceSession workspaceModel, GraphRepo graphRepo) {
         this.workspaceModel = workspaceModel;
         this.graphRepo = graphRepo; 
     }

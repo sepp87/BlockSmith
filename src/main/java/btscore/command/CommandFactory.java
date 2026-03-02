@@ -60,8 +60,8 @@ public class CommandFactory {
 
     public Command createCommand(Command.Id id) {
         var workspace = context.activeWorkspace();
-        var workspaceModel = workspace.controller().getModel();
-        var workspaceController = workspace.controller();
+        var workspaceModel = workspace.session();
+        var zoomService = workspace.zoomService();
 
         return switch (id) {
             case NEW_FILE ->
@@ -97,11 +97,11 @@ public class CommandFactory {
             case ALIGN_BOTTOM ->
                 new AlignBottomCommand(workspaceModel);
             case ZOOM_TO_FIT ->
-                new ZoomToFitCommand(workspaceController); // <----------------------
+                new ZoomToFitCommand(zoomService); // <----------------------
             case ZOOM_IN ->
-                new ZoomInCommand(workspaceController); // <----------------------
+                new ZoomInCommand(zoomService); // <----------------------
             case ZOOM_OUT ->
-                new ZoomOutCommand(workspaceController); // <----------------------
+                new ZoomOutCommand(zoomService); // <----------------------
             case RELOAD_PLUGINS ->
                 new ReloadPluginsCommand();
             case HELP ->
@@ -111,67 +111,67 @@ public class CommandFactory {
 
     public Command createAddBlockCommand(String type, Point2D location) {
         var workspace = context.activeWorkspace();
-        var workspaceModel = workspace.model();
+        var workspaceModel = workspace.session();
         return new AddBlockCommand(blockModelFactory, workspaceModel, type, location);
     }
 
     public Command createRemoveBlocksCommand() {
         var workspace = context.activeWorkspace();
-        var workspaceModel = workspace.model();
+        var workspaceModel = workspace.session();
         return new RemoveBlocksCommand(workspaceModel);
     }
 
     public Command createAddConnectionCommand(PortRef from, PortRef to) {
         var workspace = context.activeWorkspace();
-        var workspaceModel = workspace.model();
+        var workspaceModel = workspace.session();
         return new AddConnectionCommand(workspaceModel, from, to);
     }
 
     public Command createRemoveConnectionCommand(Connection connection) {
         var workspace = context.activeWorkspace();
-        var workspaceModel = workspace.model();
+        var workspaceModel = workspace.session();
         return new RemoveConnectionCommand(workspaceModel, connection);
     }
 
     public Command createAddGroupCommand() {
         var workspace = context.activeWorkspace();
-        var workspaceModel = workspace.model();
+        var workspaceModel = workspace.session();
         return new AddGroupCommand(workspaceModel);
     }
 
     public Command createRemoveGroupCommand(GroupId group) {
         var workspace = context.activeWorkspace();
-        var workspaceModel = workspace.model();
+        var workspaceModel = workspace.session();
         return new RemoveGroupCommand(workspaceModel, group);
     }
 
     public Command createZoomCommand(double newScale, Point2D pivotPoint) { // <----------------------
         var workspace = context.activeWorkspace();
-        var workspaceController = workspace.controller();
-        return new ZoomCommand(workspaceController, newScale, pivotPoint);
+        var zoomService = workspace.zoomService();
+        return new ZoomCommand(zoomService, newScale, pivotPoint);
     }
 
     public Command createRectangleSelectCommand(Bounds rectOnWorkspace) {
         var workspace = context.activeWorkspace();
-        var workspaceModel = workspace.model();
+        var workspaceModel = workspace.session();
         return new RectangleSelectCommand(workspaceModel, rectOnWorkspace);
     }
 
     public Command createUpdateSelectionCommand(BlockId block, boolean isModifierDown) {
         var workspace = context.activeWorkspace();
-        var workspaceModel = workspace.model();
+        var workspaceModel = workspace.session();
         return new UpdateSelectionCommand(workspaceModel, block, isModifierDown);
     }
 
     public Command createMoveBlocksCommand(Collection<BlockId> blocks, Point2D delta) {
         var workspace = context.activeWorkspace();
-        var workspaceModel = workspace.model();
+        var workspaceModel = workspace.session();
         return new MoveBlocksCommand(workspaceModel, blocks, delta);
     }
 
     public Command createResizeBlockCommand(BlockId block, double width, double height) {
         var workspace = context.activeWorkspace();
-        var workspaceModel = workspace.model();
+        var workspaceModel = workspace.session();
         return new ResizeBlockCommand(workspaceModel, block, width, height);
     }
 

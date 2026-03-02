@@ -1,7 +1,7 @@
 package blocksmith.ui;
 
-import blocksmith.ui.workspace.WorkspaceFactoryNew;
-import btscore.workspace.WorkspaceModel;
+import blocksmith.ui.workspace.WorkspaceSessionFactory;
+import btscore.workspace.WorkspaceSession;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,14 +15,14 @@ import java.util.function.Consumer;
  */
 public class EditorModel {
     
-    private final WorkspaceFactoryNew factory;
+    private final WorkspaceSessionFactory factory;
     
-    private final Map<String, WorkspaceModel> workspaces = new HashMap<>();
-    private WorkspaceModel active;
+    private final Map<String, WorkspaceSession> workspaces = new HashMap<>();
+    private WorkspaceSession active;
     
-    private final List<Consumer<WorkspaceModel>> listeners = new ArrayList<>();
+    private final List<Consumer<WorkspaceSession>> listeners = new ArrayList<>();
     
-    public EditorModel(WorkspaceFactoryNew factory) {
+    public EditorModel(WorkspaceSessionFactory factory) {
         this.factory = factory;
     }
     
@@ -44,11 +44,11 @@ public class EditorModel {
         onActiveDocumentChanged();
     }
     
-    public WorkspaceModel activeDocument() {
+    public WorkspaceSession activeDocument() {
         return active;
     }
     
-    public void setOnActiveDocumentChanged(Consumer<WorkspaceModel> listener) {
+    public void setOnActiveDocumentChanged(Consumer<WorkspaceSession> listener) {
         listeners.add(listener);
     }
     

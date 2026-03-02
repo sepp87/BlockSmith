@@ -1,7 +1,7 @@
 package btscore.command.workspace;
 
 import javafx.geometry.Point2D;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import btscore.command.WorkspaceCommand;
 
 /**
@@ -10,10 +10,10 @@ import btscore.command.WorkspaceCommand;
  */
 public class PasteBlocksCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel workspaceModel;
+    private final WorkspaceSession workspaceModel;
     private final Point2D pastePoint;
 
-    public PasteBlocksCommand( WorkspaceModel workspaceModel, Point2D pastePoint) {
+    public PasteBlocksCommand( WorkspaceSession workspaceModel, Point2D pastePoint) {
         this.workspaceModel = workspaceModel;
         this.pastePoint = pastePoint;
     }

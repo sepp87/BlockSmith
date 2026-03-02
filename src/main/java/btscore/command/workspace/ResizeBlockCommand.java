@@ -3,7 +3,7 @@ package btscore.command.workspace;
 import blocksmith.domain.block.BlockId;
 import btscore.graph.block.BlockController;
 import btscore.command.WorkspaceCommand;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 
 /**
  *
@@ -11,12 +11,12 @@ import btscore.workspace.WorkspaceModel;
  */
 public class ResizeBlockCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel workspace;
+    private final WorkspaceSession workspace;
     private final BlockId id;
     private final double width;
     private final double height;
 
-    public ResizeBlockCommand(WorkspaceModel workspace, BlockId block, double width, double height) {
+    public ResizeBlockCommand(WorkspaceSession workspace, BlockId block, double width, double height) {
         this.workspace = workspace;
         this.id = block;
         this.width = width;

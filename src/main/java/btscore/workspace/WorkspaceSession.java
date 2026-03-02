@@ -33,10 +33,12 @@ import blocksmith.ui.BlockModelFactory;
 import blocksmith.ui.MethodBlockNew;
 import blocksmith.ui.workspace.SaveDocument;
 import btscore.Launcher;
+import btscore.command.WorkspaceCommandBus;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -47,9 +49,9 @@ import java.util.stream.Collectors;
  *
  * @author Joost
  */
-public class WorkspaceModel {
+public class WorkspaceSession {
 
-    private final static Logger LOGGER = Logger.getLogger(WorkspaceModel.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(WorkspaceSession.class.getName());
 
     private final GraphEditor editor;
     private final BlockModelFactory blockFactory;
@@ -64,7 +66,13 @@ public class WorkspaceModel {
     private Path documentPath;
     private List<Consumer<Path>> documentPathListeners = new ArrayList<>();
 
-    private WorkspaceModel(Path documentPath, GraphDocument document, GraphEditorFactory editorFactory, BlockModelFactory blockFactory, SaveDocument saveDocument) {
+    private WorkspaceSession(
+            Path documentPath, 
+            GraphDocument document,
+            GraphEditorFactory editorFactory, 
+            BlockModelFactory blockFactory, 
+            SaveDocument saveDocument
+    ) {
         this.documentPath = documentPath;
         this.document = document;
         this.editor = editorFactory.createDefault(document.graph());
@@ -77,11 +85,11 @@ public class WorkspaceModel {
         this.selectionModel = new SelectionModel(editor);
         var mapper = new GraphProjectionMapper(blockFactory);
         this.graphProjection = new GraphProjection(mapper, editor.graphSnapshot());
-        this.alignmentService = new AlignmentService(selectionModel, this, editor);
-        this.selectionService = new SelectionService(selectionModel, this);
+        this.alignmentService = new AlignmentService(selectionModel, this, graphProjection, editor);
+        this.selectionService = new SelectionService(selectionModel, this, graphProjection);
 
-        editor.setOnGraphUpdated(this::updateFrom);
-        editor.setOnGraphUpdated(graphProjection::updateFrom);
+        editor.addGraphListener(this::updateFrom);
+        editor.addGraphListener(graphProjection::updateFrom);
 
         var graph = editor.graphSnapshot();
         addBlocksFromDomain(graph.blocks());
@@ -90,24 +98,24 @@ public class WorkspaceModel {
         addGroupsFromDomain(graph.groups(), blockIndex);
     }
 
-    public static WorkspaceModel newDocument(
+    public static WorkspaceSession newDocument(
             GraphEditorFactory editorFactory,
             BlockModelFactory blockFactory,
             SaveDocument saveDocument
     ) {
         Path path = null;
         var document = GraphDocument.createEmpty();
-        return new WorkspaceModel(path, document, editorFactory, blockFactory, saveDocument);
+        return new WorkspaceSession(path, document, editorFactory, blockFactory, saveDocument);
     }
 
-    public static WorkspaceModel openDocument(
+    public static WorkspaceSession openDocument(
             Path path,
             GraphDocument document,
             GraphEditorFactory editorFactory,
             BlockModelFactory blockFactory,
             SaveDocument saveDocument
     ) {
-        return new WorkspaceModel(path, document, editorFactory, blockFactory, saveDocument);
+        return new WorkspaceSession(path, document, editorFactory, blockFactory, saveDocument);
     }
 
     public Collection<BlockModel> blocks(Collection<BlockId> ids) {
@@ -126,13 +134,17 @@ public class WorkspaceModel {
     public AlignmentService alignmentService() {
         return alignmentService;
     }
-    
+
     public SelectionService selectionService() {
         return selectionService;
     }
-
+    
     public Graph graphSnapshot() {
         return editor.graphSnapshot();
+    }
+    
+    public void addGraphListener(BiConsumer<Graph, Graph> listener) {
+        editor.addGraphListener(listener);
     }
 
     public boolean isSelectionGroupable() {

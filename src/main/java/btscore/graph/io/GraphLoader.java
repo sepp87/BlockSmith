@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import btsxml.*;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import btscore.graph.block.BlockFactory;
 import btscore.graph.group.BlockGroupModel;
 import btscore.graph.block.BlockModel;
@@ -40,7 +40,7 @@ import javax.xml.namespace.QName;
  */
 public class GraphLoader {
 
-    public static void deserialize(File file, WorkspaceModel workspaceModel) {
+    public static void deserialize(File file, WorkspaceSession workspaceModel) {
         try {
             JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -73,7 +73,7 @@ public class GraphLoader {
         }
     }
 
-    private static void deserializeBlocks(BlocksTag blocksTag, WorkspaceModel workspaceModel) {
+    private static void deserializeBlocks(BlocksTag blocksTag, WorkspaceSession workspaceModel) {
         List<BlockTag> blockTagList = blocksTag.getBlock();
         if (blockTagList == null) {
             return;
@@ -147,7 +147,7 @@ public class GraphLoader {
         }
     }
 
-    private static void deserializeConnections(ConnectionsTag connectionsTag, WorkspaceModel workspaceModel) {
+    private static void deserializeConnections(ConnectionsTag connectionsTag, WorkspaceSession workspaceModel) {
         List<ConnectionTag> connectionTagList = connectionsTag.getConnection();
         if (connectionTagList == null) {
             return;
@@ -179,7 +179,7 @@ public class GraphLoader {
         }
     }
 
-    private static void deserializeGroups(GroupsTag groupsTag, WorkspaceModel workspaceModel) {
+    private static void deserializeGroups(GroupsTag groupsTag, WorkspaceSession workspaceModel) {
         if (groupsTag == null) {
             return;
         }

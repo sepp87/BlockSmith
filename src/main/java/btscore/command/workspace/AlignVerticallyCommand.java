@@ -4,7 +4,7 @@ import blocksmith.ui.AlignmentPolicy;
 import java.util.Map;
 import java.util.TreeMap;
 import btscore.command.WorkspaceCommand;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 
 /**
  *
@@ -12,10 +12,10 @@ import btscore.workspace.WorkspaceModel;
  */
 public class AlignVerticallyCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel session;
+    private final WorkspaceSession session;
     private final Map<String, Double> previousLocations = new TreeMap<>();
 
-    public AlignVerticallyCommand(WorkspaceModel session) {
+    public AlignVerticallyCommand(WorkspaceSession session) {
         this.session = session;
     }
 

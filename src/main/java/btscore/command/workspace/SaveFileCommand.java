@@ -2,7 +2,7 @@ package btscore.command.workspace;
 
 import btscore.Config;
 import btscore.command.Command;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 import btscore.command.WorkspaceCommand;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,9 +13,9 @@ import java.util.logging.Logger;
  */
 public class SaveFileCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel workspaceModel;
+    private final WorkspaceSession workspaceModel;
 
-    public SaveFileCommand(WorkspaceModel workspaceModel) {
+    public SaveFileCommand(WorkspaceSession workspaceModel) {
         this.workspaceModel = workspaceModel;
     }
 

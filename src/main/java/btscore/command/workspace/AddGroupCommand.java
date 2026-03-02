@@ -6,7 +6,7 @@ import java.util.Collection;
 import btscore.graph.block.BlockController;
 import btscore.graph.group.BlockGroupModel;
 import btscore.workspace.WorkspaceController;
-import btscore.workspace.WorkspaceModel;
+import btscore.workspace.WorkspaceSession;
 
 /**
  *
@@ -14,9 +14,9 @@ import btscore.workspace.WorkspaceModel;
  */
 public class AddGroupCommand implements WorkspaceCommand {
 
-    private final WorkspaceModel workspaceModel;
+    private final WorkspaceSession workspaceModel;
 
-    public AddGroupCommand( WorkspaceModel workspaceModel) {
+    public AddGroupCommand( WorkspaceSession workspaceModel) {
         this.workspaceModel = workspaceModel;
     }
 
