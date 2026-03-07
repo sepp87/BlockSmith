@@ -1,0 +1,59 @@
+package blocksmith.ui.graph.group;
+
+import blocksmith.ui.icons.FontAwesomeSolid;
+import java.util.Collection;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
+import javafx.geometry.Pos;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import blocksmith.ui.graph.base.BaseLabel;
+import blocksmith.ui.graph.block.BlockView;
+import blocksmith.ui.graph.base.BaseButton;
+
+/**
+ *
+ * @author JoostMeulenkamp
+ */
+public class BlockGroupView extends GridPane {
+
+    public BaseLabel label;
+    public HBox menuBox;
+    public ObservableSet<BlockView> blocks;
+    public BaseButton binButton;
+
+    public BlockGroupView() {
+        getStyleClass().add("bts-element");
+        getStyleClass().add("block-group");
+
+        blocks = FXCollections.observableSet();
+
+        binButton = new BaseButton(FontAwesomeSolid.MINUS_CIRCLE);
+        binButton.setVisible(false);
+
+        menuBox = new HBox(5);
+        label = new BaseLabel(menuBox);
+        label.getStyleClass().add("bts-tag");
+        label.setVisible(false);
+
+        menuBox.setAlignment(Pos.BOTTOM_LEFT);
+        menuBox.getStyleClass().add("block-header");
+        menuBox.getChildren().addAll(label, binButton);
+
+        add(menuBox, 1, 0);
+    }
+
+    public void setBlocks(Collection<BlockView> blocks) {
+        this.blocks.addAll(blocks);
+//        calculateSize();
+    }
+
+    public BaseLabel getLabel() {
+        return label;
+    }
+
+    public BaseButton getBinButton() {
+        return binButton;
+    }
+
+}

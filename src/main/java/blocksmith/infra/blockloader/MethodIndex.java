@@ -1,7 +1,7 @@
 package blocksmith.infra.blockloader;
 
 import blocksmith.infra.AppPaths;
-import btscore.utils.JarClassLoaderUtils;
+import blocksmith.ui.utils.JarClassLoaderUtils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;

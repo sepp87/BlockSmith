@@ -3,7 +3,7 @@ package btslib.method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import btscore.utils.ListUtils;
+import blocksmith.ui.utils.ListUtils;
 import blocksmith.infra.blockloader.annotations.Block;
 
 /**

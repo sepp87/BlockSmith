@@ -15,25 +15,25 @@ public abstract class InputControl<T> {
 
     private boolean editable = true;
     
-    private final List<Consumer<T>> listeners = new ArrayList<>();
+    private final List<Consumer<String>> listeners = new ArrayList<>();
     
     public abstract Node node();
 
-    public abstract T getValue();
+    public abstract String getValue();
 
-    public abstract void setValue(T newVal);
+    public abstract void setValue(String newVal);
 
     public abstract void dispose();
 
-    public final void setOnValueChangedByUser(Consumer<T> listener) {
+    public final void setOnValueChangedByUser(Consumer<String> listener) {
         listeners.add(listener);
     }
     
-    protected final void onValueChangedByUser(T t) {
+    protected final void onValueChangedByUser(String value) {
         if(isEditable()) {
 //                    System.out.println("InputControl.onValueChangedByUser " + t + " " + this.getClass().getSimpleName());
 
-            listeners.forEach(c -> c.accept(t));
+            listeners.forEach(c -> c.accept(value));
         }
     }
 
@@ -62,7 +62,7 @@ public abstract class InputControl<T> {
         return Optional.empty();
     }
 
-    public void parseValue(String newVal) {
-        setValue((T) newVal);
-    }
+//    public void parseValue(String newVal) {
+//        setValue((T) newVal);
+//    }
 }

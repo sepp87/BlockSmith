@@ -3,6 +3,7 @@ package blocksmith.app.block;
 import blocksmith.app.clipboard.CopyMemory;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.graph.Graph;
+import blocksmith.domain.graph.GraphFactory;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class CopyBlocks {
                 .filter(g -> ids.containsAll(g.blocks()))
                 .toList();
 
-        var copy = new Graph(graph.id(), blocks, connections, groups);
+        var copy = GraphFactory.create(graph.id(), blocks, connections, groups);
 
         memory.add(copy);
 

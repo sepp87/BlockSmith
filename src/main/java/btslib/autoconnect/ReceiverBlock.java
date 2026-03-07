@@ -1,12 +1,13 @@
 package btslib.autoconnect;
 
-import btscore.icons.FontAwesomeSolid;
+import blocksmith.domain.value.ValueType;
+import blocksmith.ui.icons.FontAwesomeSolid;
 import java.net.http.HttpClient;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import btsxml.BlockTag;
-import btscore.graph.block.BlockModel;
-import btscore.graph.block.BlockView;
+import blocksmith.ui.graph.block.BlockModel;
+import blocksmith.ui.graph.block.BlockView;
 import blocksmith.infra.blockloader.annotations.Block;
 
 /**
@@ -22,7 +23,7 @@ public class ReceiverBlock extends BlockModel {
 
     public ReceiverBlock() {
         this.labelProperty().set("Receiver");
-        addInputPort("Client", HttpClient.class).autoConnectableProperty().set(true);
+        addInputPort("Client","Client", ValueType.of(HttpClient.class), HttpClient.class).autoConnectableProperty().set(true);
         initialize();
         
     }

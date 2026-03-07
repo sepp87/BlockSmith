@@ -1,8 +1,8 @@
 package blocksmith.exec;
 
 import blocksmith.domain.block.BlockDef;
-import blocksmith.ui.MethodBlockNew;
-import btscore.graph.block.ExceptionPanel;
+import blocksmith.ui.graph.block.MethodBlockNew;
+import blocksmith.ui.graph.block.ExceptionPanel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

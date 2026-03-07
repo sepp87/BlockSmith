@@ -1,6 +1,7 @@
 package blocksmith.app;
 
 import blocksmith.domain.graph.Graph;
+import blocksmith.domain.graph.GraphFactory;
 
 /**
  *
@@ -17,7 +18,7 @@ public record GraphDocument(
 
     public static GraphDocument createEmpty() {
         return new GraphDocument(
-                Graph.createEmpty(),
+                GraphFactory.createEmpty(),
                 DEFAULT_ZOOM_FACTOR,
                 DEFAULT_TRANSLATE,
                 DEFAULT_TRANSLATE

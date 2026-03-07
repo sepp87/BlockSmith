@@ -1,6 +1,7 @@
 package btslib.file;
 
-import btscore.icons.FontAwesomeSolid;
+import blocksmith.domain.value.ValueType;
+import blocksmith.ui.icons.FontAwesomeSolid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -14,8 +15,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
-import btscore.graph.block.BlockModel;
-import btscore.graph.block.BlockView;
+import blocksmith.ui.graph.block.BlockModel;
+import blocksmith.ui.graph.block.BlockView;
 import blocksmith.infra.blockloader.annotations.Block;
 
 /**
@@ -42,8 +43,8 @@ public class ObserveFileBlock extends BlockModel {
     
     public ObserveFileBlock() {
         labelProperty().set("Observe");
-        addInputPort("observed", File.class);
-        addOutputPort("updated", File.class);
+        addInputPort("observed","observed", ValueType.of(File.class), File.class);
+        addOutputPort("updated","updated", ValueType.of(File.class), File.class);
 
         // Register shutdown hook to stop the watcher when the app closes
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

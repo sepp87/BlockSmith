@@ -3,6 +3,7 @@ package blocksmith.infra.xml;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
+import blocksmith.domain.value.Port;
 import blocksmith.xml.v2.ConnectionXml;
 import blocksmith.xml.v2.ConnectionsXml;
 import blocksmith.xml.v2.ObjectFactory;
@@ -31,8 +32,8 @@ public class ConnectionXmlMapper {
             var toBlock = BlockId.from(connectionXml.getToBlock());
             var toPort = connectionXml.getToPort();
             
-            var from = new PortRef(fromBlock, fromPort);
-            var to = new PortRef(toBlock, toPort);
+            var from = new PortRef(fromBlock, Port.Direction.OUTPUT, fromPort);
+            var to = new PortRef(toBlock, Port.Direction.INPUT, toPort);
             
             var connection = new Connection(from, to);
             result.add(connection);

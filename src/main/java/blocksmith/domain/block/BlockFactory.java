@@ -40,6 +40,11 @@ public class BlockFactory {
             result.add(port);
         }
 
+        for (var portDef : def.outputs()) {
+            var port = new Port(Port.Direction.OUTPUT, portDef.valueId(), null, portDef.valueType());
+            result.add(port);
+        }
+
         return result;
     }
 

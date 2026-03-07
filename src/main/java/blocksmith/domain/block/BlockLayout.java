@@ -6,17 +6,42 @@ package blocksmith.domain.block;
  */
 public record BlockLayout(
         String label,
-        Double x,
-        Double y,
-        Double width,
-        Double height) {
+        double x,
+        double y,
+        double width,
+        double height) {
+
+    public static final double DEFAULT_POSITION = 0;
+    public static final double DEFAULT_SIZE = -1;
 
     public static BlockLayout createEmpty() {
-        return new BlockLayout(null, null, null, null, null);
+        return new BlockLayout(
+                null,
+                DEFAULT_POSITION,
+                DEFAULT_POSITION,
+                DEFAULT_SIZE,
+                DEFAULT_SIZE
+        );
     }
 
-    public static BlockLayout create(double x, double y) {
-        return new BlockLayout(null, x, y, null, null);
+    public static BlockLayout create(Double x, Double y) {
+        return new BlockLayout(
+                null,
+                x,
+                y,
+                DEFAULT_SIZE,
+                DEFAULT_SIZE
+        );
+    }
+
+    public static BlockLayout create(String label, Double x, Double y, Double width, Double height) {
+        return new BlockLayout(
+                label,
+                x != null ? x : DEFAULT_POSITION,
+                y != null ? y : DEFAULT_POSITION,
+                width != null ? width : DEFAULT_SIZE,
+                height != null ? height : DEFAULT_SIZE
+        );
     }
 
     public BlockLayout withLabel(String label) {

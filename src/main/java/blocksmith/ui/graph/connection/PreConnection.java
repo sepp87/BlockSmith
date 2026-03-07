@@ -1,0 +1,119 @@
+package blocksmith.ui.graph.connection;
+
+import blocksmith.ui.command.CommandDispatcher;
+import blocksmith.ui.command.AppCommandFactory;
+import blocksmith.ui.command.WorkspaceCommandBus;
+import blocksmith.ui.graph.port.PortModel;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Line;
+import blocksmith.ui.graph.port.PortController;
+import blocksmith.ui.graph.port.PortType;
+import blocksmith.ui.graph.port.PortView;
+import blocksmith.ui.workspace.FxWorkspaceHandle;
+import blocksmith.ui.workspace.WorkspaceController;
+import blocksmith.ui.workspace.WorkspaceSession;
+import blocksmith.ui.workspace.WorkspaceView;
+
+/**
+ *
+ * @author Joost
+ */
+public class PreConnection extends Line {
+
+    private final WorkspaceCommandBus commands;
+    private final WorkspaceSession session;
+
+    private final WorkspaceController workspaceController;
+    private final WorkspaceView workspaceView;
+    private final WorkspaceSession workspaceModel;
+
+    private final PortController startPortController;
+
+    public PreConnection(WorkspaceCommandBus commands, WorkspaceSession session,  WorkspaceController workspaceController, PortController startPortController) {
+        this.commands = commands;
+        this.session = session;
+        this.workspaceController = workspaceController;
+        this.workspaceView = workspaceController.getView();
+        this.workspaceModel = workspaceController.getModel();
+        this.startPortController = startPortController;
+
+        getStyleClass().add("temp-line");
+
+        startXProperty().bind(startPortController.getView().centerXProperty());
+        startYProperty().bind(startPortController.getView().centerYProperty());
+        setEndX(startPortController.getView().centerXProperty().get());
+        setEndY(startPortController.getView().centerYProperty().get());
+
+        workspaceView.getScene().addEventFilter(MouseEvent.MOUSE_MOVED, mouseMovedHandler);
+        workspaceView.getScene().addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler); // Do NOT use MOUSE_PRESSED or MOUSE_RELEASED otherwise click on port to start connecting and a consecutive click in empty space causes mouseMode to stick in SELECTING
+    }
+
+    private final EventHandler<MouseEvent> mouseMovedHandler = this::handleMouseMoved;
+
+    private void handleMouseMoved(MouseEvent event) {
+        setEndX(workspaceView.sceneToLocal(event.getSceneX(), event.getSceneY()).getX());
+        setEndY(workspaceView.sceneToLocal(event.getSceneX(), event.getSceneY()).getY());
+
+    }
+    private final EventHandler<MouseEvent> mouseClickedHandler = this::handleMouseClicked;
+
+    private void handleMouseClicked(MouseEvent event) {
+//        System.out.println("PreConnection.handleMouseClicked()");
+
+        Node intersectedNode = event.getPickResult().getIntersectedNode();
+        boolean onPort = intersectedNode instanceof PortView;
+        boolean isPrimaryButton = event.getButton() == MouseButton.PRIMARY;
+        if (isPrimaryButton && onPort) {
+            PortView portView = (PortView) intersectedNode;
+            String portId = portView.getId();
+            PortController portController = workspaceController.getPortController(portId);
+            createConnection(portController);
+
+        } else {
+            dispose();
+        }
+        event.consume();
+    }
+
+    private void createConnection(PortController endPortController) {
+//        System.out.println("PreConnection.createConnection()");
+
+        PortModel startPortModel = startPortController.getModel();
+        PortModel endPortModel = endPortController.getModel();
+
+        /**
+         * Check if the data type from the sending port is the same or a sub
+         * class of the receiving port.
+         */
+        if (ConnectionModel.isEligible(startPortModel, endPortModel)) {
+            /**
+             * Make a new connection and remove all the existing connections
+             * Where is multi connect?
+             */
+
+            var fromPort = endPortModel.getPortType() == PortType.OUTPUT ? endPortModel : startPortModel;
+            var toPort = startPortModel.getPortType() == PortType.INPUT ? startPortModel : endPortModel;
+            var command = commands.factory().createAddConnectionCommand(fromPort.toDomain(), toPort.toDomain());
+            commands.execute(command);
+
+        }
+        /**
+         * Return values back to default state in which no connection is being
+         * made.
+         */
+
+        dispose();
+
+    }
+
+    private void dispose() {
+        workspaceController.removePreConnection(this);
+        startXProperty().unbind();
+        startYProperty().unbind();
+        workspaceView.getScene().removeEventFilter(MouseEvent.MOUSE_MOVED, mouseMovedHandler);
+        workspaceView.getScene().removeEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickedHandler);
+    }
+}

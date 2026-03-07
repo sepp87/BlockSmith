@@ -2,7 +2,7 @@
 package blocksmith.infra.blockloader;
 
 import blocksmith.infra.AppPaths;
-import btscore.utils.JarClassLoaderUtils;
+import blocksmith.ui.utils.JarClassLoaderUtils;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;

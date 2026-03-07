@@ -1,8 +1,10 @@
 package btslib.spreadsheet;
 
+import blocksmith.domain.value.ValueType;
+import blocksmith.domain.value.ValueType.SimpleType;
 import javafx.scene.layout.Region;
-import btscore.graph.block.BlockModel;
-import btscore.workspace.WorkspaceSession;
+import blocksmith.ui.graph.block.BlockModel;
+import blocksmith.ui.workspace.WorkspaceSession;
 import blocksmith.infra.blockloader.annotations.Block;
 
 /**
@@ -23,15 +25,15 @@ public class DataSheetBlock extends BlockModel {
 //        super(workspace);
         labelProperty().set("Table");
         resizableProperty().set(true);
-        addInputPort("data", DataSheet.class);
-        addInputPort("showAll", Boolean.class);
-        addOutputPort("dataSheet", DataSheet.class);
-        addOutputPort("allRows", Object.class);
-        addOutputPort("leadingRows", Object.class);
-        addOutputPort("headerRow", String.class);
-        addOutputPort("columnTypes", Object.class);
-        addOutputPort("dataRows", Object.class);
-        addOutputPort("trailingRows", Object.class);
+        addInputPort("data", "data", ValueType.of(DataSheet.class), DataSheet.class);
+        addInputPort("showAll", "showAll", ValueType.of(Boolean.class), Boolean.class);
+        addOutputPort("dataSheet", "dataSheet", ValueType.of(DataSheet.class), DataSheet.class);
+        addOutputPort("allRows", "allRows", ValueType.of(Object.class), Object.class);
+        addOutputPort("leadingRows", "leadingRows", ValueType.of(Object.class), Object.class);
+        addOutputPort("headerRow", "headerRow", ValueType.of(String.class), String.class);
+        addOutputPort("columnTypes", "columnTypes", ValueType.of(Object.class), Object.class);
+        addOutputPort("dataRows", "dataRows", ValueType.of(Object.class), Object.class);
+        addOutputPort("trailingRows", "trailingRows", ValueType.of(Object.class), Object.class);
 
     }
 

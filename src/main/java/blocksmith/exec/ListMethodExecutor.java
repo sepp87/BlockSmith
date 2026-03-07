@@ -1,8 +1,8 @@
 package blocksmith.exec;
 
 import blocksmith.domain.block.BlockDef;
-import btscore.graph.block.ExceptionPanel;
-import btscore.utils.ListUtils;
+import blocksmith.ui.graph.block.ExceptionPanel;
+import blocksmith.ui.utils.ListUtils;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;

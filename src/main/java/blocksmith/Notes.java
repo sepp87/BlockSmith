@@ -9,15 +9,11 @@ public class Notes {
 }
 
 // TODO
-// - DONE Undo/Redo
 // - DONE Copy/Paste (todo paste point)
-// - DONE Viewport
-// - Save/New File
-// - Delete old code
-// - Tabs
+// - Pull-based execution
 // - Typing
-// - Improve MethodExecutor
 // - default "0" for range
+// - Refactor for GraphProjectionMapper to not needing to set blocks and connections to active
 //
 //
 // Invariants
@@ -25,7 +21,7 @@ public class Notes {
 // - valueId is unique within outputs
 // - params only set as strings, so only simple type String is allowed or var type if pass through is needed
 // - input ports can only have one incoming connection
-// - range default value is "0"
+// - range default value is "0", lower is "0" and upper "10"
 //
 //
 //
@@ -38,8 +34,6 @@ public class Notes {
 //
 // REFACTOR BLOCK DEF/FUNC LOADING
 // - Serialization and copy
-// - ReceiverBlock
-// - TransmitterBlock
 // - MultilineTextInput update toString for Objects
 // - DataSheetBlock
 // - ObserveFileBlock -> with SourceBlock

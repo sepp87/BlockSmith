@@ -112,6 +112,13 @@ public class DefaultGraphEditor implements GraphEditor {
         );
     }
 
+    public void renameBlock(BlockId id, String label) {
+        mutate((graph) -> graph.renameBlock(id, label));
+        LOGGER.log(Level.INFO, "Rename block: {0}={1}",
+                new Object[]{GraphLogFmt.block(id), label}
+        );
+    }
+
     public void moveBlocks(Collection<BlockPosition> positions) {
         mutate((graph) -> graph.moveBlocks(positions));
         LOGGER.log(Level.INFO, "Move blocks: {0}", GraphLogFmt.movedBlocks(positions));

@@ -3,7 +3,7 @@ package blocksmith.ui;
 import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;
 import blocksmith.ui.geom.GeomUtils;
-import btscore.graph.block.BlockModel;
+import blocksmith.ui.graph.block.BlockModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

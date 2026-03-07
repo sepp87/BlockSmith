@@ -1,6 +1,6 @@
 package blocksmith.ui.control;
 
-import btscore.utils.ListViewHoverSelectBehaviour;
+import blocksmith.ui.utils.ListViewHoverSelectBehaviour;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;

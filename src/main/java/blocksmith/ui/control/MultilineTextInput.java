@@ -1,6 +1,8 @@
 package blocksmith.ui.control;
 
 import java.util.Objects;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.TextArea;
@@ -14,15 +16,33 @@ public class MultilineTextInput extends InputControl<Object> {
 
     private final ChangeListener<String> fxListener = (b, o, n) -> onValueChangedByUser(n);
 
+    private final StringProperty value = new SimpleStringProperty();
     private TextArea textArea;
+
+    private boolean syncing;
 
     public MultilineTextInput() {
         textArea = new TextArea();
         textArea.setMinSize(220, 220);
         textArea.setPrefSize(220, 220);
         textArea.setOnKeyPressed(this::ignoreShortcuts);
-        textArea.textProperty().addListener(fxListener);
         textArea.setMaxHeight(Double.MAX_VALUE);
+
+        textArea.textProperty().addListener((b, o, n) -> {
+            if (syncing) {
+                return;
+            }
+            if (!isEditable()) {
+                return;
+            }
+
+            var newValue = n.isEmpty() ? null : n;
+            if (!Objects.equals(value.get(), newValue)) {
+                value.set(newValue);
+            }
+        });
+        value.addListener(fxListener);
+
     }
 
     private void ignoreShortcuts(KeyEvent event) {
@@ -36,29 +56,43 @@ public class MultilineTextInput extends InputControl<Object> {
 
     @Override
     public String getValue() {
-        return textArea.getText();
+        return value.get();
     }
 
     @Override
-    public void setValue(Object newVal) {
+    public void setValue(String newVal) {
+
         if (Objects.equals(this.getValue(), newVal)) {
             return;
         }
-        textArea.setText(String.valueOf(newVal));
+
+        value.set(newVal);
+        updateTextArea();
     }
 
     @Override
     public void dispose() {
         textArea.setOnKeyPressed(null);
-        textArea.textProperty().removeListener(fxListener);
+        value.removeListener(fxListener);
     }
 
     protected void onEditableChanged(boolean isEditable) {
         textArea.setEditable(isEditable);
-        if (isEditable) {
-            textArea.setText(null);
+        updateTextArea();
+    }
+
+    private void updateTextArea() {
+        syncing = true;
+        var displayValue = displayValue();
+        textArea.setText(displayValue);
+        syncing = false;
+    }
+
+    private String displayValue() {
+        if (value.get() != null) {
+            return value.get();
         }
-        // if set uneditable, it is assumed a new value will be set instantly afterwards
+        return isEditable() ? "" : "null";
     }
 
     @Override

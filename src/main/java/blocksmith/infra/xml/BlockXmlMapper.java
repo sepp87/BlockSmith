@@ -50,7 +50,7 @@ public class BlockXmlMapper {
         var width = blockXml.getWidth();
         var height = blockXml.getHeight();
 
-        return new BlockLayout(label, x, y, width, height);
+        return BlockLayout.create(label, x, y, width, height);
     }
 
     public BlocksXml toXml(Collection<Block> blocks) {

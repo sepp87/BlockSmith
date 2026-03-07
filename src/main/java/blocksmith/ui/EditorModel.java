@@ -1,7 +1,7 @@
 package blocksmith.ui;
 
-import blocksmith.ui.workspace.WorkspaceSessionFactory;
-import btscore.workspace.WorkspaceSession;
+import blocksmith.app.workspace.WorkspaceSessionFactory;
+import blocksmith.ui.workspace.WorkspaceSession;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;

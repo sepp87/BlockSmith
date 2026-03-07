@@ -5,10 +5,11 @@ import blocksmith.domain.block.BlockId;
 import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
-import blocksmith.domain.graph.Graph;
 import blocksmith.domain.group.GroupId;
-import blocksmith.domain.value.Port;
-import blocksmith.domain.value.PortDef;
+import blocksmith.domain.value.ValueType;
+import blocksmith.domain.value.ValueType.ListType;
+import blocksmith.domain.value.ValueType.SimpleType;
+import blocksmith.domain.value.ValueType.VarType;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -39,6 +40,17 @@ public final class GraphLogFmt {
 
     public static String port(PortRef ref) {
         return block(ref.blockId()) + "." + ref.valueId();
+    }
+    
+    public static String valueType(ValueType type) {
+        if(type instanceof SimpleType simpleType) {
+            return simpleType.raw().getSimpleName();
+        }
+        if(type instanceof ListType listType) {
+            return "List<" + valueType(listType.elementType()) + ">";
+        }
+        var varType = (VarType) type;
+        return varType.name();
     }
 
     public static String connections(Collection<Connection> connections) {

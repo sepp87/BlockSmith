@@ -5,6 +5,7 @@ import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.graph.Graph;
+import blocksmith.domain.graph.GraphFactory;
 import blocksmith.domain.group.Group;
 import blocksmith.domain.group.GroupId;
 import java.util.stream.Collectors;
@@ -72,7 +73,7 @@ public class PasteBlocks {
         var mergedConnections = Stream.concat(connections.stream(), target.connections().stream()).toList();
         var mergedGroups = Stream.concat(groups.stream(), target.groups().stream()).toList();
 
-        return new Graph(target.id(), mergedBlocks, mergedConnections, mergedGroups);
+        return GraphFactory.create(target.id(), mergedBlocks, mergedConnections, mergedGroups);
 
     }
 

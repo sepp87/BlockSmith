@@ -1,10 +1,10 @@
 package blocksmith.ui;
 
+import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.control.TextInput;
 import blocksmith.ui.control.InputControl;
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.app.block.BlockFuncLibrary;
-import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.value.ParamDef;
 import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.ParamInput.NumericType;
@@ -55,11 +55,11 @@ public class BlockModelFactory {
         var block = new MethodBlockNew(def, func, id);
 
         for (var input : def.inputs()) {
-            block.addInputPort(input.valueId(), ValueType.toDataType(input.valueType()));
+            block.addInputPort(input.valueId(),input.valueName(), input.valueType(), ValueType.toDataType(input.valueType()));
         }
 
         for (var output : def.outputs()) {
-            block.addOutputPort(output.valueId(), ValueType.toDataType(output.valueType()));
+            block.addOutputPort(output.valueId(),output.valueName(), output.valueType(), ValueType.toDataType(output.valueType()));
         }
 
         for (var param : def.params()) {

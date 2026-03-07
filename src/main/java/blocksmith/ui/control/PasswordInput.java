@@ -1,7 +1,7 @@
 package blocksmith.ui.control;
 
-import btscore.graph.base.BaseButton;
-import btscore.icons.FontAwesomeSolid;
+import blocksmith.ui.graph.base.BaseButton;
+import blocksmith.ui.icons.FontAwesomeSolid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

@@ -8,7 +8,7 @@ import com.google.gson.JsonPrimitive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import btscore.utils.ParsingUtils;
+import blocksmith.ui.utils.ParsingUtils;
 import blocksmith.infra.blockloader.annotations.Block;
 
 /**
@@ -43,7 +43,7 @@ public class JsonMethods {
             type = "Json.asList",
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
-    public static List<Object> asList(String jsonArray) {
+    public static List<?> asList(String jsonArray) {
         if (jsonArray == null) {
             throw new NullPointerException("Input string \"jsonArray\" is null");
         }
@@ -51,7 +51,7 @@ public class JsonMethods {
         return parseJsonElement(element);
     }
 
-    private static List<Object> parseJsonElement(JsonElement element) {
+    private static List<?> parseJsonElement(JsonElement element) {
         List<Object> list = new ArrayList<>();
         if (element.isJsonArray()) {
             for (JsonElement item : element.getAsJsonArray()) {

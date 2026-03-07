@@ -2,12 +2,8 @@ package blocksmith.ui.control;
 
 import blocksmith.xml.v2.ValueXml;
 import btslib.ui.NumberSliderExpander;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;

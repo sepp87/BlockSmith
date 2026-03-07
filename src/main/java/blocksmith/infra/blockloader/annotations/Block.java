@@ -1,6 +1,6 @@
 package blocksmith.infra.blockloader.annotations;
 
-import btscore.icons.FontAwesomeSolid;
+import blocksmith.ui.icons.FontAwesomeSolid;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -21,8 +21,10 @@ public interface GraphMutation {
 
     void updateParamValue(BlockId id, String valueId, String value);
 
+    void renameBlock(BlockId id, String label);
+
     void moveBlocks(Collection<BlockPosition> requests);
-    
+
     void resizeBlock(BlockId id, double width, double height);
 
     void addConnection(PortRef from, PortRef to);
@@ -32,9 +34,9 @@ public interface GraphMutation {
     void addGroup(String label, Collection<BlockId> blocks);
 
     void removeGroup(GroupId id);
-    
+
     void copyBlocks(Collection<BlockId> blocks);
-    
+
     Collection<BlockId> pasteBlocks();
 
 //    void removeGroup();

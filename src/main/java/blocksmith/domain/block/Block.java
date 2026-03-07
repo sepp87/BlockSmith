@@ -55,9 +55,13 @@ public final class Block {
         return params.stream().filter(param -> param.valueId().equals(valueId)).findFirst();
     }
 
-    public Optional<Port> port(String valueId) {
-        return ports.stream().filter(port -> port.valueId().equals(valueId)).findFirst();
+    public Optional<Port> port(Port.Direction direction, String valueId ) {
+        return ports.stream()
+                .filter(port -> port.direction() == direction)
+                .filter(port -> port.valueId().equals(valueId))
+                .findFirst();
     }
+
 
     public Collection<Port> inputPorts() {
         return ports.stream().filter(port -> port.direction() == Port.Direction.INPUT).toList();

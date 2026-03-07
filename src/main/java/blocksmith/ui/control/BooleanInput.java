@@ -1,7 +1,7 @@
 package blocksmith.ui.control;
 
-import btscore.graph.block.BlockView;
-import btscore.icons.FontAwesomeSolid;
+import blocksmith.ui.graph.block.BlockView;
+import blocksmith.ui.icons.FontAwesomeSolid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +18,7 @@ import javafx.scene.control.Label;
  */
 public class BooleanInput extends InputControl<Boolean> {
 
-    private final ChangeListener<Boolean> fxListener = (b, o, n) -> onValueChangedByUser(n);
+    private final ChangeListener<Boolean> fxListener = (b, o, n) -> onValueChangedByUser(n.toString());
     private final BooleanProperty value = new SimpleBooleanProperty(false);
 
     private Label onOffSwitch;
@@ -46,16 +46,22 @@ public class BooleanInput extends InputControl<Boolean> {
     }
 
     @Override
-    public Boolean getValue() {
-        return value.get();
+    public String getValue() {
+        return value.getValue().toString();
     }
 
     @Override
-    public void setValue(Boolean newVal) {
+    public void setValue(String newVal) {
         if (newVal == null || Objects.equals(value.get(), newVal)) {
             return;
         }
-        value.set(newVal);
+        
+        var parsed = Boolean.valueOf(newVal);
+        if (Objects.equals(value.get(), parsed)) {
+            return;
+        }
+
+        value.set(parsed);
 
     }
 
