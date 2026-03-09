@@ -14,14 +14,16 @@ import javafx.scene.input.KeyEvent;
  */
 public class MultilineTextInput extends InputControl<Object> {
 
-    private final ChangeListener<String> fxListener = (b, o, n) -> onValueChangedByUser(n);
+    private final ChangeListener<String> fxListener = (b, o, n) -> valueChangedByUser(n);
 
-    private final StringProperty value = new SimpleStringProperty();
+//    private final StringProperty value = new SimpleStringProperty();
     private TextArea textArea;
 
     private boolean syncing;
 
-    public MultilineTextInput() {
+    public MultilineTextInput(String valueId) {
+        super(valueId);
+        
         textArea = new TextArea();
         textArea.setMinSize(220, 220);
         textArea.setPrefSize(220, 220);
@@ -71,14 +73,18 @@ public class MultilineTextInput extends InputControl<Object> {
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         textArea.setOnKeyPressed(null);
         value.removeListener(fxListener);
     }
 
+    protected void onValueChanged(String newValue) {
+        updateTextArea();
+    }
+    
     protected void onEditableChanged(boolean isEditable) {
         textArea.setEditable(isEditable);
-        updateTextArea();
+//        updateTextArea();
     }
 
     private void updateTextArea() {
@@ -95,13 +101,5 @@ public class MultilineTextInput extends InputControl<Object> {
         return isEditable() ? "" : "null";
     }
 
-    @Override
-    public InputControl<Object> copy() {
-        var control = new MultilineTextInput();
-        if (isEditable()) {
-            control.setValue(this.getValue());
-        }
-        return control;
-    }
 
 }

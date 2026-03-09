@@ -17,7 +17,7 @@ import javax.xml.namespace.QName;
  */
 public abstract class NumberSliderInput extends InputControl<String> {
 
-    private final ChangeListener<Number> fxListener = (b, o, n) -> onValueChangedByUser(n.toString());
+    private final ChangeListener<Number> fxListener = (b, o, n) -> valueChangedByUser(n.toString());
 
     protected DoubleProperty value = new SimpleDoubleProperty();
     protected DoubleProperty min = new SimpleDoubleProperty();
@@ -29,8 +29,9 @@ public abstract class NumberSliderInput extends InputControl<String> {
     private final Slider slider;
     private final NumberSliderExpander expander;
 
-    public NumberSliderInput(double value, double min, double max, double step, boolean isInteger) {
-
+    public NumberSliderInput(String valueId, double value, double min, double max, double step, boolean isInteger) {
+        super(valueId);
+        
         this.value.set(value);
         this.min.set(min);
         this.max.set(max);
@@ -68,7 +69,7 @@ public abstract class NumberSliderInput extends InputControl<String> {
 
     @Override
     public String getValue() {
-        if(isInteger) {
+        if (isInteger) {
             return value.getValue().intValue() + "";
         }
         return value.getValue().toString();
@@ -86,7 +87,7 @@ public abstract class NumberSliderInput extends InputControl<String> {
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         value.removeListener(fxListener);
         slider.valueProperty().unbindBidirectional(value);
         slider.minProperty().unbindBidirectional(min);
@@ -113,18 +114,6 @@ public abstract class NumberSliderInput extends InputControl<String> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public InputControl<String> copy() {
-        var control = new DoubleSliderInput();
-        if (isEditable()) {
-            control.value.setValue(this.value.getValue());
-            control.min.setValue(this.min.getValue());
-            control.max.setValue(this.max.getValue());
-            control.step.setValue(this.step.getValue());
-        }
-        return control;
-    }
-
     public void setMin(Number newVal) {
         min.setValue(newVal);
     }
@@ -136,4 +125,10 @@ public abstract class NumberSliderInput extends InputControl<String> {
     public void setStep(Number newVal) {
         step.setValue(newVal);
     }
+
+    @Override
+    protected void onValueChanged(String newValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }

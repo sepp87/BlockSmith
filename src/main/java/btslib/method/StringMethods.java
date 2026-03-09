@@ -77,7 +77,7 @@ public class StringMethods {
             category = "Core",
             description = "Input a line of text.")
     public static String inputString(@Value String value) {
-        return value.isEmpty() ? null : value;
+        return value == null || value.isEmpty() ? null : value;
     }
 
     @Block(

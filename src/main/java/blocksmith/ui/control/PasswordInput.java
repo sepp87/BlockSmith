@@ -24,7 +24,7 @@ import javafx.scene.layout.HBox;
  */
 public class PasswordInput extends InputControl<String> {
 
-    private final ChangeListener<String> fxListener = (b, o, n) -> onValueChangedByUser(n);
+    private final ChangeListener<String> fxListener = (b, o, n) -> valueChangedByUser(n);
 
     private final BooleanProperty hidden = new SimpleBooleanProperty(true);
     private final StringProperty value = new SimpleStringProperty();
@@ -34,7 +34,9 @@ public class PasswordInput extends InputControl<String> {
     private final TextField textField;
     private final BaseButton toggleButton;
 
-    public PasswordInput() {
+    public PasswordInput(String valueId) {
+        super(valueId);
+        
         passwordField = new PasswordField();
         configureField(passwordField, hidden.not());
 
@@ -89,7 +91,7 @@ public class PasswordInput extends InputControl<String> {
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         value.removeListener(fxListener);
 
         disposeField(passwordField);
@@ -110,14 +112,9 @@ public class PasswordInput extends InputControl<String> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-
     @Override
-    public InputControl<String> copy() {
-        var control = new PasswordInput();
-        if(isEditable()) {
-            control.setValue(this.getValue());
-        }
-        return control;
+    protected void onValueChanged(String newValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

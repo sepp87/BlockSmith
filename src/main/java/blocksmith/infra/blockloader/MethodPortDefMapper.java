@@ -16,6 +16,8 @@ import static blocksmith.infra.blockloader.annotations.Value.Source.PARAM;
  */
 public class MethodPortDefMapper {
 
+    private static final String DEFAULT_OUPUT_VALUE_ID = "value";
+
     public static List<PortDef> inputDefsFromParameters(Method method) {
         var result = new ArrayList<PortDef>();
 
@@ -35,7 +37,7 @@ public class MethodPortDefMapper {
                 } else {
                     var valueType = ValueTypeMappingUtils.fromMethodParameter(p);
                     var valueId = value != null && !value.id().isEmpty() ? value.id() : p.getName();
-                    
+
                     var portDef = new PortDef(
                             valueId,
                             argIndex,
@@ -63,16 +65,20 @@ public class MethodPortDefMapper {
     public static PortDef outputDefFromReturnType(Method method) throws ReflectiveOperationException {
         Class<?> returnType = method.getReturnType();
 
+
         boolean isAutoConnectable = AutoConnectable.class.isAssignableFrom(returnType);
 
         try {
-            var valueType = ValueTypeMappingUtils.fromType(returnType);
-            var valueId = returnType.getSimpleName();
+            Value value = method.getAnnotatedReturnType().getAnnotation(Value.class);
+            boolean hasAnnotation = value != null;
+
+            var valueType = ValueTypeMappingUtils.fromType(method.getGenericReturnType());
+            var valueId = hasAnnotation && !value.id().isEmpty() ? value.id() : DEFAULT_OUPUT_VALUE_ID;
 
             var portDef = new PortDef(
                     valueId,
                     -1,
-                    returnType.getSimpleName(),
+                    valueId,
                     Port.Direction.OUTPUT,
                     valueType,
                     isAutoConnectable,

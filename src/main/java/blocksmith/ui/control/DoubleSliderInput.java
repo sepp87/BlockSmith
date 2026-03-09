@@ -9,10 +9,8 @@ import javafx.beans.property.SimpleDoubleProperty;
  */
 public class DoubleSliderInput extends NumberSliderInput {
 
-
-    public DoubleSliderInput() {
-        super(0, 0, 10, .1, false);
+    public DoubleSliderInput(String valueId) {
+        super(valueId, 0, 0, 10, .1, false);
     }
-
 
 }

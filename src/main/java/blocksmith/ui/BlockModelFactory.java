@@ -55,11 +55,11 @@ public class BlockModelFactory {
         var block = new MethodBlockNew(def, func, id);
 
         for (var input : def.inputs()) {
-            block.addInputPort(input.valueId(),input.valueName(), input.valueType(), ValueType.toDataType(input.valueType()));
+            block.addInputPort(input.valueId(), input.valueName(), input.valueType(), ValueType.toDataType(input.valueType()));
         }
 
         for (var output : def.outputs()) {
-            block.addOutputPort(output.valueId(),output.valueName(), output.valueType(), ValueType.toDataType(output.valueType()));
+            block.addOutputPort(output.valueId(), output.valueName(), output.valueType(), ValueType.toDataType(output.valueType()));
         }
 
         for (var param : def.params()) {
@@ -75,57 +75,58 @@ public class BlockModelFactory {
 
     private static InputControl<?> inputControlFrom(ParamDef param) {
 
+        var valueId = param.valueId();
         var spec = param.input();
 
         return switch (spec) {
             case ParamInput.NoInputSpec na ->
-                inferInputControlFrom(param.valueType());
+                inferInputControlFrom(valueId, param.valueType());
 
             case ParamInput.Boolean bool ->
-                new BooleanInput();
+                new BooleanInput(valueId);
 
             case ParamInput.Choice choice ->
-                new ChoiceInput(choice.options().getFirst(), choice.options());
+                new ChoiceInput(valueId, choice.options().getFirst(), choice.options());
 
             case ParamInput.Color color ->
-                new ColorInput();
+                new ColorInput(valueId);
 
             case ParamInput.Date date ->
-                new DateInput();
+                new DateInput(valueId);
 
             case ParamInput.Directory directory ->
-                new DirectoryInput();
+                new DirectoryInput(valueId);
 
             case ParamInput.FilePath filePath ->
-                new FilePathInput();
+                new FilePathInput(valueId);
 
             case ParamInput.FileTarget fileTarger ->
-                new FileTargetInput();
+                new FileTargetInput(valueId);
 
             case ParamInput.MultilineText multilineText ->
-                new MultilineTextInput();
+                new MultilineTextInput(valueId);
 
             case ParamInput.Password password ->
-                new PasswordInput();
+                new PasswordInput(valueId);
 
             case ParamInput.Range range ->
-                inferNumberSliderFrom(range.type());
+                inferNumberSliderFrom(valueId, range.type());
 
             case ParamInput.Text text ->
-                new TextInput();
+                new TextInput(valueId);
         };
     }
 
-    private static InputControl<?> inferNumberSliderFrom(NumericType type) {
+    private static InputControl<?> inferNumberSliderFrom(String valueId, NumericType type) {
         return switch (type) {
             case INT ->
-                new IntegerSliderInput();
+                new IntegerSliderInput(valueId);
             case DOUBLE ->
-                new DoubleSliderInput();
+                new DoubleSliderInput(valueId);
         };
     }
 
-    private static InputControl<?> inferInputControlFrom(ValueType valueType) {
+    private static InputControl<?> inferInputControlFrom(String valueId, ValueType valueType) {
 
         Class<?> rawType = null;
 
@@ -140,15 +141,15 @@ public class BlockModelFactory {
         }
 
         if (rawType == String.class) {
-            return new TextInput();
+            return new TextInput(valueId);
 
         }
         if (rawType == Boolean.class || rawType == boolean.class) {
-            return new BooleanInput();
+            return new BooleanInput(valueId);
 
         }
         if (rawType == Object.class) {
-            return new MultilineTextInput();
+            return new MultilineTextInput(valueId);
 
         }
 //        else if (dataType == Integer.class || dataType == Double.class) {

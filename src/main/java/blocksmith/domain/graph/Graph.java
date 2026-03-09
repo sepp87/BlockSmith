@@ -229,14 +229,14 @@ public final class Graph {
     }
 
     public List<Connection> connectionsOf(PortRef ref) {
-        if (ref.direction() == Port.Direction.INPUT) {
+        if (ref.direction() == Port.Direction.OUTPUT) {
             return connections.stream()
-                    .filter(c -> c.to().equals(ref))
+                    .filter(c -> c.from().equals(ref))
                     .toList();
         }
 
         return connections.stream()
-                .filter(c -> c.from().equals(ref))
+                .filter(c -> c.to().equals(ref))
                 .toList();
     }
 

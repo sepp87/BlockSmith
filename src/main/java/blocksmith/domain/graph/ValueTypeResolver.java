@@ -5,7 +5,9 @@ import blocksmith.domain.block.Block;
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.ValueType;
 import blocksmith.domain.value.ValueType.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,8 +17,9 @@ import java.util.Set;
  */
 public final class ValueTypeResolver {
 
-    private ValueTypeResolver() {}
-    
+    private ValueTypeResolver() {
+    }
+
     public static ValueType typeOf(Graph graph, PortRef ref) {
         var visited = new HashSet<PortRef>();
         return typeOf(graph, ref, visited);
@@ -30,13 +33,9 @@ public final class ValueTypeResolver {
         var valueId = ref.valueId();
 
         var block = graph.block(blockId).orElseThrow(() -> new IllegalStateException("Block does NOT exist: " + blockId));
-        var port = block.port(direction, valueId).orElseThrow(() -> new IllegalStateException("Port does NOT exist: " + blockId + "." + valueId));
+        var port = block.port(direction, valueId).orElseThrow(() -> new IllegalStateException("Port does NOT exist: " + block.type() + " " + blockId + "." + valueId));
 
         var declared = port.valueType();
-
-        if (!visited.add(ref)) {
-            return declared;
-        }
 
         var retrieved = varTypeWithin(declared);
         if (retrieved.isEmpty()) {
@@ -98,7 +97,22 @@ public final class ValueTypeResolver {
         throw new IllegalStateException("VarType NOT found amongst input ports: " + requested.name());
     }
 
-    private static Optional<VarType> varTypeWithin(ValueType type) {
+    public static List<Port> boundOutputsOf(Block block, VarType requested) {
+        var result = new ArrayList<Port>();
+        var outputs = block.outputPorts();
+        for (var port : outputs) {
+            var candidate = varTypeWithin(port.valueType()).orElse(null);
+            if (candidate == null) {
+                continue;
+            }
+            if (candidate.name().equals(requested.name())) {
+                result.add(port);
+            }
+        }
+        return List.copyOf(result);
+    }
+
+    public static Optional<VarType> varTypeWithin(ValueType type) {
         if (type instanceof SimpleType) {
             return Optional.empty();
         }

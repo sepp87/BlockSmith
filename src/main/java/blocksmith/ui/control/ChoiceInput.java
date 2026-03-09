@@ -20,7 +20,7 @@ import javafx.scene.layout.VBox;
  */
 public class ChoiceInput extends InputControl<String> {
 
-    private final ChangeListener<String> fxListener = (b, o, n) -> onValueChangedByUser(n);
+    private final ChangeListener<String> fxListener = (b, o, n) -> valueChangedByUser(n);
 
     private final Set<String> options = new TreeSet<>();
     private final StringProperty value = new SimpleStringProperty();
@@ -29,7 +29,8 @@ public class ChoiceInput extends InputControl<String> {
     private final ComboBox<String> comboBox;
     private ListView<String> listView;
 
-    public ChoiceInput(String selected, Collection<String> options) {
+    public ChoiceInput(String valueId, String selected, Collection<String> options) {
+        super(valueId);
 
         comboBox = new ComboBox<>();
         comboBox.getItems().addAll(options);
@@ -71,7 +72,7 @@ public class ChoiceInput extends InputControl<String> {
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         root.setOnMouseEntered(null);
         value.unbindBidirectional(comboBox.valueProperty());
         value.removeListener(fxListener);
@@ -82,14 +83,9 @@ public class ChoiceInput extends InputControl<String> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public InputControl<String> copy() {
-        if (isEditable()) {
-            var selected = this.getValue();
-            return new ChoiceInput(selected, options);
-        } else {
-            return new ChoiceInput(options.iterator().next(), options);
-        }
-    }
 
+    @Override
+    protected void onValueChanged(String newValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

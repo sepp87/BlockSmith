@@ -14,15 +14,15 @@ public final class ParamStatusResolver {
 
     }
 
-    public static boolean isActive(Graph graph, BlockId id, String valueId) {
-        var block = graph.block(id).orElseThrow(() -> new IllegalStateException("Block does NOT exist: " + id));
-        var param = block.param(valueId).orElseThrow(() -> new IllegalStateException("Param does NOT exist: " + id + "." + valueId));
+    public static boolean isActive(Graph graph, BlockId blockId, String valueId) {
+        var block = graph.block(blockId).orElseThrow(() -> new IllegalStateException("Block does NOT exist: " + blockId));
+        var param = block.param(valueId).orElseThrow(() -> new IllegalStateException("Param does NOT exist: " + blockId + "." + valueId));
 
         var coupledPort = block.port(Port.Direction.INPUT, valueId);
         if (coupledPort.isEmpty()) {
             return true;
         }
-        var port = PortRef.input(id, valueId);
+        var port = PortRef.input(blockId, valueId);
         return graph.connectionsOf(port).isEmpty();
     }
 

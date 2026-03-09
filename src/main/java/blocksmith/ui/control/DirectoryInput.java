@@ -10,7 +10,9 @@ import javafx.stage.Window;
  */
 public class DirectoryInput extends AbstractPathInput {
 
-    public DirectoryInput() {
+    public DirectoryInput(String valueId) {
+        super(valueId);
+        
         textField.setPromptText("Open a directory...");
 
     }
@@ -29,13 +31,5 @@ public class DirectoryInput extends AbstractPathInput {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public InputControl<String> copy() {
-        var control = new DirectoryInput();
-        if(isEditable()) {
-            control.setValue(this.getValue());
-        }
-        return control;
-    }
 
 }

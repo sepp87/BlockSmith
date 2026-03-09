@@ -3,6 +3,10 @@ package blocksmith.ui.graph.block;
 import blocksmith.domain.block.Block;
 import blocksmith.ui.control.InputControl;
 import blocksmith.domain.block.BlockDef;
+import blocksmith.domain.block.BlockLayout;
+import blocksmith.domain.connection.PortRef;
+import blocksmith.domain.value.Port;
+import static blocksmith.domain.value.Port.Direction.INPUT;
 import blocksmith.domain.value.ValueType;
 import blocksmith.exec.BlockExecutor;
 import blocksmith.exec.BlockFunc;
@@ -63,11 +67,20 @@ public class MethodBlockNew extends BlockModel {
 
     public void updateFrom(Block update) {
         domain = update;
-        updateInputControlsFrom(update);
-        updateLayoutFrom(update);
+
     }
 
-    private void updateInputControlsFrom(Block update) {
+    public void updateLayoutFrom(BlockLayout update) {
+        this.labelProperty().set(update.label());
+        this.layoutXProperty().set(update.x());
+        this.layoutYProperty().set(update.y());
+        if (resizableProperty().get()) {
+            this.widthProperty().set(update.width());
+            this.heightProperty().set(update.height());
+        }
+    }
+
+    public void updateInputControlsFrom(Block update) {
         for (var param : update.params()) {
             System.out.println(param.valueId() + ": " + param.isActive() + ": " + param.value());
             if (!param.isActive()) {
@@ -75,16 +88,6 @@ public class MethodBlockNew extends BlockModel {
             }
             var control = inputControls.get(param.valueId());
             control.setValue(param.value());
-        }
-    }
-
-    private void updateLayoutFrom(Block update) {
-        this.labelProperty().set(update.layout().label());
-        this.layoutXProperty().set(update.layout().x());
-        this.layoutYProperty().set(update.layout().y());
-        if (resizableProperty().get()) {
-            this.widthProperty().set(update.layout().width());
-            this.heightProperty().set(update.layout().height());
         }
     }
 
@@ -146,51 +149,48 @@ public class MethodBlockNew extends BlockModel {
     public void onIncomingConnectionAdded(Object data) {
         super.onIncomingConnectionAdded(data);
 
-        if (inputControls.isEmpty()) {
-            return;
-        }
-
-        for (var port : inputPorts) {
-            if (!port.isConnected()) {
-                continue;
-            }
-            String key = port.labelProperty().get();
-            var control = inputControls.get(key);
-            if (control == null) {
-                continue;
-            }
-            control.setEditable(false);
-//            System.out.println("MethodBlockNew.onIncomingConnectionAdded");
-
-//            if (control instanceof MultilineTextInput textInput) {
-//                textInput.setValue(data);
+//        if (inputControls.isEmpty()) {
+//            return;
+//        }
+//
+//        for (var port : inputPorts) {
+//            if (!port.isConnected()) {
+//                continue;
 //            }
-        }
+//            String key = port.labelProperty().get();
+//            var control = inputControls.get(key);
+//            if (control == null) {
+//                continue;
+//            }
+//            control.setEditable(false);
+//        }
+
+
     }
 
     @Override
     public void onIncomingConnectionRemoved(Object data) {
         super.onIncomingConnectionRemoved(data);
 
-        if (inputControls.isEmpty()) {
-            return;
-        }
-
-        for (var port : inputPorts) {
-            if (port.isConnected()) {
-                continue;
-            }
-            String key = port.labelProperty().get();
-            var control = inputControls.get(key);
-            if (control == null) {
-                continue;
-            }
-            if (domain != null) {
-                control.setValue(domain.param(key).get().value());
-
-            }
-            control.setEditable(true);
-        }
+//        if (inputControls.isEmpty()) {
+//            return;
+//        }
+//
+//        for (var port : inputPorts) {
+//            if (port.isConnected()) {
+//                continue;
+//            }
+//            String key = port.labelProperty().get();
+//            var control = inputControls.get(key);
+//            if (control == null) {
+//                continue;
+//            }
+//            if (domain != null) {
+//                control.setValue(domain.param(key).get().value());
+//
+//            }
+//            control.setEditable(true);
+//        }
     }
 
     public boolean isListOperator = false;
@@ -234,24 +234,24 @@ public class MethodBlockNew extends BlockModel {
         var inputData = inputPorts.stream().map(PortModel::getData).toArray();
         var controlData = inputControls.values().stream().map(InputControl::getValue).toArray();
 
-        var updates = new ArrayList<Runnable>();
-        for (var input : inputPorts) {
-
-            var valueId = input.labelProperty().get();
-            var control = inputControls.get(valueId);
-            if (control == null) {
-                continue;
-            }
-
-            var raw = input.getData();
-            if (control instanceof MultilineTextInput multiline && !multiline.isEditable()) {
-                var value = raw == null ? null : raw.toString();
-                updates.add(() -> multiline.setValue(value));
-            }
-
-        }
-
-        Platform.runLater(() -> updates.forEach(Runnable::run));
+//        var updates = new ArrayList<Runnable>();
+//        for (var input : inputPorts) {
+//
+//            var valueId = input.valueId();
+//            var control = inputControls.get(valueId);
+//            if (control == null) {
+//                continue;
+//            }
+//
+//            var raw = input.getData();
+//            if (control instanceof MultilineTextInput multiline && !multiline.isEditable()) {
+//                var value = raw == null ? null : raw.toString();
+//                updates.add(() -> multiline.setValue(value));
+//            }
+//
+//        }
+//
+//        Platform.runLater(() -> updates.forEach(Runnable::run));
 
         var parameters = controlData.length != 0 ? controlData : inputData; // TODO refactor as soon as inputs and controls start to mix
 
@@ -309,7 +309,7 @@ public class MethodBlockNew extends BlockModel {
                 continue;
             }
             var valueId = entry.getKey();
-            var value = control.getValue().toString();
+            var value = control.getValue();
             values.put(QName.valueOf(valueId), value);
 
             if (control instanceof NumberSliderInput slider) {

@@ -124,12 +124,12 @@ public class ConnectionModel extends BaseModel {
         var from = PortRef.of(
                 BlockId.from(startPort.getBlock().getId()),
                 Port.Direction.OUTPUT,
-                startPort.labelProperty().get()
+                startPort.valueId()
         );
         var to = PortRef.of(
                 BlockId.from(endPort.getBlock().getId()),
                 Port.Direction.INPUT,
-                endPort.labelProperty().get()
+                endPort.valueId()
         );
         return new Connection(from, to);
     }

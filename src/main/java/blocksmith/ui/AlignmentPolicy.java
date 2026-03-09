@@ -4,6 +4,7 @@ import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;
 import blocksmith.ui.geom.GeomUtils;
 import blocksmith.ui.graph.block.BlockModel;
+import blocksmith.ui.graph.block.MethodBlockNew;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +26,7 @@ public class AlignmentPolicy {
         VERTICALLY
     }
 
-    public List<BlockPosition> apply(Collection<BlockModel> blocks, Mode mode) {
+    public List<BlockPosition> apply(Collection<MethodBlockNew> blocks, Mode mode) {
 
         if (blocks.isEmpty()) {
             return List.of();

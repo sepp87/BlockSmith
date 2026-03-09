@@ -4,6 +4,7 @@ import blocksmith.ui.projection.GraphProjection;
 import blocksmith.ui.geom.GeomUtils;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.graph.block.BlockModel;
+import blocksmith.ui.graph.block.MethodBlockNew;
 import java.util.Collection;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -94,7 +95,7 @@ public class ZoomService {
         }
     }
 
-    private void zoomToFit(Collection<BlockModel> blocks) {
+    private void zoomToFit(Collection<MethodBlockNew> blocks) {
 
         Scene scene = view.getScene();
         if (blocks.isEmpty()) {

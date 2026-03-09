@@ -24,6 +24,9 @@ public class BlockFactory {
             throw new IllegalArgumentException("Creation aborted, block type unknown: " + type);
         }
         var def = oDef.get();
+        if (def.type().equals("List.get")) {
+            System.out.println(id);
+        }
         var blockType = def.type();
         var ports = createPorts(def);
         var params = createParams(def);

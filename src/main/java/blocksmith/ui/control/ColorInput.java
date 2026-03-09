@@ -14,12 +14,14 @@ import javafx.scene.paint.Color;
  */
 public class ColorInput extends InputControl<String> {
 
-    private final ChangeListener<Color> fxListener = (b, o, n) -> onValueChangedByUser(n.toString());
+    private final ChangeListener<Color> fxListener = (b, o, n) -> valueChangedByUser(n.toString());
     private ObjectProperty<Color> value;
 
     private ColorBox picker;
 
-    public ColorInput() {
+    public ColorInput(String valueId) {
+        super(valueId);
+        
         picker = new ColorBox();
         value = picker.customColorProperty();
         value.addListener(fxListener);
@@ -45,7 +47,7 @@ public class ColorInput extends InputControl<String> {
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         value.removeListener(fxListener);
     }
 
@@ -54,13 +56,10 @@ public class ColorInput extends InputControl<String> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public InputControl<String> copy() {
-        var control = new ColorInput();
-        if (isEditable()) {
-            control.setValue(control.getValue());
-        }
-        return control;
+    
+        @Override
+    protected void onValueChanged(String newValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

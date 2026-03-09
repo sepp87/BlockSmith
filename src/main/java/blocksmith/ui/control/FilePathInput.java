@@ -9,7 +9,9 @@ import javafx.stage.FileChooser;
  */
 public class FilePathInput extends AbstractPathInput {
 
-    public FilePathInput() {
+    public FilePathInput(String valueId) {
+        super(valueId);
+        
         textField.setPromptText("Open a file...");
 
     }
@@ -28,13 +30,6 @@ public class FilePathInput extends AbstractPathInput {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public InputControl<String> copy() {
-        var control = new FilePathInput();
-        if(isEditable()) {
-            control.setValue(this.getValue());
-        }
-        return control;
-    }
+
 
 }

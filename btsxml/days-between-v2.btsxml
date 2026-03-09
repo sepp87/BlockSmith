@@ -7,9 +7,9 @@
         <block type="Input.string" id="d4b6778c-516c-4871-836d-d4c894fabab3" x="108.42857142857149" y="327.4285714285719"/>
     </blocks>
     <connections>
-        <connection fromBlock="343ba93b-e095-4f88-89fc-29a1c4cbe08e" fromPort="Object" toBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" toPort="end"/>
-        <connection fromBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" fromPort="long" toBlock="09a8e1dd-3d51-4214-a591-0205b45647ff" toPort="text"/>
-        <connection fromBlock="d4b6778c-516c-4871-836d-d4c894fabab3" fromPort="Object" toBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" toPort="start"/>
+        <connection fromBlock="343ba93b-e095-4f88-89fc-29a1c4cbe08e" fromPort="value" toBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" toPort="end"/>
+        <connection fromBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" fromPort="value" toBlock="09a8e1dd-3d51-4214-a591-0205b45647ff" toPort="text"/>
+        <connection fromBlock="d4b6778c-516c-4871-836d-d4c894fabab3" fromPort="value" toBlock="eda97a3e-8482-4d9e-aac6-f5c8905ed65c" toPort="start"/>
     </connections>
     <values>
         <value block="343ba93b-e095-4f88-89fc-29a1c4cbe08e" id="string" value="2023-01-31"/>

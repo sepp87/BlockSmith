@@ -1,5 +1,6 @@
 package blocksmith.ui.graph.port;
 
+import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.value.Port;
@@ -56,7 +57,7 @@ public class PortModel extends BaseModel {
         this.direction = direction;
         this.valueType = valueType;
 
-        this.labelProperty().set(valueName);
+        this.labelProperty().set(GraphLogFmt.valueType(valueType)+  " :: " +valueName);
         this.portType = portType;
         this.index = (portType == PortType.INPUT) ? block.getInputPorts().size() : block.getOutputPorts().size();
         this.block = block;
@@ -66,8 +67,13 @@ public class PortModel extends BaseModel {
         data.addListener(dataListener);
     }
     
+    public String valueId() {
+        return valueId;
+    }
+    
     public void updateValueType(ValueType valueType) {
         this.valueType = valueType;
+        labelProperty().set(GraphLogFmt.valueType(valueType) + " :: " + valueName);
     }
 
     @Override
@@ -224,7 +230,7 @@ public class PortModel extends BaseModel {
         return new PortRef(
                 BlockId.from(getBlock().getId()),
                 portType == PortType.INPUT ? Port.Direction.INPUT : Port.Direction.OUTPUT,
-                labelProperty().get()
+                valueId
         );
     }
 }

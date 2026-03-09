@@ -13,6 +13,7 @@ import btsxml.GroupTag;
 import btsxml.ObjectFactory;
 import blocksmith.ui.graph.block.BlockModel;
 import blocksmith.ui.graph.base.BaseModel;
+import blocksmith.ui.graph.block.MethodBlockNew;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class BlockGroupModel extends BaseModel {
         labelProperty().set("Name group here...");
     }
 
-    public void updateFrom(Group group, Map<BlockId, BlockModel> blockIndex) {
+    public void updateFrom(Group group, Map<BlockId, MethodBlockNew> blockIndex) {
         var oldBlocks = new ArrayList<>(internalBlocks.stream().map(b -> BlockId.from(b.getId())).toList());
         var newBlocks = new ArrayList<>(group.blocks());
 

@@ -9,8 +9,8 @@ import javafx.scene.Node;
  */
 public class DateInput extends InputControl<String> {
 
-    public DateInput() {
-
+    public DateInput(String valueId) {
+        super(valueId);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class DateInput extends InputControl<String> {
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -38,13 +38,9 @@ public class DateInput extends InputControl<String> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public InputControl<String> copy() {
-        var control = new DateInput();
-        if(isEditable()) {
-            control.setValue(this.getValue());
-        }
-        return control;
-    }
 
+    @Override
+    protected void onValueChanged(String newValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

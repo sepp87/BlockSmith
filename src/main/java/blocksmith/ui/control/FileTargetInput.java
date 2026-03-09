@@ -9,7 +9,8 @@ import javafx.stage.FileChooser;
  */
 public class FileTargetInput extends AbstractPathInput {
 
-    public FileTargetInput() {
+    public FileTargetInput(String valueId) {
+        super(valueId);
         textField.setPromptText("Save to file...");
         textField.setEditable(false);
     }
@@ -26,16 +27,6 @@ public class FileTargetInput extends AbstractPathInput {
     @Override
     protected void onEditableChanged(boolean isEditable) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-
-    @Override
-    public InputControl<String> copy() {
-        var control = new FileTargetInput();
-        if (isEditable()) {
-            control.setValue(this.getValue());
-        }
-        return control;
     }
 
 }

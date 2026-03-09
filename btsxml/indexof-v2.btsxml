@@ -6,7 +6,7 @@
         <block type="String.indexOf" id="b427e815-0f8e-454c-9a13-189c3efefdd0" x="516.1666259765625" y="229.9887237548828"/>
     </blocks>
     <connections>
-        <connection fromBlock="dc8a7abd-a8c9-411b-b886-d60f3e19cd15" fromPort="Object" toBlock="b427e815-0f8e-454c-9a13-189c3efefdd0" toPort="string"/>
+        <connection fromBlock="dc8a7abd-a8c9-411b-b886-d60f3e19cd15" fromPort="value" toBlock="b427e815-0f8e-454c-9a13-189c3efefdd0" toPort="string"/>
     </connections>
     <values>
         <value block="dc8a7abd-a8c9-411b-b886-d60f3e19cd15" id="string" value="abcadsfasdf"/>

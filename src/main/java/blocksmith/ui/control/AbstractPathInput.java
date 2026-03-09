@@ -17,14 +17,16 @@ import javafx.scene.layout.HBox;
  */
 public abstract class AbstractPathInput extends InputControl<String> {
 
-    private final ChangeListener<String> fxListener = (b, o, n) -> onValueChangedByUser(n);
+    private final ChangeListener<String> fxListener = (b, o, n) -> valueChangedByUser(n);
     private final StringProperty value = new SimpleStringProperty();
 
     private HBox root;
     protected TextField textField;
     protected BaseButton button;
 
-    public AbstractPathInput() {
+    public AbstractPathInput(String valueId) {
+        super(valueId);
+        
         root = new HBox(5);
 
         textField = new TextField();
@@ -65,11 +67,16 @@ public abstract class AbstractPathInput extends InputControl<String> {
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         textField.textProperty().unbindBidirectional(value);
         button.setOnAction(null);
         root.setOnMouseEntered(null);
         value.removeListener(fxListener);
+    }
+
+    @Override
+    protected void onValueChanged(String newValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

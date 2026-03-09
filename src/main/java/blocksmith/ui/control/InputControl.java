@@ -5,7 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
+import javafx.util.Subscription;
 
 /**
  *
@@ -13,45 +20,77 @@ import javafx.scene.Node;
  */
 public abstract class InputControl<T> {
 
+    private final String valueId;
     private boolean editable = true;
-    
+
+    protected final StringProperty value = new SimpleStringProperty();
+    protected final ChangeListener<String> valueListener = (b, o, n) -> onValueChanged(n);
+
     private final List<Consumer<String>> listeners = new ArrayList<>();
-    
+
+    public InputControl(String valueId) {
+        this.valueId = valueId;
+
+        value.addListener(valueListener);
+    }
+
+    public String valueId() {
+        return valueId;
+    }
+
     public abstract Node node();
+
+    public final ReadOnlyStringProperty valueProperty() {
+        return value;
+    }
+
+    public final void bindValuePropertyTo(ObservableValue<?> target) {
+        var binding = Bindings.createStringBinding(() -> format(target.getValue()), target);
+        value.bind(binding);
+    }
+
+    private String format(Object raw) {
+        return raw == null ? null : raw.toString();
+    }
+
+    public final void unbindValueProperty() {
+        value.unbind();
+    }
+
+//    public final String getValue() {
+//        return value.get();
+//    }
 
     public abstract String getValue();
 
     public abstract void setValue(String newVal);
 
-    public abstract void dispose();
+    protected abstract void onValueChanged(String newValue);
 
     public final void setOnValueChangedByUser(Consumer<String> listener) {
+        listeners.clear();
         listeners.add(listener);
     }
-    
-    protected final void onValueChangedByUser(String value) {
-        if(isEditable()) {
-//                    System.out.println("InputControl.onValueChangedByUser " + t + " " + this.getClass().getSimpleName());
 
+    protected final void valueChangedByUser(String value) {
+        if (isEditable()) {
             listeners.forEach(c -> c.accept(value));
         }
     }
 
     public void setEditable(boolean isEditable) {
-        if(editable == isEditable) {
+        if (editable == isEditable) {
             return;
         }
         editable = isEditable;
         onEditableChanged(isEditable);
     }
-    
+
     protected abstract void onEditableChanged(boolean isEditable);
 
     public boolean isEditable() {
         return editable;
     }
-
-    public abstract InputControl<T> copy();
 
     public Optional<ValueXml> serialize() {
         if (isEditable()) {
@@ -62,7 +101,12 @@ public abstract class InputControl<T> {
         return Optional.empty();
     }
 
-//    public void parseValue(String newVal) {
-//        setValue((T) newVal);
-//    }
+    public void dispose() {
+        value.removeListener(valueListener);
+        value.unbind();
+        onDispose();
+    }
+
+    protected abstract void onDispose();
+
 }

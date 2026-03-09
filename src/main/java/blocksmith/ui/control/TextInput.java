@@ -13,12 +13,13 @@ import javafx.scene.input.KeyEvent;
  */
 public class TextInput extends InputControl<String> {
 
-    private final ChangeListener<String> fxListener = (b, o, n) -> onValueChangedByUser(n);
+    private final ChangeListener<String> fxListener = (b, o, n) -> valueChangedByUser(n);
     private final TextField textField;
 
-    public TextInput() {
+    public TextInput(String valueId) {
+        super(valueId);
+        
         this.textField = new TextField();
-
         textField.setPromptText("Write here...");
         textField.setFocusTraversable(false);
         textField.setMinWidth(100);
@@ -51,7 +52,7 @@ public class TextInput extends InputControl<String> {
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         textField.textProperty().removeListener(fxListener);
         textField.setOnKeyPressed(null);
         textField.setOnMouseEntered(null);
@@ -63,13 +64,10 @@ public class TextInput extends InputControl<String> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+
     @Override
-    public InputControl<String> copy() {
-        var control = new TextInput();
-        if(isEditable()) {
-            control.setValue(this.getValue());
-        }
-        return control;
+    protected void onValueChanged(String newValue) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

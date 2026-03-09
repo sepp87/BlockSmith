@@ -2,10 +2,7 @@ package blocksmith.ui.control;
 
 import blocksmith.ui.graph.block.BlockView;
 import blocksmith.ui.icons.FontAwesomeSolid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -18,14 +15,16 @@ import javafx.scene.control.Label;
  */
 public class BooleanInput extends InputControl<Boolean> {
 
-    private final ChangeListener<Boolean> fxListener = (b, o, n) -> onValueChangedByUser(n.toString());
+    private final ChangeListener<Boolean> fxListener = (b, o, n) -> valueChangedByUser(n.toString());
     private final BooleanProperty value = new SimpleBooleanProperty(false);
 
     private Label onOffSwitch;
     private String offIcon;
     private String onIcon;
 
-    public BooleanInput() {
+    public BooleanInput(String valueId) {
+        super(valueId);
+        
         onOffSwitch = BlockView.getAwesomeIcon(FontAwesomeSolid.TOGGLE_OFF);
         offIcon = onOffSwitch.getText();
         onIcon = FontAwesomeSolid.TOGGLE_ON.unicode();
@@ -66,7 +65,7 @@ public class BooleanInput extends InputControl<Boolean> {
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
         value.removeListener(fxListener);
         onOffSwitch.setOnMouseClicked(null);
     }
@@ -76,13 +75,10 @@ public class BooleanInput extends InputControl<Boolean> {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
-    public InputControl<Boolean> copy() {
-        var control = new BooleanInput();
-        if (isEditable()) {
-            control.setValue(this.getValue());
-        }
-        return control;
-    }
+ 
 
+        @Override
+    protected void onValueChanged(String newValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
