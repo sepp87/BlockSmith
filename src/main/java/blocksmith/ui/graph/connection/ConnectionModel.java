@@ -9,7 +9,7 @@ import btsxml.ConnectionTag;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.graph.base.BaseModel;
 import blocksmith.ui.graph.port.PortType;
-import blocksmith.ui.utils.TypeCastUtils;
+import blocksmith.domain.graph.TypeCastUtils;
 
 /**
  *

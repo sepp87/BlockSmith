@@ -39,12 +39,12 @@ public class BlockFactory {
         var result = new ArrayList<Port>();
 
         for (var portDef : def.inputs()) {
-            var port = new Port(Port.Direction.INPUT, portDef.valueId(), null, portDef.valueType());
+            var port = new Port(Port.Direction.INPUT, portDef.valueId(), portDef.valueType());
             result.add(port);
         }
 
         for (var portDef : def.outputs()) {
-            var port = new Port(Port.Direction.OUTPUT, portDef.valueId(), null, portDef.valueType());
+            var port = new Port(Port.Direction.OUTPUT, portDef.valueId(), portDef.valueType());
             result.add(port);
         }
 

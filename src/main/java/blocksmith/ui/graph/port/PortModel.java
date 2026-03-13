@@ -18,7 +18,7 @@ import blocksmith.ui.graph.base.BaseModel;
 import blocksmith.ui.graph.block.BlockModel;
 import blocksmith.ui.graph.connection.ConnectionModel;
 import blocksmith.ui.utils.ObjectUtils;
-import blocksmith.ui.utils.TypeCastUtils;
+import blocksmith.domain.graph.TypeCastUtils;
 import javafx.beans.value.ChangeListener;
 
 /**

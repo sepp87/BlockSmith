@@ -1,4 +1,4 @@
-package blocksmith.ui.utils;
+package blocksmith.domain.graph;
 
 import java.util.Arrays;
 import java.util.HashMap;

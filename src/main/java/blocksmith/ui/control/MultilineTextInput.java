@@ -84,7 +84,7 @@ public class MultilineTextInput extends InputControl<Object> {
     
     protected void onEditableChanged(boolean isEditable) {
         textArea.setEditable(isEditable);
-//        updateTextArea();
+        updateTextArea();
     }
 
     private void updateTextArea() {

@@ -25,7 +25,7 @@ public class AddConnection {
 
         var fromPort = fromBlock.get().port(Port.Direction.OUTPUT, from.valueId());
         var toPort = toBlock.get().port(Port.Direction.INPUT, to.valueId());
-        
+
         if (fromPort.isEmpty() || toPort.isEmpty()) {
             throw new IllegalStateException("Referenced port does not exist. From: " + fromPort.isEmpty() + ", to: " + toPort.isEmpty());
         }
@@ -43,4 +43,7 @@ public class AddConnection {
         return graph.withConnection(connection);
 
     }
+
+
+
 }

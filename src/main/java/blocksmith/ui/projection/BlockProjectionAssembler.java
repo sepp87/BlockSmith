@@ -7,6 +7,7 @@ import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.ParamStatusResolver;
 import blocksmith.domain.graph.ValueTypeResolver;
+import blocksmith.domain.graph.ValueTypeResolver;
 import static blocksmith.domain.value.Port.Direction.INPUT;
 import blocksmith.ui.BlockModelFactory;
 import blocksmith.ui.graph.block.MethodBlockNew;
