@@ -7,7 +7,7 @@ import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.group.GroupId;
-import blocksmith.ui.BlockModelFactory;
+import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.command.workspace.DeselectAllBlocksCommand;
 import blocksmith.ui.command.workspace.AlignBottomCommand;
 import blocksmith.ui.command.workspace.AlignHorizontallyCommand;

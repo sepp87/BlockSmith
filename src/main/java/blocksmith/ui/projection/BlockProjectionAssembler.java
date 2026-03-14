@@ -7,9 +7,8 @@ import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.ParamStatusResolver;
 import blocksmith.domain.graph.ValueTypeResolver;
-import blocksmith.domain.graph.ValueTypeResolver;
 import static blocksmith.domain.value.Port.Direction.INPUT;
-import blocksmith.ui.BlockModelFactory;
+import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.graph.port.PortModel;
 import java.util.Collection;
@@ -34,10 +33,10 @@ public class BlockProjectionAssembler {
         for (var block : blocks) {
             var projection = blockFactory.create(block.type(), block.id().toString());
 
-            projection.setActive(true);
             updatePorts(projection, block, graph);
             updateBlock(projection, block, graph);
             updateInputControls(projection, block, graph);
+            projection.setActive(true);
 
             result.put(block.id(), projection);
         }

@@ -1,4 +1,4 @@
-package blocksmith.ui;
+package blocksmith.ui.graph.block;
 
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.control.TextInput;
@@ -8,6 +8,7 @@ import blocksmith.app.block.BlockFuncLibrary;
 import blocksmith.domain.value.ParamDef;
 import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.ParamInput.NumericType;
+import blocksmith.domain.value.PortDef;
 import blocksmith.domain.value.ValueType;
 import blocksmith.ui.control.BooleanInput;
 import blocksmith.ui.control.ChoiceInput;
@@ -20,6 +21,9 @@ import blocksmith.ui.control.FileTargetInput;
 import blocksmith.ui.control.IntegerSliderInput;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.control.PasswordInput;
+import blocksmith.ui.display.GenericDisplay;
+import blocksmith.ui.display.ValueDisplay;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -56,10 +60,12 @@ public class BlockModelFactory {
 
         for (var input : def.inputs()) {
             block.addInputPort(input.valueId(), input.valueName(), input.valueType(), ValueType.toDataType(input.valueType()));
+            valueDisplayFrom(input).ifPresent(display -> block.addValueDisplay(input.direction(), input.valueId(), display));
         }
 
         for (var output : def.outputs()) {
             block.addOutputPort(output.valueId(), output.valueName(), output.valueType(), ValueType.toDataType(output.valueType()));
+            valueDisplayFrom(output).ifPresent(display -> block.addValueDisplay(output.direction(), output.valueId(), display));
         }
 
         for (var param : def.params()) {
@@ -71,6 +77,17 @@ public class BlockModelFactory {
         block.isListWithUnknownReturnType = def.outputs().getFirst().valueType() instanceof ValueType.ListType listType && listType.elementType() instanceof ValueType.VarType;
 
         return block;
+    }
+
+    private static Optional<ValueDisplay> valueDisplayFrom(PortDef port) {
+
+        if (!port.display()) {
+            return Optional.empty();
+        }
+
+        var display = new GenericDisplay();
+        return Optional.of(display);
+
     }
 
     private static InputControl<?> inputControlFrom(ParamDef param) {

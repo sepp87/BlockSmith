@@ -73,14 +73,6 @@ public final class Block {
         return withParamUpdated(valueId, (param) -> param.withValue(value));
     }
 
-    public Block withParamActivated(String valueId) {
-        return withParamUpdated(valueId, Param::activate);
-    }
-
-    public Block withParamDeactivated(String valueId) {
-        return withParamUpdated(valueId, Param::deactivate);
-    }
-
     private Block withParamUpdated(String valueId, Function<Param, Param> func) {
 
         var updated = new ArrayList<Param>();

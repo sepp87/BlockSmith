@@ -2,6 +2,7 @@ package blocksmith.infra.xml;
 
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
+import blocksmith.domain.graph.ParamStatusResolver;
 import blocksmith.xml.v2.ObjectFactory;
 import blocksmith.xml.v2.ValueXml;
 import blocksmith.xml.v2.ValuesXml;
@@ -51,13 +52,16 @@ public class ValueXmlMapper {
 
         var values = new ArrayList<ValueXml>();
         blocks.forEach(b -> b.params().forEach(p -> {
-            if (p.isActive()) {
+            
+            // TBD decide if values should be saved regardless of param status
+//            var isActive = ParamStatusResolver.isActive(graph, b.id(), p.valueId());
+//            if (isActive) {
                 var valueXml = xmlFactory.createValueXml();
                 valueXml.setBlock(b.id().toString());
                 valueXml.setId(p.valueId());
                 valueXml.setValue(p.value());
                 values.add(valueXml);
-            }
+//            }
         }));
         result.getValue().addAll(values);
 

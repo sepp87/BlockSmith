@@ -10,7 +10,7 @@ import static blocksmith.domain.graph.ValueTypeResolver.varTypeWithin;
 import blocksmith.domain.value.Param;
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.ValueType;
-import blocksmith.ui.BlockModelFactory;
+import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.projection.GraphProjection.GraphProjectionState;
 import java.util.ArrayList;
@@ -132,14 +132,16 @@ public class GraphProjectionAssembler {
 
     private Collection<PortRef> connectedPortsDownstream(GraphDiff diff) {
         var result = new HashSet<PortRef>();
-        
+
         diff.addedConnections().forEach(c -> result.add(c.to()));
 
         var removedBlocks = diff.removedBlocks().stream().map(Block::id).toList();
-        diff.removedConnections().stream()
-                .filter(c -> !removedBlocks.contains(c.to().blockId()) || !removedBlocks.contains(c.from().blockId()))
-                .forEach(c -> result.add(c.to()));
-        
+        diff.removedConnections().forEach(c -> {
+            if (!removedBlocks.contains(c.to().blockId())) {
+                result.add(c.to());
+            }
+        });
+
         return Set.copyOf(result);
     }
 
@@ -175,6 +177,5 @@ public class GraphProjectionAssembler {
 
         return result;
     }
- 
 
 }

@@ -1,10 +1,8 @@
 package btslib.spreadsheet;
 
 import blocksmith.domain.value.ValueType;
-import blocksmith.domain.value.ValueType.SimpleType;
 import javafx.scene.layout.Region;
 import blocksmith.ui.graph.block.BlockModel;
-import blocksmith.ui.workspace.WorkspaceSession;
 import blocksmith.infra.blockloader.annotations.Block;
 
 /**

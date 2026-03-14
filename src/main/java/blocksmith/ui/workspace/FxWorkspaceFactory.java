@@ -4,7 +4,7 @@ import blocksmith.ui.projection.GraphProjection;
 import blocksmith.ui.projection.GraphProjectionAssembler;
 import blocksmith.app.outbound.WorkspaceFactory;
 import blocksmith.ui.AlignmentService;
-import blocksmith.ui.BlockModelFactory;
+import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.WorkspaceSessionFactory;
 import blocksmith.ui.command.AppCommandFactory;
 import blocksmith.ui.command.WorkspaceCommandBus;

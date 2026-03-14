@@ -5,13 +5,17 @@ import blocksmith.ui.control.InputControl;
 import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.PortRef;
-import blocksmith.domain.value.Port;
+import blocksmith.domain.graph.Graph;
+import blocksmith.domain.graph.ValueTypeResolver;
+import blocksmith.domain.value.Port.Direction;
 import static blocksmith.domain.value.Port.Direction.INPUT;
 import blocksmith.domain.value.ValueType;
 import blocksmith.exec.BlockExecutor;
 import blocksmith.exec.BlockFunc;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.control.NumberSliderInput;
+import blocksmith.ui.display.ValueInspector;
+import blocksmith.ui.display.ValueDisplay;
 import blocksmith.xml.v2.ValueXml;
 import blocksmith.ui.icons.FontAwesomeSolid;
 import java.util.HashSet;
@@ -29,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -49,6 +54,7 @@ public class MethodBlockNew extends BlockModel {
     private final BlockFunc func;
     private Block domain;
     private final Map<String, InputControl<?>> inputControls = new HashMap<>();
+    private final Map<String, ValueInspector> valueInspectors = new HashMap<>();
     private Pane container;
     private ProgressIndicator spinner;
     private Label label;
@@ -80,24 +86,23 @@ public class MethodBlockNew extends BlockModel {
         }
     }
 
-    public void updateInputControlsFrom(Block update) {
-        for (var param : update.params()) {
-            System.out.println(param.valueId() + ": " + param.isActive() + ": " + param.value());
-            if (!param.isActive()) {
-                continue;
-            }
-            var control = inputControls.get(param.valueId());
-            control.setValue(param.value());
-        }
-    }
-
-    public void addInputControl(String name, InputControl control) {
-        inputControls.put(name, control);
+    public void addInputControl(String valueId, InputControl control) {
+        inputControls.put(valueId, control);
         if (control instanceof MultilineTextInput) {
             resizableProperty().set(true);
         }
-//        control.setOnValueChangedByUser(value -> processSafely());
+    }
 
+    public void addValueDisplay(Direction direction, String valueId, ValueDisplay display) {
+        var inspector = new ValueInspector(direction, valueId, display);
+        valueInspectors.put(valueId, inspector);
+        resizableProperty().set(true);
+
+        var ports = direction == INPUT ? getInputPorts() : getOutputPorts();
+        ports.stream()
+                .filter(p -> p.valueId().equals(valueId))
+                .findFirst()
+                .ifPresent(m -> m.dataProperty().addListener((b,o,n) -> inspector.setData(n)));
     }
 
     public BlockDef getBlockDef() {
@@ -106,6 +111,10 @@ public class MethodBlockNew extends BlockModel {
 
     public Map<String, InputControl<?>> getInputControls() {
         return inputControls;
+    }
+
+    public Map<String, ValueInspector> getValueInspectors() {
+        return valueInspectors;
     }
 
     @Override
@@ -121,6 +130,15 @@ public class MethodBlockNew extends BlockModel {
             localContainer.getChildren().addAll(controls);
             if (controls.size() == 1) {
                 VBox.setVgrow(controls.get(0), Priority.ALWAYS);
+            }
+            container = localContainer;
+
+        } else if (!valueInspectors.isEmpty()) {
+            VBox localContainer = new VBox();
+            var displays = valueInspectors.values().stream().map(ValueInspector::node).toList();
+            localContainer.getChildren().addAll(displays);
+            if (displays.size() == 1) {
+                VBox.setVgrow(displays.get(0), Priority.ALWAYS);
             }
             container = localContainer;
 
@@ -164,8 +182,6 @@ public class MethodBlockNew extends BlockModel {
 //            }
 //            control.setEditable(false);
 //        }
-
-
     }
 
     @Override
@@ -252,7 +268,6 @@ public class MethodBlockNew extends BlockModel {
 //        }
 //
 //        Platform.runLater(() -> updates.forEach(Runnable::run));
-
         var parameters = controlData.length != 0 ? controlData : inputData; // TODO refactor as soon as inputs and controls start to mix
 
         var result = new BlockExecutor(def, func, isListOperator).invoke(parameters);

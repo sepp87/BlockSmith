@@ -1,7 +1,7 @@
 package blocksmith.ui;
 
 import blocksmith.App;
-import blocksmith.ui.BlockModelFactory;
+import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.SaveDocument;
 import blocksmith.app.workspace.WorkspaceLifecycle;
 import blocksmith.app.workspace.WorkspaceSessionFactory;

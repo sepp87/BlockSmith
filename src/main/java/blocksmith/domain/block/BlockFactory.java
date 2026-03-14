@@ -55,7 +55,7 @@ public class BlockFactory {
         var result = new ArrayList<Param>();
 
         for (var paramDef : def.params()) {
-            var param = new Param(paramDef.valueId(), null, true);
+            var param = new Param(paramDef.valueId(), null);
             result.add(param);
         }
 

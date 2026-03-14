@@ -10,10 +10,12 @@ public class Notes {
 
 // TODO
 // - DONE Copy/Paste (todo paste point)
+// - DONE Typing
 // - Pull-based execution
-// - Typing
 // - default "0" for range
 // - Refactor for GraphProjectionMapper to not needing to set blocks and connections to active
+// - boolean block not working
+// - resize handle jumping 10 pixels up after resize 
 //
 //
 // Invariants
@@ -89,3 +91,4 @@ public class Notes {
 //
 // BIG UI BUGS
 // Translate scene coordinates to local coordinates of selection rectangle parent container
+// 

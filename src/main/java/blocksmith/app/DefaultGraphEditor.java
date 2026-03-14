@@ -89,46 +89,46 @@ public class DefaultGraphEditor implements GraphEditor {
 
     public void addBlock(String type, double x, double y) {
         var id = BlockId.create();
-        mutate((graph) -> addBlock.execute(graph, id, type, x, y));
         LOGGER.log(Level.INFO, "Add block: {0} {1}",
                 new Object[]{GraphLogFmt.block(id), type}
         );
+        mutate((graph) -> addBlock.execute(graph, id, type, x, y));
     }
 
     public void removeBlock(BlockId id) {
-        mutate((graph) -> graph.withoutBlock(id));
         LOGGER.log(Level.INFO, "Remove block: {0}", GraphLogFmt.block(id));
+        mutate((graph) -> graph.withoutBlock(id));
     }
 
     public void removeAllBlocks(Collection<BlockId> blocks) {
-        mutate((graph) -> graph.withoutBlocks(blocks));
         LOGGER.log(Level.INFO, "Remove all blocks: {0}", GraphLogFmt.blockIds(blocks));
+        mutate((graph) -> graph.withoutBlocks(blocks));
     }
 
     public void updateParamValue(BlockId id, String valueId, String value) {
-        mutate((graph) -> graph.updateParamValue(id, valueId, value));
         LOGGER.log(Level.INFO, "Set param value for block: {0}.{1}={2}",
                 new Object[]{GraphLogFmt.block(id), valueId, value}
         );
+        mutate((graph) -> graph.updateParamValue(id, valueId, value));
     }
 
     public void renameBlock(BlockId id, String label) {
-        mutate((graph) -> graph.renameBlock(id, label));
         LOGGER.log(Level.INFO, "Rename block: {0}={1}",
                 new Object[]{GraphLogFmt.block(id), label}
         );
+        mutate((graph) -> graph.renameBlock(id, label));
     }
 
     public void moveBlocks(Collection<BlockPosition> positions) {
-        mutate((graph) -> graph.moveBlocks(positions));
         LOGGER.log(Level.INFO, "Move blocks: {0}", GraphLogFmt.movedBlocks(positions));
+        mutate((graph) -> graph.moveBlocks(positions));
     }
 
     public void resizeBlock(BlockId id, double width, double height) {
-        mutate((graph) -> graph.resizeBlock(id, width, height));
         LOGGER.log(Level.INFO, "Resize block: {0}, width: {1}, height: {2} ",
                 new Object[]{GraphLogFmt.block(id), width, height}
         );
+        mutate((graph) -> graph.resizeBlock(id, width, height));
     }
 
     public void addConnection(PortRef from, PortRef to) {
@@ -138,19 +138,19 @@ public class DefaultGraphEditor implements GraphEditor {
     }
 
     public void removeConnection(Connection connection) {
-        mutate((graph) -> removeConnection.execute(graph, connection));
         LOGGER.log(Level.INFO, "Remove connection: {0}", GraphLogFmt.connection(connection));
+        mutate((graph) -> removeConnection.execute(graph, connection));
     }
 
     public void addGroup(String label, Collection<BlockId> blocks) {
         var id = GroupId.create();
-        mutate((graph) -> addGroup.execute(graph, id, label, blocks));
         LOGGER.log(Level.INFO, "Add group: {0}", GraphLogFmt.blockIds(blocks));
+        mutate((graph) -> addGroup.execute(graph, id, label, blocks));
     }
 
     public void removeGroup(GroupId id) {
-        mutate((graph) -> graph.withoutGroup(id));
         LOGGER.log(Level.INFO, "Remove group: {0}", GraphLogFmt.group(id));
+        mutate((graph) -> graph.withoutGroup(id));
     }
 
     /**
@@ -158,8 +158,8 @@ public class DefaultGraphEditor implements GraphEditor {
      * @param blocks to copy to the shared copy memory
      */
     public void copyBlocks(Collection<BlockId> blocks) {
-        copyBlocks.execute(graph, blocks);
         LOGGER.log(Level.INFO, "Copy blocks: {0}", GraphLogFmt.blockIds(blocks));
+        copyBlocks.execute(graph, blocks);
     }
 
     /**

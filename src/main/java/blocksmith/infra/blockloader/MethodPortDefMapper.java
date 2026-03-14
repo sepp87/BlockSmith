@@ -2,6 +2,7 @@ package blocksmith.infra.blockloader;
 
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.PortDef;
+import blocksmith.infra.blockloader.annotations.Display;
 import blocksmith.ui.graph.port.AutoConnectable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -38,6 +39,7 @@ public class MethodPortDefMapper {
                     var valueType = ValueTypeMappingUtils.fromMethodParameter(p);
                     var valueId = value != null && !value.id().isEmpty() ? value.id() : p.getName();
 
+                    var display = p.getAnnotation(Display.class) != null;
                     var portDef = new PortDef(
                             valueId,
                             argIndex,
@@ -45,7 +47,7 @@ public class MethodPortDefMapper {
                             Port.Direction.INPUT,
                             valueType,
                             isAutoConnectable,
-                            false);
+                            display);
 
                     result.add(portDef);
                 }
@@ -64,7 +66,6 @@ public class MethodPortDefMapper {
 
     public static PortDef outputDefFromReturnType(Method method) throws ReflectiveOperationException {
         Class<?> returnType = method.getReturnType();
-
 
         boolean isAutoConnectable = AutoConnectable.class.isAssignableFrom(returnType);
 

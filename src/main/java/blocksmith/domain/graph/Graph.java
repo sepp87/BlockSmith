@@ -179,11 +179,7 @@ public final class Graph {
         var toBlock = connection.to().blockId();
         var toValue = connection.to().valueId();
 
-        var updatedBlocks = blocks.values().stream()
-                .map(b -> b.id().equals(toBlock) ? b.withParamDeactivated(toValue) : b)
-                .toList();
-
-        return replace(updatedBlocks, updatedConnections, groups.values());
+        return replace(blocks.values(), updatedConnections, groups.values());
     }
 
     public Graph withoutConnection(Connection connection) {
@@ -194,11 +190,7 @@ public final class Graph {
         var toBlock = connection.to().blockId();
         var toValue = connection.to().valueId();
 
-        var updatedBlocks = blocks.values().stream()
-                .map(b -> b.id().equals(toBlock) ? b.withParamActivated(toValue) : b)
-                .toList();
-
-        return replace(updatedBlocks, updatedConnections, groups.values());
+        return replace(blocks.values(), updatedConnections, groups.values());
     }
 
     public Optional<Group> group(GroupId id) {

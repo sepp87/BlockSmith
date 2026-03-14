@@ -1,6 +1,7 @@
 package btslib.method;
 
 import blocksmith.infra.blockloader.annotations.Block;
+import blocksmith.infra.blockloader.annotations.Display;
 
 /**
  *
@@ -26,4 +27,12 @@ public class ObjectMethods {
         return object.toString();
     }
 
+    @Block(
+            type = "Object.inspect",
+            category = "Core",
+            description = "Inspect the incoming value as plain text.")
+    public static <T> T inspect(@Display T object) {
+        return object;
+    }
+    
 }

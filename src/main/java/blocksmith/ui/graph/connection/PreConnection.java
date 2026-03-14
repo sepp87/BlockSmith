@@ -1,7 +1,6 @@
 package blocksmith.ui.graph.connection;
 
-import blocksmith.ui.command.CommandDispatcher;
-import blocksmith.ui.command.AppCommandFactory;
+import blocksmith.domain.graph.ConnectionPolicy;
 import blocksmith.ui.command.WorkspaceCommandBus;
 import blocksmith.ui.graph.port.PortModel;
 import javafx.event.EventHandler;
@@ -12,7 +11,6 @@ import javafx.scene.shape.Line;
 import blocksmith.ui.graph.port.PortController;
 import blocksmith.ui.graph.port.PortType;
 import blocksmith.ui.graph.port.PortView;
-import blocksmith.ui.workspace.FxWorkspaceHandle;
 import blocksmith.ui.workspace.WorkspaceController;
 import blocksmith.ui.workspace.WorkspaceSession;
 import blocksmith.ui.workspace.WorkspaceView;
@@ -32,7 +30,7 @@ public class PreConnection extends Line {
 
     private final PortController startPortController;
 
-    public PreConnection(WorkspaceCommandBus commands, WorkspaceSession session,  WorkspaceController workspaceController, PortController startPortController) {
+    public PreConnection(WorkspaceCommandBus commands, WorkspaceSession session, WorkspaceController workspaceController, PortController startPortController) {
         this.commands = commands;
         this.session = session;
         this.workspaceController = workspaceController;
@@ -88,14 +86,16 @@ public class PreConnection extends Line {
          * Check if the data type from the sending port is the same or a sub
          * class of the receiving port.
          */
-        if (ConnectionModel.isEligible(startPortModel, endPortModel)) {
+        var fromPort = endPortModel.getPortType() == PortType.OUTPUT ? endPortModel : startPortModel;
+        var toPort = startPortModel.getPortType() == PortType.INPUT ? startPortModel : endPortModel;
+        
+        if(ConnectionPolicy.isConnectable(session.graphSnapshot(),fromPort.toDomain(), toPort.toDomain())) {
+//        if (ConnectionModel.isEligible(startPortModel, endPortModel)) {
             /**
              * Make a new connection and remove all the existing connections
              * Where is multi connect?
              */
 
-            var fromPort = endPortModel.getPortType() == PortType.OUTPUT ? endPortModel : startPortModel;
-            var toPort = startPortModel.getPortType() == PortType.INPUT ? startPortModel : endPortModel;
             var command = commands.factory().createAddConnectionCommand(fromPort.toDomain(), toPort.toDomain());
             commands.execute(command);
 

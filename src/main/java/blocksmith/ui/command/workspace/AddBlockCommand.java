@@ -1,6 +1,6 @@
 package blocksmith.ui.command.workspace;
 
-import blocksmith.ui.BlockModelFactory;
+import blocksmith.ui.graph.block.BlockModelFactory;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Point2D;
