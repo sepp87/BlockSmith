@@ -89,10 +89,7 @@ public class MethodPortDefMapper {
             return portDef;
         } catch (Exception e) {
             throw new IllegalArgumentException(
-                    "OUTPUT of block definition unknown: "
-                    + method.getClass().getSimpleName() + "."
-                    + method.getName() + "() "
-                    + returnType.getSimpleName(), e);
+                    "OUTPUT of block definition unknown. " + e.getMessage());
         }
 
     }

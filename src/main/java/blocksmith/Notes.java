@@ -11,12 +11,19 @@ public class Notes {
 // TODO
 // - DONE Copy/Paste (todo paste point)
 // - DONE Typing
+// - DONE Object.type and Object.class not allowed
+// - DONE boolean block not working
+// - IN PROGRESS sliders enable mix, max and step
+// - only resolve upstream if connection replaces existing (or better, omit connection that is going to be replaced
+// - resize handle jumping 10 pixels up after resize, and after connecting
+// - text area padding on left
+// - rename label of sliders throws exception
+
 // - Pull-based execution
 // - default "0" for range
 // - Refactor for GraphProjectionMapper to not needing to set blocks and connections to active
-// - boolean block not working
-// - resize handle jumping 10 pixels up after resize 
-//
+// - TBD - when port inactive, inspection block should not display null, but nothing, add active property or clear method?
+
 //
 // Invariants
 // - valueId is unique within inputs/params

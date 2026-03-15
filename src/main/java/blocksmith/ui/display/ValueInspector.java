@@ -22,7 +22,7 @@ public class ValueInspector {
         this.valueId = valueId;
         this.display = display;
     }
-    
+
     public Direction direction() {
         return direction;
     }
@@ -33,11 +33,11 @@ public class ValueInspector {
 
     public void setData(Object object) {
         current = 0;
-        
-        if(object instanceof List<?> list) {
+
+        if (object instanceof List<?> list) {
             values = list;
         } else {
-            values = List.of(object);
+            values = object == null ? List.of() : List.of(object);
         }
         update();
     }
@@ -48,10 +48,10 @@ public class ValueInspector {
 
         } else if (display instanceof ValueDisplay.SingleValue singleDisplay) {
             singleDisplay.render(values.get(current));
-            
+
         }
     }
-    
+
     public Node node() {
         return display.node();
     }

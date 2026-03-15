@@ -25,10 +25,7 @@ public class FilePathInput extends AbstractPathInput {
         return file;
     }
 
-    @Override
-    protected void onEditableChanged(boolean isEditable) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+
 
 
 

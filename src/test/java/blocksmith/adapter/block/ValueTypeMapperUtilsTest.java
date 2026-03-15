@@ -49,6 +49,10 @@ public class ValueTypeMapperUtilsTest {
 
     }
 
+    public static void clazz(Class<?> clazz) {
+
+    }
+
     @Test
     public void testValueType_WhenString_ThenSimpleTypeOfString() {
         System.out.println("testValueType_WhenString_ThenSimpleTypeOfString");
@@ -95,6 +99,14 @@ public class ValueTypeMapperUtilsTest {
         var parameter = staticMethods.get("t").getParameters()[0];
         var type = ValueTypeMappingUtils.fromMethodParameter(parameter);
         Assertions.assertTrue(type instanceof VarType vt && vt.name().equals("T"));
+    }
+
+    @Test
+    public void testValueType_WhenClass_ThenSimpleTypeOfClass() {
+        System.out.println("testValueType_WhenClass_ThenSimpleTypeOfClass");
+        var parameter = staticMethods.get("clazz").getParameters()[0];
+        var type = ValueTypeMappingUtils.fromMethodParameter(parameter);
+        Assertions.assertTrue(type instanceof SimpleType st && st.raw().equals(Class.class));
     }
 
 }

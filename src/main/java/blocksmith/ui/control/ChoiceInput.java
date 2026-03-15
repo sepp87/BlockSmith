@@ -78,14 +78,5 @@ public class ChoiceInput extends InputControl<String> {
         value.removeListener(fxListener);
     }
 
-    @Override
-    protected void onEditableChanged(boolean isEditable) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
-
-    @Override
-    protected void onValueChanged(String newValue) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

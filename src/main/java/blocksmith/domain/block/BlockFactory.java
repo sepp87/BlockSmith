@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class BlockFactory {
 
+    private static final String DEFAULT_VALUE = null;
     private final BlockDefLibrary library;
 
     public BlockFactory(BlockDefLibrary library) {
@@ -24,9 +25,6 @@ public class BlockFactory {
             throw new IllegalArgumentException("Creation aborted, block type unknown: " + type);
         }
         var def = oDef.get();
-        if (def.type().equals("List.get")) {
-            System.out.println(id);
-        }
         var blockType = def.type();
         var ports = createPorts(def);
         var params = createParams(def);
@@ -55,7 +53,8 @@ public class BlockFactory {
         var result = new ArrayList<Param>();
 
         for (var paramDef : def.params()) {
-            var param = new Param(paramDef.valueId(), null);
+            var param = new Param(paramDef.valueId(), DEFAULT_VALUE, paramDef.input());
+            // TODO replace DEFAULT_VALUE with paramDef.defaultValue()
             result.add(param);
         }
 

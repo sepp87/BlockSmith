@@ -8,6 +8,8 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import blocksmith.infra.blockloader.annotations.Value;
+import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  *
@@ -21,15 +23,15 @@ public class MethodParamDefMapper {
         for (Parameter parameter : method.getParameters()) {
             var value = parameter.getAnnotation(Value.class);
             var isParam = value != null && value.source() != Value.Source.PORT;
+            var isString = parameter.getType() == String.class;
 
             // TODO throw exception for unsupported param data types
             if (isParam) {
 
                 var valueName = parameter.getName();
                 var valueId = !value.id().isEmpty() ? value.id() : valueName;
-                var dataType = parameter.getType();
                 var valueType = ValueTypeMappingUtils.fromMethodParameter(parameter);
-                var input = paramInputFrom(value, dataType, method);
+                var input = paramInputFrom(value, method);
 
                 var paramDef = new ParamDef(valueId, argIndex, valueName, valueType, input);
                 result.add(paramDef);
@@ -39,42 +41,58 @@ public class MethodParamDefMapper {
         return result;
     }
 
-    private static ParamInput paramInputFrom(Value param, Class<?> dataType, Method method) throws Exception {
+    private static ParamInput paramInputFrom(Value param, Method method) throws Exception {
+        var returnType = method.getReturnType();
 
-        if (param.input() == ParamInput.Choice.class && dataType == String.class) {
-            var returnType = method.getReturnType();
-            var choices = choicesFrom(returnType);
-            return new ParamInput.Choice(choices);
+        if (param.input() == ParamInput.Unspecified.class) {
+            return inferInputFrom(returnType);
+
+        } else if (param.input() == ParamInput.Choice.class) {
+            return choiceInputFrom(returnType);
 
         } else if (param.input() == ParamInput.Range.class) {
-            var returnType = method.getReturnType();
-            var numericType = numericTypeFrom(returnType);
-            return new ParamInput.Range(numericType);
+            return rangeInputFrom(returnType)
+                    .orElseThrow(() -> new IllegalArgumentException("Return type not supported for param input type range: " + returnType));
 
         }
         return param.input().getDeclaredConstructor().newInstance();
     }
 
-    private static List<String> choicesFrom(Class<?> returnType) {
-        var result = new ArrayList<String>();
+    private static ParamInput inferInputFrom(Class<?> returnType) {
+        if (returnType == Boolean.class || returnType == boolean.class) {
+            return new ParamInput.Boolean();
+
+        } else if (returnType == LocalDate.class) {
+            return new ParamInput.Date();
+
+        } else if (returnType.isEnum()) {
+            return choiceInputFrom(returnType);
+
+        }
+        return rangeInputFrom(returnType)
+                .orElse(new ParamInput.Text()); // fallback
+    }
+
+    private static ParamInput.Choice choiceInputFrom(Class<?> returnType) {
+        var choices = new ArrayList<String>();
         if (returnType.isEnum()) {
             var enums = (Enum<?>[]) returnType.getEnumConstants();
 
             for (var e : enums) {
-                result.add(e.name());
+                choices.add(e.name());
             }
         }
-        return result;
+        return new ParamInput.Choice(choices);
     }
 
-    private static NumericType numericTypeFrom(Class<?> returnType) {
+    private static Optional<ParamInput> rangeInputFrom(Class<?> returnType) {
 
         if (returnType == Integer.class || returnType == int.class) {
-            return NumericType.INT;
+            return Optional.of(ParamInput.Range.ofInteger());
 
         } else if (returnType == Double.class || returnType == double.class) {
-            return NumericType.DOUBLE;
+            return Optional.of(ParamInput.Range.ofDecimal());
         }
-        throw new IllegalArgumentException("Return type not supported for param input type range: " + returnType);
+        return Optional.empty();
     }
 }

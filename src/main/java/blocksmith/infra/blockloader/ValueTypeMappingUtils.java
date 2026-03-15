@@ -47,6 +47,11 @@ public class ValueTypeMappingUtils {
                 // List<Concrete>
                 return new ListType(fromType(arg));
             }
+
+            // Simple<Class>
+            if (raw == Class.class) {
+                return new SimpleType(Class.class);
+            }
         }
 
         // List (raw type)
@@ -66,6 +71,7 @@ public class ValueTypeMappingUtils {
         if (type instanceof TypeVariable<?> tv) {
             return new VarType(tv.getName());
         }
+
 
         throw new IllegalArgumentException("Unsupported type: " + type);
     }

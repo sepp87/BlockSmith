@@ -2,7 +2,6 @@ package blocksmith.ui.projection;
 
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
-import blocksmith.ui.graph.block.BlockModel;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.graph.connection.ConnectionModel;
 import java.util.Collection;

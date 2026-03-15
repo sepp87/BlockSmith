@@ -25,12 +25,16 @@ import blocksmith.ui.display.GenericDisplay;
 import blocksmith.ui.display.ValueDisplay;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author joostmeulenkamp
  */
 public class BlockModelFactory {
+
+    private static final Logger LOGGER = Logger.getLogger(BlockModelFactory.class.getName());
 
     private final BlockDefLibrary defLibrary;
     private final BlockFuncLibrary funcLibrary;
@@ -96,8 +100,10 @@ public class BlockModelFactory {
         var spec = param.input();
 
         return switch (spec) {
-            case ParamInput.NoInputSpec na ->
-                inferInputControlFrom(valueId, param.valueType());
+            case ParamInput.Unspecified na -> {
+                BlockModelFactory.LOGGER.warning("Param has NO input spec. Using plain text input as fallback.");
+                yield new TextInput(valueId);
+            }
 
             case ParamInput.Boolean bool ->
                 new BooleanInput(valueId);
@@ -136,51 +142,12 @@ public class BlockModelFactory {
 
     private static InputControl<?> inferNumberSliderFrom(String valueId, NumericType type) {
         return switch (type) {
-            case INT ->
+            case INTEGER ->
                 new IntegerSliderInput(valueId);
-            case DOUBLE ->
+            case DECIMAL ->
                 new DoubleSliderInput(valueId);
         };
     }
 
-    private static InputControl<?> inferInputControlFrom(String valueId, ValueType valueType) {
-
-        Class<?> rawType = null;
-
-        if (valueType instanceof ValueType.ListType) {
-            throw new IllegalArgumentException("Unsupported param type: " + valueType);
-
-        } else if (valueType instanceof ValueType.SimpleType simple) {
-            rawType = simple.raw();
-
-        } else if (valueType instanceof ValueType.VarType var) {
-            rawType = Object.class;
-        }
-
-        if (rawType == String.class) {
-            return new TextInput(valueId);
-
-        }
-        if (rawType == Boolean.class || rawType == boolean.class) {
-            return new BooleanInput(valueId);
-
-        }
-        if (rawType == Object.class) {
-            return new MultilineTextInput(valueId);
-
-        }
-//        else if (dataType == Integer.class || dataType == Double.class) {
-//            return new ParamInput.Range();
-//
-//        } else if (dataType == Path.class) {
-//            return new ParamInput.FilePath();
-//
-//        } else if (dataType == Date.class) {
-//            return new ParamInput.Date();
-//
-//        }
-
-        throw new IllegalArgumentException("Unsupported param type: " + rawType.getSimpleName());
-    }
 
 }

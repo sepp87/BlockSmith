@@ -7,6 +7,7 @@ import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.group.Group;
 import blocksmith.domain.group.GroupId;
+import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.Port;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,7 +86,7 @@ public final class Graph {
     public Graph withBlock(Block block) {
         var updated = new ArrayList<Block>(blocks.values());
         updated.add(block);
-        return replace(updated, connections, groups.values());
+        return withAll(updated, connections, groups.values());
     }
 
     public Graph withoutBlock(BlockId id) {
@@ -120,7 +121,7 @@ public final class Graph {
             });
         }
 
-        return replace(updatedBlocks, updatedConnections, updatedGroups);
+        return withAll(updatedBlocks, updatedConnections, updatedGroups);
     }
 
     public Graph updateParamValue(BlockId id, String valueId, String value) {
@@ -130,7 +131,17 @@ public final class Graph {
         }
         var updatedBlocks = new HashMap<BlockId, Block>(blocks);
         updatedBlocks.computeIfPresent(id, (k, v) -> v.withParamValue(valueId, value));
-        return new Graph(this.id, updatedBlocks.values(), connections, groups.values());
+        return withAll(updatedBlocks.values(), connections, groups.values());
+    }
+
+    public Graph updateParamInput(BlockId id, String valueId, ParamInput input) {
+        var existing = blocks.get(id).param(valueId).get().input();
+        if (Objects.equals(existing, input)) {
+            return this;
+        }
+        var updatedBlocks = new HashMap<BlockId, Block>(blocks);
+        updatedBlocks.computeIfPresent(id, (k, v) -> v.withParamInput(valueId, input));
+        return withAll(updatedBlocks.values(), connections, groups.values());
     }
 
     public Graph renameBlock(BlockId id, String label) {
@@ -151,7 +162,7 @@ public final class Graph {
         for (var pos : positions) {
             updatedBlocks.computeIfPresent(pos.id(), (k, v) -> v.withPosition(pos.x(), pos.y()));
         }
-        return replace(updatedBlocks.values(), connections, groups.values());
+        return withAll(updatedBlocks.values(), connections, groups.values());
     }
 
     public Graph resizeBlock(BlockId id, double width, double height) {
@@ -176,10 +187,7 @@ public final class Graph {
         }
         updatedConnections.add(connection);
 
-        var toBlock = connection.to().blockId();
-        var toValue = connection.to().valueId();
-
-        return replace(blocks.values(), updatedConnections, groups.values());
+        return withAll(blocks.values(), updatedConnections, groups.values());
     }
 
     public Graph withoutConnection(Connection connection) {
@@ -187,10 +195,7 @@ public final class Graph {
                 .filter(c -> !c.equals(connection))
                 .toList();
 
-        var toBlock = connection.to().blockId();
-        var toValue = connection.to().valueId();
-
-        return replace(blocks.values(), updatedConnections, groups.values());
+        return withAll(blocks.values(), updatedConnections, groups.values());
     }
 
     public Optional<Group> group(GroupId id) {
@@ -200,7 +205,7 @@ public final class Graph {
     public Graph withGroup(Group group) {
         var updated = new ArrayList<Group>(groups.values());
         updated.add(group);
-        return replace(blocks.values(), connections, updated);
+        return withAll(blocks.values(), connections, updated);
     }
 
     public Graph withoutGroup(GroupId id) {
@@ -211,7 +216,7 @@ public final class Graph {
         var updated = new HashMap<GroupId, Group>(groups);
         updated.remove(id);
 
-        return replace(blocks.values(), connections, updated.values());
+        return withAll(blocks.values(), connections, updated.values());
     }
 
     public List<Connection> connectionsOf(BlockId block) {
@@ -236,7 +241,7 @@ public final class Graph {
         return Optional.ofNullable(blocksToGroups.get(block));
     }
 
-    private Graph replace(Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
+    private Graph withAll(Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
         return new Graph(id, blocks, connections, groups);
     }
 

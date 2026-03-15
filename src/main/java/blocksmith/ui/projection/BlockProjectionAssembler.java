@@ -76,27 +76,32 @@ public class BlockProjectionAssembler {
         if (param == null) {
             return;
         }
-        var isActive = ParamStatusResolver.isActive(graph, block.id(), valueId);
+
+        if (block.type().equals("Input.integerSlider")) {
+                System.out.println("Input.integerSlider " + valueId + " " + param.value());
+
+        }
+//        var isActive = ParamStatusResolver.isActive(graph, block.id(), valueId);
 
         var controls = projection.getInputControls();
         var control = controls.get(valueId);
+        control.setValue(param.value());
 
-        if (isActive) {
-            findPort(projection.getInputPorts(), valueId)
-                    .ifPresent(p -> {
-                        control.unbindValueProperty();
-                    });
-            control.setValue(param.value());
-            control.setEditable(true); // setEditable after setValue, so InputControl.valueChangedByUser is NOT triggered
-
-        } else {
-            control.setEditable(false); // setEditable before setValue, so InputControl.valueChangedByUser is NOT triggered
-            findPort(projection.getInputPorts(), valueId)
-                    .ifPresent(p -> {
-                        control.bindValuePropertyTo(p.dataProperty());
-                    });
-        }
-
+//        if (isActive) {
+//            findPort(projection.getInputPorts(), valueId)
+//                    .ifPresent(p -> {
+//                        control.unbindValueProperty();
+//                    });
+//            control.setValue(param.value());
+//            control.setEditable(true); // setEditable after setValue, so InputControl.valueChangedByUser is NOT triggered
+//
+//        } else {
+//            control.setEditable(false); // setEditable before setValue, so InputControl.valueChangedByUser is NOT triggered
+//            findPort(projection.getInputPorts(), valueId)
+//                    .ifPresent(p -> {
+//                        control.bindValuePropertyTo(p.dataProperty());
+//                    });
+//        }
     }
 
     public void updatePort(MethodBlockNew projection, PortRef ref, Graph graph) {

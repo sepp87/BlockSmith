@@ -18,6 +18,8 @@ public class GenericDisplay implements ValueDisplay.MultiValue {
         textArea.setPrefSize(220, 220);
         textArea.setMaxHeight(Double.MAX_VALUE);
         textArea.setEditable(false);
+        textArea.setText("null");
+
     }
 
     @Override

@@ -14,7 +14,7 @@
         <connection fromBlock="c3085da9-286d-4d46-bb81-0e28c4ab82d2" fromPort="value" toBlock="411de2cd-8cfe-43f0-b54d-f8d7eac8ca5a" toPort="list"/>
     </connections>
     <values>
-        <value block="f3506dc6-69ea-4e59-a6f7-a351e6cc9f29" id="value" value="1" min="0" max="10" step="1"/>
+        <value block="f3506dc6-69ea-4e59-a6f7-a351e6cc9f29" id="value" value="1" min="0.0" max="10.0" step="1.0"/>
         <value block="d15608e0-4ffc-4719-a43c-6604ba58620f" id="string" value="[1,2,3,4,5]"/>
     </values>
     <groups/>

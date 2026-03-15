@@ -15,8 +15,8 @@ public class BooleanMethods {
             category = "Input",
             description = "Switch between TRUE and FALSE",
             tags = {"boolean", "true", "false"})
-    public static boolean inputBoolean(@Value boolean value) {
-        return value;
+    public static Boolean inputBoolean(@Value String value) {
+        return Boolean.valueOf(value);
     }
 
     @Block(

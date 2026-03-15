@@ -1,6 +1,7 @@
 package blocksmith.domain.block;
 
 import blocksmith.domain.value.Param;
+import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.Port;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,6 +72,10 @@ public final class Block {
 
     public Block withParamValue(String valueId, String value) {
         return withParamUpdated(valueId, (param) -> param.withValue(value));
+    }
+    
+    public Block withParamInput(String valueId, ParamInput input) {
+        return withParamUpdated(valueId, (param) -> param.withInput(input));
     }
 
     private Block withParamUpdated(String valueId, Function<Param, Param> func) {

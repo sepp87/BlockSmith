@@ -19,32 +19,31 @@ public class MultilineTextInput extends InputControl<Object> {
 //    private final StringProperty value = new SimpleStringProperty();
     private TextArea textArea;
 
-    private boolean syncing;
-
+//    private boolean syncing;
     public MultilineTextInput(String valueId) {
         super(valueId);
-        
+
         textArea = new TextArea();
         textArea.setMinSize(220, 220);
         textArea.setPrefSize(220, 220);
         textArea.setOnKeyPressed(this::ignoreShortcuts);
         textArea.setMaxHeight(Double.MAX_VALUE);
+        textArea.textProperty().addListener(fxListener);
 
-        textArea.textProperty().addListener((b, o, n) -> {
-            if (syncing) {
-                return;
-            }
-            if (!isEditable()) {
-                return;
-            }
-
-            var newValue = n.isEmpty() ? null : n;
-            if (!Objects.equals(value.get(), newValue)) {
-                value.set(newValue);
-            }
-        });
-        value.addListener(fxListener);
-
+//        textArea.textProperty().addListener((b, o, n) -> {
+//            if (syncing) {
+//                return;
+//            }
+//            if (!isEditable()) {
+//                return;
+//            }
+//
+//            var newValue = n.isEmpty() ? null : n;
+//            if (!Objects.equals(value.get(), newValue)) {
+//                value.set(newValue);
+//            }
+//        });
+//        value.addListener(fxListener);
     }
 
     private void ignoreShortcuts(KeyEvent event) {
@@ -58,7 +57,7 @@ public class MultilineTextInput extends InputControl<Object> {
 
     @Override
     public String getValue() {
-        return value.get();
+        return textArea.getText();
     }
 
     @Override
@@ -68,38 +67,39 @@ public class MultilineTextInput extends InputControl<Object> {
             return;
         }
 
-        value.set(newVal);
-        updateTextArea();
+        textArea.setText(newVal);
+//        updateTextArea();
     }
 
     @Override
     public void onDispose() {
         textArea.setOnKeyPressed(null);
-        value.removeListener(fxListener);
-    }
+        textArea.textProperty().removeListener(fxListener);
 
-    protected void onValueChanged(String newValue) {
-        updateTextArea();
+//        value.removeListener(fxListener);
     }
-    
-    protected void onEditableChanged(boolean isEditable) {
-        textArea.setEditable(isEditable);
-        updateTextArea();
-    }
-
-    private void updateTextArea() {
-        syncing = true;
-        var displayValue = displayValue();
-        textArea.setText(displayValue);
-        syncing = false;
-    }
-
-    private String displayValue() {
-        if (value.get() != null) {
-            return value.get();
-        }
-        return isEditable() ? "" : "null";
-    }
-
+//
+//    protected void onValueChanged(String newValue) {
+//        updateTextArea();
+//    }
+//    
+//    protected void onEditableChanged(boolean isEditable) {
+//        textArea.setEditable(isEditable);
+//        updateTextArea();
+//    }
+//
+//    private void updateTextArea() {
+//        syncing = true;
+//        var displayValue = displayValue();
+//        textArea.setText(displayValue);
+//        syncing = false;
+//    }
+//
+//    private String displayValue() {
+//        if (value.get() != null) {
+//            return value.get();
+//        }
+//        return isEditable() ? "" : "null";
+//    }
 
 }

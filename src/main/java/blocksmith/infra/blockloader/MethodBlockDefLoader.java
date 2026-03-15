@@ -36,14 +36,11 @@ public class MethodBlockDefLoader implements BlockDefLoader {
                 result.add(def);
 
             } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "Block definition failed to load for method: " + method.getName(), ex);
+                LOGGER.log(Level.SEVERE, "Block definition failed to load for method \"{0}\". {1}", new Object[]{method.getName(), ex.getMessage()});
             }
         }
 
         return result;
     }
-
-
-
 
 }

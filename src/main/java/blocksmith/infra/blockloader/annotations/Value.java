@@ -1,7 +1,7 @@
 package blocksmith.infra.blockloader.annotations;
 
 import blocksmith.domain.value.ParamInput;
-import blocksmith.domain.value.ParamInput.NoInputSpec;
+import blocksmith.domain.value.ParamInput.Unspecified;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -25,13 +25,12 @@ import java.lang.annotation.Target;
 public @interface Value {
 
     String id() default "";
-    Class<? extends ParamInput> input() default NoInputSpec.class;
+    Class<? extends ParamInput> input() default Unspecified.class;
     Source source() default Source.PARAM;
            
     public enum Source {
         PARAM,
-        PORT,
-        PARAM_OR_PORT
+        PORT
     }
             
 }

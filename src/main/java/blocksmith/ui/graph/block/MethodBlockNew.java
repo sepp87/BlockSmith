@@ -320,9 +320,9 @@ public class MethodBlockNew extends BlockModel {
         for (var entry : inputControls.entrySet()) {
             var control = entry.getValue();
 
-            if (!control.isEditable()) {
-                continue;
-            }
+//            if (!control.isEditable()) {
+//                continue;
+//            }
             var valueId = entry.getKey();
             var value = control.getValue();
             values.put(QName.valueOf(valueId), value);

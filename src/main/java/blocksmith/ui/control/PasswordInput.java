@@ -2,10 +2,7 @@ package blocksmith.ui.control;
 
 import blocksmith.ui.graph.base.BaseButton;
 import blocksmith.ui.icons.FontAwesomeSolid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -107,14 +104,5 @@ public class PasswordInput extends InputControl<String> {
         field.setOnMouseEntered(null);
     }
 
-    @Override
-    protected void onEditableChanged(boolean isEditable) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    protected void onValueChanged(String newValue) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
 }

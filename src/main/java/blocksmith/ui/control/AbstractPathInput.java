@@ -74,9 +74,5 @@ public abstract class AbstractPathInput extends InputControl<String> {
         value.removeListener(fxListener);
     }
 
-    @Override
-    protected void onValueChanged(String newValue) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
 }

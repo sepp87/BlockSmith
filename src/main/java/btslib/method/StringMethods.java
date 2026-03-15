@@ -1,9 +1,9 @@
 package btslib.method;
 
+import blocksmith.domain.value.ParamInput.MultilineText;
 import java.util.List;
 import blocksmith.domain.value.ParamInput.Password;
 import blocksmith.infra.blockloader.annotations.Value;
-import blocksmith.infra.blockloader.annotations.Value.Source;
 import blocksmith.ui.utils.DateTimeUtils;
 import blocksmith.ui.utils.ParsingUtils;
 import static blocksmith.ui.utils.ParsingUtils.getBooleanValue;
@@ -27,27 +27,15 @@ public class StringMethods {
         return value.isEmpty() ? null : value;
     }
 
-    @Block(
-            type = "Input.text",
-            aliases = {"String.newMultiline"},
-            category = "Core",
-            description = "Input text or observe output as text")
-    public static <T> T inputMultilineString(@Value(source = Source.PARAM_OR_PORT) T text) {
-        if (text != null && text instanceof String str && str.isBlank()) {
-            return null;
-        }
-        return text;
-    }
-
-    @Block(
-            type = "Input.string",
-            aliases = {"String.newMagicString"},
-            category = "Core",
-            description = "Input a line of text. Depending on the value, the output type is changed dynamically e.g. to a Boolean, Integer, Long, Double or a LocalDate. For example an ISO 8601 formatted string (yyyy-MM-dd) will be converted to a LocalDate. The value TRUE will be Boolean and so on. The default output is of type String.")
+//    @Block(
+//            type = "Input.string",
+//            aliases = {"String.newMagicString"},
+//            category = "Core",
+//            description = "Input a line of text. Depending on the value, the output type is changed dynamically e.g. to a Boolean, Integer, Long, Double or a LocalDate. For example an ISO 8601 formatted string (yyyy-MM-dd) will be converted to a LocalDate. The value TRUE will be Boolean and so on. The default output is of type String.")
     public static Object inputMagicString(@Value String string) {
-        
+
         var str = string;
-        
+
         //Forward null and empty string as null
         if (str == null || str.equals("")) {
             return null;
@@ -67,17 +55,26 @@ public class StringMethods {
         if (date != null) {
             return date;
         }
-        
+
         return str;
     }
 
     @Block(
-            type = "Input.plainString",
+            type = "Input.text",
+            aliases = {"String.newMultiline"},
+            category = "Core",
+            description = "Input text or observe output as text")
+    public static String inputMultilineString(@Value(input = MultilineText.class) String text) {
+        return inputString(text);
+    }
+
+    @Block(
+            type = "Input.string",
             aliases = {"String.new"},
             category = "Core",
             description = "Input a line of text.")
-    public static String inputString(@Value String value) {
-        return value == null || value.isEmpty() ? null : value;
+    public static String inputString(@Value String string) {
+        return string == null || string.isEmpty() ? null : string;
     }
 
     @Block(
