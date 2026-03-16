@@ -2,7 +2,6 @@ package blocksmith;
 
 import blocksmith.App;
 import blocksmith.ui.UiAppRunner;
-import blocksmith.ui.graph.block.BlockLibraryLoader;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
@@ -16,10 +15,6 @@ import org.xml.sax.SAXException;
  */
 public class Launcher {
 
-    public static boolean DOMAIN_GRAPH = false;
-    public static boolean GRAPH_LOADER_V2 = false;
-    public static boolean VALUE_TYPE_MAPPER = false;
-    public static boolean BLOCK_DEF_LOADER = false;
 
     public static void main(String[] args) throws IOException, OpenXML4JException, SAXException, Exception {
 
@@ -31,16 +26,6 @@ public class Launcher {
         App app = new App();
 
         if (devMode) {
-            //            Draft.getGenericTypeOfMethodParam();
-
-            GRAPH_LOADER_V2 = true;
-            BLOCK_DEF_LOADER = true;
-            DOMAIN_GRAPH = true;
-            if (!BLOCK_DEF_LOADER) {
-                //Load all block types
-                BlockLibraryLoader.loadBlocks();
-                System.out.println("Launcher.main() Number of loaded blocks is " + BlockLibraryLoader.BLOCK_TYPE_LIST.size());
-            }
 
             new UiAppRunner(app).run();
 

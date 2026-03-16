@@ -13,11 +13,12 @@ public class Notes {
 // - DONE Typing
 // - DONE Object.type and Object.class not allowed
 // - DONE boolean block not working
+// - DONE only resolve upstream if connection replaces existing (or better, omit connection that is going to be replaced
 // - IN PROGRESS sliders enable mix, max and step
-// - only resolve upstream if connection replaces existing (or better, omit connection that is going to be replaced
 // - resize handle jumping 10 pixels up after resize, and after connecting
 // - text area padding on left
 // - rename label of sliders throws exception
+// - search block wrapping
 
 // - Pull-based execution
 // - default "0" for range

@@ -37,7 +37,6 @@ public class PortModel extends BaseModel {
     private final ObservableSet<ConnectionModel> connections = FXCollections.observableSet();
     private final ObjectProperty<Class<?>> dataType = new SimpleObjectProperty<>(this, "dataType", null);
 
-    private final PortType portType;
     private final int index;
     private final boolean multiDockAllowed;
     private final BlockModel block;
@@ -47,7 +46,6 @@ public class PortModel extends BaseModel {
             String valueName,
             Direction direction,
             ValueType valueType,
-            PortType portType,
             Class<?> type,
             BlockModel block,
             boolean multiDockAllowed) {
@@ -58,8 +56,7 @@ public class PortModel extends BaseModel {
         this.valueType = valueType;
 
         this.labelProperty().set(GraphLogFmt.valueType(valueType)+  " :: " +valueName);
-        this.portType = portType;
-        this.index = (portType == PortType.INPUT) ? block.getInputPorts().size() : block.getOutputPorts().size();
+        this.index = (direction == Port.Direction.INPUT) ? block.getInputPorts().size() : block.getOutputPorts().size();
         this.block = block;
         this.multiDockAllowed = multiDockAllowed;
         this.dataType.set(type);
@@ -85,8 +82,8 @@ public class PortModel extends BaseModel {
         return autoConnectable;
     }
 
-    public PortType getPortType() {
-        return portType;
+    public Port.Direction getDirection() {
+        return direction;
     }
 
     public int getIndex() {
@@ -120,7 +117,7 @@ public class PortModel extends BaseModel {
         }
         data.set(newData);
 
-        if (portType == PortType.INPUT) {
+        if (direction == Port.Direction.INPUT) {
             preprocessData(newData);
         }
     }
@@ -128,7 +125,7 @@ public class PortModel extends BaseModel {
     private final ChangeListener<Object> dataListener = this::onDataChanged;
 
     private void onDataChanged(Object b, Object o, Object n) {
-        if (portType == PortType.OUTPUT) {
+        if (direction == Port.Direction.OUTPUT) {
             publishData();
         }
     }
@@ -172,7 +169,7 @@ public class PortModel extends BaseModel {
         connections.add(connection);
         active.set(true);
 
-        if (portType == PortType.INPUT) {
+        if (direction == Port.Direction.INPUT) {
             Object sourceData = connection.getStartPort().getData();
             block.onIncomingConnectionAdded(sourceData);
         }
@@ -183,11 +180,11 @@ public class PortModel extends BaseModel {
         connections.remove(connection);
         active.set(!connections.isEmpty());
 
-        if (!isActive() && portType == PortType.INPUT) {
+        if (!isActive() && direction == Port.Direction.INPUT) {
             this.data.set(null);
         }
 
-        if (portType == PortType.INPUT) {
+        if (direction == Port.Direction.INPUT) {
             Object sourceData = connection.getStartPort().getData();
             block.onIncomingConnectionRemoved(sourceData);
         }
@@ -204,7 +201,7 @@ public class PortModel extends BaseModel {
     public List<PortModel> getConnectedPorts() {
         List<PortModel> result = new ArrayList<>();
         for (ConnectionModel connection : connections) {
-            if (this.portType == PortType.OUTPUT) {
+            if (this.direction == Port.Direction.OUTPUT) {
                 result.add(connection.getEndPort());
             } else {
                 result.add(connection.getStartPort());
@@ -229,7 +226,7 @@ public class PortModel extends BaseModel {
     public PortRef toDomain() {
         return new PortRef(
                 BlockId.from(getBlock().getId()),
-                portType == PortType.INPUT ? Port.Direction.INPUT : Port.Direction.OUTPUT,
+                direction,
                 valueId
         );
     }

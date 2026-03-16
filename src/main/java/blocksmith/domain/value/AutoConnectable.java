@@ -1,4 +1,4 @@
-package blocksmith.ui.graph.port;
+package blocksmith.domain.value;
 
 /**
  *

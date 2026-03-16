@@ -1,8 +1,6 @@
 package blocksmith.ui.command.app;
 
-import blocksmith.Launcher;
 import blocksmith.ui.command.AppCommand;
-import blocksmith.ui.graph.block.BlockLibraryLoader;
 
 /**
  *
@@ -16,10 +14,6 @@ public class ReloadPluginsCommand implements AppCommand {
     @Override
     public boolean execute() {
 
-        if (Launcher.BLOCK_DEF_LOADER) {
-            return true;
-        }
-        BlockLibraryLoader.reloadExternalBlocks();
         return true;
 
     }

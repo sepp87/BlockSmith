@@ -219,10 +219,11 @@ public final class Graph {
         return withAll(blocks.values(), connections, updated.values());
     }
 
-    public List<Connection> connectionsOf(BlockId block) {
-        return connections.stream()
-                .filter(c -> c.from().blockId().equals(block) || c.to().blockId().equals(block))
-                .toList();
+    public Optional<Connection> incomingConnection(PortRef to) {
+        if (to.direction() == Port.Direction.INPUT) {
+            return connectionsOf(to).stream().findFirst();
+        }
+        throw new IllegalArgumentException("Referenced port is NOT an INPUT");
     }
 
     public List<Connection> connectionsOf(PortRef ref) {

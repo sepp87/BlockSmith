@@ -11,12 +11,13 @@ public record BlockLayout(
         double width,
         double height) {
 
+    public static final String DEFAULT_LABEL = "";
     public static final double DEFAULT_POSITION = 0;
     public static final double DEFAULT_SIZE = -1;
 
     public static BlockLayout createEmpty() {
         return new BlockLayout(
-                null,
+                DEFAULT_LABEL,
                 DEFAULT_POSITION,
                 DEFAULT_POSITION,
                 DEFAULT_SIZE,
@@ -26,7 +27,7 @@ public record BlockLayout(
 
     public static BlockLayout create(Double x, Double y) {
         return new BlockLayout(
-                null,
+                DEFAULT_LABEL,
                 x,
                 y,
                 DEFAULT_SIZE,

@@ -3,7 +3,6 @@ package blocksmith.ui.editor.blocksearch;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import blocksmith.ui.graph.block.BlockLibraryLoader;
 
 /**
  *
@@ -20,7 +19,6 @@ public class BlockSearchView extends VBox {
         searchField.setPromptText("Search...");
         
         listView = new ListView<>();
-//        listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
 
         this.setVisible(false);
         this.getStyleClass().add("block-search");

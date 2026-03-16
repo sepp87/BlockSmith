@@ -1,6 +1,7 @@
 package blocksmith.ui.graph.connection;
 
 import blocksmith.domain.graph.ConnectionPolicy;
+import blocksmith.domain.value.Port;
 import blocksmith.ui.command.WorkspaceCommandBus;
 import blocksmith.ui.graph.port.PortModel;
 import javafx.event.EventHandler;
@@ -9,7 +10,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 import blocksmith.ui.graph.port.PortController;
-import blocksmith.ui.graph.port.PortType;
 import blocksmith.ui.graph.port.PortView;
 import blocksmith.ui.workspace.WorkspaceController;
 import blocksmith.ui.workspace.WorkspaceSession;
@@ -86,8 +86,8 @@ public class PreConnection extends Line {
          * Check if the data type from the sending port is the same or a sub
          * class of the receiving port.
          */
-        var fromPort = endPortModel.getPortType() == PortType.OUTPUT ? endPortModel : startPortModel;
-        var toPort = startPortModel.getPortType() == PortType.INPUT ? startPortModel : endPortModel;
+        var fromPort = endPortModel.getDirection() == Port.Direction.OUTPUT ? endPortModel : startPortModel;
+        var toPort = startPortModel.getDirection() == Port.Direction.INPUT ? startPortModel : endPortModel;
         
         if(ConnectionPolicy.isConnectable(session.graphSnapshot(),fromPort.toDomain(), toPort.toDomain())) {
 //        if (ConnectionModel.isEligible(startPortModel, endPortModel)) {

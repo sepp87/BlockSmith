@@ -3,7 +3,7 @@ package blocksmith.infra.blockloader;
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.PortDef;
 import blocksmith.infra.blockloader.annotations.Display;
-import blocksmith.ui.graph.port.AutoConnectable;
+import blocksmith.domain.value.AutoConnectable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;

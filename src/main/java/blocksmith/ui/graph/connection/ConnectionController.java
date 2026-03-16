@@ -1,21 +1,17 @@
 package blocksmith.ui.graph.connection;
 
+import blocksmith.domain.value.Port;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.CubicCurve;
 import blocksmith.ui.graph.BaseController;
-import blocksmith.ui.command.CommandDispatcher;
-import blocksmith.ui.command.AppCommandFactory;
 import blocksmith.ui.command.WorkspaceCommandBus;
 import blocksmith.ui.graph.port.PortController;
-import blocksmith.ui.graph.port.PortType;
 import blocksmith.ui.graph.port.PortView;
 import static blocksmith.ui.utils.EventUtils.isLeftClick;
-import blocksmith.ui.workspace.FxWorkspaceHandle;
 import blocksmith.ui.workspace.WorkspaceController;
 import blocksmith.ui.workspace.WorkspaceSession;
-import blocksmith.ui.workspace.WorkspaceState;
 
 /**
  *
@@ -72,7 +68,7 @@ public class ConnectionController extends BaseController {
         Double dY = endPort.centerYProperty().get() - startPort.centerYProperty().get();
         Point2D vector = new Point2D(dX, dY);
         double distance = vector.magnitude() / 2;
-        distance = (portController.getModel().getPortType() == PortType.OUTPUT) ? distance : -distance;
+        distance = (portController.getModel().getDirection() == Port.Direction.OUTPUT) ? distance : -distance;
         return portController.getView().centerXProperty().get() + distance;
     }
 

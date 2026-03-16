@@ -33,8 +33,8 @@ public class BlockXmlMapper {
             var id = BlockId.from(blockXml.getId());
             var type = blockXml.getType();
             var block = blockFactory.create(id, type);
-            var metadata = editorMetadataToDomain(blockXml);
-            var updated = block.withLayout(metadata);
+            var layout = layoutToDomain(blockXml);
+            var updated = block.withLayout(layout);
 
             result.add(updated);
 
@@ -42,7 +42,7 @@ public class BlockXmlMapper {
         return result;
     }
 
-    private BlockLayout editorMetadataToDomain(BlockXml blockXml) {
+    private BlockLayout layoutToDomain(BlockXml blockXml) {
 
         var label = blockXml.getLabel();
         var x = blockXml.getX();
@@ -57,7 +57,7 @@ public class BlockXmlMapper {
         var result = xmlFactory.createBlocksXml();
 
         for (var block : blocks) {
-            var blockXml = editorMetadataToXml(block);
+            var blockXml = layoutToXml(block);
             blockXml.setId(block.id().toString());
             blockXml.setType(block.type());
             result.getBlock().add(blockXml);
@@ -66,15 +66,15 @@ public class BlockXmlMapper {
         return result;
     }
 
-    public BlockXml editorMetadataToXml(Block block) {
+    public BlockXml layoutToXml(Block block) {
         var blockXml = xmlFactory.createBlockXml();
 
-        var metadata = block.layout();
-        blockXml.setLabel(metadata.label());
-        blockXml.setX(metadata.x());
-        blockXml.setY(metadata.y());
-        blockXml.setWidth(metadata.width());
-        blockXml.setHeight(metadata.height());
+        var layout = block.layout();
+        blockXml.setLabel(layout.label());
+        blockXml.setX(layout.x());
+        blockXml.setY(layout.y());
+        blockXml.setWidth(layout.width());
+        blockXml.setHeight(layout.height());
 
         return blockXml;
     }

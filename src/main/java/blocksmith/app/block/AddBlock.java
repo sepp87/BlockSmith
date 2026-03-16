@@ -2,7 +2,6 @@ package blocksmith.app.block;
 
 import blocksmith.domain.block.BlockFactory;
 import blocksmith.domain.block.BlockId;
-import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.graph.Graph;
 
 /**

@@ -1,6 +1,7 @@
 package blocksmith.ui.graph.block;
 
 import blocksmith.domain.block.BlockId;
+import blocksmith.domain.value.Port;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
@@ -20,7 +21,6 @@ import blocksmith.ui.command.WorkspaceCommandBus;
 import blocksmith.ui.graph.block.ExceptionPanel.BlockException;
 import blocksmith.ui.graph.port.PortController;
 import blocksmith.ui.graph.port.PortModel;
-import blocksmith.ui.graph.port.PortType;
 import blocksmith.ui.graph.port.PortView;
 import blocksmith.ui.utils.EventUtils;
 import blocksmith.ui.projection.GraphProjection;
@@ -94,8 +94,8 @@ public class BlockController extends BaseController {
 
         view.addControlToBlock(model.getCustomization());
 
-        addPorts(model.getInputPorts(), PortType.INPUT);
-        addPorts(model.getOutputPorts(), PortType.OUTPUT);
+        addPorts(model.getInputPorts(), Port.Direction.INPUT);
+        addPorts(model.getOutputPorts(), Port.Direction.OUTPUT);
 
         if (model.resizableProperty().get()) {
             view.getContentGrid().prefWidthProperty().bind(model.widthProperty());
@@ -123,17 +123,17 @@ public class BlockController extends BaseController {
         }
     }
 
-    private void addPorts(List<PortModel> portModels, PortType portType) {
+    private void addPorts(List<PortModel> portModels, Port.Direction direction) {
         List<PortView> portViews = new ArrayList<>();
         for (PortModel portModel : portModels) {
-            PortView portView = new PortView(portType);
+            PortView portView = new PortView(direction);
             portView.boundsInParentProperty().addListener(transformListener);
             portViews.add(portView);
             PortController portController = new PortController(this, portModel, portView);
             ports.put(portModel, portController);
             workspaceController.registerPort(portController);
         }
-        if (portType == PortType.INPUT) {
+        if (direction == Port.Direction.INPUT) {
             view.addInputPorts(portViews);
         } else {
             view.addOutputPorts(portViews);

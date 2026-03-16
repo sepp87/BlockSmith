@@ -1,5 +1,6 @@
 package blocksmith.ui.graph.port;
 
+import blocksmith.domain.value.Port;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.Tooltip;
@@ -12,17 +13,17 @@ import javafx.scene.layout.VBox;
 public class PortView extends VBox {
 
     private final Tooltip tooltip;
-    private final PortType portType;
+    private final Port.Direction direction;
     private final DoubleProperty centerX = new SimpleDoubleProperty(-1);
     private final DoubleProperty centerY = new SimpleDoubleProperty(-1);
 
-    public PortView(PortType portType) {
-        this.portType = portType;
+    public PortView(Port.Direction direction) {
+        this.direction = direction;
         this.tooltip = new Tooltip();
         Tooltip.install(this, tooltip);
 
         getStyleClass().add("port");
-        getStyleClass().add("port-" + portType.toString().toLowerCase());
+        getStyleClass().add("port-" + direction.toString().toLowerCase());
     }
 
     public Tooltip getTooltip() {

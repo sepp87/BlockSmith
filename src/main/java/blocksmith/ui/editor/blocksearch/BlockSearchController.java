@@ -11,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import blocksmith.ui.graph.block.BlockLibraryLoader;
 import blocksmith.ui.utils.ListViewUtils;
 import blocksmith.ui.utils.NodeHierarchyUtils;
 import blocksmith.ui.command.CommandDispatcher;
@@ -63,11 +62,7 @@ public class BlockSearchController {
         searchField.textProperty().addListener(this::handleSearchAction);
         searchFieldFocusChangedListener = this::handleRetainFocus;
 
-        if (Launcher.BLOCK_DEF_LOADER) {
-            listView.setItems(FXCollections.observableArrayList(blockDefLibrary.types()));
-        } else {
-            listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
-        }
+        listView.setItems(FXCollections.observableArrayList(blockDefLibrary.types()));
         listView.setOnMouseClicked(this::handleCreateBlock);
         new ListViewHoverSelectBehaviour(listView);
 
@@ -116,28 +111,16 @@ public class BlockSearchController {
     private void handleSearchAction(Object b, String o, String searchTerm) {
         searchTerm = searchTerm.toLowerCase();
         if (searchTerm.isBlank()) {
-            if (Launcher.BLOCK_DEF_LOADER) {
-                listView.setItems(FXCollections.observableArrayList(blockDefLibrary.types()));
-            } else {
-                listView.setItems(BlockLibraryLoader.BLOCK_TYPE_LIST);
-            }
+            listView.setItems(FXCollections.observableArrayList(blockDefLibrary.types()));
             listView.getSelectionModel().select(-1);
             return;
         }
 
         ObservableList<String> result = observableArrayList();
 
-        if (Launcher.BLOCK_DEF_LOADER) {
-            for (String type : blockDefLibrary.types()) {
-                if (type.toLowerCase().contains(searchTerm)) {
-                    result.add(type);
-                }
-            }
-        } else {
-            for (String type : BlockLibraryLoader.BLOCK_TYPE_LIST) {
-                if (type.toLowerCase().contains(searchTerm)) {
-                    result.add(type);
-                }
+        for (String type : blockDefLibrary.types()) {
+            if (type.toLowerCase().contains(searchTerm)) {
+                result.add(type);
             }
         }
 

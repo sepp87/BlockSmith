@@ -20,7 +20,6 @@ import javafx.scene.layout.Region;
 import btsxml.BlockTag;
 import blocksmith.ui.graph.block.ExceptionPanel.BlockException;
 import blocksmith.ui.graph.connection.ConnectionModel;
-import blocksmith.ui.graph.port.PortType;
 import blocksmith.infra.blockloader.annotations.Block;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -187,7 +186,7 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public PortModel addInputPort(String valueId, String valueName, ValueType valueType, Class<?> type, boolean isAutoConnectable) {
-        PortModel port = new PortModel(valueId, valueName, Port.Direction.INPUT, valueType, PortType.INPUT, type, this, false);
+        PortModel port = new PortModel(valueId, valueName, Port.Direction.INPUT, valueType, type, this, false);
         port.dataProperty().addListener(inputDataListener);
         port.autoConnectableProperty().set(isAutoConnectable);
         inputPorts.add(port);
@@ -205,7 +204,7 @@ public abstract class BlockModel extends BaseModel {
     }
 
     public PortModel addOutputPort(String valueId, String valueName, ValueType valueType, Class<?> type, boolean isAutoConnectable) {
-        PortModel port = new PortModel(valueId, valueName, Port.Direction.OUTPUT, valueType, PortType.OUTPUT, type, this, true);
+        PortModel port = new PortModel(valueId, valueName, Port.Direction.OUTPUT, valueType, type, this, true);
         port.autoConnectableProperty().set(isAutoConnectable);
         outputPorts.add(port);
         return port;

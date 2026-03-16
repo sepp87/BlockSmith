@@ -6,7 +6,6 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.skin.ListViewSkin;
 import javafx.scene.control.skin.VirtualFlow;
-import javafx.scene.input.MouseEvent;
 
 /**
  *
@@ -15,10 +14,13 @@ import javafx.scene.input.MouseEvent;
 public class ListViewUtils {
 
     public static void scrollToWrapped(ListView listView, int direction, int rowsVisible) {
-        int previousIndex = listView.getSelectionModel().getSelectedIndex();
-        int newIndex = shiftIndexWrapped(previousIndex, direction, listView.getItems().size());
-
-        listView.getSelectionModel().select(newIndex);
+        
+        if(listView.getItems().isEmpty()) {
+            return;
+        }
+        
+        int oldIndex = listView.getSelectionModel().getSelectedIndex();
+        int newIndex = shiftIndexWrapped(oldIndex, direction, listView.getItems().size());
 
         int firstVisibleCell = getFirstVisibleCell(listView);
         int lastVisibleCell = firstVisibleCell + rowsVisible - 1;
@@ -26,21 +28,31 @@ public class ListViewUtils {
         // Handle scrolling based on direction and index boundaries
         if (direction > 0) {
             // If wrapping around from last to first, scroll to the top
-            if (previousIndex == listView.getItems().size() - 1 && newIndex == 0) {
+            int last = listView.getItems().size() - 1;
+            if (oldIndex == last) {
                 listView.scrollTo(0);
             } else if (newIndex > lastVisibleCell) {
                 // Otherwise, gradually scroll down
-                listView.scrollTo(firstVisibleCell + 1);
+                listView.scrollTo(newIndex - rowsVisible + 1);
             }
         } else {
+
+            if (oldIndex == -1) {
+                oldIndex++;
+                newIndex++;
+            }
+
             // If wrapping around from first to last, scroll to the bottom
-            if (previousIndex == 0 && newIndex == listView.getItems().size() - 1) {
-                listView.scrollTo(listView.getItems().size() - 1);
-            } else if (newIndex < firstVisibleCell) {
+            if (oldIndex == 0) {
+                listView.scrollTo(newIndex);
+            } else if (newIndex <= firstVisibleCell) {
                 // Otherwise, gradually scroll up
-                listView.scrollTo(firstVisibleCell - 1);
+                listView.scrollTo(newIndex);
             }
         }
+
+        listView.getSelectionModel().select(newIndex);
+
     }
 
     public static int shiftIndex(int index, int amount, int size) {
@@ -74,7 +86,11 @@ public class ListViewUtils {
 
     // Method to determine the height of a cell in the ListView
     public static double getCellHeight(ListView<String> listView) {
-        return listView.lookup(".list-cell").getLayoutBounds().getHeight();
+        var cell = listView.lookup(".list-cell");
+
+//        System.out.println(cell.getLayoutBounds().getHeight() + " " + cell.prefHeight(-1) + " " + cell.getBoundsInParent().getHeight());
+//        return listView.lookup(".list-cell").getLayoutBounds().getHeight();
+        return cell == null ? 24 : cell.prefHeight(-1);
     }
 
     public static double getVisibleHeightOfCell(ListView listView, Integer index) {

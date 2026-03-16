@@ -11,16 +11,20 @@ public class ConnectionPolicy {
 
     public static boolean isConnectable(Graph graph, PortRef from, PortRef to) {
 
-        if(from.direction().equals(to.direction())) {
+        if (from.direction().equals(to.direction())) {
             return false;
         }
-        
-        if(from.blockId().equals(to.blockId())) {
+
+        if (from.blockId().equals(to.blockId())) {
             return false;
         }
-        
-        var fromType = ValueTypeResolver.typeOf(graph, from);
-        var toType = ValueTypeResolver.typeOf(graph, to);
+
+        var toEvaluate = graph.incomingConnection(to)
+                .map(graph::withoutConnection)
+                .orElse(graph);
+
+        var fromType = ValueTypeResolver.typeOf(toEvaluate, from);
+        var toType = ValueTypeResolver.typeOf(toEvaluate, to);
 
         var fromLeafType = ValueTypeResolver.valueTypeWithin(fromType);
         var toLeafType = ValueTypeResolver.valueTypeWithin(toType);

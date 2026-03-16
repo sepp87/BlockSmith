@@ -8,7 +8,6 @@ import blocksmith.ui.graph.port.PortModel;
 import btsxml.ConnectionTag;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.graph.base.BaseModel;
-import blocksmith.ui.graph.port.PortType;
 import blocksmith.domain.graph.TypeCastUtils;
 
 /**
@@ -101,7 +100,7 @@ public class ConnectionModel extends BaseModel {
     }
 
     public static boolean isEligible(PortModel startPortModel, PortModel endPortModel) {
-        boolean differentPortTypes = endPortModel.getPortType() != startPortModel.getPortType();
+        boolean differentPortTypes = endPortModel.getDirection() != startPortModel.getDirection();
         boolean differentBlocks = !endPortModel.getBlock().equals(startPortModel.getBlock());
         boolean typesCompatible = isTypeCompatible(startPortModel, endPortModel);
 
@@ -113,7 +112,7 @@ public class ConnectionModel extends BaseModel {
             return true;
         }
 
-        boolean isInput = endPortModel.getPortType() == PortType.INPUT;
+        boolean isInput = endPortModel.getDirection() == Port.Direction.INPUT;
         Class<?> outputType = isInput ? startPortModel.getDataType() : endPortModel.getDataType();
         Class<?> inputType = isInput ? endPortModel.getDataType() : startPortModel.getDataType();
 
