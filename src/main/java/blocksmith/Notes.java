@@ -16,9 +16,13 @@ public class Notes {
 // - DONE only resolve upstream if connection replaces existing (or better, omit connection that is going to be replaced
 // - DONE search block wrapping
 // - DONE rename label of sliders throws exception (set label as empty string by default)
+// - DONE resize handle jumping 10 pixels up after resize, and after connecting
+// - DONE text area padding on left
+// - DONE Number slider - Dark mode number slider expander labels not visible
 // - IN PROGRESS sliders enable mix, max and step
-// - resize handle jumping 10 pixels up after resize, and after connecting
-// - text area padding on left
+// - Save calls save as unneedingly
+// - Notification layer
+
 
 // - Pull-based execution
 // - default "0" for range
@@ -93,7 +97,6 @@ public class Notes {
 // SMALL UI BUGS
 // load spinner causes small method blocks to grow and shrink
 // create Paint.color do not move or select, just pick a color, then BlockController.moveCompleted throws an exception
-// Number slider - Dark mode number slider expander labels not visible
 // Integer slider - format settings not to show decimals
 // 
 //

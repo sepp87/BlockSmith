@@ -141,23 +141,34 @@
     -fx-background-color: #1e1e1e;
 }
 
-
-
-.titled-pane > .title
+.block .titled-pane > .title
 {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
-    -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em; /* 2 10 3 10 */
+    -fx-padding: 3 10 3 2; /* 2 10 3 10 */
     -fx-text-fill: #e0e0e0;
 }
 
-.titled-pane > *.content
-{
+.block .titled-pane > *.content {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-box-border: transparent;
-    -fx-padding: 0.167em;
+    -fx-padding: 5 0 0 0;
+}
+
+.block .titled-pane .label {
+    -fx-background-color: transparent;
+    -fx-font-size: 13;
+    -fx-font-family: 'Source Code Pro';
+    -fx-text-fill: #e0e0e0;
+}
+
+.block .titled-pane .grid {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-vgap: 0;
+    -fx-hgap: 10;
 }
 
 .bts-element {
@@ -300,9 +311,11 @@
 .block .text-field{
     -fx-background-color: transparent;
     -fx-font-family: 'Source Code Pro';
+    -fx-font-size: 13;
     -fx-pref-column-count: 22;
     -fx-prompt-text-fill: #b0b0b0;
     -fx-text-fill: #e0e0e0;
+    -fx-padding: 4 7 4 -2;
 }
 
 .block .list-view {
@@ -385,7 +398,7 @@
 }
 
 .block-resize-button {
-    
+
 }
 
 .block-resizable {
@@ -499,6 +512,11 @@
     -fx-background-radius: 4 0 0 4;
     -fx-border-radius: 2 0 0 2;
     -fx-border-width: 2 0 2 2;
+}
+
+.empty-port-box{
+    -fx-spacing: 10;
+    -fx-padding: 0 18 0 0;
 }
 
 .in-port-box{
@@ -874,12 +892,12 @@ Split between vertical and horizontal so vertical thumbs do not disappear
 
 .debug {
     -fx-background-color: red;
-        -fx-border-width: 5;
-        -fx-border-color: red;
+    -fx-border-width: 5;
+    -fx-border-color: red;
 
 }
 .debug-2 {
     -fx-background-color: green;
-            -fx-border-width: 5;
-        -fx-border-color: green;
+    -fx-border-width: 5;
+    -fx-border-color: green;
 }

@@ -151,6 +151,7 @@
                 <configuration>
                     <compilerArgs>
                         <arg>-parameters</arg>
+                        <arg>--enable-preview</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -160,6 +161,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
+                <configuration>
+                    <argLine>--enable-preview</argLine>
+                </configuration>
             </plugin>
             
             <!-- Run application -->
@@ -169,6 +173,10 @@
                 <version>3.0.0</version>
                 <configuration>
                     <mainClass>blocksmith.Launcher</mainClass>
+                    <commandlineArgs></commandlineArgs>
+                    <jvmArgs>
+                        <jvmArg>--enable-preview</jvmArg>
+                    </jvmArgs>
                 </configuration>
             </plugin>
             
@@ -221,4 +229,26 @@
                                                                 
         </plugins>        
     </build>
+    
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <configuration>
+                            <commandlineArgs></commandlineArgs>
+                            <jvmArgs>
+                                <jvmArg>--enable-preview</jvmArg>
+                                <jvmArg>-Dblocksmith.dev=true</jvmArg>
+                            </jvmArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

@@ -52,17 +52,17 @@ import javafx.geometry.Point2D;
 public class AppCommandFactory {
 
     private final WorkspaceLifecycle workspaces;
-    private final FxWorkspaceRegistry context;
+    private final FxWorkspaceRegistry registry;
     private final GraphRepo graphRepo;
 
-    public AppCommandFactory(WorkspaceLifecycle workspaces, FxWorkspaceRegistry context, GraphRepo graphRepo) {
+    public AppCommandFactory(WorkspaceLifecycle workspaces, FxWorkspaceRegistry registry, GraphRepo graphRepo) {
         this.workspaces = workspaces;
-        this.context = context;
+        this.registry = registry;
         this.graphRepo = graphRepo;
     }
 
     public Command createCommand(Command.Id id) {
-        var workspace = context.active();
+        var workspace = registry.active();
         var session = workspace.session();
         var zoom = workspace.zoom();
         var alignmemt = workspace.alignment();
@@ -79,7 +79,7 @@ public class AppCommandFactory {
             case COPY_BLOCKS ->
                 new CopyBlocksCommand(session);
             case PASTE_BLOCKS ->
-                new PasteBlocksCommand(session, context.getMousePositionOnWorkspace());
+                new PasteBlocksCommand(session, registry.getMousePositionOnWorkspace());
             case REMOVE_BLOCKS ->
                 new RemoveBlocksCommand(session);
             case SELECT_ALL_BLOCKS ->
@@ -113,68 +113,68 @@ public class AppCommandFactory {
         };
     }
 
-    public Command createAddBlockCommand(String type, Point2D location) {
-        var workspace = context.active();
+    public Command createAddBlockCommand(String type, Point2D location) { // <----------------------
+        var workspace = registry.active();
         var session = workspace.session();
         return new AddBlockCommand(session, type, location);
     }
 
     public Command createAddConnectionCommand(PortRef from, PortRef to) {
-        var workspace = context.active();
+        var workspace = registry.active();
         var session = workspace.session();
         return new AddConnectionCommand(session, from, to);
     }
 
     public Command createRemoveConnectionCommand(Connection connection) {
-        var workspace = context.active();
+        var workspace = registry.active();
         var session = workspace.session();
         return new RemoveConnectionCommand(session, connection);
     }
 
     public Command createRemoveGroupCommand(GroupId group) {
-        var workspace = context.active();
+        var workspace = registry.active();
         var session = workspace.session();
         return new RemoveGroupCommand(session, group);
     }
 
     public Command createZoomCommand(double newScale, Point2D pivotPoint) { // <----------------------
-        var workspace = context.active();
+        var workspace = registry.active();
         var zoomService = workspace.zoom();
         return new ZoomCommand(zoomService, newScale, pivotPoint);
     }
 
-    public Command createRectangleSelectCommand(Bounds rectOnWorkspace) {
-        var workspace = context.active();
+    public Command createRectangleSelectCommand(Bounds rectOnWorkspace) { // <----------------------
+        var workspace = registry.active();
         var selection = workspace.selection();
         return new RectangleSelectCommand(selection, rectOnWorkspace);
     }
 
     public Command createUpdateSelectionCommand(BlockId block, boolean isModifierDown) {
-        var workspace = context.active();
+        var workspace = registry.active();
         var session = workspace.session();
         return new UpdateSelectionCommand(session, block, isModifierDown);
     }
 
-    public Command createMoveBlocksCommand(Collection<BlockId> blocks, Point2D delta) {
-        var workspace = context.active();
+    public Command createMoveBlocksCommand(Collection<BlockId> blocks, Point2D delta) { // <----------------------
+        var workspace = registry.active();
         var session = workspace.session();
         return new MoveBlocksCommand(session, blocks, delta);
     }
 
     public Command createResizeBlockCommand(BlockId block, double width, double height) {
-        var workspace = context.active();
+        var workspace = registry.active();
         var session = workspace.session();
         return new ResizeBlockCommand(session, block, width, height);
     }
 
     public Command createUpdateParamValueCommand(BlockId block, String valueId, String value) {
-        var workspace = context.active();
+        var workspace = registry.active();
         var session = workspace.session();
         return new UpdateParamValueCommand(session, block, valueId, value);
     }
 
     public Command createRenameBlockCommand(BlockId block, String label) {
-        var workspace = context.active();
+        var workspace = registry.active();
         var session = workspace.session();
         return new RenameBlockCommand(session, block, label);
     }

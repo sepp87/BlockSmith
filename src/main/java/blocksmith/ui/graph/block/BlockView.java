@@ -92,8 +92,8 @@ public class BlockView extends GridPane {
         contentGrid.getColumnConstraints().addAll(column1, column2, column3);
 
         contentGrid.getStyleClass().add("block");
-        inPortBox.getStyleClass().add("in-port-box");
-        outPortBox.getStyleClass().add("out-port-box");
+        inPortBox.getStyleClass().add("empty-port-box");
+        outPortBox.getStyleClass().add("empty-port-box");
 
         RowConstraints row1 = new RowConstraints();
         RowConstraints row2 = new RowConstraints();
@@ -157,11 +157,22 @@ public class BlockView extends GridPane {
     }
 
     public void addInputPorts(List<PortView> ports) {
+        if (ports.isEmpty()) {
+            return;
+        }
         inPortBox.getChildren().addAll(ports);
+        inPortBox.getStyleClass().clear();
+        inPortBox.getStyleClass().add("in-port-box");
     }
 
     public void addOutputPorts(List<PortView> ports) {
+        if (ports.isEmpty()) {
+            return;
+        }
         outPortBox.getChildren().addAll(ports);
+        outPortBox.getStyleClass().clear();
+        outPortBox.getStyleClass().add("out-port-box");
+
     }
 
     /**
@@ -213,14 +224,12 @@ public class BlockView extends GridPane {
         } else {
             contentGrid.getStyleClass().clear();
             contentGrid.getStyleClass().add("block");
+            if (resizeButton != null) {
+                contentGrid.getStyleClass().add("block-resizable");
+            }
         }
     }
 
-//    public static Label getAwesomeIcon(IconType type) {
-//        Label label = new Label(type.getUnicode() + "");
-//        label.getStyleClass().add("block-awesome-icon");
-//        return label;
-//    }
     public static Label getAwesomeIcon(FontAwesomeIcon type) {
         Label label = new Label(type.unicode());
         label.getStyleClass().add("block-awesome-icon");

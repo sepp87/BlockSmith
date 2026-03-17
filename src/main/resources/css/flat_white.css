@@ -137,14 +137,12 @@
     -fx-background-color: #efefef;
 }
 
-
-
 .titled-pane > .title
 {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
-    -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em; /* 2 10 3 10 */
+    -fx-padding: 3 10 3 2; /* 2 10 3 10 */
 }
 
 .titled-pane > *.content
@@ -152,7 +150,20 @@
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-box-border: transparent;
-    -fx-padding: 0.167em;
+    -fx-padding: 5 0 0 0;
+}
+
+.block .titled-pane .label {
+    -fx-background-color: transparent;
+    -fx-font-size: 13;
+    -fx-font-family: 'Source Code Pro';
+}
+
+.block .titled-pane .grid {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-vgap: 0;
+    -fx-hgap: 10;
 }
 
 .bts-element {
@@ -293,8 +304,10 @@
 .block .text-field{
     -fx-background-color: transparent;
     -fx-font-family: 'Source Code Pro';
+    -fx-font-size: 13;
     -fx-pref-column-count: 22;
     -fx-prompt-text-fill: #5F5F5F;
+    -fx-padding: 4 7 4 -2;
 }
 
 .block .list-view {
@@ -377,7 +390,7 @@
 }
 
 .block-resize-button {
-    
+
 }
 
 .block-resizable {
@@ -490,6 +503,11 @@
     -fx-background-radius: 4 0 0 4;
     -fx-border-radius: 2 0 0 2;
     -fx-border-width: 2 0 2 2;
+}
+
+.empty-port-box{
+    -fx-spacing: 10;
+    -fx-padding: 0 18 0 0;
 }
 
 .in-port-box{

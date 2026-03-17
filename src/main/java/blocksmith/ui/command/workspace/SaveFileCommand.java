@@ -31,7 +31,8 @@ public class SaveFileCommand implements WorkspaceCommand {
             try {
                 workspaceModel.saveDocument(path);
                 Config.setLastOpenedDirectory(path.toFile());
-
+                return true;
+                
             } catch (Exception ex) {
                 Logger.getLogger(SaveFileCommand.class.getName()).log(Level.SEVERE, null, ex);
             }

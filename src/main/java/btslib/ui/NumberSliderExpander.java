@@ -45,9 +45,13 @@ public class NumberSliderExpander extends TitledPane {
         this.step = step;
 
         GridPane grid = new GridPane();
-        grid.setVgap(4);
-        grid.getColumnConstraints().add(new ColumnConstraints(50)); // column 1 is 100 wide
-        grid.getColumnConstraints().add(new ColumnConstraints(103)); // column 2 is 100 wide
+        
+//        grid.setVgap(4);
+        var constraint1 = new ColumnConstraints(50);
+        var constraint2 = new ColumnConstraints(103);
+
+        grid.getColumnConstraints().add(constraint1); // column 1 is 100 wide
+        grid.getColumnConstraints().add(constraint2); // column 2 is 100 wide
 
         grid.add(new Label("Value:"), 0, 0);
         grid.add(new Label("Min:"), 0, 1);
@@ -89,7 +93,8 @@ public class NumberSliderExpander extends TitledPane {
         grid.add(maxField, 1, 2);
         grid.add(stepField, 1, 3);
 
-        grid.setPadding(new Insets(5, 5, 0, 10));
+        grid.getStyleClass().add("grid");
+//        grid.setPadding(new Insets(5, 5, 0, 10));
 
         this.setFocusTraversable(false);
         this.setExpanded(false);
