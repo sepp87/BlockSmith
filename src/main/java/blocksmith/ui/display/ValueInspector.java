@@ -47,8 +47,8 @@ public class ValueInspector {
             multiDisplay.render(values);
 
         } else if (display instanceof ValueDisplay.SingleValue singleDisplay) {
-            singleDisplay.render(values.get(current));
-
+            var value = values.size() > current ? values.get(current) : null;
+            singleDisplay.render(value);
         }
     }
 

@@ -34,8 +34,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import blocksmith.ui.utils.ParsingUtils;
-import btslib.spreadsheet.DataSheet;
+import blocksmith.domain.value.types.DataSheet;
 import blocksmith.infra.blockloader.annotations.Block;
+import blocksmith.infra.blockloader.annotations.Display;
 
 /**
  *
@@ -44,13 +45,23 @@ import blocksmith.infra.blockloader.annotations.Block;
 public class SpreadsheetMethods {
 
     @Block(
+            type = "Spreadsheet.inspect",
+            category = "Spreadsheet",
+            description = "View the data sheet.")
+    public static DataSheet inspect(@Display DataSheet sheet) {
+        return sheet;
+    }
+
+    @Block(
             name = "readCsv",
-            description = "Reads a CSV file and returns a data sheet object. This method automatically detects whether a header is present. If you do not wish to specify a header, set the row number to -1. A value of 0 or 1 will assume the first row as the header. For N ≥ 2, row N will be used as the header.",
+            description = "Reads a CSV file and returns a data sheet object. Default delimiter is a comma. This method automatically detects whether a header is present. If you do not wish to specify a header, set the row number to -1. A value of 0 or 1 will assume the first row as the header. For N ≥ 2, row N will be used as the header.",
             type = "Spreadsheet.readCsv",
             category = "Core")
-    public static DataSheet readCsv(File csv, Integer headerRowNumber) throws IOException {
+    public static DataSheet readCsv(File csv, String delimiter, Integer headerRowNumber) throws IOException {
+        delimiter = delimiter == null ? "," : delimiter;
+
         try (Reader reader = new FileReader(csv); CSVParser csvParser = CSVParser.parse(reader,
-                CSVFormat.Builder.create(CSVFormat.DEFAULT).setSkipHeaderRecord(false).build())) {
+                CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(delimiter).setSkipHeaderRecord(false).build())) {
 
             List<List<Object>> rows = new ArrayList<>();
             for (CSVRecord record : csvParser) {
@@ -67,10 +78,12 @@ public class SpreadsheetMethods {
 
     @Block(
             name = "writeCsv",
-            description = "",
+            description = "Default delimiter is a comma.",
             type = "Spreadsheet.writeCsv",
             category = "Core")
-    public static void writeCsv(File csv, DataSheet dataSheet) throws IOException {
+    public static void writeCsv(File csv, String delimiter, DataSheet dataSheet) throws IOException {
+        delimiter = delimiter == null ? "," : delimiter;
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(csv)); CSVPrinter csvPrinter = new CSVPrinter(writer,
                 CSVFormat.Builder.create(CSVFormat.DEFAULT).build())) {
 
@@ -112,7 +125,7 @@ public class SpreadsheetMethods {
                 rows.add(rowData);
             }
             DataSheet dataSheet = convertRowsToDataSheet(rows, headerRowNumber);
-            dataSheet.nameProperty().set(sheet.getSheetName());
+            dataSheet.setName(sheet.getSheetName());
             return dataSheet;
         }
     }
@@ -396,14 +409,13 @@ public class SpreadsheetMethods {
         }
         return str;
     }
-    
+
 // TODO future implementation
 //    @BlockMetadata(
 //            label = "filterData",
 //            description = "",
 //            type = "Spreadsheet.filterData",
 //            category = "Core")
-
     public static DataSheet filterData(DataSheet dataSheet, String column, Predicate<Object> condition) {
         int colIndex = dataSheet.getHeaderRow().indexOf(column);
         if (colIndex == -1) {
@@ -539,9 +551,9 @@ public class SpreadsheetMethods {
             description = "",
             type = "Spreadsheet.convertExcelToCsv",
             category = "Core")
-    public static void convertExcelToCsv(File excel, File csv) throws IOException {
+    public static void convertExcelToCsv(File excel, File csv, String delimiter) throws IOException {
         DataSheet sheet = readExcel(excel, -1);
-        writeCsv(csv, sheet);
+        writeCsv(csv, delimiter, sheet);
     }
 
     @Block(
@@ -549,8 +561,8 @@ public class SpreadsheetMethods {
             description = "",
             type = "Spreadsheet.convertCsvToExcel",
             category = "Core")
-    public static void convertCsvToExcel(File csv, File excel) throws IOException {
-        DataSheet sheet = readCsv(csv, -1);
+    public static void convertCsvToExcel(File csv, String delimiter, File excel) throws IOException {
+        DataSheet sheet = readCsv(csv, delimiter, -1);
         writeExcel(excel, sheet);
     }
 

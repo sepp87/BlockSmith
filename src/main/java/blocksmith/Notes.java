@@ -19,9 +19,18 @@ public class Notes {
 // - DONE resize handle jumping 10 pixels up after resize, and after connecting
 // - DONE text area padding on left
 // - DONE Number slider - Dark mode number slider expander labels not visible
+// - DONE port display names
+// - DONE Display Excel tables 
+// - DONE Save calls save as unneedingly
+
 // - IN PROGRESS sliders enable mix, max and step
-// - Save calls save as unneedingly
+// - block label default values
 // - Notification layer
+// - update method executor algorithm
+// - Reload block def/func library
+// - split project into core, UI and extended lib
+// - port data types
+
 
 
 // - Pull-based execution

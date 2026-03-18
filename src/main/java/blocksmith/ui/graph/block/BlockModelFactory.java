@@ -10,6 +10,8 @@ import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.ParamInput.NumericType;
 import blocksmith.domain.value.PortDef;
 import blocksmith.domain.value.ValueType;
+import blocksmith.domain.value.ValueType.SimpleType;
+import blocksmith.domain.value.types.DataSheet;
 import blocksmith.ui.control.BooleanInput;
 import blocksmith.ui.control.ChoiceInput;
 import blocksmith.ui.control.ColorInput;
@@ -21,6 +23,7 @@ import blocksmith.ui.control.FileTargetInput;
 import blocksmith.ui.control.IntegerSliderInput;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.control.PasswordInput;
+import blocksmith.ui.display.DataSheetDisplay;
 import blocksmith.ui.display.GenericDisplay;
 import blocksmith.ui.display.ValueDisplay;
 import java.util.Optional;
@@ -87,6 +90,10 @@ public class BlockModelFactory {
 
         if (!port.display()) {
             return Optional.empty();
+        }
+        
+        if(port.valueType() instanceof SimpleType type && type.raw() == DataSheet.class) {
+            return Optional.of(new DataSheetDisplay());
         }
 
         var display = new GenericDisplay();

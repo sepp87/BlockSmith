@@ -1,5 +1,6 @@
 package btslib.spreadsheet;
 
+import blocksmith.domain.value.types.DataSheet;
 import blocksmith.domain.value.ValueType;
 import javafx.scene.layout.Region;
 import blocksmith.ui.graph.block.BlockModel;

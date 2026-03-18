@@ -1,11 +1,10 @@
-package btslib.spreadsheet;
+package blocksmith.domain.value.types;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
@@ -14,7 +13,7 @@ import javafx.beans.property.StringProperty;
  */
 public class DataSheet {
 
-    private StringProperty name = new SimpleStringProperty(this, "name", "data");
+    private String name = "data";
 
     private final Map<String, Class<?>> columnTypes;
 
@@ -49,8 +48,12 @@ public class DataSheet {
         return result;
     }
 
-    public StringProperty nameProperty() {
+    public String getName() {
         return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Map<String, Class<?>> getColumnTypes() {

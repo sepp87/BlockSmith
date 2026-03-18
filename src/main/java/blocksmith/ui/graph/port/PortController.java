@@ -1,11 +1,8 @@
 package blocksmith.ui.graph.port;
 
 import javafx.beans.value.ChangeListener;
-import javafx.collections.SetChangeListener.Change;
-import javafx.collections.SetChangeListener;
 import javafx.scene.input.MouseEvent;
 import blocksmith.ui.graph.block.BlockController;
-import blocksmith.ui.graph.connection.ConnectionModel;
 
 /**
  *
@@ -24,27 +21,29 @@ public class PortController {
         this.view = view;
 
         model.activeProperty().addListener(activeListener);
-        model.labelProperty().addListener(toolTipSourceListener);
-        model.dataTypeProperty().addListener(toolTipSourceListener);
+//        model.labelProperty().addListener(toolTipSourceListener);
+//        model.dataTypeProperty().addListener(toolTipSourceListener);
 
+        view.getTooltip().textProperty().bind(model.labelProperty());
         view.idProperty().bind(model.idProperty());
         view.setOnMouseClicked(this::handlePortClicked);
         view.setOnMousePressed(this::ignoreDrag);
         view.setOnMouseDragged(this::ignoreDrag);
         view.setActive(model.isActive());
         
-        setToolTip();
+//        setToolTip();
     }
 
-    private final ChangeListener<Object> toolTipSourceListener = this::onToolTipSourceChanged;
-
-    private void onToolTipSourceChanged(Object b, Object o, Object n) {
-        setToolTip();
-    }
-
-    private void setToolTip() {
-        view.getTooltip().setText(model.labelProperty().get() + " : " + model.dataTypeProperty().get().getSimpleName());
-    }
+//    private final ChangeListener<Object> toolTipSourceListener = this::onToolTipSourceChanged;
+//
+//    private void onToolTipSourceChanged(Object b, Object o, Object n) {
+//        setToolTip();
+//    }
+//
+//    private void setToolTip() {
+//        view.getTooltip().setText(model.labelProperty().get());
+////        view.getTooltip().setText(model.labelProperty().get() + " : " + model.dataTypeProperty().get().getSimpleName());
+//    }
 
     private void handlePortClicked(MouseEvent event) {
         if (event.isStillSincePress()) {
@@ -73,8 +72,8 @@ public class PortController {
 
     public void remove() {
         model.activeProperty().removeListener(activeListener);
-        model.labelProperty().removeListener(toolTipSourceListener);
-        model.dataTypeProperty().removeListener(toolTipSourceListener);
+//        model.labelProperty().removeListener(toolTipSourceListener);
+//        model.dataTypeProperty().removeListener(toolTipSourceListener);
 
         view.setOnMouseClicked(null);
         view.setOnMousePressed(null);

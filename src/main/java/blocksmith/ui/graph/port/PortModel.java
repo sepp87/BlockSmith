@@ -19,6 +19,9 @@ import blocksmith.ui.graph.block.BlockModel;
 import blocksmith.ui.graph.connection.ConnectionModel;
 import blocksmith.ui.utils.ObjectUtils;
 import blocksmith.domain.graph.TypeCastUtils;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.function.Function;
 import javafx.beans.value.ChangeListener;
 
 /**
@@ -49,13 +52,13 @@ public class PortModel extends BaseModel {
             Class<?> type,
             BlockModel block,
             boolean multiDockAllowed) {
-        
+
         this.valueId = valueId;
         this.valueName = valueName;
         this.direction = direction;
         this.valueType = valueType;
 
-        this.labelProperty().set(GraphLogFmt.valueType(valueType)+  " :: " +valueName);
+        this.labelProperty().set(valueName + " : " + GraphLogFmt.valueType(valueType));
         this.index = (direction == Port.Direction.INPUT) ? block.getInputPorts().size() : block.getOutputPorts().size();
         this.block = block;
         this.multiDockAllowed = multiDockAllowed;
@@ -63,14 +66,14 @@ public class PortModel extends BaseModel {
 
         data.addListener(dataListener);
     }
-    
+
     public String valueId() {
         return valueId;
     }
-    
+
     public void updateValueType(ValueType valueType) {
         this.valueType = valueType;
-        labelProperty().set(GraphLogFmt.valueType(valueType) + " :: " + valueName);
+        labelProperty().set(valueName + " : " + GraphLogFmt.valueType(valueType));
     }
 
     @Override
@@ -143,21 +146,52 @@ public class PortModel extends BaseModel {
 
             //Cast all primitive dataType to String if this port dataType is String
             PortModel startPort = connections.iterator().next().getStartPort();
-            if (this.getDataType() == String.class && TypeCastUtils.contains(startPort.getDataType())) {
+            var incoming = startPort.getData();
+            System.out.println("DATA TYPES " + this.getDataType().getSimpleName() + " " + startPort.getDataType().getSimpleName());
 
-                if (startPort.getData() instanceof List) {
-                    List<?> list = (List) startPort.getData();
-                    List<String> newList = new ArrayList<>();
-                    for (Object primitive : list) {
-                        newList.add(primitive + "");
-                    }
-                    data.set(newList);
-                } else {
-                    data.set(startPort.getData() + "");
-                }
+            if (this.getDataType() == String.class && TypeCastUtils.contains(startPort.getDataType())) {
+                var effective = objectToString(incoming);
+                data.set(effective);
+
+            } else if (this.getDataType() == File.class && Path.class.isAssignableFrom(startPort.getDataType())) {
+                var effective = pathToFile(incoming);
+                data.set(effective);
+
+            } else if (Path.class.isAssignableFrom(this.getDataType()) && startPort.getDataType() == File.class) {
+                var effective = fileToPath(incoming);
+                data.set(effective);
+
             } else { // this INPUT port does NOT have data type String
-                data.set(startPort.getData());
+
+                data.set(incoming);
             }
+        }
+    }
+
+    private Object objectToString(Object data) {
+        return convert(data, Object.class, o -> o + "");
+    }
+
+    private Object pathToFile(Object data) {
+        System.out.println("PATH TO FILE NOT CALLED");
+        return convert(data, Path.class, Path::toFile);
+    }
+
+    private Object fileToPath(Object data) {
+        return convert(data, File.class, File::toPath);
+    }
+
+    private <FROM, TO> Object convert(Object data, Class<FROM> from, Function<FROM, TO> converter) {
+        if (data instanceof List) {
+            var list = (List<FROM>) data;
+            var newList = new ArrayList<TO>();
+            for (var item : list) {
+                var converted = converter.apply(from.cast(item));
+                newList.add(converted);
+            }
+            return newList;
+        } else {
+            return converter.apply(from.cast(data));
         }
     }
 

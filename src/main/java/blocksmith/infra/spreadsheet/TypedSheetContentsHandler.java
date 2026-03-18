@@ -1,4 +1,4 @@
-package btslib.spreadsheet;
+package blocksmith.infra.spreadsheet;
 
 import java.text.DecimalFormat;
 import org.apache.poi.xssf.usermodel.XSSFComment;
@@ -21,7 +21,7 @@ import blocksmith.ui.utils.ParsingUtils;
 public class TypedSheetContentsHandler implements SheetContentsHandler {
 
     private final StylesTable styles;
-    private final RowConsumer rowConsumer;
+    private final List<List<Object>> rowConsumer;
     private final List<List<Object>> firstHundredRows = new ArrayList<>();
     private final List<List<Object>> lastHundredRows = new ArrayList<>();
     private final Map<Integer, Integer> columnCountRecurrences = new HashMap<>();
@@ -30,7 +30,7 @@ public class TypedSheetContentsHandler implements SheetContentsHandler {
     private String currentCellType;
     private int currentStyleIndex = -1;
 
-    public TypedSheetContentsHandler(StylesTable styles, RowConsumer rowConsumer) {
+    public TypedSheetContentsHandler(StylesTable styles, List<List<Object>> rowConsumer) {
         this.styles = styles;
         this.rowConsumer = rowConsumer;
     }
@@ -46,7 +46,7 @@ public class TypedSheetContentsHandler implements SheetContentsHandler {
     @Override
     public void startRow(int rowNum) {
         currentRow = new ArrayList<>();
-        rowConsumer.addRow(currentRow);
+        rowConsumer.add(currentRow);
 
         if (rowNum < 100) {
             firstHundredRows.add(currentRow);

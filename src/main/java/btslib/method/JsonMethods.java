@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import blocksmith.ui.utils.ParsingUtils;
 import blocksmith.infra.blockloader.annotations.Block;
+import com.google.gson.JsonArray;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -32,7 +34,7 @@ public class JsonMethods {
         List<String> list = new ArrayList<>();
         if (element.isJsonArray()) {
             for (JsonElement item : element.getAsJsonArray()) {
-                String value = GSON.toJson(item);
+                String value = toOutput(item);
                 list.add(value);
             }
         }
@@ -101,34 +103,72 @@ public class JsonMethods {
     public static String getPath(String json, String path) {
         JsonElement element = PARSER.parse(json);
         String[] parts = path.split("\\.");
+        List<JsonElement> results = resolve(element, parts, 0);
 
-        for (String part : parts) {
-            if (part.contains("[") && part.contains("]")) {
-                // Handle array index like "bar[0]"
-                String key = part.substring(0, part.indexOf("["));
+        if (results.size() == 1) {
+            return toOutput(results.get(0));
+        }
+        var array = new JsonArray();
+        results.forEach(array::add);
+        return array.toString();
+    }
 
-//                String[] indeces = part.replaceFirst(key, "").replaceAll("\\[", "]").replaceAll("]]", "]").split("]");
-                String[] indices = part.replaceAll(".*?\\[", "").split("\\]|\\[");
+    private static String toOutput(JsonElement element) {
+        if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
+            return element.getAsString(); // raw value, no quotes
+        }
+        return element.toString(); // objects, arrays, numbers, booleans stay as-is
+    }
 
-                if (!key.isEmpty()) {
-                    element = element.getAsJsonObject().get(key);
-                }
-
-                for (String value : indices) {
-                    if (value.isEmpty()) {
-                        throw new IllegalArgumentException("Index cannot be empty in path: " + path);
-                    }
-                    int index = Integer.parseInt(value);
-                    element = element.getAsJsonArray().get(index);
-                }
-
-            } else {
-                // Handle regular object key
-                element = element.getAsJsonObject().get(part);
-            }
+    private static List<JsonElement> resolve(JsonElement element, String[] parts, int depth) {
+        if (depth >= parts.length) {
+            return List.of(element);
         }
 
-        return element.toString();
+        String part = parts[depth];
+
+        if (part.contains("[") && part.contains("]")) {
+            String key = part.substring(0, part.indexOf("["));
+            if (!key.isEmpty()) {
+                element = element.getAsJsonObject().get(key);
+            }
+
+            // Extract all bracket groups: [0], [*], [2], etc.
+            List<String> indices = new ArrayList<>();
+            var m = Pattern.compile("\\[([^]]+)]").matcher(part);
+            while (m.find()) {
+                indices.add(m.group(1));
+            }
+
+            return applyIndices(element, indices, 0, parts, depth);
+        } else {
+            element = element.getAsJsonObject().get(part);
+            return resolve(element, parts, depth + 1);
+        }
+    }
+
+    private static List<JsonElement> applyIndices(
+            JsonElement element, List<String> indices, int idx,
+            String[] parts, int depth) {
+
+        if (idx >= indices.size()) {
+            return resolve(element, parts, depth + 1);
+        }
+
+        String index = indices.get(idx);
+
+        if ("*".equals(index)) {
+            var array = element.getAsJsonArray();
+            List<JsonElement> collected = new ArrayList<>();
+            for (JsonElement child : array) {
+                collected.addAll(applyIndices(child, indices, idx + 1, parts, depth));
+            }
+            return collected;
+        } else {
+            int i = Integer.parseInt(index);
+            element = element.getAsJsonArray().get(i);
+            return applyIndices(element, indices, idx + 1, parts, depth);
+        }
     }
 
     @Block(

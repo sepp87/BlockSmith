@@ -1,5 +1,6 @@
-package btslib.spreadsheet;
+package blocksmith.infra.spreadsheet;
 
+import blocksmith.domain.value.types.DataSheet;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,11 +25,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.eventusermodel.ReadOnlySharedStringsTable;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
-import org.apache.poi.xssf.eventusermodel.XSSFSheetXMLHandler;
-import org.apache.poi.xssf.eventusermodel.XSSFSheetXMLHandler.SheetContentsHandler;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -96,14 +94,14 @@ public class ExcelUtils {
         XMLReader xmlReader = saxParser.getXMLReader();
 
         // Set content handler to process the sheet
-        Matrix matrix = new Matrix();
+        var matrix = new ArrayList<List<Object>>();
         TypedSheetContentsHandler sheetHandler = new TypedSheetContentsHandler(styles, matrix);
         xmlReader.setContentHandler(new TypedSheetXMLHandler(styles, sst, sheetHandler, false));
 
         // Parse the sheet
         xmlReader.parse(new InputSource(sheetInputStream));
 
-        return matrix.getAllRows();
+        return matrix;
     }
 
     public static void write(File excel, DataSheet dataSheet) {

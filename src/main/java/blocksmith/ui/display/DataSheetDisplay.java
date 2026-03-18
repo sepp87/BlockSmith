@@ -1,7 +1,7 @@
 package blocksmith.ui.display;
 
 import blocksmith.ui.display.ValueDisplay.SingleValue;
-import btslib.spreadsheet.DataSheet;
+import blocksmith.domain.value.types.DataSheet;
 import btslib.spreadsheet.DataSheetViewer;
 import javafx.scene.Node;
 
@@ -9,11 +9,11 @@ import javafx.scene.Node;
  *
  * @author joost
  */
-public class SpreadsheetDisplay implements SingleValue {
+public class DataSheetDisplay implements SingleValue {
 
     private final DataSheetViewer viewer;
 
-    public SpreadsheetDisplay() {
+    public DataSheetDisplay() {
         this.viewer = new DataSheetViewer();
     }
 

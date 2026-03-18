@@ -1,5 +1,7 @@
 package blocksmith.domain.graph;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -149,9 +151,13 @@ public class TypeCastUtils {
                 Boolean.class,
                 String.class
         ));
+        castMap.put(Path.class, Arrays.asList(
+                File.class
+        ));
+        castMap.put(File.class, Arrays.asList(
+                Path.class
+        ));
     }
-
-
 
     public static boolean isCastableTo(Class<?> from, Class<?> to) {
 
