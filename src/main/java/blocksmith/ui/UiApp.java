@@ -68,8 +68,14 @@ public class UiApp extends Application {
 
         var graphRepo = app.getGraphRepo();
         var graphEditorFactory = app.getGraphEditorFactory();
+        var executionSessionFactory = app.getExecutionSessionFactory();
         var saveDocument = new SaveDocument(graphRepo);
-        var workspaceSessionFactory = new WorkspaceSessionFactory(graphRepo, graphEditorFactory, saveDocument);
+        var workspaceSessionFactory
+                = new WorkspaceSessionFactory(
+                        graphRepo,
+                        graphEditorFactory,
+                        executionSessionFactory,
+                        saveDocument);
 
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
@@ -115,7 +121,7 @@ public class UiApp extends Application {
         // initialize ActionManager for Context
         workspaceRegistry.setOnActiveWorkspaceChanged(activeWorkspaceContext -> {
             tabManagerView.closeAll();
-            zoomController.bindZoomLabel(activeWorkspaceContext.session().zoomFactorProperty());
+            zoomController.bindZoomLabel(activeWorkspaceContext.session().viewport().zoomFactorProperty());
             var id = activeWorkspaceContext.id();
             var docPath = activeWorkspaceContext.session().documentPath().orElse(null);
             var label = docPath == null ? null : docPath.getFileName().toString();

@@ -115,9 +115,9 @@ public class ZoomController {
             double newScale;
             // Adjust zoom factor based on scroll direction
             if (event.getDeltaY() > 0) {
-                newScale = workspace.session().getIncrementedZoomFactor();
+                newScale = workspace.session().viewport().getIncrementedZoomFactor();
             } else {
-                newScale = workspace.session().getDecrementedZoomFactor();
+                newScale = workspace.session().viewport().getDecrementedZoomFactor();
             }
             Point2D pivotPoint = new Point2D(event.getSceneX(), event.getSceneY());
 

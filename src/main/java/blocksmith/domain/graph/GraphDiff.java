@@ -10,6 +10,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * TODO improvement: specify what changed specifically on updated blocks e.g. split up into updated layout, params, ...
+ */
 public record GraphDiff(
         Collection<Block> removedBlocks,
         Collection<Block> addedBlocks,

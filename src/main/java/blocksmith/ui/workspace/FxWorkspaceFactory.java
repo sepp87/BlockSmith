@@ -6,8 +6,6 @@ import blocksmith.app.outbound.WorkspaceFactory;
 import blocksmith.ui.AlignmentService;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.WorkspaceSessionFactory;
-import blocksmith.exec.RuntimeState;
-import blocksmith.ui.command.AppCommandFactory;
 import blocksmith.ui.command.WorkspaceCommandBus;
 import blocksmith.ui.command.WorkspaceCommandFactory;
 import java.nio.file.Path;
@@ -24,8 +22,8 @@ public class FxWorkspaceFactory implements WorkspaceFactory {
 
     public FxWorkspaceFactory(
             WorkspaceSessionFactory sessionFactory,
-            BlockModelFactory blockFactory
-    ) {
+            BlockModelFactory blockFactory) {
+
         this.sessionFactory = sessionFactory;
         this.blockFactory = blockFactory;
     }
@@ -44,14 +42,14 @@ public class FxWorkspaceFactory implements WorkspaceFactory {
 
     private FxWorkspaceHandle build(WorkspaceSession session) {
         var view = new WorkspaceView();
-        var runtime = new RuntimeState();
+        var runtime = session.runtimeState();
         var mapper = new GraphProjectionAssembler(blockFactory, runtime);
         var projection = new GraphProjection(mapper, session.graphSnapshot());
         var commandFactory = new WorkspaceCommandFactory(session);
         var commandBus = new WorkspaceCommandBus(commandFactory, session);
         var state = new WorkspaceState();
         var renderer = new WorkspaceController(commandBus, session, state, view, projection);
-        var zoom = new ZoomService(session, view, projection);
+        var zoom = new ZoomService(session.viewport(), session.selectionModel(), view, projection);
         var alignment = new AlignmentService(session.selectionModel(), projection, session.graphEditor());
         var selection = new SelectionService(session.selectionModel(), projection);
         var context = new FxWorkspaceHandle(session, view, projection, commandBus, state, renderer, zoom, alignment, selection);

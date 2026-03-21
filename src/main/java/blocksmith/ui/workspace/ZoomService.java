@@ -2,8 +2,6 @@ package blocksmith.ui.workspace;
 
 import blocksmith.ui.projection.GraphProjection;
 import blocksmith.ui.geom.GeomUtils;
-import blocksmith.ui.UiApp;
-import blocksmith.ui.graph.block.BlockModel;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import java.util.Collection;
 import javafx.geometry.Bounds;
@@ -16,29 +14,39 @@ import javafx.scene.Scene;
  */
 public class ZoomService {
 
-    private final WorkspaceSession model;
+    private final Viewport viewport;
+    private final SelectionModel selection;
     private final WorkspaceView view;
     private final GraphProjection projection;
 
-    public ZoomService(WorkspaceSession workspaceModel, WorkspaceView workspaceView, GraphProjection projection) {
-        this.model = workspaceModel;
+    public ZoomService(
+            Viewport viewport,
+            SelectionModel selection,
+            WorkspaceView workspaceView,
+            GraphProjection projection) {
+
+        this.viewport = viewport;
+        this.selection = selection;
         this.view = workspaceView;
         this.projection = projection;
 
-        view.scaleXProperty().bind(model.zoomFactorProperty());
-        view.scaleYProperty().bind(model.zoomFactorProperty());
-        view.translateXProperty().bind(model.translateXProperty());
-        view.translateYProperty().bind(model.translateYProperty());
+        bind();
+    }
 
+    private final void bind() {
+        view.scaleXProperty().bind(viewport.zoomFactorProperty());
+        view.scaleYProperty().bind(viewport.zoomFactorProperty());
+        view.translateXProperty().bind(viewport.translateXProperty());
+        view.translateYProperty().bind(viewport.translateYProperty());
     }
 
     public void zoomIn() {
-        double newScale = model.getIncrementedZoomFactor();
+        double newScale = viewport.getIncrementedZoomFactor();
         applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
     }
 
     public void zoomOut() {
-        double newScale = model.getDecrementedZoomFactor();
+        double newScale = viewport.getDecrementedZoomFactor();
         applyZoom(newScale); // Zoom is not from scrolling; no scroll event needed
     }
 
@@ -48,7 +56,7 @@ public class ZoomService {
 
     public void zoomToPoint(double newScale, Point2D pivotPoint) {
 
-        double oldScale = model.zoomFactorProperty().get();
+        double oldScale = viewport.zoomFactorProperty().get();
         double scaleChange = (newScale / oldScale) - 1;
 
         // Get the bounds of the workspace
@@ -74,16 +82,16 @@ public class ZoomService {
         double dX = scaleChange * dx;
         double dY = scaleChange * dy;
 
-        double newTranslateX = model.translateXProperty().get() - dX;
-        double newTranslateY = model.translateYProperty().get() - dY;
+        double newTranslateX = viewport.translateXProperty().get() - dX;
+        double newTranslateY = viewport.translateYProperty().get() - dY;
 
-        model.translateXProperty().set(newTranslateX);
-        model.translateYProperty().set(newTranslateY);
-        model.zoomFactorProperty().set(newScale);
+        viewport.translateXProperty().set(newTranslateX);
+        viewport.translateYProperty().set(newTranslateY);
+        viewport.zoomFactorProperty().set(newScale);
     }
 
     public void zoomToFit() {
-        var ids = model.selectionModel().selected();
+        var ids = selection.selected();
 
         if (ids.isEmpty()) { // zoom to fit all
             var all = projection.blocks();
@@ -108,19 +116,19 @@ public class ZoomService {
         double ratioY = boundingBox.getHeight() / scene.getHeight();
         double ratio = Math.max(ratioX, ratioY);
         // multiply, round and divide by 10 to reach zoom step of 0.1 and substract by 1 to zoom a bit more out so the blocks don't touch the border
-        double scale = Math.ceil((model.zoomFactorProperty().get() / ratio) * 10 - 1) / 10;
-        scale = scale < WorkspaceSession.MIN_ZOOM ? WorkspaceSession.MIN_ZOOM : scale;
-        scale = scale > WorkspaceSession.MAX_ZOOM ? WorkspaceSession.MAX_ZOOM : scale;
-        model.zoomFactorProperty().set(scale);
+        double scale = Math.ceil((viewport.zoomFactorProperty().get() / ratio) * 10 - 1) / 10;
+        scale = scale < Viewport.MIN_ZOOM ? Viewport.MIN_ZOOM : scale;
+        scale = scale > Viewport.MAX_ZOOM ? Viewport.MAX_ZOOM : scale;
+        viewport.zoomFactorProperty().set(scale);
 
         //Pan to fit
         boundingBox = view.localToParent(GeomUtils.boundsOf(blocks.stream().map(b -> b.measuredBounds()).toList()));
         double dx = (boundingBox.getMinX() + boundingBox.getWidth() / 2) - scene.getWidth() / 2;
         double dy = (boundingBox.getMinY() + boundingBox.getHeight() / 2) - scene.getHeight() / 2;
-        double newTranslateX = model.translateXProperty().get() - dx;
-        double newTranslateY = model.translateYProperty().get() - dy;
+        double newTranslateX = viewport.translateXProperty().get() - dx;
+        double newTranslateY = viewport.translateYProperty().get() - dy;
 
-        model.translateXProperty().set(newTranslateX);
-        model.translateYProperty().set(newTranslateY);
+        viewport.translateXProperty().set(newTranslateX);
+        viewport.translateYProperty().set(newTranslateY);
     }
 }

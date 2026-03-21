@@ -218,6 +218,17 @@ public final class Graph {
 
         return withAll(blocks.values(), connections, updated.values());
     }
+    
+    public boolean hasIncomingConnections(BlockId id) {
+        var block = block(id).orElseThrow();
+        var inputs = block.inputPorts().stream().map(input -> PortRef.input(id, input.valueId())).toList();
+        for (var to : inputs ) {
+            if(incomingConnection(to).isPresent()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public Optional<Connection> incomingConnection(PortRef to) {
         if (to.direction() == Port.Direction.INPUT) {

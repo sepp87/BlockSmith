@@ -222,7 +222,7 @@ public class BlockController extends BaseController {
             return;
         }
 
-        double scale = session.zoomFactorProperty().get();
+        double scale = session.viewport().zoomFactorProperty().get();
         double deltaX = (event.getSceneX() - updatedPoint.getX()) / scale;
         double deltaY = (event.getSceneY() - updatedPoint.getY()) / scale;
 
@@ -246,8 +246,8 @@ public class BlockController extends BaseController {
             if (drag_to_move) {
                 var ids = session.selectionModel().selected();
                 Point2D delta = updatedPoint.subtract(startPoint);
-                double dX = delta.getX() / session.zoomFactorProperty().get();
-                double dY = delta.getY() / session.zoomFactorProperty().get();
+                double dX = delta.getX() / session.viewport().zoomFactorProperty().get();
+                double dY = delta.getY() / session.viewport().zoomFactorProperty().get();
                 delta = new Point2D(dX, dY);
 
                 var command = commands.factory().createMoveBlocksCommand(ids, delta);
@@ -322,7 +322,7 @@ public class BlockController extends BaseController {
     }
 
     private void handleResizeUpdated(MouseEvent event) {
-        double scale = session.zoomFactorProperty().get();
+        double scale = session.viewport().zoomFactorProperty().get();
         double deltaX = (event.getSceneX() - updatedPoint.getX()) / scale;
         double deltaY = (event.getSceneY() - updatedPoint.getY()) / scale;
         double newWidth = model.widthProperty().get() + deltaX;

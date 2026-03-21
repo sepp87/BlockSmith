@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  *
  * @author joost
  */
-public class RuntimeState {
+public class ForgeState {
 
     private final Map<PortRef, Object> valueIndex = new HashMap<>();
     private final Map<BlockId, ExecutionStatus> blockStatus = new HashMap<>();
@@ -22,6 +22,18 @@ public class RuntimeState {
 
     private final List<Consumer<BlockId>> listeners = new ArrayList<>();
 
+    public boolean removeValueOf(PortRef ref) {
+        return valueIndex.remove(ref) != null;
+    }
+    
+    public void removeStatusOf(BlockId block) {
+        blockStatus.remove(block);
+    }
+    
+    public void clearExceptionsOf(BlockId block) {
+        blockExceptions.remove(block);
+    }
+    
     public void setOnBlockUpdated(Consumer<BlockId> listener) {
         listeners.clear();
         listeners.add(listener);
@@ -50,9 +62,14 @@ public class RuntimeState {
     }
 
     public Map<PortRef, Object> valuesOf(BlockId block) {
-        return valueIndex.entrySet().stream()
-                .filter(e -> e.getKey().blockId().equals(block))
-                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        var result = new HashMap<PortRef, Object>();
+        valueIndex.entrySet().forEach(e -> {
+            var indexed = e.getKey().blockId();
+            if (indexed.equals(block)) {
+                result.put(e.getKey(), e.getValue());
+            }
+        });
+        return Map.copyOf(result);
     }
 
     public ExecutionStatus statusOf(BlockId block) {

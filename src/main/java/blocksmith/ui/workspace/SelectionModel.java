@@ -3,6 +3,8 @@ package blocksmith.ui.workspace;
 import blocksmith.app.inbound.GraphEditor;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
+import blocksmith.domain.graph.Graph;
+import blocksmith.domain.group.Group;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -60,6 +62,18 @@ public class SelectionModel {
 
     private void selectionChanged() {
         listeners.forEach(c -> c.accept(selected));
+    }
+
+    public boolean isSelectionGroupable(Graph graph) {
+        if (selected.size() < Group.MINIMUM_SIZE) {
+            return false;
+        }
+        for (var block : selected) {
+            if (graph.groupOf(block).isPresent()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

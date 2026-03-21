@@ -11,7 +11,7 @@ import static blocksmith.domain.value.Port.Direction.INPUT;
 import blocksmith.exec.BlockExecutor;
 import blocksmith.exec.BlockFunc;
 import blocksmith.exec.ExecutionStatus;
-import blocksmith.exec.RuntimeState;
+import blocksmith.exec.ForgeState;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.display.ValueInspector;
@@ -199,10 +199,9 @@ public class MethodBlockNew extends BlockModel {
 
         var block = BlockId.from(getId());
 
-        var portValues = inputPorts.stream().collect(Collectors.toMap(PortModel::toDomain, PortModel::getData));
-        var paramValues = inputControls.values().stream().collect(Collectors.toMap(i -> PortRef.input(block, i.valueId()), InputControl::getValue));
-        var values = new HashMap<PortRef, Object>(portValues);
-        values.putAll(paramValues);
+        var values = new HashMap<PortRef, Object>();
+        inputPorts.forEach(p -> values.put(p.toDomain(), p.getData()));
+        inputControls.forEach((valueId, control) -> values.put(PortRef.input(block, valueId), control.getValue()));
         runtime.updateBlockState(block, values, ExecutionStatus.RUNNING, exceptions);
 
         var portArgs = inputPorts.stream().map(PortModel::getData).toList();
@@ -211,7 +210,8 @@ public class MethodBlockNew extends BlockModel {
         var result = new BlockExecutor(def, func, isListOperator).invoke(args);
 
         var outputRef = outputPorts.get(0).toDomain();
-        var outputValues = Map.of(outputRef, result.getData());
+        var outputValues = new HashMap<PortRef, Object>();
+        outputValues.put(outputRef, result.getData());
         runtime.updateBlockState(
                 block,
                 outputValues,
@@ -234,13 +234,13 @@ public class MethodBlockNew extends BlockModel {
         });
     }
 
-    private RuntimeState runtime;
+    private ForgeState runtime;
 
-    public void setRuntimeState(RuntimeState runtime) {
+    public void setRuntimeState(ForgeState runtime) {
         this.runtime = runtime;
     }
 
-    public void updateFrom(RuntimeState runtime) {
+    public void updateFrom(ForgeState runtime) {
         if (UiApp.USE_EXEC_LAYER) {
             var block = BlockId.from(getId());
             var status = runtime.statusOf(block);

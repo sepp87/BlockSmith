@@ -4,17 +4,15 @@ import blocksmith.app.GraphDocument;
 import blocksmith.app.GraphEditorFactory;
 import blocksmith.app.inbound.GraphEditor;
 import blocksmith.domain.graph.Graph;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import java.util.Objects;
 import blocksmith.app.inbound.GraphMutationAndHistory;
 import blocksmith.domain.group.Group;
 import blocksmith.app.workspace.SaveDocument;
+import blocksmith.exec.ForgeSession;
+import blocksmith.exec.ForgeSessionFactory;
+import blocksmith.exec.ForgeState;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -30,9 +28,11 @@ public class WorkspaceSession {
     private final static Logger LOGGER = Logger.getLogger(WorkspaceSession.class.getName());
 
     private final GraphEditor editor;
+    private final ForgeSession executionSession;
     private final SaveDocument saveDocument;
 
     private final SelectionModel selectionModel;
+    private final Viewport viewport;
 
     private GraphDocument document;
     private Path documentPath;
@@ -42,41 +42,49 @@ public class WorkspaceSession {
             Path documentPath,
             GraphDocument document,
             GraphEditorFactory editorFactory,
+            ForgeSessionFactory executionSessionFactory,
             SaveDocument saveDocument
     ) {
         this.documentPath = documentPath;
         this.document = document;
         this.editor = editorFactory.createDefault(document.graph());
-        this.zoomFactor.set(document.zoomFactor());
-        this.translateX.set(document.translateX());
-        this.translateY.set(document.translateY());
+        this.executionSession = executionSessionFactory.create(document.graph());
         this.saveDocument = saveDocument;
 
         this.selectionModel = new SelectionModel(editor);
+        this.viewport = new Viewport(document);
+        
+        editor.addGraphListener(executionSession::onGraphChanged);
     }
 
     public static WorkspaceSession newDocument(
             GraphEditorFactory editorFactory,
+            ForgeSessionFactory executionSessionFactory,
             SaveDocument saveDocument
     ) {
         Path path = null;
         var document = GraphDocument.createEmpty();
-        return new WorkspaceSession(path, document, editorFactory, saveDocument);
+        return new WorkspaceSession(path, document, editorFactory, executionSessionFactory, saveDocument);
     }
 
     public static WorkspaceSession openDocument(
             Path path,
             GraphDocument document,
             GraphEditorFactory editorFactory,
+            ForgeSessionFactory executionSessionFactory,
             SaveDocument saveDocument
     ) {
-        return new WorkspaceSession(path, document, editorFactory, saveDocument);
+        return new WorkspaceSession(path, document, editorFactory, executionSessionFactory, saveDocument);
     }
 
     public SelectionModel selectionModel() {
         return selectionModel;
     }
 
+    public Viewport viewport() {
+        return viewport;
+    }
+    
     public Graph graphSnapshot() {
         return editor.graphSnapshot();
     }
@@ -86,21 +94,15 @@ public class WorkspaceSession {
     }
 
     public boolean isSelectionGroupable() {
-        var selected = selectionModel.selected();
-        if (selected.size() < Group.MINIMUM_SIZE) {
-            return false;
-        }
-        var graph = graphSnapshot();
-        for (var block : selected) {
-            if (graph.groupOf(block).isPresent()) {
-                return false;
-            }
-        }
-        return true;
+        return selectionModel.isSelectionGroupable(graphSnapshot());
     }
 
     public GraphMutationAndHistory graphEditor() {
         return editor;
+    }
+    
+    public ForgeState runtimeState() {
+        return executionSession.runtimeState();
     }
 
     public boolean isSaved() {
@@ -109,7 +111,7 @@ public class WorkspaceSession {
 
     public void saveDocument(Path path) throws Exception {
         var graph = editor.graphSnapshot();
-        var newVersion = new GraphDocument(graph, zoomFactor.get(), translateX.get(), translateY.get());
+        var newVersion = new GraphDocument(graph, viewport.zoomFactorProperty().get(), viewport.translateXProperty().get(), viewport.translateYProperty().get());
         saveDocument.execute(path, newVersion);
         document = newVersion;
         if (!Objects.equals(documentPath, path)) {
@@ -128,57 +130,6 @@ public class WorkspaceSession {
 
     private void onDocumentPathChanged() {
         documentPathListeners.forEach(c -> c.accept(documentPath));
-    }
-
-    public static final double DEFAULT_ZOOM_FACTOR = 1.0;
-    public static final double MAX_ZOOM = 1.5;
-    public static final double MIN_ZOOM = 0.3;
-    public static final double ZOOM_STEP = 0.1;
-
-    private final ObjectProperty<File> file = new SimpleObjectProperty(this, "file", null);
-
-    private final DoubleProperty zoomFactor = new SimpleDoubleProperty(DEFAULT_ZOOM_FACTOR);
-    private final DoubleProperty translateX = new SimpleDoubleProperty(0.);
-    private final DoubleProperty translateY = new SimpleDoubleProperty(0.);
-
-    public ObjectProperty<File> fileProperty() {
-        return file;
-    }
-
-    public DoubleProperty zoomFactorProperty() {
-        return zoomFactor;
-    }
-
-    public DoubleProperty translateXProperty() {
-        return translateX;
-    }
-
-    public DoubleProperty translateYProperty() {
-        return translateY;
-    }
-
-    public void resetZoomFactor() {
-        zoomFactor.set(DEFAULT_ZOOM_FACTOR);
-    }
-
-    // Increment zoom factor by the defined step size
-    public double getIncrementedZoomFactor() {
-        return Math.min(MAX_ZOOM, zoomFactor.get() + ZOOM_STEP);
-    }
-
-    // Decrement zoom factor by the defined step size
-    public double getDecrementedZoomFactor() {
-        return Math.max(MIN_ZOOM, zoomFactor.get() - ZOOM_STEP);
-    }
-
-    public void setZoomFactor(double factor) {
-        this.zoomFactor.set(Math.round(factor * 10) / 10.);
-    }
-
-    public void reset() {
-        resetZoomFactor();
-        translateXProperty().set(0.);
-        translateYProperty().set(0.);
     }
 
 }

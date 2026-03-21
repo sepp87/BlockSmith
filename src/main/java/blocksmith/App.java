@@ -20,6 +20,7 @@ import blocksmith.app.clipboard.CopyMemory;
 import blocksmith.app.connection.RemoveConnection;
 import blocksmith.app.outbound.GraphRepo;
 import blocksmith.domain.block.BlockFactory;
+import blocksmith.exec.ForgeSessionFactory;
 import blocksmith.xml.v2.ObjectFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -41,6 +42,7 @@ public class App {
     private final BlockFuncLibrary blockFuncLibrary;
     private final GraphRepo graphRepo;
     private final GraphEditorFactory graphEditorFactory;
+    private final ForgeSessionFactory executionSessionFactory;
 
     public App() throws IOException, JAXBException {
         configureLogging();
@@ -75,6 +77,7 @@ public class App {
                 copyBlocks, pasteBlocks
         );
 
+        this.executionSessionFactory = new ForgeSessionFactory();
     }
 
     private void configureLogging() {
@@ -118,6 +121,10 @@ public class App {
 
     public GraphEditorFactory getGraphEditorFactory() {
         return graphEditorFactory;
+    }
+    
+    public ForgeSessionFactory getExecutionSessionFactory() {
+        return executionSessionFactory;
     }
 
 }

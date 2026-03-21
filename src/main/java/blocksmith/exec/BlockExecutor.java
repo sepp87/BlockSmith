@@ -28,7 +28,7 @@ public class BlockExecutor {
 
         try {
 
-            if (false) {
+            if (true) {
                 result[0] = new UnifiedMethodExecutor(def, func).execute(args);
 
             } else {

@@ -6,7 +6,7 @@ import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.ValueTypeResolver;
 import static blocksmith.domain.value.Port.Direction.INPUT;
-import blocksmith.exec.RuntimeState;
+import blocksmith.exec.ForgeState;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.graph.port.PortModel;
@@ -22,9 +22,9 @@ import java.util.Optional;
 public class BlockProjectionAssembler {
 
     private final BlockModelFactory blockFactory;
-    private final RuntimeState runtime;
+    private final ForgeState runtime;
 
-    public BlockProjectionAssembler(BlockModelFactory blockFactory, RuntimeState runtime) {
+    public BlockProjectionAssembler(BlockModelFactory blockFactory, ForgeState runtime) {
         this.blockFactory = blockFactory;
         this.runtime = runtime;
     }
