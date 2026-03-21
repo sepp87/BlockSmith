@@ -97,18 +97,6 @@ public abstract class BaseModel implements Comparable<BaseModel> {
         return removed.get();
     }
 
-    public void revive() {
-        removed.set(false);
-    }
-
-    public void serialize() {
-
-    }
-
-    public void deserialize() {
-
-    }
-
     public void select() {
 
     }

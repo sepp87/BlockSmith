@@ -5,10 +5,7 @@ import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.value.Port;
 import blocksmith.ui.graph.port.PortModel;
-import btsxml.ConnectionTag;
-import blocksmith.ui.UiApp;
 import blocksmith.ui.graph.base.BaseModel;
-import blocksmith.domain.graph.TypeCastUtils;
 
 /**
  *
@@ -84,39 +81,6 @@ public class ConnectionModel extends BaseModel {
         super.setActive(false);
         super.dispose();
 
-    }
-
-    @Override
-    public void revive() {
-        initialize();
-        super.revive();
-    }
-
-    public void serialize(ConnectionTag xmlTag) {
-        xmlTag.setStartBlock(startPort.getBlock().idProperty().get());
-        xmlTag.setStartIndex(startPort.getIndex());
-        xmlTag.setEndBlock(endPort.getBlock().idProperty().get());
-        xmlTag.setEndIndex(endPort.getIndex());
-    }
-
-    public static boolean isEligible(PortModel startPortModel, PortModel endPortModel) {
-        boolean differentPortTypes = endPortModel.getDirection() != startPortModel.getDirection();
-        boolean differentBlocks = !endPortModel.getBlock().equals(startPortModel.getBlock());
-        boolean typesCompatible = isTypeCompatible(startPortModel, endPortModel);
-
-        return typesCompatible && differentPortTypes && differentBlocks;
-    }
-
-    private static boolean isTypeCompatible(PortModel startPortModel, PortModel endPortModel) {
-        if (!UiApp.TYPE_SENSITIVE) {
-            return true;
-        }
-
-        boolean isInput = endPortModel.getDirection() == Port.Direction.INPUT;
-        Class<?> outputType = isInput ? startPortModel.getDataType() : endPortModel.getDataType();
-        Class<?> inputType = isInput ? endPortModel.getDataType() : startPortModel.getDataType();
-
-        return TypeCastUtils.isCastableTo(outputType, inputType);
     }
 
     public Connection toDomain() {

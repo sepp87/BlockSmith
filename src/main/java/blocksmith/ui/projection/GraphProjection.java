@@ -7,6 +7,7 @@ import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.group.Group;
 import blocksmith.domain.group.GroupId;
+import blocksmith.exec.RuntimeState;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.graph.block.BlockModel;
 import blocksmith.ui.graph.connection.ConnectionModel;
@@ -48,7 +49,7 @@ public class GraphProjection {
         assembler.initializeState(state(), graph);
     }
 
-    public void updateFrom(Graph oldGraph, Graph newGraph) {
+    public void updateFromGraphState(Graph oldGraph, Graph newGraph) {
         var diff = GraphDiff.compare(oldGraph, newGraph);
 
         assembler.applyUpdate(state(), diff, newGraph);
@@ -65,10 +66,11 @@ public class GraphProjection {
         );
 
         projectionChanged(projectionDiff);
-
     }
 
-    public BlockModel block(BlockId id) {
+    
+    
+    public MethodBlockNew block(BlockId id) {
         return blocks.get(id);
     }
 

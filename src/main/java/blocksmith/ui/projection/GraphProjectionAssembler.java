@@ -1,24 +1,15 @@
 package blocksmith.ui.projection;
 
 import blocksmith.domain.block.Block;
-import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.graph.ValueTypeResolver;
-import static blocksmith.domain.graph.ValueTypeResolver.varTypeWithin;
-import blocksmith.domain.value.Param;
-import blocksmith.domain.value.Port;
-import blocksmith.domain.value.ValueType;
+import blocksmith.exec.RuntimeState;
 import blocksmith.ui.graph.block.BlockModelFactory;
-import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.projection.GraphProjection.GraphProjectionState;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -27,14 +18,12 @@ import java.util.Set;
  */
 public class GraphProjectionAssembler {
 
-    private final BlockModelFactory blockFactory;
     private final BlockProjectionAssembler blockAssembler;
     private final ConnectionProjectionAssembler connectionAssembler;
     private final GroupProjectionAssembler groupAssembler;
 
-    public GraphProjectionAssembler(BlockModelFactory blockFactory) {
-        this.blockFactory = blockFactory;
-        this.blockAssembler = new BlockProjectionAssembler(blockFactory);
+    public GraphProjectionAssembler(BlockModelFactory blockFactory, RuntimeState runtime) {
+        this.blockAssembler = new BlockProjectionAssembler(blockFactory, runtime);
         this.connectionAssembler = new ConnectionProjectionAssembler();
         this.groupAssembler = new GroupProjectionAssembler();
     }
@@ -111,7 +100,7 @@ public class GraphProjectionAssembler {
         // update blocks' layout (label, position, size) or input control value
         for (var block : diff.updatedBlocks()) { // 
             var projection = state.blocks().get(block.id());
-            projection.updateFrom(block);
+            blockAssembler.updateBlock(projection, block, graph);
         }
 
         // update groups

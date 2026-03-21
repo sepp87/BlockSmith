@@ -1,6 +1,7 @@
 package blocksmith.exec;
 
 import blocksmith.domain.block.BlockDef;
+import blocksmith.exec.BlockException.Severity;
 import blocksmith.ui.graph.block.ExceptionPanel;
 import blocksmith.ui.utils.ListUtils;
 import java.util.ArrayDeque;
@@ -26,34 +27,34 @@ public class ListMethodExecutor {
 
     }
 
-    public MethodExecutor.InvocationResult invoke(Object... paramaters) {
+    public InvocationResult invoke(Object... paramaters) {
         return invokeListMethodArgs(traversalLog, paramaters);
     }
 
-    public MethodExecutor.InvocationResult invoke2(Object a, Object b) {
+    public InvocationResult invoke2(Object a, Object b) {
         return invokeListMethodArgs2(traversalLog, a, b);
     }
 
-    private MethodExecutor.InvocationResult invokeListMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
-        MethodExecutor.InvocationResult invocationResult = new MethodExecutor.InvocationResult();
+    private InvocationResult invokeListMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
+        InvocationResult invocationResult = new InvocationResult();
         try {
 //            Object result = method.invoke(null, parameters);
             Object result = func.apply(List.of(parameters));
 
-            invocationResult.data().set(result);
+            invocationResult.setData(result);
 
         } catch (Exception e) {
             Throwable throwable = e;
             if (e.getCause() != null) {
                 throwable = e.getCause();
             }
-            ExceptionPanel.BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(traversalLog), ExceptionPanel.Severity.ERROR, throwable);
+            BlockException exception = new BlockException(getExceptionIndex(traversalLog), Severity.ERROR, throwable);
             invocationResult.exceptions().add(exception);
         }
         return invocationResult;
     }
 
-    private MethodExecutor.InvocationResult invokeListMethodArgs2(Deque<Integer> traversalLog, Object a, Object b) {
+    private InvocationResult invokeListMethodArgs2(Deque<Integer> traversalLog, Object a, Object b) {
 
         // both objects are single values
         if (!ListUtils.isList(b)) {
@@ -62,14 +63,14 @@ public class ListMethodExecutor {
         } else { // object b is a list
             List<?> bList = (List<?>) b;
             List<Object> list = new ArrayList<>();
-            MethodExecutor.InvocationResult invocationResult = new MethodExecutor.InvocationResult();
-            invocationResult.data().set(list);
+            InvocationResult invocationResult = new InvocationResult();
+            invocationResult.setData(list);
 
             int i = 0;
             for (Object bItem : bList) {
                 traversalLog.add(i);
-                MethodExecutor.InvocationResult result = invokeListMethodArgs2(traversalLog, a, bItem);
-                list.add(result.data().get());
+                InvocationResult result = invokeListMethodArgs2(traversalLog, a, bItem);
+                list.add(result.getData());
                 invocationResult.exceptions().addAll(result.exceptions());
                 traversalLog.pop();
             }

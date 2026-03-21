@@ -31,7 +31,6 @@ import blocksmith.ui.command.AppCommandFactory;
 import blocksmith.ui.editor.tab.TabContent;
 import blocksmith.ui.editor.tab.TabManagerView;
 import blocksmith.ui.workspace.FxWorkspaceFactory;
-import blocksmith.ui.workspace.WorkspaceView;
 
 /**
  *
@@ -39,8 +38,7 @@ import blocksmith.ui.workspace.WorkspaceView;
  */
 public class UiApp extends Application {
 
-    public static final boolean SWITCH_PROJECTION = true;
-    public static final boolean USE_TAB_MANAGER = true;
+    public static final boolean USE_EXEC_LAYER = false;
     private static App app;
 
     public static void setApp(App app) {
@@ -54,7 +52,6 @@ public class UiApp extends Application {
     public static final boolean LOG_EDITOR_STATE = false;
 
     public static final boolean TYPE_SENSITIVE = true;
-    public static final boolean CONNECTION_REFACTOR = false;
 
     private static final double APP_WIDTH = 800;
     private static final double APP_HEIGHT = 800;

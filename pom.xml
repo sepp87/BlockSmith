@@ -170,13 +170,15 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
-                    <mainClass>blocksmith.Launcher</mainClass>
-                    <commandlineArgs></commandlineArgs>
-                    <jvmArgs>
-                        <jvmArg>--enable-preview</jvmArg>
-                    </jvmArgs>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>--enable-preview</argument>
+                        <argument>-classpath</argument>
+                        <classpath/>
+                        <argument>blocksmith.Launcher</argument>
+                    </arguments>
                 </configuration>
             </plugin>
             
@@ -238,12 +240,16 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
                         <configuration>
-                            <commandlineArgs></commandlineArgs>
-                            <jvmArgs>
-                                <jvmArg>--enable-preview</jvmArg>
-                                <jvmArg>-Dblocksmith.dev=true</jvmArg>
-                            </jvmArgs>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>--enable-preview</argument>
+                                <argument>-Dblocksmith.dev=true</argument>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>blocksmith.Launcher</argument>
+                            </arguments>
                         </configuration>
                     </plugin>
                 </plugins>

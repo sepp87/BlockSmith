@@ -4,20 +4,14 @@ import blocksmith.domain.block.BlockId;
 import blocksmith.domain.group.Group;
 import java.util.Collection;
 import java.util.HashSet;
-import javafx.beans.property.ReadOnlySetProperty;
-import javafx.beans.property.ReadOnlySetWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
-import btsxml.BlockReferenceTag;
-import btsxml.GroupTag;
-import btsxml.ObjectFactory;
 import blocksmith.ui.graph.block.BlockModel;
 import blocksmith.ui.graph.base.BaseModel;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.collections.ObservableMap;
 
 /**
  *
@@ -84,19 +78,5 @@ public class BlockGroupModel extends BaseModel {
             removeBlock(blockModel);
         }
         super.dispose();
-    }
-
-    public void serialize(GroupTag xmlTag) {
-//        ObjectFactory factory = getObjectFactory();
-//        xmlTag.setName(labelProperty().get());
-//        for (BlockModel block : internalBlocks) {
-//            BlockReferenceTag blockReferenceTag = factory.createBlockReferenceTag();
-//            blockReferenceTag.setUUID(block.idProperty().get());
-//            xmlTag.getBlockReference().add(blockReferenceTag);
-//        }
-    }
-
-    public void deserialize(GroupTag xmlTag) {
-
     }
 }

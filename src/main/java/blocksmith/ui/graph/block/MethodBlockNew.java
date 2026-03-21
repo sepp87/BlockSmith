@@ -3,41 +3,37 @@ package blocksmith.ui.graph.block;
 import blocksmith.domain.block.Block;
 import blocksmith.ui.control.InputControl;
 import blocksmith.domain.block.BlockDef;
+import blocksmith.domain.block.BlockId;
 import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.PortRef;
-import blocksmith.domain.graph.Graph;
-import blocksmith.domain.graph.ValueTypeResolver;
 import blocksmith.domain.value.Port.Direction;
 import static blocksmith.domain.value.Port.Direction.INPUT;
-import blocksmith.domain.value.ValueType;
 import blocksmith.exec.BlockExecutor;
 import blocksmith.exec.BlockFunc;
+import blocksmith.exec.ExecutionStatus;
+import blocksmith.exec.RuntimeState;
+import blocksmith.ui.UiApp;
 import blocksmith.ui.control.MultilineTextInput;
-import blocksmith.ui.control.NumberSliderInput;
 import blocksmith.ui.display.ValueInspector;
 import blocksmith.ui.display.ValueDisplay;
-import blocksmith.xml.v2.ValueXml;
 import blocksmith.ui.icons.FontAwesomeSolid;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import btsxml.BlockTag;
 import blocksmith.ui.graph.port.PortModel;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javax.xml.namespace.QName;
 
 /**
  *
@@ -52,9 +48,8 @@ public class MethodBlockNew extends BlockModel {
 
     private final BlockDef def;
     private final BlockFunc func;
-    private Block domain;
     private final Map<String, InputControl<?>> inputControls = new HashMap<>();
-    private final Map<String, ValueInspector> valueInspectors = new HashMap<>();
+    private final List<ValueInspector> valueInspectors = new ArrayList<>();
     private Pane container;
     private ProgressIndicator spinner;
     private Label label;
@@ -69,11 +64,6 @@ public class MethodBlockNew extends BlockModel {
         }
         this.def = def;
         this.func = func;
-    }
-
-    public void updateFrom(Block update) {
-        domain = update;
-
     }
 
     public void updateLayoutFrom(BlockLayout update) {
@@ -95,14 +85,14 @@ public class MethodBlockNew extends BlockModel {
 
     public void addValueDisplay(Direction direction, String valueId, ValueDisplay display) {
         var inspector = new ValueInspector(direction, valueId, display);
-        valueInspectors.put(valueId, inspector);
+        valueInspectors.add(inspector);
         resizableProperty().set(true);
 
         var ports = direction == INPUT ? getInputPorts() : getOutputPorts();
         ports.stream()
                 .filter(p -> p.valueId().equals(valueId))
                 .findFirst()
-                .ifPresent(m -> m.dataProperty().addListener((b,o,n) -> inspector.setData(n)));
+                .ifPresent(m -> m.dataProperty().addListener((b, o, n) -> inspector.setData(n)));
     }
 
     public BlockDef getBlockDef() {
@@ -111,10 +101,6 @@ public class MethodBlockNew extends BlockModel {
 
     public Map<String, InputControl<?>> getInputControls() {
         return inputControls;
-    }
-
-    public Map<String, ValueInspector> getValueInspectors() {
-        return valueInspectors;
     }
 
     @Override
@@ -135,7 +121,7 @@ public class MethodBlockNew extends BlockModel {
 
         } else if (!valueInspectors.isEmpty()) {
             VBox localContainer = new VBox();
-            var displays = valueInspectors.values().stream().map(ValueInspector::node).toList();
+            var displays = valueInspectors.stream().map(ValueInspector::node).toList();
             localContainer.getChildren().addAll(displays);
             if (displays.size() == 1) {
                 VBox.setVgrow(displays.get(0), Priority.ALWAYS);
@@ -166,47 +152,11 @@ public class MethodBlockNew extends BlockModel {
     @Override
     public void onIncomingConnectionAdded(Object data) {
         super.onIncomingConnectionAdded(data);
-
-//        if (inputControls.isEmpty()) {
-//            return;
-//        }
-//
-//        for (var port : inputPorts) {
-//            if (!port.isConnected()) {
-//                continue;
-//            }
-//            String key = port.labelProperty().get();
-//            var control = inputControls.get(key);
-//            if (control == null) {
-//                continue;
-//            }
-//            control.setEditable(false);
-//        }
     }
 
     @Override
     public void onIncomingConnectionRemoved(Object data) {
         super.onIncomingConnectionRemoved(data);
-
-//        if (inputControls.isEmpty()) {
-//            return;
-//        }
-//
-//        for (var port : inputPorts) {
-//            if (port.isConnected()) {
-//                continue;
-//            }
-//            String key = port.labelProperty().get();
-//            var control = inputControls.get(key);
-//            if (control == null) {
-//                continue;
-//            }
-//            if (domain != null) {
-//                control.setValue(domain.param(key).get().value());
-//
-//            }
-//            control.setEditable(true);
-//        }
     }
 
     public boolean isListOperator = false;
@@ -247,148 +197,64 @@ public class MethodBlockNew extends BlockModel {
     @Override
     public void process() {
 
-        var inputData = inputPorts.stream().map(PortModel::getData).toArray();
-        var controlData = inputControls.values().stream().map(InputControl::getValue).toArray();
+        var block = BlockId.from(getId());
 
-//        var updates = new ArrayList<Runnable>();
-//        for (var input : inputPorts) {
-//
-//            var valueId = input.valueId();
-//            var control = inputControls.get(valueId);
-//            if (control == null) {
-//                continue;
-//            }
-//
-//            var raw = input.getData();
-//            if (control instanceof MultilineTextInput multiline && !multiline.isEditable()) {
-//                var value = raw == null ? null : raw.toString();
-//                updates.add(() -> multiline.setValue(value));
-//            }
-//
-//        }
-//
-//        Platform.runLater(() -> updates.forEach(Runnable::run));
-        var parameters = controlData.length != 0 ? controlData : inputData; // TODO refactor as soon as inputs and controls start to mix
+        var portValues = inputPorts.stream().collect(Collectors.toMap(PortModel::toDomain, PortModel::getData));
+        var paramValues = inputControls.values().stream().collect(Collectors.toMap(i -> PortRef.input(block, i.valueId()), InputControl::getValue));
+        var values = new HashMap<PortRef, Object>(portValues);
+        values.putAll(paramValues);
+        runtime.updateBlockState(block, values, ExecutionStatus.RUNNING, exceptions);
 
-        var result = new BlockExecutor(def, func, isListOperator).invoke(parameters);
+        var portArgs = inputPorts.stream().map(PortModel::getData).toList();
+        var paramArgs = inputControls.values().stream().map(InputControl::getValue).toList();
+        var args = Stream.concat(portArgs.stream(), paramArgs.stream()).toArray();
+        var result = new BlockExecutor(def, func, isListOperator).invoke(args);
 
-        if (isListWithUnknownReturnType && result.data().get() != null) {
-            List<?> list = (List<?>) result.data().get();
-            determineOutPortDataTypeFromList(list);
-        }
+        var outputRef = outputPorts.get(0).toDomain();
+        var outputValues = Map.of(outputRef, result.getData());
+        runtime.updateBlockState(
+                block,
+                outputValues,
+                ExecutionStatus.FINISHED,
+                result.exceptions());
 
         Platform.runLater(() -> {
+            if (!UiApp.USE_EXEC_LAYER) {
+                int size = exceptions.size();
+                exceptions.addAll(result.exceptions());
+                exceptions.remove(0, size);
+                if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
+                    exceptions.clear();
+                }
+            }
+
+            Object data = result.getData();
+            outputPorts.get(0).setData(data);
+
+        });
+    }
+
+    private RuntimeState runtime;
+
+    public void setRuntimeState(RuntimeState runtime) {
+        this.runtime = runtime;
+    }
+
+    public void updateFrom(RuntimeState runtime) {
+        if (UiApp.USE_EXEC_LAYER) {
+            var block = BlockId.from(getId());
+            var status = runtime.statusOf(block);
+            var values = runtime.valuesOf(block);
+            var errors = runtime.exceptionsOf(block);
+
             int size = exceptions.size();
-            exceptions.addAll(result.exceptions());
+            exceptions.addAll(errors);
             exceptions.remove(0, size);
             if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
                 exceptions.clear();
             }
-            Object data = result.data().get();
-            outputPorts.get(0).setData(data);
-            if ((data != null) && !List.class.isAssignableFrom(data.getClass())) {
-                outputPorts.get(0).dataTypeProperty().set(data.getClass());
-            }
-
-        });
-
-    }
-
-    private void determineOutPortDataTypeFromList(List<?> list) {
-        Set<Class<?>> classes = new HashSet<>();
-        for (Object i : list) {
-            if (i != null) {
-                classes.add(i.getClass());
-            }
-        }
-        if (classes.size() == 1) {
-            Platform.runLater(() -> {
-                PortModel port = this.outputPorts.get(0);
-                Class<?> type = classes.iterator().next();
-                port.dataTypeProperty().set(type);
-                port.labelProperty().set(type.getSimpleName());
-            });
-        }
-    }
-
-    @Override
-    public void serialize(BlockTag xmlTag) {
-        super.serialize(xmlTag);
-        xmlTag.setType(def.type());
-        var values = xmlTag.getOtherAttributes();
-
-        for (var entry : inputControls.entrySet()) {
-            var control = entry.getValue();
-
-//            if (!control.isEditable()) {
-//                continue;
-//            }
-            var valueId = entry.getKey();
-            var value = control.getValue();
-            values.put(QName.valueOf(valueId), value);
-
-            if (control instanceof NumberSliderInput slider) {
-                values.put(QName.valueOf("min"), slider.getValue());
-                values.put(QName.valueOf("max"), slider.getValue());
-                values.put(QName.valueOf("step"), slider.getValue());
-            }
-        }
-    }
-
-    @Override
-    public void deserialize(BlockTag xmlTag) {
-        super.deserialize(xmlTag);
-    }
-
-    public Collection<ValueXml> serializeValues() {
-        var result = new ArrayList<ValueXml>();
-        for (var entry : inputControls.entrySet()) {
-            var optional = entry.getValue().serialize();
-            if (optional.isEmpty()) {
-                continue;
-            }
-            var value = optional.get();
-            value.setBlock(this.getId());
-            value.setId(entry.getKey());
-            result.add(value);
-        }
-        return result;
-    }
-
-    public void deserializeValues(Collection<ValueXml> values) {
-        for (var literal : values) {
-            var control = inputControls.get(literal.getId());
-            control.setValue(literal.getValue());
-            if (control instanceof NumberSliderInput slider) {
-                slider.setMin(Double.parseDouble(literal.getOtherAttributes().get("min")));
-                slider.setMax(Double.parseDouble(literal.getOtherAttributes().get("max")));
-                slider.setStep(Double.parseDouble(literal.getOtherAttributes().get("step")));
-            }
-        }
-    }
-
-    @Override
-    public BlockModel copy() {
-        var block = new MethodBlockNew(def, func);
-
-        for (var input : def.inputs()) {
-            block.addInputPort(input.valueId(), input.valueName(), input.valueType(), ValueType.toDataType(input.valueType()));
         }
 
-        for (var output : def.outputs()) {
-            block.addInputPort(output.valueId(), output.valueName(), output.valueType(), ValueType.toDataType(output.valueType()));
-        }
-
-        for (var control : inputControls.entrySet()) {
-            block.addInputControl(control.getKey(), control.getValue());
-        }
-
-        block.isListOperator = this.isListOperator;
-        block.isListWithUnknownReturnType = this.isListWithUnknownReturnType;
-
-        block.updateFrom(domain);
-
-        return block;
     }
 
     @Override

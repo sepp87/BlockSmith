@@ -2,6 +2,7 @@ package blocksmith.ui.graph.block;
 
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.value.Port;
+import blocksmith.exec.BlockException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
@@ -18,7 +19,6 @@ import javafx.scene.layout.GridPane;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.graph.BaseController;
 import blocksmith.ui.command.WorkspaceCommandBus;
-import blocksmith.ui.graph.block.ExceptionPanel.BlockException;
 import blocksmith.ui.graph.port.PortController;
 import blocksmith.ui.graph.port.PortModel;
 import blocksmith.ui.graph.port.PortView;

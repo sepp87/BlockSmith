@@ -26,7 +26,7 @@ public class Launcher {
         App app = new App();
 
         if (devMode) {
-
+            System.out.println("RUNNING IN DEV MODE");
             new UiAppRunner(app).run();
 
         } else if (hasConsole || isHeadless) {

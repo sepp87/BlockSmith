@@ -147,7 +147,6 @@ public class PortModel extends BaseModel {
             //Cast all primitive dataType to String if this port dataType is String
             PortModel startPort = connections.iterator().next().getStartPort();
             var incoming = startPort.getData();
-            System.out.println("DATA TYPES " + this.getDataType().getSimpleName() + " " + startPort.getDataType().getSimpleName());
 
             if (this.getDataType() == String.class && TypeCastUtils.contains(startPort.getDataType())) {
                 var effective = objectToString(incoming);
@@ -249,12 +248,6 @@ public class PortModel extends BaseModel {
         data.removeListener(dataListener);
         connections.clear();
         super.dispose();
-    }
-
-    @Override
-    public void revive() {
-        data.addListener(dataListener);
-        super.revive();
     }
 
     public PortRef toDomain() {

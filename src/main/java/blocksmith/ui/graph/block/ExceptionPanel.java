@@ -1,5 +1,7 @@
 package blocksmith.ui.graph.block;
 
+import blocksmith.exec.BlockException;
+import blocksmith.exec.BlockException.Severity;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
@@ -136,7 +138,7 @@ public class ExceptionPanel extends InfoPanel {
         String conflictResolution = "The process has encountered an unexpected interruption.";
         severity.setText(conflictResolution);
 
-        exceptionType.setText(blockException.exception.getClass().getSimpleName());
+        exceptionType.setText(blockException.exception().getClass().getSimpleName());
         exceptionMessage.setText(blockException.exception().getMessage());
 
         pagingLabel.setText((currentIndex + 1) + " of " + exceptions.size());
@@ -145,7 +147,7 @@ public class ExceptionPanel extends InfoPanel {
 
     private String buildSeverityHeader(BlockException blockException) {
         String result = blockException.severity().toString() + " occurred";
-        if (blockException.index == null) {
+        if (blockException.index() == null) {
             return result;
         }
         result += " for List" + blockException.index();
@@ -161,15 +163,6 @@ public class ExceptionPanel extends InfoPanel {
 
         // remove block info panel
         // remove block port labels
-    }
-
-    public record BlockException(String index, Severity severity, Throwable exception) {
-
-    }
-
-    public enum Severity {
-        WARNING,
-        ERROR
     }
 
 }

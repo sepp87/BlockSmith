@@ -6,16 +6,18 @@ import blocksmith.app.outbound.WorkspaceFactory;
 import blocksmith.ui.AlignmentService;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.WorkspaceSessionFactory;
+import blocksmith.exec.RuntimeState;
 import blocksmith.ui.command.AppCommandFactory;
 import blocksmith.ui.command.WorkspaceCommandBus;
 import blocksmith.ui.command.WorkspaceCommandFactory;
 import java.nio.file.Path;
+import javafx.application.Platform;
 
 /**
  *
  * @author joost
  */
-public class FxWorkspaceFactory implements WorkspaceFactory{
+public class FxWorkspaceFactory implements WorkspaceFactory {
 
     private final WorkspaceSessionFactory sessionFactory;
     private final BlockModelFactory blockFactory;
@@ -42,7 +44,8 @@ public class FxWorkspaceFactory implements WorkspaceFactory{
 
     private FxWorkspaceHandle build(WorkspaceSession session) {
         var view = new WorkspaceView();
-        var mapper = new GraphProjectionAssembler(blockFactory);
+        var runtime = new RuntimeState();
+        var mapper = new GraphProjectionAssembler(blockFactory, runtime);
         var projection = new GraphProjection(mapper, session.graphSnapshot());
         var commandFactory = new WorkspaceCommandFactory(session);
         var commandBus = new WorkspaceCommandBus(commandFactory, session);
@@ -54,8 +57,12 @@ public class FxWorkspaceFactory implements WorkspaceFactory{
         var context = new FxWorkspaceHandle(session, view, projection, commandBus, state, renderer, zoom, alignment, selection);
 
         // listeners
-        session.addGraphListener(projection::updateFrom);
+        session.addGraphListener(projection::updateFromGraphState);
         projection.addProjectionListener(renderer::updateFrom);
+
+        runtime.setOnBlockUpdated(blockId -> Platform.runLater(() -> {
+            projection.block(blockId).updateFrom(runtime);
+        }));
 
         return context;
     }

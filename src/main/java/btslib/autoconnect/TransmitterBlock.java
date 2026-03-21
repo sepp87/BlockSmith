@@ -45,22 +45,6 @@ public class TransmitterBlock extends BlockModel {
     public void process() {
     }
 
-    @Override
-    public void serialize(BlockTag xmlTag) {
-        super.serialize(xmlTag);
-    }
-
-    @Override
-    public void deserialize(BlockTag xmlTag) {
-        super.deserialize(xmlTag);
-    }
-
-    @Override
-    public BlockModel copy() {
-        TransmitterBlock block = new TransmitterBlock();
-        // Specify further copy statements here
-        return block;
-    }
 
     @Override
     protected void onRemoved() {

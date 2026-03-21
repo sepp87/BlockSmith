@@ -1,6 +1,7 @@
 package blocksmith.exec;
 
 import blocksmith.domain.block.BlockDef;
+import blocksmith.exec.BlockException.Severity;
 import blocksmith.ui.graph.block.ExceptionPanel;
 import blocksmith.ui.utils.ListUtils;
 import java.util.ArrayDeque;
@@ -8,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 
 /**
  *
@@ -40,7 +39,7 @@ public class MethodExecutor {
 
             try {
                 Object result = func.apply(Arrays.asList(parameters)); // Arrays.asList allows nulls but prevents structural mutation (by design)
-                invocationResult.data().set(result);
+                invocationResult.setData(result);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -48,8 +47,8 @@ public class MethodExecutor {
                 if (e.getCause() != null) {
                     throwable = e.getCause();
                 }
-                ExceptionPanel.BlockException exception = new ExceptionPanel.BlockException(getExceptionIndex(traversalLog), ExceptionPanel.Severity.ERROR, throwable);
-                invocationResult.exceptions.add(exception);
+                BlockException exception = new BlockException(getExceptionIndex(traversalLog), Severity.ERROR, throwable);
+                invocationResult.exceptions().add(exception);
             }
             return invocationResult;
 
@@ -57,7 +56,7 @@ public class MethodExecutor {
 
             List<Object> list = new ArrayList<>();
             InvocationResult invocationResult = new InvocationResult();
-            invocationResult.data().set(list);
+            invocationResult.setData(list);
 
             long shortestListSize = ListUtils.getShortestListSize(parameters);
             for (int i = 0; i < shortestListSize; i++) {
@@ -71,8 +70,8 @@ public class MethodExecutor {
                 }
 
                 InvocationResult subResult = invokeMethodArgs(traversalLog, array);
-                invocationResult.exceptions().addAll(subResult.exceptions);
-                list.add(subResult.data.get());
+                invocationResult.exceptions().addAll(subResult.exceptions());
+                list.add(subResult.getData());
 
                 traversalLog.pop();
             }
@@ -114,13 +113,13 @@ public class MethodExecutor {
         return result;
     }
 
-    public record InvocationResult(
-            ObjectProperty data,
-            List<ExceptionPanel.BlockException> exceptions) {
-
-        public InvocationResult() {
-            this(new SimpleObjectProperty(), new ArrayList<>());
-        }
-    }
+//    public record InvocationResult(
+//            ObjectProperty data,
+//            List<BlockException> exceptions) {
+//
+//        public InvocationResult() {
+//            this(new SimpleObjectProperty(), new ArrayList<>());
+//        }
+//    }
 
 }

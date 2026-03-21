@@ -69,13 +69,6 @@ public class DataSheetBlock extends BlockModel {
     }
 
     @Override
-    public BlockModel copy() {
-//        DataSheetBlock tableViewBlock = new DataSheetBlock(workspace);
-        DataSheetBlock tableViewBlock = new DataSheetBlock();
-        return tableViewBlock;
-    }
-
-    @Override
     protected void onRemoved() {
         if (dataSheetViewer == null) {
             return;

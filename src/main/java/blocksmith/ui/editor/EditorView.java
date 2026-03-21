@@ -43,7 +43,7 @@ public class EditorView extends BorderPane {
 
         setTop(menuBarView);
 
-        var content = UiApp.USE_TAB_MANAGER ? tabManagerView : workspaceView;
+        var content = tabManagerView;
 
         var background = new Background();
 //        background.getStyleClass().add("debug");

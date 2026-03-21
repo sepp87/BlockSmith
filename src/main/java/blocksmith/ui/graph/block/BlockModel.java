@@ -2,6 +2,8 @@ package blocksmith.ui.graph.block;
 
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.ValueType;
+import blocksmith.exec.BlockException;
+import blocksmith.exec.BlockException.Severity;
 import blocksmith.ui.graph.base.BaseModel;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,7 +20,6 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import btsxml.BlockTag;
-import blocksmith.ui.graph.block.ExceptionPanel.BlockException;
 import blocksmith.ui.graph.connection.ConnectionModel;
 import blocksmith.infra.blockloader.annotations.Block;
 import javafx.beans.property.ObjectProperty;
@@ -134,7 +135,7 @@ public abstract class BlockModel extends BaseModel {
         try {
             process();
         } catch (Exception exception) {
-            BlockException blockException = new BlockException(null, ExceptionPanel.Severity.ERROR, exception);
+            BlockException blockException = new BlockException(null, Severity.ERROR, exception);
             exceptions.add(blockException);
             Logger.getLogger(BlockModel.class.getName()).log(Level.SEVERE, null, exception);
         }
@@ -153,7 +154,6 @@ public abstract class BlockModel extends BaseModel {
 
     protected abstract void process() throws Exception;
 
-    public abstract BlockModel copy();
 
     public ObservableList<PortModel> getInputPorts() {
         return FXCollections.unmodifiableObservableList(inputPorts);
@@ -210,32 +210,6 @@ public abstract class BlockModel extends BaseModel {
         return port;
     }
 
-    public void serialize(BlockTag xmlTag) {
-        xmlTag.setType(this.getClass().getAnnotation(Block.class).type());
-        xmlTag.setUUID(idProperty().get());
-        xmlTag.setX(layoutXProperty().get());
-        xmlTag.setY(layoutYProperty().get());
-        if (resizableProperty().get()) {
-            xmlTag.setWidth(widthProperty().get());
-            xmlTag.setHeight(heightProperty().get());
-        }
-    }
-
-    public void deserialize(BlockTag xmlTag) {
-        this.id.set(xmlTag.getUUID());
-        layoutXProperty().set(xmlTag.getX());
-        layoutYProperty().set(xmlTag.getY());
-        if (resizableProperty().get()) {
-            Double width = xmlTag.getWidth();
-            Double height = xmlTag.getHeight();
-            if (width == null || height == null) {
-                return;
-            }
-            widthProperty().set(width);
-            heightProperty().set(height);
-        }
-    }
-
     @Override
     public void dispose() {
         // clean up routine for sub-classes
@@ -259,22 +233,6 @@ public abstract class BlockModel extends BaseModel {
 
     protected abstract void onRemoved();
 
-    @Override
-    public void revive() {
-        // add listeners
-        this.active.addListener(activeListener);
-        for (PortModel port : inputPorts) {
-            port.dataProperty().addListener(inputDataListener);
-            port.revive();
-        }
-        for (PortModel port : outputPorts) {
-            port.revive();
-        }
-
-        initialize();
-
-        super.revive();
-    }
 
     public String type() {
         Block metadata = this.getClass().getAnnotation(Block.class);

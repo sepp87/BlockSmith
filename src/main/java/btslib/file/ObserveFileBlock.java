@@ -159,21 +159,6 @@ public class ObserveFileBlock extends BlockModel {
         executorService.shutdownNow();
         System.out.println("Executor service shut down.");
     }
-    
-   
 
-    @Override
-    public void revive() {
-        if (executorService.isShutdown() || executorService.isTerminated()) {
-            executorService = Executors.newSingleThreadExecutor();
-        }
-        super.revive();
-    }
 
-    @Override
-    public BlockModel copy() {
-        ObserveFileBlock fileBlock = new ObserveFileBlock();
-//        ObserveFileBlock fileBlock = new ObserveFileBlock(workspace);
-        return fileBlock;
-    }
 }

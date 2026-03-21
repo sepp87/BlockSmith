@@ -1,13 +1,12 @@
 package blocksmith.ui.projection;
 
-import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
-import blocksmith.domain.graph.ParamStatusResolver;
 import blocksmith.domain.graph.ValueTypeResolver;
 import static blocksmith.domain.value.Port.Direction.INPUT;
+import blocksmith.exec.RuntimeState;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.graph.port.PortModel;
@@ -23,9 +22,11 @@ import java.util.Optional;
 public class BlockProjectionAssembler {
 
     private final BlockModelFactory blockFactory;
+    private final RuntimeState runtime;
 
-    public BlockProjectionAssembler(BlockModelFactory blockFactory) {
+    public BlockProjectionAssembler(BlockModelFactory blockFactory, RuntimeState runtime) {
         this.blockFactory = blockFactory;
+        this.runtime = runtime;
     }
 
     public Map<BlockId, MethodBlockNew> create(Collection<Block> blocks, Graph graph) {
@@ -36,6 +37,7 @@ public class BlockProjectionAssembler {
             updatePorts(projection, block, graph);
             updateBlock(projection, block, graph);
             updateInputControls(projection, block, graph);
+            projection.setRuntimeState(runtime);
             projection.setActive(true);
 
             result.put(block.id(), projection);
@@ -61,7 +63,6 @@ public class BlockProjectionAssembler {
     }
 
     public void updateBlock(MethodBlockNew projection, Block state, Graph graph) {
-        projection.updateFrom(state);
         projection.updateLayoutFrom(state.layout());
 //        projection.updateInputControlsFrom(state);
 
@@ -76,12 +77,6 @@ public class BlockProjectionAssembler {
         if (param == null) {
             return;
         }
-
-        if (block.type().equals("Input.integerSlider")) {
-                System.out.println("Input.integerSlider " + valueId + " " + param.value());
-
-        }
-//        var isActive = ParamStatusResolver.isActive(graph, block.id(), valueId);
 
         var controls = projection.getInputControls();
         var control = controls.get(valueId);

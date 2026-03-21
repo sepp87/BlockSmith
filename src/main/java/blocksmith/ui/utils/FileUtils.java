@@ -138,7 +138,7 @@ public class FileUtils {
     public static List<String> readFile(File file) {
         List<String> stringList = new ArrayList<>();
 
-        try ( FileReader fr = new FileReader(file);  BufferedReader bf = new BufferedReader(fr)) {
+        try (FileReader fr = new FileReader(file); BufferedReader bf = new BufferedReader(fr)) {
 
             String line = null;
             while ((line = bf.readLine()) != null) {
@@ -157,7 +157,7 @@ public class FileUtils {
      */
     public static String readFileAsString(File file) {
         String result = "";
-        try ( FileReader fr = new FileReader(file);  BufferedReader bf = new BufferedReader(fr)) {
+        try (FileReader fr = new FileReader(file); BufferedReader bf = new BufferedReader(fr)) {
 
             String line = null;
             while ((line = bf.readLine()) != null) {
@@ -173,6 +173,10 @@ public class FileUtils {
     public static String readResourceAsString(String path) {
         String result = "";
         try {
+//            InputStream inputStream = FileUtils.class.getClassLoader().getResourceAsStream(path);
+//            System.out.println("Searching for: " + path);
+//            System.out.println("URL: " + FileUtils.class.getClassLoader().getResource(path));
+
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
             result = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             inputStream.close();
@@ -202,7 +206,7 @@ public class FileUtils {
 
     public static Properties loadProperties(File file) {
         Properties properties = new Properties();
-        try ( InputStream inputStream = new FileInputStream(file)) {
+        try (InputStream inputStream = new FileInputStream(file)) {
             properties.load(inputStream);
         } catch (IOException ex) {
             Logger.getLogger(FileUtils.class.getName()).log(Level.SEVERE, null, ex);
@@ -210,10 +214,10 @@ public class FileUtils {
         return properties;
     }
 
-    public static String detectEncoding(File file)  {
+    public static String detectEncoding(File file) {
         byte[] buf = new byte[4096];
         String encoding = null;
-        try ( FileInputStream fis = new FileInputStream(file)) {
+        try (FileInputStream fis = new FileInputStream(file)) {
             UniversalDetector detector = new UniversalDetector(null);
             int nread;
             while ((nread = fis.read(buf)) > 0 && !detector.isDone()) {
