@@ -61,7 +61,7 @@ public class BlockModelFactory {
 
         var def = oDef.get();
         type = def.type();
-        var func = funcLibrary.findByType(type).get();
+        var func = funcLibrary.resolve(type).get();
 
         var block = new MethodBlockNew(def, func, id);
 

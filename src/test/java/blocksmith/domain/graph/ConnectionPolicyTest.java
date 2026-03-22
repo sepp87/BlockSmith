@@ -36,10 +36,10 @@ public class ConnectionPolicyTest {
     public void testIsConnectable_WhenVarTypeIsStringDownstream_ThenNotConnectableToDoubleInput() {
         System.out.println("testIsConnectable_WhenVarTypeIsStringDownstream_ThenNotConnectableToDoubleInput");
 
-        var outputVarType = blockWithPort(Port.output("value", ValueType.of("T")));
+        var outputVarType = blockWithPort(Port.output("value", 0, ValueType.of("T")));
 
-        var inputString = blockWithPort(Port.input("value", ValueType.of(String.class)));
-        var inputDouble = blockWithPort(Port.input("value", ValueType.of(Double.class)));
+        var inputString = blockWithPort(Port.input("value", 0, ValueType.of(String.class)));
+        var inputDouble = blockWithPort(Port.input("value", 1, ValueType.of(Double.class)));
 
         var varTypeToString = new Connection(
                 PortRef.output(outputVarType.id(), "value"),
@@ -63,14 +63,14 @@ public class ConnectionPolicyTest {
     public void testIsConnectable_WhenVarTypeIsStringUpstream_ThenNotConnectableToDoubleInput() {
         System.out.println("testIsConnectable_WhenVarTypeIsStringUpstream_ThenNotConnectableToDoubleInput");
 
-        var outputString = blockWithPort(Port.output("value", ValueType.of(String.class)));
+        var outputString = blockWithPort(Port.output("value", 0, ValueType.of(String.class)));
 
         var varTyped = blockWithPorts(List.of(
-                Port.input("value", ValueType.of("T")),
-                Port.output("value", ValueType.of("T"))
+                Port.input("value", 0, ValueType.of("T")),
+                Port.output("value", 0, ValueType.of("T"))
         ));
 
-        var inputDouble = blockWithPort(Port.input("value", ValueType.of(Double.class)));
+        var inputDouble = blockWithPort(Port.input("value", 0, ValueType.of(Double.class)));
 
         var stringToVarType = new Connection(
                 PortRef.output(outputString.id(), "value"),

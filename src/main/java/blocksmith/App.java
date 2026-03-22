@@ -77,7 +77,7 @@ public class App {
                 copyBlocks, pasteBlocks
         );
 
-        this.executionSessionFactory = new ForgeSessionFactory();
+        this.executionSessionFactory = new ForgeSessionFactory(blockDefLibrary, blockFuncLibrary);
     }
 
     private void configureLogging() {

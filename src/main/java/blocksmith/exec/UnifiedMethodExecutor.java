@@ -25,7 +25,7 @@ public class UnifiedMethodExecutor {
         this.func = func;
     }
 
-    public InvocationResult execute(Object... args) {
+    public ForgeResult execute(Object... args) {
         var traversalLog = new ArrayDeque<Integer>();
         return execute(traversalLog, args);
     }
@@ -36,7 +36,7 @@ public class UnifiedMethodExecutor {
 
     }
 
-    private InvocationResult execute(Deque<Integer> traversalLog, Object... args) {
+    private ForgeResult execute(Deque<Integer> traversalLog, Object... args) {
         var values = valuesSortedByArgIndex();
 
         if (values.size() != args.length) {
@@ -94,9 +94,9 @@ public class UnifiedMethodExecutor {
         return args;
     }
 
-    private InvocationResult loopAndExecute(Deque<Integer> traversalLog, long shortestListSize, Object... args) {
+    private ForgeResult loopAndExecute(Deque<Integer> traversalLog, long shortestListSize, Object... args) {
         List<Object> list = new ArrayList<>();
-        InvocationResult invocationResult = new InvocationResult();
+        ForgeResult invocationResult = new ForgeResult();
         invocationResult.setData(list);
 
         for (int i = 0; i < shortestListSize; i++) {
@@ -104,7 +104,7 @@ public class UnifiedMethodExecutor {
 
             Object[] argBatch = prepArgBatch(i, args);
 
-            InvocationResult subResult = execute(traversalLog, argBatch);
+            ForgeResult subResult = execute(traversalLog, argBatch);
             invocationResult.exceptions().addAll(subResult.exceptions());
             list.add(subResult.getData());
 
@@ -136,8 +136,8 @@ public class UnifiedMethodExecutor {
 
     }
 
-    private InvocationResult executeFunc(Deque<Integer> traversalLog, Object... args) {
-        InvocationResult invocationResult = new InvocationResult();
+    private ForgeResult executeFunc(Deque<Integer> traversalLog, Object... args) {
+        ForgeResult invocationResult = new ForgeResult();
 
         try {
             Object result = func.apply(Arrays.asList(args)); // Arrays.asList allows nulls but prevents structural mutation (by design)

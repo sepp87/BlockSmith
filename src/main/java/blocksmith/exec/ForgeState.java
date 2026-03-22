@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -22,6 +20,10 @@ public class ForgeState {
 
     private final List<Consumer<BlockId>> listeners = new ArrayList<>();
 
+    public void setValueOf(PortRef ref, Object value) {
+        valueIndex.put(ref, value);
+    }
+    
     public boolean removeValueOf(PortRef ref) {
         return valueIndex.remove(ref) != null;
     }
@@ -61,6 +63,15 @@ public class ForgeState {
         listeners.forEach(c -> c.accept(block));
     }
 
+    public boolean hasValueOf(PortRef port) {
+        return valueIndex.containsKey(port);
+    }
+    
+    
+    public Object valueOf(PortRef port) {
+        return valueIndex.get(port);
+    }
+    
     public Map<PortRef, Object> valuesOf(BlockId block) {
         var result = new HashMap<PortRef, Object>();
         valueIndex.entrySet().forEach(e -> {

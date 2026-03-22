@@ -1,5 +1,6 @@
 package blocksmith.domain.block;
 
+import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.value.Param;
 import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.Port;
@@ -54,13 +55,12 @@ public final class Block {
         return params.stream().filter(param -> param.valueId().equals(valueId)).findFirst();
     }
 
-    public Optional<Port> port(Port.Direction direction, String valueId ) {
+    public Optional<Port> port(Port.Direction direction, String valueId) {
         return ports.stream()
                 .filter(port -> port.direction() == direction)
                 .filter(port -> port.valueId().equals(valueId))
                 .findFirst();
     }
-
 
     public Collection<Port> inputPorts() {
         return ports.stream().filter(port -> port.direction() == Port.Direction.INPUT).toList();
@@ -70,10 +70,18 @@ public final class Block {
         return ports.stream().filter(port -> port.direction() == Port.Direction.OUTPUT).toList();
     }
 
+    public Collection<PortRef> inputRefs() {
+        return inputPorts().stream().map(p -> PortRef.input(id, p.valueId())).toList();
+    }
+
+    public Collection<PortRef> outputRefs() {
+        return outputPorts().stream().map(p -> PortRef.output(id, p.valueId())).toList();
+    }
+
     public Block withParamValue(String valueId, String value) {
         return withParamUpdated(valueId, (param) -> param.withValue(value));
     }
-    
+
     public Block withParamInput(String valueId, ParamInput input) {
         return withParamUpdated(valueId, (param) -> param.withInput(input));
     }

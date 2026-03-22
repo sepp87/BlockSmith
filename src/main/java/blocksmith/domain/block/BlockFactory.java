@@ -37,12 +37,12 @@ public class BlockFactory {
         var result = new ArrayList<Port>();
 
         for (var portDef : def.inputs()) {
-            var port = new Port(Port.Direction.INPUT, portDef.valueId(), portDef.valueType());
+            var port = new Port(Port.Direction.INPUT, portDef.valueId(), portDef.argIndex(), portDef.valueType());
             result.add(port);
         }
 
         for (var portDef : def.outputs()) {
-            var port = new Port(Port.Direction.OUTPUT, portDef.valueId(), portDef.valueType());
+            var port = new Port(Port.Direction.OUTPUT, portDef.valueId(), portDef.argIndex(), portDef.valueType());
             result.add(port);
         }
 
@@ -53,7 +53,7 @@ public class BlockFactory {
         var result = new ArrayList<Param>();
 
         for (var paramDef : def.params()) {
-            var param = new Param(paramDef.valueId(), DEFAULT_VALUE, paramDef.input());
+            var param = new Param(paramDef.valueId(), paramDef.argIndex(), DEFAULT_VALUE, paramDef.input());
             // TODO replace DEFAULT_VALUE with paramDef.defaultValue()
             result.add(param);
         }

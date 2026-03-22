@@ -16,7 +16,7 @@ public class BlockFuncLibrary {
         this.byType = Map.copyOf(blockFuncs);
     }
     
-    public Optional<BlockFunc> findByType(String type) {
+    public Optional<BlockFunc> resolve(String type) {
         return Optional.ofNullable(byType.get(type));
     }    
 }

@@ -7,7 +7,9 @@ package blocksmith.domain.value;
 public sealed interface ValueSlot permits Port, Param {
 
     String valueId();
-            
+
+    int argIndex();
+
     ValueType valueType();
-    
+
 }

@@ -27,16 +27,16 @@ public class ListMethodExecutor {
 
     }
 
-    public InvocationResult invoke(Object... paramaters) {
+    public ForgeResult invoke(Object... paramaters) {
         return invokeListMethodArgs(traversalLog, paramaters);
     }
 
-    public InvocationResult invoke2(Object a, Object b) {
+    public ForgeResult invoke2(Object a, Object b) {
         return invokeListMethodArgs2(traversalLog, a, b);
     }
 
-    private InvocationResult invokeListMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
-        InvocationResult invocationResult = new InvocationResult();
+    private ForgeResult invokeListMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
+        ForgeResult invocationResult = new ForgeResult();
         try {
 //            Object result = method.invoke(null, parameters);
             Object result = func.apply(List.of(parameters));
@@ -54,7 +54,7 @@ public class ListMethodExecutor {
         return invocationResult;
     }
 
-    private InvocationResult invokeListMethodArgs2(Deque<Integer> traversalLog, Object a, Object b) {
+    private ForgeResult invokeListMethodArgs2(Deque<Integer> traversalLog, Object a, Object b) {
 
         // both objects are single values
         if (!ListUtils.isList(b)) {
@@ -63,13 +63,13 @@ public class ListMethodExecutor {
         } else { // object b is a list
             List<?> bList = (List<?>) b;
             List<Object> list = new ArrayList<>();
-            InvocationResult invocationResult = new InvocationResult();
+            ForgeResult invocationResult = new ForgeResult();
             invocationResult.setData(list);
 
             int i = 0;
             for (Object bItem : bList) {
                 traversalLog.add(i);
-                InvocationResult result = invokeListMethodArgs2(traversalLog, a, bItem);
+                ForgeResult result = invokeListMethodArgs2(traversalLog, a, bItem);
                 list.add(result.getData());
                 invocationResult.exceptions().addAll(result.exceptions());
                 traversalLog.pop();

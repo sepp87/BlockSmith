@@ -22,9 +22,9 @@ public class BlockExecutor {
         this.isListOperator = isListOperator;
     }
 
-    public InvocationResult invoke(Object... args) {
+    public ForgeResult invoke(Object... args) {
 
-        final InvocationResult[] result = {null}; // Use an array instead of AtomicReference
+        final ForgeResult[] result = {null}; // Use an array instead of AtomicReference
 
         try {
 
@@ -47,7 +47,7 @@ public class BlockExecutor {
 
                     } else {
                         // Show an error when there are more than 3 ports
-                        InvocationResult fallback = new InvocationResult();
+                        ForgeResult fallback = new ForgeResult();
                         BlockException exception = new BlockException(null, Severity.ERROR, new IndexOutOfBoundsException("No more than 2 input ports are supported list operators."));
                         fallback.exceptions().add(exception);
                         result[0] = fallback;

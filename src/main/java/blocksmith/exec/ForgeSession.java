@@ -12,14 +12,14 @@ public class ForgeSession {
     // ValueFlowEngine 
     // ValueState / FlowState
     // FlowInvalidator
-    private final ForgeEngine engine;
+    private final FlowEngine engine;
     private final ForgeState tempState;
     private final ForgeState state;
     private final ForgeInvalidator invalidator;
     private Graph current;
 
     public ForgeSession(
-            ForgeEngine engine,
+            FlowEngine engine,
             ForgeState state,
             ForgeInvalidator invalidator,
             Graph graph) {

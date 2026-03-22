@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author joost
  */
-public class InvocationResult {
+public class ForgeResult {
 
     private final List<BlockException> exceptions = new ArrayList<>();
 
