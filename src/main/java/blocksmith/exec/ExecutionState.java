@@ -81,7 +81,7 @@ public class ExecutionState {
                 result.put(e.getKey(), e.getValue());
             }
         });
-        return Map.copyOf(result);
+        return result; // do NOT return Map.copyOf() since the result can hold keys with null values
     }
 
     public BlockStatus statusOf(BlockId block) {

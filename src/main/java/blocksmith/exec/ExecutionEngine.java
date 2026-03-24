@@ -8,6 +8,7 @@ import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.value.Port;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -90,7 +91,7 @@ public class ExecutionEngine {
             var index = input.argIndex();
             var ref = PortRef.input(block.id(), input.valueId());
             var value = resolveInputValueOf(current, state, block, input);
-            System.out.println(GraphLogFmt.block(block.id()) + "." + input.valueId() + " = " + String.valueOf(value));
+//            System.out.println("Port received " + GraphLogFmt.block(block.id()) + "." + input.valueId() + " = " + String.valueOf(value));
             byIndex.put(index, value);
             byRef.put(ref, value);
         }
@@ -103,12 +104,16 @@ public class ExecutionEngine {
             byRef.put(ref, value);
         }
 
-        return new ResolvedValues(List.copyOf(byIndex.values()), byRef);
+        return new ResolvedValues(new ArrayList<>(byIndex.values()), byRef);
     }
 
     private Object resolveInputValueOf(Graph current, ExecutionState state, Block block, Port input) {
 
         var inputRef = PortRef.input(block.id(), input.valueId());
+
+        if (GraphLogFmt.block(block.id()).equals("411de2cd")) {
+            System.out.println("state.hasValueOf(inputRef) " + state.hasValueOf(inputRef));
+        }
 
         if (state.hasValueOf(inputRef)) {
             return state.valueOf(inputRef);
@@ -116,6 +121,10 @@ public class ExecutionEngine {
 
         // retrieve upstream - case: unconnected
         var connection = current.incomingConnection(inputRef);
+        if (GraphLogFmt.block(block.id()).equals("411de2cd")) {
+            System.out.println("connection.isEmpty() " + connection.isEmpty());
+        }
+
         if (connection.isEmpty()) {
             return null;
         }
@@ -123,8 +132,14 @@ public class ExecutionEngine {
         // retrieve upstream - case: connected and provides value
         var connectedOutput = connection.get().from();
         var connectedBlock = connectedOutput.blockId();
-        if (state.statusOf(connectedBlock) == BlockStatus.FINISHED) {
-//        if (state.hasValueOf(connectedOutput)) {
+        if (GraphLogFmt.block(block.id()).equals("411de2cd")) {
+            System.out.println("state.statusOf(connectedBlock) " + state.statusOf(connectedBlock));
+            System.out.println("state.hasValueOf(connectedOutput) " + state.hasValueOf(connectedOutput));
+            System.out.println("state.valueOf(connectedOutput) " + state.valueOf(connectedOutput));
+        }
+
+//        if (state.statusOf(connectedBlock) == BlockStatus.FINISHED) {
+        if (state.hasValueOf(connectedOutput)) {
             // TODO convert effective values if needed e.g. single to list, path to file, file to path
             var converted = state.valueOf(connectedOutput);
             return converted;
@@ -136,10 +151,18 @@ public class ExecutionEngine {
 //            throw new RuntimeException("Execution process interrupted, because connected upstream block yielded a severe runtime exception.");
         }
 
+        if (GraphLogFmt.block(block.id()).equals("411de2cd")) {
+            System.out.println("run(connectedBlock, current, state);");
+        }
+
         // retrieve upstream - case: connected, but not yet executed
         run(connectedBlock, current, state);
         // TODO convert effective values if needed e.g. single to list, path to file, file to path
         // TODO collect blocks and execute concurrently
+        if (GraphLogFmt.block(block.id()).equals("411de2cd")) {
+            System.out.println("state.statusOf(connectedBlock) " + state.statusOf(connectedBlock));
+        }
+
         if (state.statusOf(connectedBlock) == BlockStatus.FINISHED) {
             var converted = state.valueOf(connectedOutput);
             return converted;

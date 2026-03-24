@@ -259,7 +259,7 @@ public class MethodBlockNew extends BlockModel {
             var values = runtime.valuesOf(block);
             for (var val : values.entrySet()) {
                 var ref = val.getKey();
-                System.out.println("METHODBLOCK " + GraphLogFmt.port(ref) + " = " + String.valueOf(val.getValue()));
+//                System.out.println("METHODBLOCK " + GraphLogFmt.port(ref) + " = " + String.valueOf(val.getValue()));
             }
             
             var errors = runtime.exceptionsOf(block);

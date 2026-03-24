@@ -112,7 +112,6 @@ public class BlockController extends BaseController {
                 var valueId = entry.getKey();
                 var control = entry.getValue();
                 control.setOnValueChangedByUser(value -> {
-                    System.out.println("VALUE CHANGED BY USER " + value);
                     var command = commands.factory().createUpdateParamValueCommand(BlockId.from(methodBlock.getId()), valueId, value);
                     commands.execute(command);
                     methodBlock.processSafely();

@@ -43,7 +43,8 @@ class ExecutionInvalidator {
 
     private void invalidateDownstream(ExecutionState state, Graph current, PortRef ref) {
 
-        var removed = state.removeValueOf(ref);
+        state.removeStatusOf(ref.blockId());
+        var removed = state.removeValueOf(ref); // if connection was added and no connection before then there is no remove done
 
         if (!removed) { // already invalidated
             return;

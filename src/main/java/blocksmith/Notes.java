@@ -15,8 +15,12 @@ public class Notes {
 //      - switch exceptions reading
 //      - switch display value reading
 //      - add and remove spinner on running
-
-
+//      - value conversion
+//      - Bug: ExecutionInvalidator.invalidateDownstream(...) if(!removed) blocks downstream invalidation for added/new connections
+// - Pull engine improvements
+//      - async execution
+//      - exec schedule
+// - Test if same connection is actually created
 
 
 // TODO
@@ -40,6 +44,9 @@ public class Notes {
 // - Reload block def/func library
 // - split project into core, UI and extended lib
 // - port data types
+// - handle analogue user input e.g. when user changes slider input, it triggers multiple graph snapshot changes, leading to endless todos
+// - clean up - InputControl, MethodBlockNew, PortModel, ConnectionModel
+// - ExecutionState.valuesOf() return a mutable map (leave it or solve it?), because immutable throws nullpointers with nullable values
 
 
 
