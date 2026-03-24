@@ -10,9 +10,9 @@ import java.util.List;
  *
  * @author joost
  */
-class ForgeInvalidator {
+class ExecutionInvalidator {
 
-    public void invalidate(ForgeState state, Graph previous, Graph current, GraphDiff changes) {
+    public void invalidate(ExecutionState state, Graph previous, Graph current, GraphDiff changes) {
 
         changes.addedConnections()
                 .forEach(c -> invalidateDownstream(state, current, c.to()));
@@ -41,7 +41,7 @@ class ForgeInvalidator {
                 });
     }
 
-    private void invalidateDownstream(ForgeState state, Graph current, PortRef ref) {
+    private void invalidateDownstream(ExecutionState state, Graph current, PortRef ref) {
 
         var removed = state.removeValueOf(ref);
 
@@ -61,14 +61,14 @@ class ForgeInvalidator {
 
     }
 
-    private void clearExceptionsIf(ForgeState state, Graph current, PortRef ref) {
+    private void clearExceptionsIf(ExecutionState state, Graph current, PortRef ref) {
         var block = current.block(ref.blockId()).orElseThrow();
         if (!current.hasIncomingConnections(block.id())) {
             state.clearExceptionsOf(block.id());
         }
     }
 
-    private void removeBlockFromState(ForgeState state, Block block) {
+    private void removeBlockFromState(ExecutionState state, Block block) {
         state.clearExceptionsOf(block.id());
         state.removeStatusOf(block.id());
 

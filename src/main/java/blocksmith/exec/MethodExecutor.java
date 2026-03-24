@@ -26,16 +26,16 @@ public class MethodExecutor {
         this.traversalLog = new ArrayDeque<>(); // keep track which index of the list is currently being processed
     }
 
-    public ForgeResult invoke(Object... parameters) {
+    public IntermediateResult invoke(Object... parameters) {
         return invokeMethodArgs(traversalLog, parameters);
     }
 
-    private ForgeResult invokeMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
+    private IntermediateResult invokeMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
         int listCount = ListUtils.getListCount(parameters);
 
 //        System.out.println("listCount " + listCount + "; method.getParameters().length " + def.inputs().size());
         if (listCount == 0) { // none are list - invoke method
-            ForgeResult invocationResult = new ForgeResult();
+            IntermediateResult invocationResult = new IntermediateResult();
 
             try {
                 Object result = func.apply(Arrays.asList(parameters)); // Arrays.asList allows nulls but prevents structural mutation (by design)
@@ -55,7 +55,7 @@ public class MethodExecutor {
         } else if (listCount == def.inputs().size()) { // all are lists - loop and recurse
 
             List<Object> list = new ArrayList<>();
-            ForgeResult invocationResult = new ForgeResult();
+            IntermediateResult invocationResult = new IntermediateResult();
             invocationResult.setData(list);
 
             long shortestListSize = ListUtils.getShortestListSize(parameters);
@@ -69,7 +69,7 @@ public class MethodExecutor {
                     array[j] = item;
                 }
 
-                ForgeResult subResult = invokeMethodArgs(traversalLog, array);
+                IntermediateResult subResult = invokeMethodArgs(traversalLog, array);
                 invocationResult.exceptions().addAll(subResult.exceptions());
                 list.add(subResult.getData());
 
@@ -97,7 +97,7 @@ public class MethodExecutor {
                 }
                 parameters[i] = list;
             }
-            ForgeResult invocationResult = invokeMethodArgs(traversalLog, parameters);
+            IntermediateResult invocationResult = invokeMethodArgs(traversalLog, parameters);
             return invocationResult;
         }
     }

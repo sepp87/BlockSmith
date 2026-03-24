@@ -8,11 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import blocksmith.app.inbound.GraphMutationAndHistory;
-import blocksmith.domain.group.Group;
 import blocksmith.app.workspace.SaveDocument;
-import blocksmith.exec.ForgeSession;
-import blocksmith.exec.ForgeSessionFactory;
-import blocksmith.exec.ForgeState;
+import blocksmith.exec.ExecutionSession;
+import blocksmith.exec.ExecutionSessionFactory;
+import blocksmith.exec.ExecutionState;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -28,7 +27,7 @@ public class WorkspaceSession {
     private final static Logger LOGGER = Logger.getLogger(WorkspaceSession.class.getName());
 
     private final GraphEditor editor;
-    private final ForgeSession executionSession;
+    private final ExecutionSession executionSession;
     private final SaveDocument saveDocument;
 
     private final SelectionModel selectionModel;
@@ -42,7 +41,7 @@ public class WorkspaceSession {
             Path documentPath,
             GraphDocument document,
             GraphEditorFactory editorFactory,
-            ForgeSessionFactory executionSessionFactory,
+            ExecutionSessionFactory executionSessionFactory,
             SaveDocument saveDocument
     ) {
         this.documentPath = documentPath;
@@ -59,7 +58,7 @@ public class WorkspaceSession {
 
     public static WorkspaceSession newDocument(
             GraphEditorFactory editorFactory,
-            ForgeSessionFactory executionSessionFactory,
+            ExecutionSessionFactory executionSessionFactory,
             SaveDocument saveDocument
     ) {
         Path path = null;
@@ -71,7 +70,7 @@ public class WorkspaceSession {
             Path path,
             GraphDocument document,
             GraphEditorFactory editorFactory,
-            ForgeSessionFactory executionSessionFactory,
+            ExecutionSessionFactory executionSessionFactory,
             SaveDocument saveDocument
     ) {
         return new WorkspaceSession(path, document, editorFactory, executionSessionFactory, saveDocument);
@@ -101,7 +100,7 @@ public class WorkspaceSession {
         return editor;
     }
     
-    public ForgeState runtimeState() {
+    public ExecutionState runtimeState() {
         return executionSession.runtimeState();
     }
 

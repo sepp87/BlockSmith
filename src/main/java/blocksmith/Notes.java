@@ -8,6 +8,17 @@ public class Notes {
 
 }
 
+// IN PROGRESS
+// - IN PROGRESS sliders enable mix, max and step
+// - IN PROGRESS Pull-based execution
+// - IN PROGESS Refactor for GraphProjectionMapper to not needing to set blocks and connections to active
+//      - switch exceptions reading
+//      - switch display value reading
+//      - add and remove spinner on running
+
+
+
+
 // TODO
 // - DONE Copy/Paste (todo paste point)
 // - DONE Typing
@@ -23,7 +34,6 @@ public class Notes {
 // - DONE Display Excel tables 
 // - DONE Save calls save as unneedingly
 
-// - IN PROGRESS sliders enable mix, max and step
 // - block label default values
 // - Notification layer
 // - update method executor algorithm
@@ -33,9 +43,7 @@ public class Notes {
 
 
 
-// - Pull-based execution
 // - default "0" for range
-// - Refactor for GraphProjectionMapper to not needing to set blocks and connections to active
 // - TBD - when port inactive, inspection block should not display null, but nothing, add active property or clear method?
 
 //

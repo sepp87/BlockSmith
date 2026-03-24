@@ -2,7 +2,7 @@ package blocksmith.app.workspace;
 
 import blocksmith.app.GraphEditorFactory;
 import blocksmith.app.outbound.GraphRepo;
-import blocksmith.exec.ForgeSessionFactory;
+import blocksmith.exec.ExecutionSessionFactory;
 import blocksmith.ui.workspace.WorkspaceSession;
 import java.nio.file.Path;
 
@@ -14,13 +14,13 @@ public class WorkspaceSessionFactory {
 
     private final GraphRepo repo;
     private final GraphEditorFactory graphEditorFactory;
-    private final ForgeSessionFactory executionSessionFactory;
+    private final ExecutionSessionFactory executionSessionFactory;
     private final SaveDocument saveDocument;
 
     public WorkspaceSessionFactory(
             GraphRepo repo,
             GraphEditorFactory graphEditorFactory,
-            ForgeSessionFactory executionSessionFactory,
+            ExecutionSessionFactory executionSessionFactory,
             SaveDocument saveDocument
     ) {
         this.repo = repo;

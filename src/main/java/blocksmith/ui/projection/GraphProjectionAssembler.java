@@ -5,7 +5,7 @@ import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.graph.ValueTypeResolver;
-import blocksmith.exec.ForgeState;
+import blocksmith.exec.ExecutionState;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.projection.GraphProjection.GraphProjectionState;
 import java.util.Collection;
@@ -22,7 +22,7 @@ public class GraphProjectionAssembler {
     private final ConnectionProjectionAssembler connectionAssembler;
     private final GroupProjectionAssembler groupAssembler;
 
-    public GraphProjectionAssembler(BlockModelFactory blockFactory, ForgeState runtime) {
+    public GraphProjectionAssembler(BlockModelFactory blockFactory, ExecutionState runtime) {
         this.blockAssembler = new BlockProjectionAssembler(blockFactory, runtime);
         this.connectionAssembler = new ConnectionProjectionAssembler();
         this.groupAssembler = new GroupProjectionAssembler();

@@ -11,6 +11,12 @@ public record BlockException(
 
     public enum Severity {
         WARNING,
-        ERROR
+        ERROR,
+        CRITICAL
     }
+    
+    public static BlockException critical(Throwable exception) {
+        return new BlockException(null, Severity.CRITICAL, exception);
+    }
+    
 }

@@ -12,10 +12,10 @@ import java.util.function.Consumer;
  *
  * @author joost
  */
-public class ForgeState {
+public class ExecutionState {
 
     private final Map<PortRef, Object> valueIndex = new HashMap<>();
-    private final Map<BlockId, ExecutionStatus> blockStatus = new HashMap<>();
+    private final Map<BlockId, BlockStatus> blockStatus = new HashMap<>();
     private final Map<BlockId, List<BlockException>> blockExceptions = new HashMap<>();
 
     private final List<Consumer<BlockId>> listeners = new ArrayList<>();
@@ -42,7 +42,7 @@ public class ForgeState {
     }
 
     public void setBlockRunning(BlockId block) {
-        blockStatus.put(block, ExecutionStatus.RUNNING);
+        blockStatus.put(block, BlockStatus.RUNNING);
         blockExceptions.remove(block);
         blockUpdated(block);
     }
@@ -50,7 +50,7 @@ public class ForgeState {
     public void updateBlockState(
             BlockId block,
             Map<PortRef, Object> values,
-            ExecutionStatus status,
+            BlockStatus status,
             List<BlockException> exceptions) {
 
         valueIndex.putAll(values);
@@ -60,6 +60,7 @@ public class ForgeState {
     }
 
     private void blockUpdated(BlockId block) {
+//        System.out.println("BLOCK UPDATED IN EXECUTION STATE");
         listeners.forEach(c -> c.accept(block));
     }
 
@@ -83,8 +84,8 @@ public class ForgeState {
         return Map.copyOf(result);
     }
 
-    public ExecutionStatus statusOf(BlockId block) {
-        return blockStatus.getOrDefault(block, ExecutionStatus.DIRTY);
+    public BlockStatus statusOf(BlockId block) {
+        return blockStatus.getOrDefault(block, BlockStatus.IDLE);
     }
 
     public List<BlockException> exceptionsOf(BlockId block) {

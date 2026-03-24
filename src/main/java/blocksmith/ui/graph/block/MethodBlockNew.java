@@ -1,6 +1,6 @@
 package blocksmith.ui.graph.block;
 
-import blocksmith.domain.block.Block;
+import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.ui.control.InputControl;
 import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.block.BlockId;
@@ -10,8 +10,8 @@ import blocksmith.domain.value.Port.Direction;
 import static blocksmith.domain.value.Port.Direction.INPUT;
 import blocksmith.exec.BlockExecutor;
 import blocksmith.exec.BlockFunc;
-import blocksmith.exec.ExecutionStatus;
-import blocksmith.exec.ForgeState;
+import blocksmith.exec.BlockStatus;
+import blocksmith.exec.ExecutionState;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.display.ValueInspector;
@@ -25,11 +25,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import blocksmith.ui.graph.port.PortModel;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -83,16 +81,18 @@ public class MethodBlockNew extends BlockModel {
         }
     }
 
-    public void addValueDisplay(Direction direction, String valueId, ValueDisplay display) {
-        var inspector = new ValueInspector(direction, valueId, display);
+    public void addValueDisplay(PortRef ref, ValueDisplay display) {
+        var inspector = new ValueInspector(ref, display);
         valueInspectors.add(inspector);
         resizableProperty().set(true);
 
-        var ports = direction == INPUT ? getInputPorts() : getOutputPorts();
-        ports.stream()
-                .filter(p -> p.valueId().equals(valueId))
-                .findFirst()
-                .ifPresent(m -> m.dataProperty().addListener((b, o, n) -> inspector.setData(n)));
+        if (!UiApp.USE_EXEC_LAYER) {
+            var ports = ref.direction() == INPUT ? getInputPorts() : getOutputPorts();
+            ports.stream()
+                    .filter(p -> p.valueId().equals(ref.valueId()))
+                    .findFirst()
+                    .ifPresent(m -> m.dataProperty().addListener((b, o, n) -> inspector.setData(n)));
+        }
     }
 
     public BlockDef getBlockDef() {
@@ -164,88 +164,110 @@ public class MethodBlockNew extends BlockModel {
 
     @Override
     public void processSafely() {
+        if (!UiApp.USE_EXEC_LAYER) {
 
 //        System.out.println(def.metadata().type().split("\\.")[1] + ".processSafely()");
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                process();
-                return null;
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() {
+                    process();
+                    return null;
+                }
+            };
+
+            if (spinner != null && label.getWidth() != 0.0) {
+                task.setOnSucceeded(event -> {
+                    container.getChildren().clear();
+                    container.getChildren().add(label);
+                });
             }
-        };
 
-        if (spinner != null && label.getWidth() != 0.0) {
-            task.setOnSucceeded(event -> {
+            if (spinner != null && label.getWidth() != 0.0) {
+                spinner.setMinWidth(label.getWidth());
                 container.getChildren().clear();
-                container.getChildren().add(label);
-            });
+                container.getChildren().add(spinner);
+            }
+
+            // Run the task in a separate thread
+            Thread thread = new Thread(task);
+            thread.setDaemon(true);
+            thread.start();
         }
-
-        if (spinner != null && label.getWidth() != 0.0) {
-            spinner.setMinWidth(label.getWidth());
-            container.getChildren().clear();
-            container.getChildren().add(spinner);
-        }
-
-        // Run the task in a separate thread
-        Thread thread = new Thread(task);
-        thread.setDaemon(true);
-        thread.start();
-
     }
 
     @Override
     public void process() {
-
         var block = BlockId.from(getId());
 
         var values = new HashMap<PortRef, Object>();
         inputPorts.forEach(p -> values.put(p.toDomain(), p.getData()));
         inputControls.forEach((valueId, control) -> values.put(PortRef.input(block, valueId), control.getValue()));
-        runtime.updateBlockState(block, values, ExecutionStatus.RUNNING, exceptions);
+        runtime.updateBlockState(block, values, BlockStatus.RUNNING, exceptions);
 
         var portArgs = inputPorts.stream().map(PortModel::getData).toList();
         var paramArgs = inputControls.values().stream().map(InputControl::getValue).toList();
         var args = Stream.concat(portArgs.stream(), paramArgs.stream()).toArray();
-        var result = new BlockExecutor(def, func, isListOperator).invoke(args);
+        var result = new BlockExecutor(block, def, func, isListOperator).invoke(args);
 
-        var outputRef = outputPorts.get(0).toDomain();
-        var outputValues = new HashMap<PortRef, Object>();
-        outputValues.put(outputRef, result.getData());
-        runtime.updateBlockState(
-                block,
-                outputValues,
-                ExecutionStatus.FINISHED,
+        runtime.updateBlockState(block,
+                result.values(),
+                BlockStatus.FINISHED,
                 result.exceptions());
 
         Platform.runLater(() -> {
-            if (!UiApp.USE_EXEC_LAYER) {
-                int size = exceptions.size();
-                exceptions.addAll(result.exceptions());
-                exceptions.remove(0, size);
-                if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
-                    exceptions.clear();
-                }
+
+            int size = exceptions.size();
+            exceptions.addAll(result.exceptions());
+            exceptions.remove(0, size);
+            if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
+                exceptions.clear();
             }
 
-            Object data = result.getData();
-            outputPorts.get(0).setData(data);
-
+            var output = outputPorts.get(0);
+            Object data = result.values().get(output.toDomain());
+            output.setData(data);
         });
+
     }
 
-    private ForgeState runtime;
+    private ExecutionState runtime;
 
-    public void setRuntimeState(ForgeState runtime) {
+    public void setRuntimeState(ExecutionState runtime) {
         this.runtime = runtime;
     }
 
-    public void updateFrom(ForgeState runtime) {
+    public void updateFrom(ExecutionState runtime) {
         if (UiApp.USE_EXEC_LAYER) {
             var block = BlockId.from(getId());
             var status = runtime.statusOf(block);
+            switch (status) {
+                case RUNNING: // set spinner
+                    if (spinner != null && label.getWidth() != 0.0) {
+                        spinner.setMinWidth(label.getWidth());
+                        container.getChildren().clear();
+                        container.getChildren().add(spinner);
+                    }
+                    break;
+                default: // remove spinner
+                    if (spinner != null && label.getWidth() != 0.0) {
+                        container.getChildren().clear();
+                        container.getChildren().add(label);
+                    }
+                    break;
+            }
+
             var values = runtime.valuesOf(block);
+            for (var val : values.entrySet()) {
+                var ref = val.getKey();
+                System.out.println("METHODBLOCK " + GraphLogFmt.port(ref) + " = " + String.valueOf(val.getValue()));
+            }
+            
             var errors = runtime.exceptionsOf(block);
+
+            for (var inspector : valueInspectors) {
+                var value = values.get(inspector.ref());
+                inspector.setData(value);
+            }
 
             int size = exceptions.size();
             exceptions.addAll(errors);

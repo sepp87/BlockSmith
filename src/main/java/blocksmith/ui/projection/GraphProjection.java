@@ -7,7 +7,7 @@ import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.group.Group;
 import blocksmith.domain.group.GroupId;
-import blocksmith.exec.ForgeState;
+import blocksmith.exec.ExecutionState;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.graph.block.BlockModel;
 import blocksmith.ui.graph.connection.ConnectionModel;

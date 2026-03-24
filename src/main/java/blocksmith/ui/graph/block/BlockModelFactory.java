@@ -5,9 +5,12 @@ import blocksmith.ui.control.TextInput;
 import blocksmith.ui.control.InputControl;
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.app.block.BlockFuncLibrary;
+import blocksmith.domain.block.BlockId;
+import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.value.ParamDef;
 import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.ParamInput.NumericType;
+import blocksmith.domain.value.Port;
 import blocksmith.domain.value.PortDef;
 import blocksmith.domain.value.ValueType;
 import blocksmith.domain.value.ValueType.SimpleType;
@@ -65,14 +68,16 @@ public class BlockModelFactory {
 
         var block = new MethodBlockNew(def, func, id);
 
-        for (var input : def.inputs()) {
-            block.addInputPort(input.valueId(), input.valueName(), input.valueType(), ValueType.toDataType(input.valueType()));
-            valueDisplayFrom(input).ifPresent(display -> block.addValueDisplay(input.direction(), input.valueId(), display));
+        for (var port : def.inputs()) {
+            block.addInputPort(port.valueId(), port.valueName(), port.valueType(), ValueType.toDataType(port.valueType()));
+            var ref = PortRef.of(BlockId.from(id), port.direction(), port.valueId());
+            valueDisplayFrom(port).ifPresent(display -> block.addValueDisplay(ref, display));
         }
 
-        for (var output : def.outputs()) {
-            block.addOutputPort(output.valueId(), output.valueName(), output.valueType(), ValueType.toDataType(output.valueType()));
-            valueDisplayFrom(output).ifPresent(display -> block.addValueDisplay(output.direction(), output.valueId(), display));
+        for (var port : def.outputs()) {
+            block.addOutputPort(port.valueId(), port.valueName(), port.valueType(), ValueType.toDataType(port.valueType()));
+            var ref = PortRef.of(BlockId.from(id), port.direction(), port.valueId());
+            valueDisplayFrom(port).ifPresent(display -> block.addValueDisplay(ref, display));
         }
 
         for (var param : def.params()) {
@@ -91,8 +96,8 @@ public class BlockModelFactory {
         if (!port.display()) {
             return Optional.empty();
         }
-        
-        if(port.valueType() instanceof SimpleType type && type.raw() == DataSheet.class) {
+
+        if (port.valueType() instanceof SimpleType type && type.raw() == DataSheet.class) {
             return Optional.of(new DataSheetDisplay());
         }
 
@@ -155,6 +160,5 @@ public class BlockModelFactory {
                 new DoubleSliderInput(valueId);
         };
     }
-
 
 }

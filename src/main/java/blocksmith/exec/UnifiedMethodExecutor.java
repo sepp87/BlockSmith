@@ -25,7 +25,7 @@ public class UnifiedMethodExecutor {
         this.func = func;
     }
 
-    public ForgeResult execute(Object... args) {
+    public IntermediateResult execute(Object... args) {
         var traversalLog = new ArrayDeque<Integer>();
         return execute(traversalLog, args);
     }
@@ -36,7 +36,7 @@ public class UnifiedMethodExecutor {
 
     }
 
-    private ForgeResult execute(Deque<Integer> traversalLog, Object... args) {
+    private IntermediateResult execute(Deque<Integer> traversalLog, Object... args) {
         var values = valuesSortedByArgIndex();
 
         if (values.size() != args.length) {
@@ -94,9 +94,9 @@ public class UnifiedMethodExecutor {
         return args;
     }
 
-    private ForgeResult loopAndExecute(Deque<Integer> traversalLog, long shortestListSize, Object... args) {
+    private IntermediateResult loopAndExecute(Deque<Integer> traversalLog, long shortestListSize, Object... args) {
         List<Object> list = new ArrayList<>();
-        ForgeResult invocationResult = new ForgeResult();
+        IntermediateResult invocationResult = new IntermediateResult();
         invocationResult.setData(list);
 
         for (int i = 0; i < shortestListSize; i++) {
@@ -104,7 +104,7 @@ public class UnifiedMethodExecutor {
 
             Object[] argBatch = prepArgBatch(i, args);
 
-            ForgeResult subResult = execute(traversalLog, argBatch);
+            IntermediateResult subResult = execute(traversalLog, argBatch);
             invocationResult.exceptions().addAll(subResult.exceptions());
             list.add(subResult.getData());
 
@@ -136,8 +136,8 @@ public class UnifiedMethodExecutor {
 
     }
 
-    private ForgeResult executeFunc(Deque<Integer> traversalLog, Object... args) {
-        ForgeResult invocationResult = new ForgeResult();
+    private IntermediateResult executeFunc(Deque<Integer> traversalLog, Object... args) {
+        IntermediateResult invocationResult = new IntermediateResult();
 
         try {
             Object result = func.apply(Arrays.asList(args)); // Arrays.asList allows nulls but prevents structural mutation (by design)

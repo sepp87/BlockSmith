@@ -218,12 +218,23 @@ public final class Graph {
 
         return withAll(blocks.values(), connections, updated.values());
     }
-    
+
+    public boolean hasOutgoingConnections(BlockId id) {
+        var block = block(id).orElseThrow();
+        var outputs = block.outputRefs();
+        for (var from : outputs) {
+            if (!connectionsOf(from).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean hasIncomingConnections(BlockId id) {
         var block = block(id).orElseThrow();
-        var inputs = block.inputPorts().stream().map(input -> PortRef.input(id, input.valueId())).toList();
-        for (var to : inputs ) {
-            if(incomingConnection(to).isPresent()) {
+        var inputs = block.inputRefs();
+        for (var to : inputs) {
+            if (incomingConnection(to).isPresent()) {
                 return true;
             }
         }

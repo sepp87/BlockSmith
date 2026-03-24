@@ -1,5 +1,6 @@
 package blocksmith.ui.display;
 
+import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.value.Port.Direction;
 import java.util.List;
 import javafx.scene.Node;
@@ -10,25 +11,20 @@ import javafx.scene.Node;
  */
 public class ValueInspector {
 
-    private final Direction direction;
-    private final String valueId;
+    private final PortRef ref;
     private final ValueDisplay display;
 
     private List<?> values = List.of();
     private int current = 0;
 
-    public ValueInspector(Direction direction, String valueId, ValueDisplay display) {
-        this.direction = direction;
-        this.valueId = valueId;
+    public ValueInspector(PortRef ref, ValueDisplay display) {
+        this.ref = ref;
         this.display = display;
     }
 
-    public Direction direction() {
-        return direction;
-    }
 
-    public String valueId() {
-        return valueId;
+    public PortRef ref() {
+        return ref;
     }
 
     public void setData(Object object) {

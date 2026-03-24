@@ -1,8 +1,12 @@
 package blocksmith.exec;
 
+import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockDef;
+import blocksmith.domain.block.BlockId;
+import blocksmith.domain.connection.PortRef;
 import blocksmith.exec.BlockException.Severity;
 import blocksmith.ui.graph.block.MethodBlockNew;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,19 +16,21 @@ import java.util.logging.Logger;
  */
 public class BlockExecutor {
 
+    private final BlockId block;
     private final BlockDef def;
     private final BlockFunc func;
     private final boolean isListOperator;
 
-    public BlockExecutor(BlockDef def, BlockFunc func, boolean isListOperator) {
+    public BlockExecutor(BlockId block, BlockDef def, BlockFunc func, boolean isListOperator) {
+        this.block = block;
         this.def = def;
         this.func = func;
         this.isListOperator = isListOperator;
     }
 
-    public ForgeResult invoke(Object... args) {
+    public ExecutionResult invoke(Object... args) {
 
-        final ForgeResult[] result = {null}; // Use an array instead of AtomicReference
+        final IntermediateResult[] result = {null}; // Use an array instead of AtomicReference
 
         try {
 
@@ -47,7 +53,7 @@ public class BlockExecutor {
 
                     } else {
                         // Show an error when there are more than 3 ports
-                        ForgeResult fallback = new ForgeResult();
+                        IntermediateResult fallback = new IntermediateResult();
                         BlockException exception = new BlockException(null, Severity.ERROR, new IndexOutOfBoundsException("No more than 2 input ports are supported list operators."));
                         fallback.exceptions().add(exception);
                         result[0] = fallback;
@@ -59,8 +65,10 @@ public class BlockExecutor {
         } catch (Exception e) {
             Logger.getLogger(MethodBlockNew.class.getName()).log(Level.SEVERE, null, e);
         }
-
-        return result[0];
+        
+        var values = new HashMap<PortRef, Object>();
+        values.put(PortRef.output(block, "value"), result[0].getData());
+        return new ExecutionResult(values, result[0].exceptions());
 
     }
 

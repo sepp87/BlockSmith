@@ -6,7 +6,8 @@ import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.ValueTypeResolver;
 import static blocksmith.domain.value.Port.Direction.INPUT;
-import blocksmith.exec.ForgeState;
+import blocksmith.exec.ExecutionState;
+import blocksmith.ui.UiApp;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.graph.port.PortModel;
@@ -22,9 +23,9 @@ import java.util.Optional;
 public class BlockProjectionAssembler {
 
     private final BlockModelFactory blockFactory;
-    private final ForgeState runtime;
+    private final ExecutionState runtime;
 
-    public BlockProjectionAssembler(BlockModelFactory blockFactory, ForgeState runtime) {
+    public BlockProjectionAssembler(BlockModelFactory blockFactory, ExecutionState runtime) {
         this.blockFactory = blockFactory;
         this.runtime = runtime;
     }
@@ -32,15 +33,18 @@ public class BlockProjectionAssembler {
     public Map<BlockId, MethodBlockNew> create(Collection<Block> blocks, Graph graph) {
         var result = new HashMap<BlockId, MethodBlockNew>();
         for (var block : blocks) {
-            var projection = blockFactory.create(block.type(), block.id().toString());
+            var blockFx = blockFactory.create(block.type(), block.id().toString());
 
-            updatePorts(projection, block, graph);
-            updateBlock(projection, block, graph);
-            updateInputControls(projection, block, graph);
-            projection.setRuntimeState(runtime);
-            projection.setActive(true);
+            updatePorts(blockFx, block, graph);
+            updateBlock(blockFx, block, graph);
+            updateInputControls(blockFx, block, graph);
+            blockFx.updateFrom(runtime);
+            if (!UiApp.USE_EXEC_LAYER) {
+                blockFx.setRuntimeState(runtime);
+                blockFx.setActive(true);
+            }
 
-            result.put(block.id(), projection);
+            result.put(block.id(), blockFx);
         }
         return Map.copyOf(result);
     }

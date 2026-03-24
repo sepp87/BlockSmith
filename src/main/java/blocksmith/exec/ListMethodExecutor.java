@@ -27,16 +27,16 @@ public class ListMethodExecutor {
 
     }
 
-    public ForgeResult invoke(Object... paramaters) {
+    public IntermediateResult invoke(Object... paramaters) {
         return invokeListMethodArgs(traversalLog, paramaters);
     }
 
-    public ForgeResult invoke2(Object a, Object b) {
+    public IntermediateResult invoke2(Object a, Object b) {
         return invokeListMethodArgs2(traversalLog, a, b);
     }
 
-    private ForgeResult invokeListMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
-        ForgeResult invocationResult = new ForgeResult();
+    private IntermediateResult invokeListMethodArgs(Deque<Integer> traversalLog, Object... parameters) {
+        IntermediateResult invocationResult = new IntermediateResult();
         try {
 //            Object result = method.invoke(null, parameters);
             Object result = func.apply(List.of(parameters));
@@ -54,7 +54,7 @@ public class ListMethodExecutor {
         return invocationResult;
     }
 
-    private ForgeResult invokeListMethodArgs2(Deque<Integer> traversalLog, Object a, Object b) {
+    private IntermediateResult invokeListMethodArgs2(Deque<Integer> traversalLog, Object a, Object b) {
 
         // both objects are single values
         if (!ListUtils.isList(b)) {
@@ -63,13 +63,13 @@ public class ListMethodExecutor {
         } else { // object b is a list
             List<?> bList = (List<?>) b;
             List<Object> list = new ArrayList<>();
-            ForgeResult invocationResult = new ForgeResult();
+            IntermediateResult invocationResult = new IntermediateResult();
             invocationResult.setData(list);
 
             int i = 0;
             for (Object bItem : bList) {
                 traversalLog.add(i);
-                ForgeResult result = invokeListMethodArgs2(traversalLog, a, bItem);
+                IntermediateResult result = invokeListMethodArgs2(traversalLog, a, bItem);
                 list.add(result.getData());
                 invocationResult.exceptions().addAll(result.exceptions());
                 traversalLog.pop();
