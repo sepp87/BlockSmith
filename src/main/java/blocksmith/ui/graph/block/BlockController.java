@@ -118,8 +118,15 @@ public class BlockController extends BaseController {
                 });
 
             }
-
         }
+
+        model.inputPorts.forEach(p -> p.activeProperty().addListener(n -> {
+
+            System.out.println("TEST" + model.inputPorts.stream().noneMatch(PortModel::isActive));
+            if (model.inputPorts.stream().noneMatch(PortModel::isActive)) {
+                model.getExceptions().clear();
+            }
+        }));
     }
 
     private void addPorts(List<PortModel> portModels, Port.Direction direction) {

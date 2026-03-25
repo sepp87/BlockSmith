@@ -5,7 +5,7 @@
         <block type="Object.inspect" id="7b32e24a-329e-4a32-bf45-a116103d2a56" x="485.6190185546875" y="336.5220642089844" width="410.3333333333336" height="226.33333333333317"/>
     </blocks>
     <connections>
-        <connection fromBlock="755697ec-31da-4736-bdeb-950f195adab1" fromPort="Object" toBlock="7b32e24a-329e-4a32-bf45-a116103d2a56" toPort="object"/>
+        <connection fromBlock="755697ec-31da-4736-bdeb-950f195adab1" fromPort="value" toBlock="7b32e24a-329e-4a32-bf45-a116103d2a56" toPort="object"/>
     </connections>
     <values>
         <value block="755697ec-31da-4736-bdeb-950f195adab1" id="string" value="1111111111111111111111111111"/>

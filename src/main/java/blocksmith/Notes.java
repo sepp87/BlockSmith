@@ -17,29 +17,30 @@ public class Notes {
 //      - DONE add and remove spinner on running
 //      - DONE value conversion
 //      - DONE Bug: ExecutionInvalidator.invalidateDownstream(...) if(!removed) blocks downstream invalidation for added/new connections
+//      - Bug: load days-between not showing error on load
+//      - INVESTIGATED: Bug: BigInt and string-to-text not loaded
+//      - Cosmetic Bug: blocks with no connections throw exceptions when run, but should not bother users in the UI. The below check takes care of that, but... 
+//        also when the below check is used, exceptions are not shown when loading graphs, because the exception is set at block creation, where connection is still not created.
+//        behaviour can be fixed in the BlockProjectionAssembler, where the graph is actually still available.
+//          MethodBlockNew.updateFrom( ... ) {
+//            ...
+//            if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
+//                exceptions.clear();
+//            }
+//            ...
+//          }
 // - Pull engine improvements
 //      - async execution
 //      - exec schedule
 // - Test if same connection is actually created
+//
 
 
 // TODO
-// - DONE Copy/Paste (todo paste point)
-// - DONE Typing
-// - DONE Object.type and Object.class not allowed
-// - DONE boolean block not working
-// - DONE only resolve upstream if connection replaces existing (or better, omit connection that is going to be replaced
-// - DONE search block wrapping
-// - DONE rename label of sliders throws exception (set label as empty string by default)
-// - DONE resize handle jumping 10 pixels up after resize, and after connecting
-// - DONE text area padding on left
-// - DONE Number slider - Dark mode number slider expander labels not visible
-// - DONE port display names
-// - DONE Display Excel tables 
-// - DONE Save calls save as unneedingly
-// - DONE Integer slider - format settings not to show decimals
+// - Copy/Paste (todo paste point)
 
-
+// - notification - load document error (e.g. when port ids are not found for connections, just omit connection and log) 
+// - notification - save document succes
 // - block label default values
 // - Notification layer
 // - update method executor algorithm

@@ -272,9 +272,9 @@ public class MethodBlockNew extends BlockModel {
             int size = exceptions.size();
             exceptions.addAll(errors);
             exceptions.remove(0, size);
-            if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
-                exceptions.clear();
-            }
+//            if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
+//                exceptions.clear();
+//            }
         }
 
     }

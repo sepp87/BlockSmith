@@ -62,7 +62,7 @@ public class UnifiedMethodExecutor {
         }
 
         // all args defined as singular are effectively plurar
-        long shortestListSize = ListUtils.getShortestListSize(evalArgs);
+        long shortestListSize = ListUtils.getShortestListSize(evalArgs.toArray());
         if (numOflistArgs == definedSingular) {
             return loopAndExecute(traversalLog, shortestListSize, args);
         }
