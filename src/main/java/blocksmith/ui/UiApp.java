@@ -38,7 +38,7 @@ import blocksmith.ui.workspace.FxWorkspaceFactory;
  */
 public class UiApp extends Application {
 
-    public static final boolean USE_EXEC_LAYER = false;
+    public static final boolean USE_EXEC_LAYER = true;
     private static App app;
 
     public static void setApp(App app) {

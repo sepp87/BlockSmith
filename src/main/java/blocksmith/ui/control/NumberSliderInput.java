@@ -17,13 +17,12 @@ import javax.xml.namespace.QName;
  */
 public abstract class NumberSliderInput extends InputControl<String> {
 
-    private final ChangeListener<Number> fxListener = (b, o, n) -> valueChangedByUser(n.toString());
-
     protected DoubleProperty value = new SimpleDoubleProperty();
     protected DoubleProperty min = new SimpleDoubleProperty();
     protected DoubleProperty max = new SimpleDoubleProperty();
     protected DoubleProperty step = new SimpleDoubleProperty();
     private final boolean isInteger;
+    private final ChangeListener<Number> fxListener;
 
     private final Pane root;
     private final Slider slider;
@@ -37,6 +36,7 @@ public abstract class NumberSliderInput extends InputControl<String> {
         this.max.set(max);
         this.step.set(step);
         this.isInteger = isInteger;
+        this.fxListener = (b, o, n) -> valueChangedByUser(isInteger ? String.valueOf(n.intValue()) : n.toString());
 
 //        slider = new Slider(0, 10, 0);
         slider = new Slider();

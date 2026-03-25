@@ -17,7 +17,7 @@ public class NumberMethods {
             description = "Integer slider",
             category = "Core")
     public static int inputInteger(@Value(input = Range.class) String value) {
-        var number = Integer.parseInt(value);
+        var number = (int) Double.parseDouble(value);
         return number;
     }
 

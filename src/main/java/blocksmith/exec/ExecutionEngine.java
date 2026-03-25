@@ -141,7 +141,8 @@ public class ExecutionEngine {
 //        if (state.statusOf(connectedBlock) == BlockStatus.FINISHED) {
         if (state.hasValueOf(connectedOutput)) {
             // TODO convert effective values if needed e.g. single to list, path to file, file to path
-            var converted = state.valueOf(connectedOutput);
+            var value = state.valueOf(connectedOutput);
+            var converted = ValueConverter.convert(value, connectedOutput, inputRef, current);
             return converted;
         }
 
@@ -164,7 +165,8 @@ public class ExecutionEngine {
         }
 
         if (state.statusOf(connectedBlock) == BlockStatus.FINISHED) {
-            var converted = state.valueOf(connectedOutput);
+            var value = state.valueOf(connectedOutput);
+            var converted = ValueConverter.convert(value, connectedOutput, inputRef, current);
             return converted;
 //            throw new RuntimeException("Execution process interrupted, because connected upstream block yielded a severe runtime exception.");
         }

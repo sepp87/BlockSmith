@@ -12,11 +12,11 @@ public class Notes {
 // - IN PROGRESS sliders enable mix, max and step
 // - IN PROGRESS Pull-based execution
 // - IN PROGESS Refactor for GraphProjectionMapper to not needing to set blocks and connections to active
-//      - switch exceptions reading
-//      - switch display value reading
-//      - add and remove spinner on running
-//      - value conversion
-//      - Bug: ExecutionInvalidator.invalidateDownstream(...) if(!removed) blocks downstream invalidation for added/new connections
+//      - DONE switch exceptions reading
+//      - DONE switch display value reading
+//      - DONE add and remove spinner on running
+//      - DONE value conversion
+//      - DONE Bug: ExecutionInvalidator.invalidateDownstream(...) if(!removed) blocks downstream invalidation for added/new connections
 // - Pull engine improvements
 //      - async execution
 //      - exec schedule
@@ -37,6 +37,8 @@ public class Notes {
 // - DONE port display names
 // - DONE Display Excel tables 
 // - DONE Save calls save as unneedingly
+// - DONE Integer slider - format settings not to show decimals
+
 
 // - block label default values
 // - Notification layer
@@ -121,7 +123,6 @@ public class Notes {
 // SMALL UI BUGS
 // load spinner causes small method blocks to grow and shrink
 // create Paint.color do not move or select, just pick a color, then BlockController.moveCompleted throws an exception
-// Integer slider - format settings not to show decimals
 // 
 //
 // BIG UI BUGS

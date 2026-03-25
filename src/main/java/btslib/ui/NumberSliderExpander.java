@@ -45,7 +45,7 @@ public class NumberSliderExpander extends TitledPane {
         this.step = step;
 
         GridPane grid = new GridPane();
-        
+
 //        grid.setVgap(4);
         var constraint1 = new ColumnConstraints(50);
         var constraint2 = new ColumnConstraints(103);
@@ -73,20 +73,20 @@ public class NumberSliderExpander extends TitledPane {
         maxField.setOnKeyPressed(fieldKeyPressedHandler);
         stepField.setOnKeyPressed(fieldKeyPressedHandler);
 
-        valueFieldFocusListener = (b, o, n) -> onFocusChanged(n, valueField, Bindings.convert(value), slider::setValue, false);
-        minFieldFocusListener = (b, o, n) -> onFocusChanged(n, minField, Bindings.convert(min), slider::setMin, false);
-        maxFieldFocusListener = (b, o, n) -> onFocusChanged(n, maxField, Bindings.convert(max), slider::setMax, false);
-        stepFieldFocusListener = (b, o, n) -> onFocusChanged(n, stepField, Bindings.convert(step), slider::setBlockIncrement, true);
+        valueFieldFocusListener = (b, o, n) -> onFocusChanged(n, valueField, format(value), slider::setValue, false);
+        minFieldFocusListener = (b, o, n) -> onFocusChanged(n, minField, format(min), slider::setMin, false);
+        maxFieldFocusListener = (b, o, n) -> onFocusChanged(n, maxField, format(max), slider::setMax, false);
+        stepFieldFocusListener = (b, o, n) -> onFocusChanged(n, stepField, format(step), slider::setBlockIncrement, true);
 
         valueField.focusedProperty().addListener(valueFieldFocusListener);
         minField.focusedProperty().addListener(minFieldFocusListener);
         maxField.focusedProperty().addListener(maxFieldFocusListener);
         stepField.focusedProperty().addListener(stepFieldFocusListener);
 
-        valueField.textProperty().bind(Bindings.convert(value));
-        minField.textProperty().bind(Bindings.convert(min));
-        maxField.textProperty().bind(Bindings.convert(max));
-        stepField.textProperty().bind(Bindings.convert(step));
+        valueField.textProperty().bind(format(value));
+        minField.textProperty().bind(format(min));
+        maxField.textProperty().bind(format(max));
+        stepField.textProperty().bind(format(step));
 
         grid.add(valueField, 1, 0);
         grid.add(minField, 1, 1);
@@ -99,6 +99,13 @@ public class NumberSliderExpander extends TitledPane {
         this.setFocusTraversable(false);
         this.setExpanded(false);
         this.setContent(grid);
+    }
+
+    private StringExpression format(Property<Number> prop) {
+        return Bindings.createStringBinding(
+                () -> isIntegerSlider ? String.valueOf(prop.getValue().intValue()) : prop.getValue().toString(),
+                prop
+        );
     }
 
     private final ChangeListener<Boolean> valueFieldFocusListener;

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -28,17 +29,17 @@ public class DependencyGraph {
     public DependencyGraph() {
     }
 
+
+
+    // TODO remove state from dependency graph
     public void resolveAll(Graph graph, ExecutionState state) {
-
-    }
-
-    public void resolveDependenciesOf(Graph graph, ExecutionState state) {
 
         var index = new HashMap<BlockId, Collection<BlockId>>();
 
         var sinks = resolveSinksOf(graph);
         for (var sink : sinks) {
-            indexDependenciesOf(graph, state, sink, index);
+            var visited = new HashSet<BlockId> ();
+            indexDependenciesOf(graph, state, sink, index, visited);
         }
         
         
@@ -47,10 +48,15 @@ public class DependencyGraph {
         
     }
 
-    private static void indexDependenciesOf(Graph current, ExecutionState state, BlockId target, HashMap<BlockId, Collection<BlockId>> index) {
+    private static void indexDependenciesOf(Graph current, ExecutionState state, BlockId target, HashMap<BlockId, Collection<BlockId>> index, Set<BlockId> visited) {
 
         if (index.containsKey(target)) {
-            // cycle detected OR sink met a cross section
+            // sink met a cross section, where another sink already caused dependencies to be indexed
+            return;
+        }
+        
+        if(!visited.add(target)) {
+            // cycle detected within dependencies of sink, TODO save cyclical dependencies seperate
             return;
         }
 
@@ -61,7 +67,7 @@ public class DependencyGraph {
         index.put(target, dependencies);
 
         for (var connected : dependencies) {
-            indexDependenciesOf(current, state, connected, index);
+            indexDependenciesOf(current, state, connected, index, visited);
         }
 
     }
