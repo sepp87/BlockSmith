@@ -40,7 +40,6 @@ public class BlockProjectionAssembler {
             updateInputControls(blockFx, block, graph);
             blockFx.updateFrom(runtime);
             if (!UiApp.USE_EXEC_LAYER) {
-                blockFx.setRuntimeState(runtime);
                 blockFx.setActive(true);
             }
 

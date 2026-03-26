@@ -1,12 +1,10 @@
 package blocksmith.ui.graph.block;
 
-import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.ui.control.InputControl;
 import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.PortRef;
-import blocksmith.domain.value.Port.Direction;
 import static blocksmith.domain.value.Port.Direction.INPUT;
 import blocksmith.exec.BlockExecutor;
 import blocksmith.exec.BlockFunc;
@@ -159,82 +157,14 @@ public class MethodBlockNew extends BlockModel {
         super.onIncomingConnectionRemoved(data);
     }
 
-    public boolean isListOperator = false;
-    public boolean isListWithUnknownReturnType = false;
-
     @Override
     public void processSafely() {
-        if (!UiApp.USE_EXEC_LAYER) {
-
-//        System.out.println(def.metadata().type().split("\\.")[1] + ".processSafely()");
-            Task<Void> task = new Task<>() {
-                @Override
-                protected Void call() {
-                    process();
-                    return null;
-                }
-            };
-
-            if (spinner != null && label.getWidth() != 0.0) {
-                task.setOnSucceeded(event -> {
-                    container.getChildren().clear();
-                    container.getChildren().add(label);
-                });
-            }
-
-            if (spinner != null && label.getWidth() != 0.0) {
-                spinner.setMinWidth(label.getWidth());
-                container.getChildren().clear();
-                container.getChildren().add(spinner);
-            }
-
-            // Run the task in a separate thread
-            Thread thread = new Thread(task);
-            thread.setDaemon(true);
-            thread.start();
-        }
     }
 
     @Override
     public void process() {
-        var block = BlockId.from(getId());
-
-        var values = new HashMap<PortRef, Object>();
-        inputPorts.forEach(p -> values.put(p.toDomain(), p.getData()));
-        inputControls.forEach((valueId, control) -> values.put(PortRef.input(block, valueId), control.getValue()));
-        runtime.updateBlockState(block, values, BlockStatus.RUNNING, exceptions);
-
-        var portArgs = inputPorts.stream().map(PortModel::getData).toList();
-        var paramArgs = inputControls.values().stream().map(InputControl::getValue).toList();
-        var args = Stream.concat(portArgs.stream(), paramArgs.stream()).toArray();
-        var result = new BlockExecutor(block, def, func, isListOperator).invoke(args);
-
-        runtime.updateBlockState(block,
-                result.values(),
-                BlockStatus.FINISHED,
-                result.exceptions());
-
-        Platform.runLater(() -> {
-
-            int size = exceptions.size();
-            exceptions.addAll(result.exceptions());
-            exceptions.remove(0, size);
-            if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
-                exceptions.clear();
-            }
-
-            var output = outputPorts.get(0);
-            Object data = result.values().get(output.toDomain());
-            output.setData(data);
-        });
-
     }
 
-    private ExecutionState runtime;
-
-    public void setRuntimeState(ExecutionState runtime) {
-        this.runtime = runtime;
-    }
 
     public void updateFrom(ExecutionState runtime) {
         if (UiApp.USE_EXEC_LAYER) {

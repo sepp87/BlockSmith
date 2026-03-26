@@ -19,7 +19,6 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import btsxml.BlockTag;
 import blocksmith.ui.graph.connection.ConnectionModel;
 import blocksmith.infra.blockloader.annotations.Block;
 import javafx.beans.property.ObjectProperty;
@@ -154,31 +153,12 @@ public abstract class BlockModel extends BaseModel {
 
     protected abstract void process() throws Exception;
 
-
     public ObservableList<PortModel> getInputPorts() {
         return FXCollections.unmodifiableObservableList(inputPorts);
     }
 
-    public List<PortModel> getReceivingPorts() {
-        return getWirelessPorts(inputPorts);
-    }
-
     public ObservableList<PortModel> getOutputPorts() {
         return FXCollections.unmodifiableObservableList(outputPorts);
-    }
-
-    public List<PortModel> getTransmittingPorts() {
-        return getWirelessPorts(outputPorts);
-    }
-
-    private List<PortModel> getWirelessPorts(List<PortModel> ports) {
-        List<PortModel> result = new ArrayList<>();
-        for (PortModel port : ports) {
-            if (port.autoConnectableProperty().get()) {
-                result.add(port);
-            }
-        }
-        return result;
     }
 
     public PortModel addInputPort(String valueId, String valueName, ValueType valueType, Class<?> type) {
@@ -232,7 +212,6 @@ public abstract class BlockModel extends BaseModel {
     }
 
     protected abstract void onRemoved();
-
 
     public String type() {
         Block metadata = this.getClass().getAnnotation(Block.class);

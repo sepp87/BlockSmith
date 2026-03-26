@@ -1,4 +1,4 @@
-package btslib.method;
+package blocksmith.lib;
 
 import blocksmith.domain.value.ParamInput.MultilineText;
 import java.util.List;

@@ -180,6 +180,6 @@ public class ExecutionEngine {
         var func = funcLibrary.resolve(block.type())
                 .orElseThrow(() -> new RuntimeException("Execution process interrupted, block func could NOT be resolved")); // TODO set exception to state if none found
 
-        return new BlockExecutor(block.id(), def, func, true).invoke(inputValues.toArray());
+        return new BlockExecutor(block.id(), def, func).invoke(inputValues.toArray());
     }
 }

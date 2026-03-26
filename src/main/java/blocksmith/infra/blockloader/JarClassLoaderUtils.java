@@ -1,4 +1,4 @@
-package blocksmith.ui.utils;
+package blocksmith.infra.blockloader;
 
 import java.io.File;
 import java.io.IOException;

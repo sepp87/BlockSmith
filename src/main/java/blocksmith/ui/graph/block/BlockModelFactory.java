@@ -10,7 +10,6 @@ import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.value.ParamDef;
 import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.ParamInput.NumericType;
-import blocksmith.domain.value.Port;
 import blocksmith.domain.value.PortDef;
 import blocksmith.domain.value.ValueType;
 import blocksmith.domain.value.ValueType.SimpleType;
@@ -31,7 +30,6 @@ import blocksmith.ui.display.GenericDisplay;
 import blocksmith.ui.display.ValueDisplay;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -84,9 +82,6 @@ public class BlockModelFactory {
             var control = inputControlFrom(param);
             block.addInputControl(param.valueId(), control);
         }
-
-        block.isListOperator = def.isListOperator();
-        block.isListWithUnknownReturnType = def.outputs().getFirst().valueType() instanceof ValueType.ListType listType && listType.elementType() instanceof ValueType.VarType;
 
         return block;
     }

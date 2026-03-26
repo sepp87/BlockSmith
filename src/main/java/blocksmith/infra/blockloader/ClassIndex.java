@@ -2,7 +2,6 @@
 package blocksmith.infra.blockloader;
 
 import blocksmith.infra.AppPaths;
-import blocksmith.ui.utils.JarClassLoaderUtils;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -35,17 +34,17 @@ public class ClassIndex {
     
     private List<Class<?>> internalClasses() {
         return List.of(
-                btslib.method.BooleanMethods.class,
-                btslib.method.DateMethods.class,
-                btslib.method.FileMethods.class,
-                btslib.method.JsonMethods.class,
-                btslib.method.ListMethods.class,
-                btslib.method.MathMethods.class,
-                btslib.method.NumberMethods.class,
-                btslib.method.ObjectMethods.class,
-                btslib.method.PaintMethods.class,
-                btslib.method.SpreadsheetMethods.class,
-                btslib.method.StringMethods.class
+                blocksmith.lib.BooleanMethods.class,
+                blocksmith.lib.DateMethods.class,
+                blocksmith.lib.FileMethods.class,
+                blocksmith.lib.JsonMethods.class,
+                blocksmith.lib.ListMethods.class,
+                blocksmith.lib.MathMethods.class,
+                blocksmith.lib.NumberMethods.class,
+                blocksmith.lib.ObjectMethods.class,
+                blocksmith.lib.PaintMethods.class,
+                blocksmith.lib.SpreadsheetMethods.class,
+                blocksmith.lib.StringMethods.class
         );
     }
 

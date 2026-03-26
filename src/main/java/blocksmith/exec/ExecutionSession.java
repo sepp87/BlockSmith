@@ -3,19 +3,13 @@ package blocksmith.exec;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.graph.GraphFactory;
-import blocksmith.ui.UiApp;
-
 /**
  *
  * @author joost
  */
 public class ExecutionSession {
 
-    // ValueFlowEngine 
-    // ValueState / FlowState
-    // FlowInvalidator
     private final ExecutionEngine engine;
-    private final ExecutionState tempState;
     private final ExecutionState state;
     private final ExecutionInvalidator invalidator;
     private Graph current;
@@ -27,7 +21,6 @@ public class ExecutionSession {
             Graph graph) {
 
         this.engine = engine;
-        this.tempState = new ExecutionState();
         this.state = state;
         this.invalidator = invalidator;
         this.current = graph;
@@ -35,10 +28,7 @@ public class ExecutionSession {
     }
 
     public ExecutionState runtimeState() {
-        if(UiApp.USE_EXEC_LAYER) {
-            return state;
-        }
-        return tempState;
+        return state;
     }
 
     public void onGraphChanged(Graph oldGraph, Graph newGraph) {

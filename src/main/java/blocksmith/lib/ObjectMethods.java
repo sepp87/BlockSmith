@@ -1,4 +1,4 @@
-package btslib.method;
+package blocksmith.lib;
 
 import blocksmith.infra.blockloader.annotations.Block;
 import blocksmith.infra.blockloader.annotations.Display;
