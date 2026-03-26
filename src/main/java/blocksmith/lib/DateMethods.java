@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
-import blocksmith.ui.utils.DateTimeUtils;
+import blocksmith.util.DateTimeUtils;
 import blocksmith.infra.blockloader.annotations.Value;
 import blocksmith.infra.blockloader.annotations.Block;
 
@@ -27,7 +27,7 @@ public class DateMethods {
             description = "Obtains an instance of LocalDate from a text string such as 2007-12-03.",
             category = "Core")
     public static LocalDate inputDate(@Value(input = Date.class) String value) {
-        String pattern = DateTimeUtils.getDateFormat(value);
+        String pattern = DateTimeUtils.getDateFormat(value).orElse(null);
         if (pattern == null) {
             throw new DateTimeParseException("Process stopped, because the date format was unknown.", value, 0);
         }
@@ -51,7 +51,7 @@ public class DateMethods {
             type = "Date.fromString",
             category = "Core")
     public static LocalDate fromString(String value) {
-        String pattern = DateTimeUtils.getDateFormat(value);
+        String pattern = DateTimeUtils.getDateFormat(value).orElse(null);
         if (pattern == null) {
             throw new DateTimeParseException("Process stopped, because the date format was unknown.", value, 0);
         }

@@ -18,8 +18,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
 import blocksmith.ui.utils.FileUtils;
-import blocksmith.ui.utils.SystemUtils.OperatingSystem;
-import blocksmith.ui.utils.SystemUtils;
+import blocksmith.util.OperatingSystem;
+import blocksmith.util.SystemUtils;
 import java.util.HashMap;
 import java.util.Map;
 

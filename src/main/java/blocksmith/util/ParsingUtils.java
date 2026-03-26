@@ -1,4 +1,4 @@
-package blocksmith.ui.utils;
+package blocksmith.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -8,6 +8,10 @@ import java.math.BigInteger;
  * @author joostmeulenkamp
  */
 public class ParsingUtils {
+    
+    private ParsingUtils() {
+        
+    }
 
     public static Object castToBestNumericType(Number value) {
         if (value == null) {
@@ -26,8 +30,7 @@ public class ParsingUtils {
             return l;
         }
 
-        if (value instanceof BigInteger) {
-            BigInteger bigInt = (BigInteger) value;
+        if (value instanceof BigInteger bigInt) {
             if (bigInt.bitLength() <= 31) {
                 return bigInt.intValue();
             } else if (bigInt.bitLength() <= 63) {
@@ -47,8 +50,7 @@ public class ParsingUtils {
             }
             return d;
         }
-        if (value instanceof BigDecimal) {
-            BigDecimal bigDecimal = (BigDecimal) value;
+        if (value instanceof BigDecimal bigDecimal) {
             try {
                 BigInteger unscaled = bigDecimal.toBigIntegerExact();
                 // Check if it's actually an integer
@@ -101,9 +103,9 @@ public class ParsingUtils {
     public static Boolean getBooleanValue(String rawValue) {
         Boolean newValue = null;
 
-        if (rawValue.toLowerCase().equals("true")) {
+        if (rawValue.equalsIgnoreCase("true")) {
             newValue = true;
-        } else if (rawValue.toLowerCase().equals("false")) {
+        } else if (rawValue.equalsIgnoreCase("false")) {
             newValue = false;
         }
 

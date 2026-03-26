@@ -3,7 +3,7 @@ package blocksmith.exec;
 import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.value.ValueDef;
 import blocksmith.domain.value.ValueType;
-import blocksmith.ui.utils.ListUtils;
+import blocksmith.util.ListUtils;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +62,7 @@ public class UnifiedMethodExecutor {
         }
 
         // all args defined as singular are effectively plurar
-        long shortestListSize = ListUtils.getShortestListSize(evalArgs.toArray());
+        long shortestListSize = ListUtils.getShortestListSize(evalArgs.toArray()).orElseThrow(() -> new IllegalArgumentException("evalArgs does NOT contain any lists"));
         if (numOflistArgs == definedSingular) {
             return loopAndExecute(traversalLog, shortestListSize, args);
         }

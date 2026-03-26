@@ -4,9 +4,9 @@ import blocksmith.domain.value.ParamInput.MultilineText;
 import java.util.List;
 import blocksmith.domain.value.ParamInput.Password;
 import blocksmith.infra.blockloader.annotations.Value;
-import blocksmith.ui.utils.DateTimeUtils;
-import blocksmith.ui.utils.ParsingUtils;
-import static blocksmith.ui.utils.ParsingUtils.getBooleanValue;
+import blocksmith.util.DateTimeUtils;
+import blocksmith.util.ParsingUtils;
+import static blocksmith.util.ParsingUtils.getBooleanValue;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -25,38 +25,6 @@ public class StringMethods {
             description = "Input a line of text. Warning: the value is not encrypted, only visually hidden.")
     public static String inputPassword(@Value(input = Password.class) String value) {
         return value.isEmpty() ? null : value;
-    }
-
-//    @Block(
-//            type = "Input.string",
-//            aliases = {"String.newMagicString"},
-//            category = "Core",
-//            description = "Input a line of text. Depending on the value, the output type is changed dynamically e.g. to a Boolean, Integer, Long, Double or a LocalDate. For example an ISO 8601 formatted string (yyyy-MM-dd) will be converted to a LocalDate. The value TRUE will be Boolean and so on. The default output is of type String.")
-    public static Object inputMagicString(@Value String string) {
-
-        var str = string;
-
-        //Forward null and empty string as null
-        if (str == null || str.equals("")) {
-            return null;
-        }
-
-        Boolean bool = getBooleanValue(str);
-        if (bool != null) {
-            return bool;
-        }
-
-        Object number = ParsingUtils.castToBestNumericTypeOrNull(str);
-        if (number != null && !(number instanceof BigDecimal) && !(number instanceof BigInteger)) {
-            return number;
-        }
-
-        LocalDate date = DateTimeUtils.getLocalDateFrom(str);
-        if (date != null) {
-            return date;
-        }
-
-        return str;
     }
 
     @Block(

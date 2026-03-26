@@ -1,4 +1,4 @@
-package blocksmith.ui.utils;
+package blocksmith.util;
 
 import java.io.File;
 import java.net.URI;
@@ -28,7 +28,7 @@ public class SystemUtils {
             }
             return path.endsWith(".jar") ? path.substring(0, path.lastIndexOf(File.separatorChar) + 1) : fallbackPath;
         } catch (URISyntaxException ex) {
-            Logger.getLogger(ParsingUtils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SystemUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return fallbackPath;
     }
@@ -48,11 +48,5 @@ public class SystemUtils {
         }
     }
 
-    public enum OperatingSystem {
-        WINDOWS,
-        MACOS,
-        LINUX,
-        SOLARIS,
-        OTHER_OS
-    }
+
 }

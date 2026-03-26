@@ -1,10 +1,8 @@
 package blocksmith.infra.blockloader;
 
 import blocksmith.infra.AppPaths;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import blocksmith.infra.blockloader.annotations.Block;

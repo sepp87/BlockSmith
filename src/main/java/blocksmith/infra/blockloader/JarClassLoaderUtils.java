@@ -17,12 +17,12 @@ import java.util.logging.Logger;
  *
  * @author joostmeulenkamp
  */
-public class JarClassLoaderUtils {
+class JarClassLoaderUtils {
 
     private static final Logger LOGGER = Logger.getLogger(JarClassLoaderUtils.class.getName());
-    
+
     private JarClassLoaderUtils() {
-        
+
     }
 
     public static List<Class<?>> getClassesFromLibraries(File[] libraries) {
