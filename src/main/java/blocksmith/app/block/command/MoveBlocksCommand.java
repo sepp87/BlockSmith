@@ -4,7 +4,7 @@ import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;
 import java.util.Collection;
-import blocksmith.app.workspace.WorkspaceCommand;
+import blocksmith.app.command.WorkspaceCommand;
 import blocksmith.app.workspace.WorkspaceSession;
 import java.util.ArrayList;
 

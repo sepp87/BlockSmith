@@ -1,8 +1,8 @@
-package blocksmith.ui.command.workspace;
+package blocksmith.ui.align.command;
 
-import blocksmith.ui.AlignmentPolicy;
-import blocksmith.ui.AlignmentService;
-import blocksmith.app.workspace.WorkspaceCommand;
+import blocksmith.ui.align.AlignmentPolicy;
+import blocksmith.ui.align.AlignmentService;
+import blocksmith.app.command.WorkspaceCommand;
 
 /**
  *

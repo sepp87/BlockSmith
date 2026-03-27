@@ -1,6 +1,6 @@
-package blocksmith.ui.command.workspace;
+package blocksmith.ui.editor.navigation.command;
 
-import blocksmith.app.workspace.WorkspaceCommand;
+import blocksmith.app.command.WorkspaceCommand;
 import blocksmith.ui.workspace.WorkspaceController;
 
 /**

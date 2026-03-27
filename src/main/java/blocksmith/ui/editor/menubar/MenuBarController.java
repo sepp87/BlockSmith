@@ -6,8 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import blocksmith.ui.Config;
-import blocksmith.app.workspace.CommandDispatcher;
-import blocksmith.app.workspace.Command;
+import blocksmith.app.command.CommandDispatcher;
+import blocksmith.app.command.Command;
 
 /**
  *

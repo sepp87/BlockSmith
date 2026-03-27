@@ -13,8 +13,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import blocksmith.ui.utils.ListViewUtils;
 import blocksmith.ui.utils.NodeHierarchyUtils;
-import blocksmith.app.workspace.CommandDispatcher;
-import blocksmith.ui.command.AppCommandFactory;
+import blocksmith.app.command.CommandDispatcher;
+import blocksmith.ui.command.AppFxCommandFactory;
 import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import blocksmith.ui.editor.EditorEventRouter;
 import static blocksmith.ui.utils.EditorUtils.onFreeSpace;
@@ -32,7 +32,7 @@ public class BlockSearchController {
     private static final int ROWS_VISIBLE = 17;
 
     private final CommandDispatcher actionManager;
-    private final AppCommandFactory commandFactory;
+    private final AppFxCommandFactory commandFactory;
     private final EditorEventRouter eventRouter;
     private final WorkspaceFxRegistry context;
     private final BlockSearchView view;
@@ -45,7 +45,7 @@ public class BlockSearchController {
 
     private final ChangeListener<Boolean> searchFieldFocusChangedListener;
 
-    public BlockSearchController(CommandDispatcher actionManager, AppCommandFactory commandFactory, EditorEventRouter eventRouter, WorkspaceFxRegistry context, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary) {
+    public BlockSearchController(CommandDispatcher actionManager, AppFxCommandFactory commandFactory, EditorEventRouter eventRouter, WorkspaceFxRegistry context, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary) {
         this.actionManager = actionManager;
         this.commandFactory = commandFactory;
 

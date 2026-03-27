@@ -1,12 +1,7 @@
 package blocksmith.app.block.command;
 
-import java.util.ArrayList;
-import java.util.List;
-import javafx.geometry.Point2D;
-import blocksmith.ui.graph.block.BlockModel;
 import blocksmith.app.workspace.WorkspaceSession;
-import blocksmith.ui.graph.connection.ConnectionModel;
-import blocksmith.app.workspace.WorkspaceCommand;
+import blocksmith.app.command.WorkspaceCommand;
 
 /**
  *

@@ -1,6 +1,6 @@
 package blocksmith.app.block.command;
 
-import blocksmith.app.workspace.Command;
+import blocksmith.app.command.Command;
 import blocksmith.ui.workspace.WorkspaceFxHandle;
 import blocksmith.ui.workspace.WorkspaceController;
 import blocksmith.app.workspace.WorkspaceSession;

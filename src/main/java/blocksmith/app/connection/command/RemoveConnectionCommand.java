@@ -5,7 +5,7 @@ import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.ui.graph.connection.ConnectionModel;
 import blocksmith.app.workspace.WorkspaceSession;
-import blocksmith.app.workspace.WorkspaceCommand;
+import blocksmith.app.command.WorkspaceCommand;
 
 /**
  *

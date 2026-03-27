@@ -26,8 +26,8 @@ import blocksmith.ui.editor.navigation.ZoomController;
 import blocksmith.ui.editor.navigation.ZoomMenuView;
 import blocksmith.ui.editor.blocksearch.BlockSearchController;
 import blocksmith.ui.editor.blocksearch.BlockSearchView;
-import blocksmith.app.workspace.CommandDispatcher;
-import blocksmith.ui.command.AppCommandFactory;
+import blocksmith.app.command.CommandDispatcher;
+import blocksmith.ui.command.AppFxCommandFactory;
 import blocksmith.ui.editor.tab.TabContent;
 import blocksmith.ui.editor.tab.TabManagerView;
 import blocksmith.ui.workspace.WorkspaceFxFactory;
@@ -104,7 +104,7 @@ public class UiApp extends Application {
         var workspaceLifecycle = new WorkspaceLifecycle(workspaceFactory, workspaceRegistry);
         var workspaceContext = workspaceFactory.openDocument(path);
 
-        var commandFactory = new AppCommandFactory(workspaceLifecycle, workspaceRegistry, graphRepo);
+        var commandFactory = new AppFxCommandFactory(workspaceLifecycle, workspaceRegistry, graphRepo);
         var commandDispatcher = new CommandDispatcher(workspaceRegistry, commandFactory);
 
         // initialize EventRouter for Context

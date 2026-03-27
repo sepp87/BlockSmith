@@ -1,9 +1,9 @@
-package blocksmith.app.workspace;
+package blocksmith.app.command;
 
 import blocksmith.app.outbound.WorkspaceRegistry;
-import blocksmith.app.workspace.WorkspaceCommand;
-import blocksmith.ui.command.AppCommandFactory;
-import blocksmith.app.workspace.Command;
+import blocksmith.app.command.WorkspaceCommand;
+import blocksmith.ui.command.AppFxCommandFactory;
+import blocksmith.app.command.Command;
 
 /**
  *
@@ -12,14 +12,14 @@ import blocksmith.app.workspace.Command;
 public class CommandDispatcher {
 
     private final WorkspaceRegistry workspaces;
-    private final AppCommandFactory commandFactory;
+    private final AppFxCommandFactory commandFactory;
 
-    public CommandDispatcher(WorkspaceRegistry workspaces, AppCommandFactory commandFactory) {
+    public CommandDispatcher(WorkspaceRegistry workspaces, AppFxCommandFactory commandFactory) {
         this.workspaces = workspaces;
         this.commandFactory = commandFactory;
     }
 
-    public AppCommandFactory getCommandFactory() {
+    public AppFxCommandFactory getCommandFactory() {
         return commandFactory;
     }
 

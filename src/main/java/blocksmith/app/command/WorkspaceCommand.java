@@ -1,4 +1,4 @@
-package blocksmith.app.workspace;
+package blocksmith.app.command;
 
 /**
  *

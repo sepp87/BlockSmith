@@ -1,5 +1,6 @@
 package blocksmith.app.workspace;
 
+import blocksmith.app.command.Command;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
@@ -14,7 +15,6 @@ import blocksmith.app.block.command.ResizeBlockCommand;
 import blocksmith.app.block.command.UpdateParamValueCommand;
 import blocksmith.app.workspace.WorkspaceSession;
 import java.util.Collection;
-import javafx.geometry.Point2D;
 
 /**
  *

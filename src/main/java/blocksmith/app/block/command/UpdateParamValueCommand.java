@@ -1,7 +1,7 @@
 package blocksmith.app.block.command;
 
 import blocksmith.domain.block.BlockId;
-import blocksmith.app.workspace.WorkspaceCommand;
+import blocksmith.app.command.WorkspaceCommand;
 import blocksmith.app.workspace.WorkspaceSession;
 
 /**

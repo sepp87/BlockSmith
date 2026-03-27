@@ -1,4 +1,4 @@
-package blocksmith.ui.workspace;
+package blocksmith.ui.editor.navigation;
 
 import blocksmith.app.workspace.ViewportState;
 import blocksmith.app.workspace.SelectionState;
@@ -9,6 +9,8 @@ import blocksmith.app.workspace.WorkspaceSession;
 import blocksmith.ui.projection.GraphProjection;
 import blocksmith.ui.geom.GeomUtils;
 import blocksmith.ui.graph.block.MethodBlockNew;
+import blocksmith.ui.workspace.WorkspaceView;
+import blocksmith.ui.workspace.WorkspaceView;
 import java.util.Collection;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;

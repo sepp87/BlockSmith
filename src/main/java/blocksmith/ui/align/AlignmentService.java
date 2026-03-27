@@ -1,4 +1,4 @@
-package blocksmith.ui;
+package blocksmith.ui.align;
 
 import blocksmith.app.inbound.GraphEditor;
 import blocksmith.app.inbound.GraphMutationAndHistory;

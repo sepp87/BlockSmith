@@ -1,4 +1,4 @@
-package blocksmith.ui;
+package blocksmith.ui.align;
 
 import blocksmith.domain.block.BlockPosition;
 import blocksmith.domain.block.BlockId;

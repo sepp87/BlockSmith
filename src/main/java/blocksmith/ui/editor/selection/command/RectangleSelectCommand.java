@@ -1,7 +1,7 @@
-package blocksmith.ui.command.workspace;
+package blocksmith.ui.editor.selection.command;
 
-import blocksmith.app.workspace.WorkspaceCommand;
-import blocksmith.ui.workspace.SelectionService;
+import blocksmith.app.command.WorkspaceCommand;
+import blocksmith.ui.editor.selection.SelectionService;
 import javafx.geometry.Bounds;
 
 /**

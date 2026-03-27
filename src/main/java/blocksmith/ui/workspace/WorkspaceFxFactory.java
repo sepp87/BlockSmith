@@ -1,10 +1,12 @@
 package blocksmith.ui.workspace;
 
+import blocksmith.ui.editor.selection.SelectionService;
+import blocksmith.ui.editor.navigation.ZoomService;
 import blocksmith.app.workspace.WorkspaceSession;
 import blocksmith.ui.projection.GraphProjection;
 import blocksmith.ui.projection.GraphProjectionAssembler;
 import blocksmith.app.outbound.WorkspaceFactory;
-import blocksmith.ui.AlignmentService;
+import blocksmith.ui.align.AlignmentService;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.WorkspaceSessionFactory;
 import blocksmith.app.workspace.WorkspaceCommandBus;

@@ -11,10 +11,10 @@ import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
 import blocksmith.ui.UiApp;
-import blocksmith.app.workspace.CommandDispatcher;
+import blocksmith.app.command.CommandDispatcher;
 import blocksmith.ui.utils.EventUtils;
-import blocksmith.app.workspace.Command;
-import blocksmith.ui.command.AppCommandFactory;
+import blocksmith.app.command.Command;
+import blocksmith.ui.command.AppFxCommandFactory;
 
 /**
  *
@@ -23,9 +23,9 @@ import blocksmith.ui.command.AppCommandFactory;
 public class KeyboardController {
 
     private final CommandDispatcher actionManager;
-    private final AppCommandFactory commandFactory;
+    private final AppFxCommandFactory commandFactory;
 
-    public KeyboardController(CommandDispatcher actionManager, AppCommandFactory commandFactory) {
+    public KeyboardController(CommandDispatcher actionManager, AppFxCommandFactory commandFactory) {
         this.actionManager = actionManager;
         this.commandFactory = commandFactory;
     }

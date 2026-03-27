@@ -1,4 +1,4 @@
-package blocksmith.ui.workspace;
+package blocksmith.ui.editor.selection;
 
 import blocksmith.app.workspace.SelectionState;
 import blocksmith.ui.projection.GraphProjection;

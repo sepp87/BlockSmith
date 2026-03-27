@@ -2,7 +2,7 @@ package blocksmith.app.group.command;
 
 import blocksmith.domain.group.GroupId;
 import blocksmith.app.workspace.WorkspaceSession;
-import blocksmith.app.workspace.WorkspaceCommand;
+import blocksmith.app.command.WorkspaceCommand;
 
 /**
  *

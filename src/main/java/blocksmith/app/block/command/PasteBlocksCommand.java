@@ -1,8 +1,7 @@
 package blocksmith.app.block.command;
 
-import javafx.geometry.Point2D;
 import blocksmith.app.workspace.WorkspaceSession;
-import blocksmith.app.workspace.WorkspaceCommand;
+import blocksmith.app.command.WorkspaceCommand;
 
 /**
  *
@@ -11,11 +10,13 @@ import blocksmith.app.workspace.WorkspaceCommand;
 public class PasteBlocksCommand implements WorkspaceCommand {
 
     private final WorkspaceSession workspaceModel;
-    private final Point2D pastePoint;
+    private final Double x;
+    private final Double y;
 
-    public PasteBlocksCommand( WorkspaceSession workspaceModel, Point2D pastePoint) {
+    public PasteBlocksCommand(WorkspaceSession workspaceModel, Double x, Double y) {
         this.workspaceModel = workspaceModel;
-        this.pastePoint = pastePoint;
+        this.x = x;
+        this.y = y;
     }
 
     @Override
@@ -23,7 +24,7 @@ public class PasteBlocksCommand implements WorkspaceCommand {
 
         var blocks = workspaceModel.graphEditor().pasteBlocks();
         workspaceModel.selection().select(blocks);
-        
+
         return true;
     }
 

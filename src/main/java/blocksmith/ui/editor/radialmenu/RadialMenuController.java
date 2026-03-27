@@ -1,13 +1,13 @@
 package blocksmith.ui.editor.radialmenu;
 
-import blocksmith.app.workspace.CommandDispatcher;
+import blocksmith.app.command.CommandDispatcher;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.input.MouseEvent;
 import blocksmith.ui.utils.NodeHierarchyUtils;
 import blocksmith.ui.editor.EditorEventRouter;
-import blocksmith.app.workspace.Command;
-import blocksmith.ui.command.AppCommandFactory;
+import blocksmith.app.command.Command;
+import blocksmith.ui.command.AppFxCommandFactory;
 import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import static blocksmith.ui.utils.EditorUtils.onFreeSpace;
 import static blocksmith.ui.utils.EventUtils.isRightClick;
@@ -25,7 +25,7 @@ public class RadialMenuController {
 
     private final ChangeListener<Boolean> visibilityToggledHandler;
 
-    public RadialMenuController(CommandDispatcher actionManager, AppCommandFactory commandFactory, EditorEventRouter eventRouter, WorkspaceFxRegistry context, RadialMenuView radialMenuView) {
+    public RadialMenuController(CommandDispatcher actionManager, AppFxCommandFactory commandFactory, EditorEventRouter eventRouter, WorkspaceFxRegistry context, RadialMenuView radialMenuView) {
         this.actionManager = actionManager;
         this.eventRouter = eventRouter;
         this.context = context;

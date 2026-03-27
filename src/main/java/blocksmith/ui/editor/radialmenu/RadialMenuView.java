@@ -1,7 +1,7 @@
 package blocksmith.ui.editor.radialmenu;
 
-import blocksmith.app.workspace.Command;
-import static blocksmith.app.workspace.Command.Id.*;
+import blocksmith.app.command.Command;
+import static blocksmith.app.command.Command.Id.*;
 import blocksmith.utils.icons.FontAwesomeRegular;
 import blocksmith.utils.icons.FontAwesomeSolid;
 import java.util.ArrayList;

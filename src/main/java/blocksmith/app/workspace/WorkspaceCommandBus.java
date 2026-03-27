@@ -1,5 +1,7 @@
 package blocksmith.app.workspace;
 
+import blocksmith.app.command.WorkspaceCommand;
+import blocksmith.app.command.Command;
 import blocksmith.app.workspace.WorkspaceSession;
 import java.util.logging.Logger;
 

@@ -10,10 +10,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import blocksmith.ui.Config;
 import blocksmith.ui.utils.NodeHierarchyUtils;
-import blocksmith.app.workspace.CommandDispatcher;
+import blocksmith.app.command.CommandDispatcher;
 import blocksmith.ui.editor.EditorEventRouter;
-import blocksmith.app.workspace.Command;
-import blocksmith.ui.command.AppCommandFactory;
+import blocksmith.app.command.Command;
+import blocksmith.ui.command.AppFxCommandFactory;
 import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import blocksmith.utils.OperatingSystem;
 import javafx.beans.property.DoubleProperty;
@@ -24,7 +24,7 @@ import javafx.beans.property.DoubleProperty;
 public class ZoomController {
 
     private final CommandDispatcher actionManager;
-    private final AppCommandFactory commandFactory;
+    private final AppFxCommandFactory commandFactory;
     private final EditorEventRouter eventRouter;
     private final WorkspaceFxRegistry workspaces;
     private final ZoomMenuView view;
@@ -35,7 +35,7 @@ public class ZoomController {
 
     public ZoomController(
             CommandDispatcher actionManager, 
-            AppCommandFactory commandFactory,
+            AppFxCommandFactory commandFactory,
             EditorEventRouter eventRouter,
             WorkspaceFxRegistry workspaces,
             ZoomMenuView zoomView) {

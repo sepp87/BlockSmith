@@ -1,4 +1,4 @@
-package blocksmith.ui.command.app;
+package blocksmith.ui.workspace.command;
 
 import blocksmith.app.outbound.GraphRepo;
 import blocksmith.app.workspace.WorkspaceLifecycle;
@@ -6,7 +6,7 @@ import java.io.File;
 import javafx.stage.FileChooser;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.Config;
-import blocksmith.app.workspace.AppCommand;
+import blocksmith.app.command.AppCommand;
 import blocksmith.app.workspace.WorkspaceSession;
 
 /**

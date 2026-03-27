@@ -1,6 +1,6 @@
 package blocksmith.ui.command;
 
-import blocksmith.app.workspace.Command;
+import blocksmith.app.command.Command;
 import blocksmith.app.outbound.GraphRepo;
 import blocksmith.app.workspace.WorkspaceLifecycle;
 import blocksmith.domain.block.BlockId;
@@ -8,37 +8,37 @@ import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.group.GroupId;
 import blocksmith.app.block.command.DeselectAllBlocksCommand;
-import blocksmith.ui.command.workspace.AlignBottomCommand;
-import blocksmith.ui.command.workspace.AlignHorizontallyCommand;
-import blocksmith.ui.command.workspace.AlignLeftCommand;
-import blocksmith.ui.command.workspace.AlignRightCommand;
-import blocksmith.ui.command.workspace.AlignTopCommand;
-import blocksmith.ui.command.workspace.AlignVerticallyCommand;
+import blocksmith.ui.align.command.AlignBottomCommand;
+import blocksmith.ui.align.command.AlignHorizontallyCommand;
+import blocksmith.ui.align.command.AlignLeftCommand;
+import blocksmith.ui.align.command.AlignRightCommand;
+import blocksmith.ui.align.command.AlignTopCommand;
+import blocksmith.ui.align.command.AlignVerticallyCommand;
 import blocksmith.app.block.command.CopyBlocksCommand;
 import blocksmith.app.group.command.AddGroupCommand;
 import blocksmith.ui.command.app.HelpCommand;
-import blocksmith.ui.command.app.NewFileCommand;
-import blocksmith.ui.command.app.OpenFileCommand;
-import blocksmith.ui.command.workspace.RectangleSelectCommand;
+import blocksmith.app.workspace.command.NewFileCommand;
+import blocksmith.ui.workspace.command.OpenFileCommand;
+import blocksmith.ui.editor.selection.command.RectangleSelectCommand;
 import blocksmith.app.block.command.PasteBlocksCommand;
-import blocksmith.ui.command.app.ReloadPluginsCommand;
 import blocksmith.app.block.command.RemoveBlocksCommand;
-import blocksmith.ui.command.workspace.SaveAsFileCommand;
-import blocksmith.ui.command.workspace.SaveFileCommand;
+import blocksmith.ui.workspace.command.SaveAsFileCommand;
+import blocksmith.app.workspace.command.SaveFileCommand;
 import blocksmith.app.block.command.SelectAllBlocksCommand;
 import blocksmith.app.block.command.UpdateSelectionCommand;
 import blocksmith.app.block.command.AddBlockCommand;
 import blocksmith.app.connection.command.AddConnectionCommand;
 import blocksmith.app.connection.command.RemoveConnectionCommand;
 import blocksmith.app.group.command.RemoveGroupCommand;
-import blocksmith.ui.command.workspace.ZoomCommand;
-import blocksmith.ui.command.workspace.ZoomInCommand;
-import blocksmith.ui.command.workspace.ZoomOutCommand;
-import blocksmith.ui.command.workspace.ZoomToFitCommand;
+import blocksmith.ui.editor.navigation.command.ZoomCommand;
+import blocksmith.ui.editor.navigation.command.ZoomInCommand;
+import blocksmith.ui.editor.navigation.command.ZoomOutCommand;
+import blocksmith.ui.editor.navigation.command.ZoomToFitCommand;
 import blocksmith.app.block.command.MoveBlocksCommand;
 import blocksmith.app.block.command.RenameBlockCommand;
 import blocksmith.app.block.command.ResizeBlockCommand;
 import blocksmith.app.block.command.UpdateParamValueCommand;
+import blocksmith.app.command.ReloadBlockDefsCommand;
 import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import java.util.Collection;
 import javafx.geometry.Bounds;
@@ -48,13 +48,13 @@ import javafx.geometry.Point2D;
  *
  * @author joostmeulenkamp
  */
-public class AppCommandFactory {
+public class AppFxCommandFactory {
 
     private final WorkspaceLifecycle workspaces;
     private final WorkspaceFxRegistry registry;
     private final GraphRepo graphRepo;
 
-    public AppCommandFactory(WorkspaceLifecycle workspaces, WorkspaceFxRegistry registry, GraphRepo graphRepo) {
+    public AppFxCommandFactory(WorkspaceLifecycle workspaces, WorkspaceFxRegistry registry, GraphRepo graphRepo) {
         this.workspaces = workspaces;
         this.registry = registry;
         this.graphRepo = graphRepo;
@@ -77,8 +77,10 @@ public class AppCommandFactory {
                 new SaveAsFileCommand(session);
             case COPY_BLOCKS ->
                 new CopyBlocksCommand(session);
-            case PASTE_BLOCKS ->
-                new PasteBlocksCommand(session, registry.getMousePositionOnWorkspace());
+            case PASTE_BLOCKS -> {
+                var mouse = registry.getMousePositionOnWorkspace();
+                yield new PasteBlocksCommand(session, mouse.getX(), mouse.getY());
+            }
             case REMOVE_BLOCKS ->
                 new RemoveBlocksCommand(session);
             case SELECT_ALL_BLOCKS ->
@@ -106,7 +108,7 @@ public class AppCommandFactory {
             case ZOOM_OUT ->
                 new ZoomOutCommand(zoom);
             case RELOAD_PLUGINS ->
-                new ReloadPluginsCommand();
+                new ReloadBlockDefsCommand();
             case HELP ->
                 new HelpCommand();
         };
@@ -154,7 +156,7 @@ public class AppCommandFactory {
         return new UpdateSelectionCommand(session, block, isModifierDown);
     }
 
-    public Command createMoveBlocksCommand(Collection<BlockId> blocks, double dx, double dy) { 
+    public Command createMoveBlocksCommand(Collection<BlockId> blocks, double dx, double dy) {
         var workspace = registry.active();
         var session = workspace.session();
         return new MoveBlocksCommand(session, blocks, dx, dy);

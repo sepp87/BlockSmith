@@ -1,7 +1,8 @@
-package blocksmith.ui.command.app;
+package blocksmith.app.workspace.command;
 
 import blocksmith.app.workspace.WorkspaceLifecycle;
-import blocksmith.app.workspace.AppCommand;
+import blocksmith.app.command.AppCommand;
+import blocksmith.app.command.AppCommand;
 
 /**
  *

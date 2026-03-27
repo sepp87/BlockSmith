@@ -1,18 +1,21 @@
-package blocksmith.ui.command.app;
+package blocksmith.app.command;
 
-import blocksmith.ui.HelpDialog;
 import blocksmith.app.command.AppCommand;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class HelpCommand implements AppCommand {
+public class ReloadBlockDefsCommand implements AppCommand {
+
+    public ReloadBlockDefsCommand() {
+    }
 
     @Override
     public boolean execute() {
-        HelpDialog.show();
+
         return true;
+
     }
 
 }

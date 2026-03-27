@@ -1,6 +1,6 @@
 package blocksmith.ui.editor.menubar;
 
-import static blocksmith.app.workspace.Command.Id.*;
+import static blocksmith.app.command.Command.Id.*;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.control.Menu;

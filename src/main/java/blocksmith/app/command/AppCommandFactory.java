@@ -1,8 +1,8 @@
-package blocksmith.ui.command;
+package blocksmith.app.command;
 
-import blocksmith.app.workspace.Command;
+import blocksmith.app.workspace.command.NewFileCommand;
+import blocksmith.app.command.Command;
 import blocksmith.app.outbound.GraphRepo;
-import blocksmith.app.workspace.WorkspaceLifecycle;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
@@ -10,47 +10,35 @@ import blocksmith.domain.group.GroupId;
 import blocksmith.app.block.command.DeselectAllBlocksCommand;
 import blocksmith.app.block.command.CopyBlocksCommand;
 import blocksmith.app.group.command.AddGroupCommand;
-import blocksmith.ui.command.app.HelpCommand;
-import blocksmith.ui.command.app.NewFileCommand;
-import blocksmith.ui.command.app.OpenFileCommand;
-import blocksmith.ui.command.workspace.RectangleSelectCommand;
 import blocksmith.app.block.command.PasteBlocksCommand;
-import blocksmith.ui.command.app.ReloadPluginsCommand;
 import blocksmith.app.block.command.RemoveBlocksCommand;
-import blocksmith.ui.command.workspace.SaveAsFileCommand;
-import blocksmith.ui.command.workspace.SaveFileCommand;
+import blocksmith.app.workspace.command.SaveFileCommand;
 import blocksmith.app.block.command.SelectAllBlocksCommand;
 import blocksmith.app.block.command.UpdateSelectionCommand;
 import blocksmith.app.block.command.AddBlockCommand;
 import blocksmith.app.connection.command.AddConnectionCommand;
 import blocksmith.app.connection.command.RemoveConnectionCommand;
 import blocksmith.app.group.command.RemoveGroupCommand;
-import blocksmith.ui.command.workspace.ZoomCommand;
-import blocksmith.ui.command.workspace.ZoomInCommand;
-import blocksmith.ui.command.workspace.ZoomOutCommand;
-import blocksmith.ui.command.workspace.ZoomToFitCommand;
 import blocksmith.app.block.command.MoveBlocksCommand;
 import blocksmith.app.block.command.RenameBlockCommand;
 import blocksmith.app.block.command.ResizeBlockCommand;
 import blocksmith.app.block.command.UpdateParamValueCommand;
 import blocksmith.app.outbound.WorkspaceRegistry;
-import blocksmith.ui.workspace.WorkspaceFxRegistry;
+import blocksmith.app.workspace.WorkspaceLifecycle;
 import java.util.Collection;
 import java.util.Optional;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 
 /**
  *
  * @author joostmeulenkamp
  */
-public class AppCommandFactory1 {
+public class AppCommandFactory {
 
     private final WorkspaceLifecycle workspaces;
     private final WorkspaceRegistry registry;
     private final GraphRepo graphRepo;
 
-    public AppCommandFactory1(WorkspaceLifecycle workspaces, WorkspaceRegistry registry, GraphRepo graphRepo) {
+    public AppCommandFactory(WorkspaceLifecycle workspaces, WorkspaceRegistry registry, GraphRepo graphRepo) {
         this.workspaces = workspaces;
         this.registry = registry;
         this.graphRepo = graphRepo;
@@ -69,7 +57,7 @@ public class AppCommandFactory1 {
             case COPY_BLOCKS ->
                 command = new CopyBlocksCommand(session);
             case PASTE_BLOCKS ->
-                command = new PasteBlocksCommand(session, null);
+                command = new PasteBlocksCommand(session, null, null);
             case REMOVE_BLOCKS ->
                 command = new RemoveBlocksCommand(session);
             case SELECT_ALL_BLOCKS ->
@@ -79,7 +67,7 @@ public class AppCommandFactory1 {
             case ADD_GROUP ->
                 command = new AddGroupCommand(session);
             case RELOAD_PLUGINS ->
-                command = new ReloadPluginsCommand();
+                command = new ReloadBlockDefsCommand();
         };
         return Optional.ofNullable(command);
     }

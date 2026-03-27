@@ -1,7 +1,7 @@
-package blocksmith.ui.command.workspace;
+package blocksmith.ui.editor.navigation.command;
 
-import blocksmith.app.workspace.Command;
-import blocksmith.ui.workspace.ZoomService;
+import blocksmith.app.command.Command;
+import blocksmith.ui.editor.navigation.ZoomService;
 
 /**
  *

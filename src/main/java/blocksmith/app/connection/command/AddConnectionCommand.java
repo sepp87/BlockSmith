@@ -7,7 +7,7 @@ import java.util.Set;
 import blocksmith.ui.graph.connection.ConnectionModel;
 import blocksmith.ui.graph.port.PortModel;
 import blocksmith.app.workspace.WorkspaceSession;
-import blocksmith.app.workspace.WorkspaceCommand;
+import blocksmith.app.command.WorkspaceCommand;
 
 /**
  *
