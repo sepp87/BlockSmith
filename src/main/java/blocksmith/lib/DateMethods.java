@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
-import blocksmith.util.DateTimeUtils;
+import blocksmith.utils.DateTimeUtils;
 import blocksmith.infra.blockloader.annotations.Value;
 import blocksmith.infra.blockloader.annotations.Block;
 

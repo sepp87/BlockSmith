@@ -1,5 +1,6 @@
 package blocksmith.ui.workspace;
 
+import blocksmith.app.workspace.SelectionState;
 import blocksmith.ui.projection.GraphProjection;
 import blocksmith.domain.block.BlockId;
 import java.util.ArrayList;
@@ -11,11 +12,11 @@ import javafx.geometry.Bounds;
  */
 public class SelectionService {
 
-    private final SelectionModel selection;
+    private final SelectionState selection;
     private final GraphProjection projection;
 
     public SelectionService(
-            SelectionModel selection,
+            SelectionState selection,
             GraphProjection projection
     ) {
         this.selection = selection;

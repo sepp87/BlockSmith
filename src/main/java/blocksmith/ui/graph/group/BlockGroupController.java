@@ -12,13 +12,13 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import blocksmith.ui.graph.BaseController;
-import blocksmith.ui.command.WorkspaceCommandBus;
+import blocksmith.app.workspace.WorkspaceCommandBus;
 import blocksmith.ui.graph.block.BlockController;
 import blocksmith.ui.graph.block.BlockModel;
 import blocksmith.ui.graph.block.BlockView;
-import blocksmith.ui.workspace.FxWorkspaceHandle;
+import blocksmith.ui.workspace.WorkspaceFxHandle;
 import blocksmith.ui.workspace.WorkspaceController;
-import blocksmith.ui.workspace.WorkspaceSession;
+import blocksmith.app.workspace.WorkspaceSession;
 import blocksmith.ui.workspace.WorkspaceState;
 
 /**
@@ -125,7 +125,7 @@ public class BlockGroupController extends BaseController {
 
     private void handleGroupPressed(MouseEvent event) {
         var blocks = children.values().stream().map(b -> BlockId.from(b.getModel().getId())).toList();
-        session.selectionModel().select(blocks);
+        session.selection().select(blocks);
 
         for (BlockController blockController : children.values()) {
             blockController.startPoint = new Point2D(event.getSceneX(), event.getSceneY());

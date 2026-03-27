@@ -1,6 +1,6 @@
 package blocksmith.infra.blockloader.annotations;
 
-import blocksmith.ui.icons.FontAwesomeSolid;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,7 +26,7 @@ public @interface Block {
 
     String[] aliases() default {};
 
-    FontAwesomeSolid icon() default FontAwesomeSolid.NULL;
+    FontAwesomeSolid icon() default FontAwesomeSolid.NOT_SPECIFIED;
 
 //    Method declarations must not have any parameters or a throws clause. 
 //    Return types are restricted to primitives, String, Class, enums, 

@@ -4,11 +4,11 @@ import blocksmith.ui.UiApp;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import blocksmith.ui.command.CommandDispatcher;
+import blocksmith.app.workspace.CommandDispatcher;
 import blocksmith.ui.editor.EditorEventRouter;
-import blocksmith.ui.command.Command;
+import blocksmith.app.workspace.Command;
 import blocksmith.ui.command.AppCommandFactory;
-import blocksmith.ui.workspace.FxWorkspaceRegistry;
+import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import static blocksmith.ui.utils.EditorUtils.onFreeSpace;
 import javafx.geometry.BoundingBox;
 
@@ -21,12 +21,12 @@ public class SelectionRectangleController {
     private final CommandDispatcher actionManager;
     private final AppCommandFactory commandFactory;
     private final EditorEventRouter eventRouter;
-    private final FxWorkspaceRegistry context;
+    private final WorkspaceFxRegistry context;
     private final SelectionRectangleView view;
 
     private Point2D startPoint;
 
-    public SelectionRectangleController(CommandDispatcher actionManager, AppCommandFactory commandFactory, EditorEventRouter eventRouter, FxWorkspaceRegistry context, SelectionRectangleView selectionRectangleView) {
+    public SelectionRectangleController(CommandDispatcher actionManager, AppCommandFactory commandFactory, EditorEventRouter eventRouter, WorkspaceFxRegistry context, SelectionRectangleView selectionRectangleView) {
         this.actionManager = actionManager;
         this.commandFactory = commandFactory;
         this.eventRouter = eventRouter;

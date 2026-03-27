@@ -1,7 +1,7 @@
 package blocksmith.ui.control;
 
 import blocksmith.ui.graph.base.BaseButton;
-import blocksmith.ui.icons.FontAwesomeSolid;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import java.io.File;
 import java.util.Objects;
 import javafx.beans.property.SimpleStringProperty;

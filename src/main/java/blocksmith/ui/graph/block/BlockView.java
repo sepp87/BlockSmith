@@ -1,6 +1,6 @@
 package blocksmith.ui.graph.block;
 
-import blocksmith.ui.icons.FontAwesomeSolid;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import blocksmith.ui.graph.base.BaseLabel;
 import blocksmith.ui.graph.base.BaseButton;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import blocksmith.ui.graph.port.PortView;
-import blocksmith.ui.icons.FontAwesomeIcon;
+import blocksmith.utils.icons.FontAwesomeIcon;
 
 /**
  *

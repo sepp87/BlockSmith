@@ -8,7 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import blocksmith.ui.icons.FontAwesomeSolid;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import blocksmith.ui.workspace.WorkspaceView;
 
 // TODO Block should llsten to when the exception panel is removed and as such decide to show the exception button again only in case the exception is still present

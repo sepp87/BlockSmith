@@ -1,5 +1,6 @@
 package blocksmith.ui.workspace;
 
+import blocksmith.app.workspace.WorkspaceSession;
 import blocksmith.ui.projection.GraphProjectionDiff;
 import blocksmith.ui.projection.GraphProjection;
 import blocksmith.ui.view.GraphFxMapper;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.graph.BaseController;
-import blocksmith.ui.command.WorkspaceCommandBus;
+import blocksmith.app.workspace.WorkspaceCommandBus;
 import blocksmith.ui.graph.connection.ConnectionController;
 import blocksmith.ui.graph.group.BlockGroupController;
 import blocksmith.ui.graph.port.PortController;
@@ -51,7 +52,7 @@ public class WorkspaceController extends BaseController {
         addGroups(graph.groups().stream().map(Group::id).toList());
         
 
-        session.selectionModel().addSelectionListener(this::onSelectionChanged);
+        session.selection().addSelectionListener(this::onSelectionChanged);
     }
 
     public void updateFrom(GraphProjectionDiff diff) {

@@ -11,4 +11,6 @@ public interface WorkspaceRegistry {
     void remove(String id);
 
     void activate(String id);
+    
+    WorkspaceHandle active();
 }

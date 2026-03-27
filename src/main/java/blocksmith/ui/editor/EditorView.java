@@ -2,7 +2,7 @@ package blocksmith.ui.editor;
 
 import blocksmith.ui.editor.selection.SelectionRectangleView;
 import blocksmith.ui.editor.blocksearch.BlockSearchView;
-import blocksmith.ui.editor.navigation.ZoomView;
+import blocksmith.ui.editor.navigation.ZoomMenuView;
 import blocksmith.ui.editor.menubar.MenuBarView;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.editor.radialmenu.RadialMenuView;
@@ -29,7 +29,7 @@ public class EditorView extends BorderPane {
             RadialMenuView radialMenuView,
             WorkspaceView workspaceView,
             MenuBarView menuBarView,
-            ZoomView zoomView,
+            ZoomMenuView zoomView,
             SelectionRectangleView selectionRectangleView,
             BlockSearchView blockSearchView
     ) {

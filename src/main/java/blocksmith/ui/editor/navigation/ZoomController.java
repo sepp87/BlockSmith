@@ -10,12 +10,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import blocksmith.ui.Config;
 import blocksmith.ui.utils.NodeHierarchyUtils;
-import blocksmith.ui.command.CommandDispatcher;
+import blocksmith.app.workspace.CommandDispatcher;
 import blocksmith.ui.editor.EditorEventRouter;
-import blocksmith.ui.command.Command;
+import blocksmith.app.workspace.Command;
 import blocksmith.ui.command.AppCommandFactory;
-import blocksmith.ui.workspace.FxWorkspaceRegistry;
-import blocksmith.util.OperatingSystem;
+import blocksmith.ui.workspace.WorkspaceFxRegistry;
+import blocksmith.utils.OperatingSystem;
 import javafx.beans.property.DoubleProperty;
 
 /**
@@ -26,8 +26,8 @@ public class ZoomController {
     private final CommandDispatcher actionManager;
     private final AppCommandFactory commandFactory;
     private final EditorEventRouter eventRouter;
-    private final FxWorkspaceRegistry editorContext;
-    private final ZoomView view;
+    private final WorkspaceFxRegistry workspaces;
+    private final ZoomMenuView view;
 
     // To throttle zoom on macOS
     private long lastZoomTime = 0;
@@ -37,13 +37,13 @@ public class ZoomController {
             CommandDispatcher actionManager, 
             AppCommandFactory commandFactory,
             EditorEventRouter eventRouter,
-            FxWorkspaceRegistry editorContext,
-            ZoomView zoomView) {
+            WorkspaceFxRegistry workspaces,
+            ZoomMenuView zoomView) {
 
         this.actionManager = actionManager;
         this.commandFactory = commandFactory;
         this.eventRouter = eventRouter;
-        this.editorContext = editorContext;
+        this.workspaces = workspaces;
         this.view = zoomView;
 
         view.getZoomInButton().setOnAction(this::handleZoomIn);
@@ -77,7 +77,7 @@ public class ZoomController {
 
     public void handleScrollStarted(ScrollEvent event) {
         // Scroll started is not triggered on Mac with a normal mouse
-        var workspace = editorContext.active();
+        var workspace = workspaces.active();
         if (workspace.state().isIdle()) {
             workspace.state().setZooming();
         }
@@ -86,7 +86,7 @@ public class ZoomController {
     // Create and return the ScrollEvent handler for SCROLL
     public void handleScrollUpdated(ScrollEvent event) {
 
-        var workspace = editorContext.active();
+        var workspace = workspaces.active();
 
         boolean onMac = Config.get().operatingSystem() == OperatingSystem.MACOS;
         boolean isZoomModeAndOnMac = workspace.state().isZooming() && onMac;
@@ -112,9 +112,9 @@ public class ZoomController {
             double newScale;
             // Adjust zoom factor based on scroll direction
             if (event.getDeltaY() > 0) {
-                newScale = workspace.session().viewport().getIncrementedZoomFactor();
+                newScale = workspace.zoom().getIncrementedZoomFactor();
             } else {
-                newScale = workspace.session().viewport().getDecrementedZoomFactor();
+                newScale = workspace.zoom().getDecrementedZoomFactor();
             }
             Point2D pivotPoint = new Point2D(event.getSceneX(), event.getSceneY());
 
@@ -125,7 +125,7 @@ public class ZoomController {
     }
 
     public void handleScrollFinished(ScrollEvent event) {
-        var workspace = editorContext.active();
+        var workspace = workspaces.active();
         if (workspace.state().isZooming()) {
             workspace.state().setIdle();
         }

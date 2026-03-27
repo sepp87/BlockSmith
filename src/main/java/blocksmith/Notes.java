@@ -8,9 +8,13 @@ public class Notes {
 
 }
 
+// Seperate UI from Core
+// Blocksmith.app.outbound.workspacehandle > workspacecommandbus, workspace session
+// blocksmith.ui.editormodel
+
 // IN PROGRESS
 // - IN PROGRESS sliders enable mix, max and step
-// - IN PROGRESS Pull-based execution
+// - DONE Pull-based execution
 // - IN PROGESS Refactor for GraphProjectionMapper to not needing to set blocks and connections to active
 //      - DONE switch exceptions reading
 //      - DONE switch display value reading
@@ -29,14 +33,12 @@ public class Notes {
 //            }
 //            ...
 //          }
-// - Pull engine improvements
-//      - async execution
-//      - exec schedule
 // - Test if same connection is actually created
 //
 
 
 // TODO
+// - selectionstate to immutable
 // - Copy/Paste (todo paste point)
 
 // - notification - load document error (e.g. when port ids are not found for connections, just omit connection and log) 

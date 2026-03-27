@@ -6,8 +6,8 @@ import java.io.File;
 import javafx.stage.FileChooser;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.Config;
-import blocksmith.ui.command.AppCommand;
-import blocksmith.ui.workspace.WorkspaceSession;
+import blocksmith.app.workspace.AppCommand;
+import blocksmith.app.workspace.WorkspaceSession;
 
 /**
  *

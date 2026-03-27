@@ -3,7 +3,7 @@ package blocksmith.ui;
 import blocksmith.app.inbound.GraphEditor;
 import blocksmith.app.inbound.GraphMutationAndHistory;
 import blocksmith.ui.projection.GraphProjection;
-import blocksmith.ui.workspace.SelectionModel;
+import blocksmith.app.workspace.SelectionState;
 
 /**
  *
@@ -11,12 +11,12 @@ import blocksmith.ui.workspace.SelectionModel;
  */
 public class AlignmentService {
 
-    private final SelectionModel selection;
+    private final SelectionState selection;
     private final GraphProjection projection;
     private final GraphMutationAndHistory editor;
 
     public AlignmentService(
-            SelectionModel selection,
+            SelectionState selection,
             GraphProjection projection,
             GraphMutationAndHistory editor
     ) {

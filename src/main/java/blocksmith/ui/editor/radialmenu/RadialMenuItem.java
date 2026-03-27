@@ -1,6 +1,6 @@
 package blocksmith.ui.editor.radialmenu;
 
-import blocksmith.ui.icons.FontAwesomeIcon;
+import blocksmith.utils.icons.FontAwesomeIcon;
 import javafx.scene.Group;
 
 /**

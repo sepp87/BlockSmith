@@ -3,7 +3,7 @@ package blocksmith.lib;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import blocksmith.util.ListUtils;
+import blocksmith.utils.ListUtils;
 import blocksmith.infra.blockloader.annotations.Block;
 
 /**

@@ -18,14 +18,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.graph.BaseController;
-import blocksmith.ui.command.WorkspaceCommandBus;
+import blocksmith.app.workspace.WorkspaceCommandBus;
 import blocksmith.ui.graph.port.PortController;
 import blocksmith.ui.graph.port.PortModel;
 import blocksmith.ui.graph.port.PortView;
 import blocksmith.ui.utils.EventUtils;
 import blocksmith.ui.projection.GraphProjection;
 import blocksmith.ui.workspace.WorkspaceController;
-import blocksmith.ui.workspace.WorkspaceSession;
+import blocksmith.app.workspace.WorkspaceSession;
 import java.util.function.Consumer;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -53,7 +53,6 @@ public class BlockController extends BaseController {
     private double previousWidth = -1;
     private double previousHeight = -1;
 
-//    private final ChangeListener<Bounds> boundsListener;
     public BlockController(WorkspaceCommandBus commands, WorkspaceSession session, GraphProjection projection, WorkspaceController workspaceController, BlockModel blockModel, BlockView blockView) {
         super(commands, session);
         this.projection = projection;
@@ -114,7 +113,6 @@ public class BlockController extends BaseController {
                 control.setOnValueChangedByUser(value -> {
                     var command = commands.factory().createUpdateParamValueCommand(BlockId.from(methodBlock.getId()), valueId, value);
                     commands.execute(command);
-                    methodBlock.processSafely();
                 });
 
             }
@@ -228,11 +226,11 @@ public class BlockController extends BaseController {
             return;
         }
 
-        double scale = session.viewport().zoomFactorProperty().get();
+        double scale = session.viewport().zoomFactor();
         double deltaX = (event.getSceneX() - updatedPoint.getX()) / scale;
         double deltaY = (event.getSceneY() - updatedPoint.getY()) / scale;
 
-        var ids = session.selectionModel().selected();
+        var ids = session.selection().selected();
         var blocks = projection.blocks(ids);
 
         for (var blockModel : blocks) {
@@ -250,13 +248,13 @@ public class BlockController extends BaseController {
     public void handleMoveFinished(MouseEvent event) {
         try {
             if (drag_to_move) {
-                var ids = session.selectionModel().selected();
+                var ids = session.selection().selected();
                 Point2D delta = updatedPoint.subtract(startPoint);
-                double dX = delta.getX() / session.viewport().zoomFactorProperty().get();
-                double dY = delta.getY() / session.viewport().zoomFactorProperty().get();
+                double dX = delta.getX() / session.viewport().zoomFactor();
+                double dY = delta.getY() / session.viewport().zoomFactor();
                 delta = new Point2D(dX, dY);
 
-                var command = commands.factory().createMoveBlocksCommand(ids, delta);
+                var command = commands.factory().createMoveBlocksCommand(ids, delta.getX(), delta.getY());
                 commands.execute(command);
 
             } else {
@@ -328,7 +326,7 @@ public class BlockController extends BaseController {
     }
 
     private void handleResizeUpdated(MouseEvent event) {
-        double scale = session.viewport().zoomFactorProperty().get();
+        double scale = session.viewport().zoomFactor();
         double deltaX = (event.getSceneX() - updatedPoint.getX()) / scale;
         double deltaY = (event.getSceneY() - updatedPoint.getY()) / scale;
         double newWidth = model.widthProperty().get() + deltaX;

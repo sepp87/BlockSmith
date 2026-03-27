@@ -4,7 +4,7 @@ import blocksmith.domain.value.ParamDef;
 import blocksmith.domain.value.PortDef;
 import java.util.List;
 import blocksmith.infra.blockloader.annotations.Block;
-import blocksmith.ui.icons.FontAwesomeIcon;
+import blocksmith.utils.icons.FontAwesomeIcon;
 
 /**
  *

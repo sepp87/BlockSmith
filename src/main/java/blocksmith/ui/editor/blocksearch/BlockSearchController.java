@@ -13,9 +13,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import blocksmith.ui.utils.ListViewUtils;
 import blocksmith.ui.utils.NodeHierarchyUtils;
-import blocksmith.ui.command.CommandDispatcher;
+import blocksmith.app.workspace.CommandDispatcher;
 import blocksmith.ui.command.AppCommandFactory;
-import blocksmith.ui.workspace.FxWorkspaceRegistry;
+import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import blocksmith.ui.editor.EditorEventRouter;
 import static blocksmith.ui.utils.EditorUtils.onFreeSpace;
 import static blocksmith.ui.utils.EventUtils.isDoubleClick;
@@ -34,7 +34,7 @@ public class BlockSearchController {
     private final CommandDispatcher actionManager;
     private final AppCommandFactory commandFactory;
     private final EditorEventRouter eventRouter;
-    private final FxWorkspaceRegistry context;
+    private final WorkspaceFxRegistry context;
     private final BlockSearchView view;
     private final BlockDefLibrary blockDefLibrary;
 
@@ -45,7 +45,7 @@ public class BlockSearchController {
 
     private final ChangeListener<Boolean> searchFieldFocusChangedListener;
 
-    public BlockSearchController(CommandDispatcher actionManager, AppCommandFactory commandFactory, EditorEventRouter eventRouter, FxWorkspaceRegistry context, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary) {
+    public BlockSearchController(CommandDispatcher actionManager, AppCommandFactory commandFactory, EditorEventRouter eventRouter, WorkspaceFxRegistry context, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary) {
         this.actionManager = actionManager;
         this.commandFactory = commandFactory;
 
@@ -154,7 +154,7 @@ public class BlockSearchController {
 
 //        System.out.println("Create block " + blockType);
         var location = context.sceneToWorkspace(creationPoint);
-        var command = commandFactory.createAddBlockCommand(blockType, location);
+        var command = commandFactory.createAddBlockCommand(blockType, location.getX(), location.getY());
         actionManager.executeCommand(command);
         hideView();
     }

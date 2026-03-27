@@ -6,12 +6,12 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.CubicCurve;
 import blocksmith.ui.graph.BaseController;
-import blocksmith.ui.command.WorkspaceCommandBus;
+import blocksmith.app.workspace.WorkspaceCommandBus;
 import blocksmith.ui.graph.port.PortController;
 import blocksmith.ui.graph.port.PortView;
 import static blocksmith.ui.utils.EventUtils.isLeftClick;
 import blocksmith.ui.workspace.WorkspaceController;
-import blocksmith.ui.workspace.WorkspaceSession;
+import blocksmith.app.workspace.WorkspaceSession;
 
 /**
  *

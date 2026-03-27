@@ -1,7 +1,7 @@
 package blocksmith.ui.command.workspace;
 
 import javafx.geometry.Point2D;
-import blocksmith.ui.command.WorkspaceCommand;
+import blocksmith.app.workspace.WorkspaceCommand;
 import blocksmith.ui.workspace.WorkspaceController;
 import blocksmith.ui.workspace.ZoomService;
 

@@ -5,7 +5,7 @@ import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.SaveDocument;
 import blocksmith.app.workspace.WorkspaceLifecycle;
 import blocksmith.app.workspace.WorkspaceSessionFactory;
-import blocksmith.ui.workspace.FxWorkspaceRegistry;
+import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -23,14 +23,14 @@ import blocksmith.ui.editor.selection.SelectionRectangleView;
 import blocksmith.ui.editor.radialmenu.RadialMenuController;
 import blocksmith.ui.editor.radialmenu.RadialMenuView;
 import blocksmith.ui.editor.navigation.ZoomController;
-import blocksmith.ui.editor.navigation.ZoomView;
+import blocksmith.ui.editor.navigation.ZoomMenuView;
 import blocksmith.ui.editor.blocksearch.BlockSearchController;
 import blocksmith.ui.editor.blocksearch.BlockSearchView;
-import blocksmith.ui.command.CommandDispatcher;
+import blocksmith.app.workspace.CommandDispatcher;
 import blocksmith.ui.command.AppCommandFactory;
 import blocksmith.ui.editor.tab.TabContent;
 import blocksmith.ui.editor.tab.TabManagerView;
-import blocksmith.ui.workspace.FxWorkspaceFactory;
+import blocksmith.ui.workspace.WorkspaceFxFactory;
 
 /**
  *
@@ -84,7 +84,7 @@ public class UiApp extends Application {
         // Initialize views
         var blockSearchView = new BlockSearchView();
         var selectionRectangleView = new SelectionRectangleView();
-        var zoomView = new ZoomView();
+        var zoomView = new ZoomMenuView();
         var radialMenuView = new RadialMenuView();
         var menuBarView = new MenuBarView();
         var tabManagerView = new TabManagerView();
@@ -99,8 +99,8 @@ public class UiApp extends Application {
                 blockSearchView
         );
 
-        var workspaceRegistry = new FxWorkspaceRegistry(editorView);
-        var workspaceFactory = new FxWorkspaceFactory(workspaceSessionFactory, blockModelFactory);
+        var workspaceRegistry = new WorkspaceFxRegistry(editorView);
+        var workspaceFactory = new WorkspaceFxFactory(workspaceSessionFactory, blockModelFactory);
         var workspaceLifecycle = new WorkspaceLifecycle(workspaceFactory, workspaceRegistry);
         var workspaceContext = workspaceFactory.openDocument(path);
 
@@ -122,7 +122,7 @@ public class UiApp extends Application {
         // initialize ActionManager for Context
         workspaceRegistry.setOnActiveWorkspaceChanged(activeWorkspaceContext -> {
             tabManagerView.closeAll();
-            zoomController.bindZoomLabel(activeWorkspaceContext.session().viewport().zoomFactorProperty());
+            zoomController.bindZoomLabel(activeWorkspaceContext.viewport().zoomFactorProperty());
             var id = activeWorkspaceContext.id();
             var docPath = activeWorkspaceContext.session().documentPath().orElse(null);
             var label = docPath == null ? null : docPath.getFileName().toString();

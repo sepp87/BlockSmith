@@ -2,7 +2,7 @@ package blocksmith.ui.editor.navigation;
 
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import blocksmith.ui.workspace.FxWorkspaceRegistry;
+import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import blocksmith.ui.editor.EditorEventRouter;
 import static blocksmith.ui.utils.EditorUtils.onFreeSpace;
 
@@ -13,14 +13,14 @@ import static blocksmith.ui.utils.EditorUtils.onFreeSpace;
 public class PanController {
 
     private final EditorEventRouter eventRouter;
-    private final FxWorkspaceRegistry context;
+    private final WorkspaceFxRegistry context;
 
     private double initialX;
     private double initialY;
     private double initialTranslateX;
     private double initialTranslateY;
 
-    public PanController(EditorEventRouter eventRouter, FxWorkspaceRegistry context) {
+    public PanController(EditorEventRouter eventRouter, WorkspaceFxRegistry context) {
         this.eventRouter = eventRouter;
         this.context = context;
 
@@ -37,8 +37,8 @@ public class PanController {
             workspace.state().setPanning();
             initialX = event.getSceneX();
             initialY = event.getSceneY();
-            initialTranslateX = workspace.session().viewport().translateXProperty().get();
-            initialTranslateY = workspace.session().viewport().translateYProperty().get();
+            initialTranslateX = workspace.session().viewport().translateX();
+            initialTranslateY = workspace.session().viewport().translateY();
         }
     }
 
@@ -46,8 +46,10 @@ public class PanController {
         var workspace = context.active();
         boolean isSecondary = event.getButton() == MouseButton.SECONDARY;
         if (workspace.state().isPanning() && isSecondary) {
-            workspace.session().viewport().translateXProperty().set(initialTranslateX + event.getSceneX() - initialX);
-            workspace.session().viewport().translateYProperty().set(initialTranslateY + event.getSceneY() - initialY);
+            var tx = initialTranslateX + event.getSceneX() - initialX;
+            var ty = initialTranslateY + event.getSceneY() - initialY;
+            var update = workspace.session().viewport().withTranslation(tx, ty);
+            workspace.session().updateViewport(update);
         }
     }
 

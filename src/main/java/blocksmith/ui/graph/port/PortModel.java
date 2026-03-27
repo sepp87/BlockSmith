@@ -17,12 +17,6 @@ import javafx.collections.ObservableSet;
 import blocksmith.ui.graph.base.BaseModel;
 import blocksmith.ui.graph.block.BlockModel;
 import blocksmith.ui.graph.connection.ConnectionModel;
-import blocksmith.ui.utils.ObjectUtils;
-import blocksmith.domain.graph.TypeCastUtils;
-import java.io.File;
-import java.nio.file.Path;
-import java.util.function.Function;
-import javafx.beans.value.ChangeListener;
 
 /**
  *
@@ -64,7 +58,6 @@ public class PortModel extends BaseModel {
         this.multiDockAllowed = multiDockAllowed;
         this.dataType.set(type);
 
-        data.addListener(dataListener);
     }
 
     public String valueId() {
@@ -111,87 +104,6 @@ public class PortModel extends BaseModel {
 
     public ObjectProperty<Object> dataProperty() {
         return data;
-    }
-
-    public void setData(Object newData) {
-        Object oldData = data.get();
-        if (ObjectUtils.compare(oldData, newData)) {
-            return;
-        }
-        data.set(newData);
-
-        if (direction == Port.Direction.INPUT) {
-            preprocessData(newData);
-        }
-    }
-
-    private final ChangeListener<Object> dataListener = this::onDataChanged;
-
-    private void onDataChanged(Object b, Object o, Object n) {
-        if (direction == Port.Direction.OUTPUT) {
-            publishData();
-        }
-    }
-
-    private void publishData() {
-        for (ConnectionModel connection : connections) {
-            connection.forwardData();
-        }
-    }
-
-    public void preprocessData(Object value) {
-
-        if (!connections.isEmpty()) { // incoming data of one single incoming connection
-            System.out.println(block.type() + " received: " + value);
-
-            //Cast all primitive dataType to String if this port dataType is String
-            PortModel startPort = connections.iterator().next().getStartPort();
-            var incoming = startPort.getData();
-
-            if (this.getDataType() == String.class && TypeCastUtils.contains(startPort.getDataType())) {
-                var effective = objectToString(incoming);
-                data.set(effective);
-
-            } else if (this.getDataType() == File.class && Path.class.isAssignableFrom(startPort.getDataType())) {
-                var effective = pathToFile(incoming);
-                data.set(effective);
-
-            } else if (Path.class.isAssignableFrom(this.getDataType()) && startPort.getDataType() == File.class) {
-                var effective = fileToPath(incoming);
-                data.set(effective);
-
-            } else { // this INPUT port does NOT have data type String
-
-                data.set(incoming);
-            }
-        }
-    }
-
-    private Object objectToString(Object data) {
-        return convert(data, Object.class, o -> o + "");
-    }
-
-    private Object pathToFile(Object data) {
-        System.out.println("PATH TO FILE NOT CALLED");
-        return convert(data, Path.class, Path::toFile);
-    }
-
-    private Object fileToPath(Object data) {
-        return convert(data, File.class, File::toPath);
-    }
-
-    private <FROM, TO> Object convert(Object data, Class<FROM> from, Function<FROM, TO> converter) {
-        if (data instanceof List) {
-            var list = (List<FROM>) data;
-            var newList = new ArrayList<TO>();
-            for (var item : list) {
-                var converted = converter.apply(from.cast(item));
-                newList.add(converted);
-            }
-            return newList;
-        } else {
-            return converter.apply(from.cast(data));
-        }
     }
 
     public Object getData() {
@@ -245,7 +157,6 @@ public class PortModel extends BaseModel {
 
     @Override
     public void dispose() {
-        data.removeListener(dataListener);
         connections.clear();
         super.dispose();
     }

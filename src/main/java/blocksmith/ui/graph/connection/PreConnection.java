@@ -2,7 +2,7 @@ package blocksmith.ui.graph.connection;
 
 import blocksmith.domain.graph.ConnectionPolicy;
 import blocksmith.domain.value.Port;
-import blocksmith.ui.command.WorkspaceCommandBus;
+import blocksmith.app.workspace.WorkspaceCommandBus;
 import blocksmith.ui.graph.port.PortModel;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -12,7 +12,7 @@ import javafx.scene.shape.Line;
 import blocksmith.ui.graph.port.PortController;
 import blocksmith.ui.graph.port.PortView;
 import blocksmith.ui.workspace.WorkspaceController;
-import blocksmith.ui.workspace.WorkspaceSession;
+import blocksmith.app.workspace.WorkspaceSession;
 import blocksmith.ui.workspace.WorkspaceView;
 
 /**

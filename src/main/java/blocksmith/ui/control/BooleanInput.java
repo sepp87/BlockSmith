@@ -1,7 +1,7 @@
 package blocksmith.ui.control;
 
 import blocksmith.ui.graph.block.BlockView;
-import blocksmith.ui.icons.FontAwesomeSolid;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import java.util.Objects;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

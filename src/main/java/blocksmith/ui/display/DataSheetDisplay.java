@@ -2,7 +2,7 @@ package blocksmith.ui.display;
 
 import blocksmith.ui.display.ValueDisplay.SingleValue;
 import blocksmith.domain.value.types.DataSheet;
-import btslib.spreadsheet.DataSheetViewer;
+import blocksmith.ui.display.utils.DataSheetViewer;
 import javafx.scene.Node;
 
 /**

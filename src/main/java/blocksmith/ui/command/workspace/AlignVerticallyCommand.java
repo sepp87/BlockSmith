@@ -2,7 +2,7 @@ package blocksmith.ui.command.workspace;
 
 import blocksmith.ui.AlignmentPolicy;
 import blocksmith.ui.AlignmentService;
-import blocksmith.ui.command.WorkspaceCommand;
+import blocksmith.app.workspace.WorkspaceCommand;
 
 /**
  *

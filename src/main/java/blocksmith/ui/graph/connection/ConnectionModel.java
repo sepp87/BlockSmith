@@ -22,33 +22,6 @@ public class ConnectionModel extends BaseModel {
         initialize();
     }
 
-    @Override
-    public void setActive(boolean active) {
-        if (active == isActive()) {
-            return; // no need to forward data again
-        }
-        super.setActive(active);
-
-        if (isActive()) {
-            forwardData(); // initial data flow
-
-            // Force processing when initially activated with null data
-            // This allows blocks to handle null input appropriately e.g. throw an exception or fall back to defaults
-            if (startPort.getData() == null) {
-                endPort.getBlock().processSafely();
-            }
-        } else {
-            // TODO
-        }
-
-    }
-
-    public void forwardData() {
-        if (!isActive()) {
-            return;
-        }
-        endPort.setData(startPort.getData());
-    }
 
     public boolean isAutoConnectable() {
         return startPort.autoConnectableProperty().get();
@@ -72,13 +45,6 @@ public class ConnectionModel extends BaseModel {
     public void dispose() {
         startPort.removeConnection(this);
         endPort.removeConnection(this);
-
-        // Force processing when removing a connection with null data
-        // This maintains consistency with setActive() behavior
-        if (startPort.getData() == null) {
-            endPort.getBlock().processSafely();
-        }
-        super.setActive(false);
         super.dispose();
 
     }

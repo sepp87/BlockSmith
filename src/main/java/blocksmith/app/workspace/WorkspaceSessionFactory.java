@@ -3,7 +3,6 @@ package blocksmith.app.workspace;
 import blocksmith.app.GraphEditorFactory;
 import blocksmith.app.outbound.GraphRepo;
 import blocksmith.exec.ExecutionSessionFactory;
-import blocksmith.ui.workspace.WorkspaceSession;
 import java.nio.file.Path;
 
 /**

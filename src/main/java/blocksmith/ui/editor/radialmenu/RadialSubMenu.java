@@ -1,6 +1,6 @@
 package blocksmith.ui.editor.radialmenu;
 
-import blocksmith.ui.icons.FontAwesomeSolid;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import java.util.ArrayList;
 import java.util.List;
 

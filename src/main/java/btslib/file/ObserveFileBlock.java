@@ -1,7 +1,7 @@
 package btslib.file;
 
 import blocksmith.domain.value.ValueType;
-import blocksmith.ui.icons.FontAwesomeSolid;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -59,13 +59,13 @@ public class ObserveFileBlock extends BlockModel {
         
     }
     
-    @Override
-    protected void onActiveChanged() {
-        if (!this.isActive()) {
-            stopObservation();
-        }
-        super.onActiveChanged();
-    }
+//    @Override
+//    protected void onActiveChanged() {
+//        if (!this.isActive()) {
+//            stopObservation();
+//        }
+//        super.onActiveChanged();
+//    }
 
     @Override
     public Region getCustomization() {
@@ -73,27 +73,27 @@ public class ObserveFileBlock extends BlockModel {
         return icon;
     }
 
-    @Override
-    public synchronized void process() throws Exception {
-        Object data = inputPorts.get(0).getData();
-
-        if (data == null) {
-            // If data is null, stop observation (if any)
-            stopObservation();
-            return; // Exit early
-        }
-
-        File newFile = (File) data;
-
-        // Stop previous watcher if already running
-        stopObservation();
-        observedFile = newFile;
-
-        // Start a new daemon thread for watching the file
-        Thread watcherThread = new Thread(() -> observeFile(observedFile));
-        watcherThread.setDaemon(true); // Mark the thread as a daemon
-        watchTask = executorService.submit(watcherThread);
-    }
+//    @Override
+//    public synchronized void process() throws Exception {
+//        Object data = inputPorts.get(0).getData();
+//
+//        if (data == null) {
+//            // If data is null, stop observation (if any)
+//            stopObservation();
+//            return; // Exit early
+//        }
+//
+//        File newFile = (File) data;
+//
+//        // Stop previous watcher if already running
+//        stopObservation();
+//        observedFile = newFile;
+//
+//        // Start a new daemon thread for watching the file
+//        Thread watcherThread = new Thread(() -> observeFile(observedFile));
+//        watcherThread.setDaemon(true); // Mark the thread as a daemon
+//        watchTask = executorService.submit(watcherThread);
+//    }
 
     private void observeFile(File file) {
         Path filePath = file.toPath();
@@ -129,7 +129,7 @@ public class ObserveFileBlock extends BlockModel {
 
                         // Create updated file
                         File updatedFile = new File(file.getPath());
-                        outputPorts.get(0).setData(updatedFile);
+//                        outputPorts.get(0).setData(updatedFile);
                     }
                 }
 

@@ -1,7 +1,7 @@
 package blocksmith.app.outbound;
 
-import blocksmith.ui.command.WorkspaceCommandBus;
-import blocksmith.ui.workspace.WorkspaceSession;
+import blocksmith.app.workspace.WorkspaceCommandBus;
+import blocksmith.app.workspace.WorkspaceSession;
 
 /**
  *

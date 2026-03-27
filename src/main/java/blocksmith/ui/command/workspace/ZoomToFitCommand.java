@@ -1,6 +1,6 @@
 package blocksmith.ui.command.workspace;
 
-import blocksmith.ui.command.Command;
+import blocksmith.app.workspace.Command;
 import blocksmith.ui.workspace.ZoomService;
 
 /**

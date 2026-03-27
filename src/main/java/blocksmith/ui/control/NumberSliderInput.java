@@ -1,7 +1,7 @@
 package blocksmith.ui.control;
 
 import blocksmith.xml.v2.ValueXml;
-import btslib.ui.NumberSliderExpander;
+import blocksmith.ui.control.utils.NumberSliderExpander;
 import java.util.Optional;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

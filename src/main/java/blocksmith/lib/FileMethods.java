@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import blocksmith.ui.utils.FileUtils;
+import blocksmith.infra.utils.FileUtils;
 import java.nio.charset.Charset;
 import java.nio.file.InvalidPathException;
 import blocksmith.infra.blockloader.annotations.Value;

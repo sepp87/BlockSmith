@@ -1,8 +1,7 @@
 package blocksmith.ui.control;
 
-import btslib.ui.ColorBox;
+import blocksmith.ui.control.utils.ColorBox;
 import java.util.Objects;
-import java.util.function.Consumer;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;

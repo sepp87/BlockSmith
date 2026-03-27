@@ -1,13 +1,13 @@
 package blocksmith.ui.editor.menubar;
 
-import blocksmith.ui.workspace.FxWorkspaceRegistry;
+import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import blocksmith.ui.Config;
-import blocksmith.ui.command.CommandDispatcher;
-import blocksmith.ui.command.Command;
+import blocksmith.app.workspace.CommandDispatcher;
+import blocksmith.app.workspace.Command;
 
 /**
  *
@@ -16,11 +16,11 @@ import blocksmith.ui.command.Command;
 public class MenuBarController {
 
     private final CommandDispatcher actionManager;
-    private final FxWorkspaceRegistry context;
+    private final WorkspaceFxRegistry context;
 
     private final MenuBarView view;
 
-    public MenuBarController(CommandDispatcher actionManager, FxWorkspaceRegistry context, MenuBarView menuBarView) {
+    public MenuBarController(CommandDispatcher actionManager, WorkspaceFxRegistry context, MenuBarView menuBarView) {
         this.actionManager = actionManager;
 
         this.context = context;

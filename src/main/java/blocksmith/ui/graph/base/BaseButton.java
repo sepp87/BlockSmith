@@ -1,7 +1,7 @@
 package blocksmith.ui.graph.base;
 
-import blocksmith.ui.icons.FontAwesomeIcon;
-import blocksmith.ui.icons.FontAwesomeSolid;
+import blocksmith.utils.icons.FontAwesomeIcon;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Region;
 

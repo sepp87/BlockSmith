@@ -1,6 +1,6 @@
 package blocksmith.ui.graph.group;
 
-import blocksmith.ui.icons.FontAwesomeSolid;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import java.util.Collection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;

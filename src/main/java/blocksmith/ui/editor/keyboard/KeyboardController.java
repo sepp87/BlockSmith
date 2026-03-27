@@ -1,6 +1,6 @@
 package blocksmith.ui.editor.keyboard;
 
-import blocksmith.ui.workspace.FxWorkspaceRegistry;
+import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.C;
 import static javafx.scene.input.KeyCode.DELETE;
@@ -11,9 +11,9 @@ import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.V;
 import javafx.scene.input.KeyEvent;
 import blocksmith.ui.UiApp;
-import blocksmith.ui.command.CommandDispatcher;
+import blocksmith.app.workspace.CommandDispatcher;
 import blocksmith.ui.utils.EventUtils;
-import blocksmith.ui.command.Command;
+import blocksmith.app.workspace.Command;
 import blocksmith.ui.command.AppCommandFactory;
 
 /**

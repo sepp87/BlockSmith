@@ -1,9 +1,9 @@
 package blocksmith.ui.command.workspace;
 
 import blocksmith.ui.Config;
-import blocksmith.ui.command.Command;
-import blocksmith.ui.workspace.WorkspaceSession;
-import blocksmith.ui.command.WorkspaceCommand;
+import blocksmith.app.workspace.Command;
+import blocksmith.app.workspace.WorkspaceSession;
+import blocksmith.app.workspace.WorkspaceCommand;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

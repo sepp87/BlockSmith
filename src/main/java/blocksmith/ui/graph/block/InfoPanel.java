@@ -21,7 +21,7 @@ import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import blocksmith.ui.icons.FontAwesomeSolid;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import blocksmith.ui.workspace.WorkspaceView;
 import blocksmith.infra.blockloader.annotations.Block;
 

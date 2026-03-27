@@ -17,9 +17,9 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
-import blocksmith.ui.utils.FileUtils;
-import blocksmith.util.OperatingSystem;
-import blocksmith.util.SystemUtils;
+import blocksmith.infra.utils.FileUtils;
+import blocksmith.utils.OperatingSystem;
+import blocksmith.utils.SystemUtils;
 import java.util.HashMap;
 import java.util.Map;
 

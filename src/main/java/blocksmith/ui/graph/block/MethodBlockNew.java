@@ -14,7 +14,7 @@ import blocksmith.ui.UiApp;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.display.ValueInspector;
 import blocksmith.ui.display.ValueDisplay;
-import blocksmith.ui.icons.FontAwesomeSolid;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.Label;
@@ -129,7 +129,7 @@ public class MethodBlockNew extends BlockModel {
         } else {
             spinner = new ProgressIndicator();
 
-            if (!def.icon().equals(FontAwesomeSolid.NULL)) {
+            if (!def.icon().equals(FontAwesomeSolid.NOT_SPECIFIED)) {
                 label = BlockView.getAwesomeIcon(def.icon());
 
             } else if (!def.name().equals("")) {
@@ -157,13 +157,13 @@ public class MethodBlockNew extends BlockModel {
         super.onIncomingConnectionRemoved(data);
     }
 
-    @Override
-    public void processSafely() {
-    }
+//    @Override
+//    public void processSafely() {
+//    }
 
-    @Override
-    public void process() {
-    }
+//    @Override
+//    public void process() {
+//    }
 
 
     public void updateFrom(ExecutionState runtime) {

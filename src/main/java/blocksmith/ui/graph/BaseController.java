@@ -1,8 +1,8 @@
 package blocksmith.ui.graph;
 
-import blocksmith.ui.command.WorkspaceCommandBus;
-import blocksmith.ui.workspace.FxWorkspaceHandle;
-import blocksmith.ui.workspace.WorkspaceSession;
+import blocksmith.app.workspace.WorkspaceCommandBus;
+import blocksmith.ui.workspace.WorkspaceFxHandle;
+import blocksmith.app.workspace.WorkspaceSession;
 
 /**
  *

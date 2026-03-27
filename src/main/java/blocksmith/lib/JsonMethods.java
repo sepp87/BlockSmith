@@ -8,7 +8,7 @@ import com.google.gson.JsonPrimitive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import blocksmith.util.ParsingUtils;
+import blocksmith.utils.ParsingUtils;
 import blocksmith.infra.blockloader.annotations.Block;
 import com.google.gson.JsonArray;
 import java.util.regex.Pattern;
