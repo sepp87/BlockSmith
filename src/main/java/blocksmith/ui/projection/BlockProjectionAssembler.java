@@ -7,7 +7,6 @@ import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.ValueTypeResolver;
 import static blocksmith.domain.value.Port.Direction.INPUT;
 import blocksmith.exec.ExecutionState;
-import blocksmith.ui.UiApp;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.graph.port.PortModel;
@@ -39,9 +38,6 @@ public class BlockProjectionAssembler {
             updateBlock(blockFx, block, graph);
             updateInputControls(blockFx, block, graph);
             blockFx.updateFrom(runtime);
-            if (!UiApp.USE_EXEC_LAYER) {
-                blockFx.setActive(true);
-            }
 
             result.put(block.id(), blockFx);
         }

@@ -4,7 +4,6 @@ import java.io.File;
 import javafx.stage.FileChooser;
 import blocksmith.ui.UiApp;
 import blocksmith.ui.Config;
-import blocksmith.app.command.Command;
 import blocksmith.app.workspace.WorkspaceSession;
 import blocksmith.app.command.WorkspaceCommand;
 import java.util.logging.Level;

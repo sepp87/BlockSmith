@@ -1,5 +1,10 @@
 package blocksmith.ui.graph.block;
 
+import blocksmith.app.block.command.MoveBlocksCommand;
+import blocksmith.app.block.command.RenameBlockCommand;
+import blocksmith.app.block.command.ResizeBlockCommand;
+import blocksmith.app.block.command.UpdateParamValueCommand;
+import blocksmith.app.block.command.UpdateSelectionCommand;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.value.Port;
 import blocksmith.exec.BlockException;
@@ -87,7 +92,7 @@ public class BlockController extends BaseController {
         view.layoutYProperty().bindBidirectional(model.layoutYProperty());
         view.getCaptionLabel().textProperty().bindBidirectional(model.labelProperty());
         model.labelProperty().addListener((b, o, n) -> {
-            var command = commands.factory().createRenameBlockCommand(BlockId.from(model.getId()), n);
+            var command = new RenameBlockCommand(session, BlockId.from(model.getId()), n);
             commands.execute(command);
         });
 
@@ -111,7 +116,7 @@ public class BlockController extends BaseController {
                 var valueId = entry.getKey();
                 var control = entry.getValue();
                 control.setOnValueChangedByUser(value -> {
-                    var command = commands.factory().createUpdateParamValueCommand(BlockId.from(methodBlock.getId()), valueId, value);
+                    var command = new UpdateParamValueCommand(session, BlockId.from(methodBlock.getId()), valueId, value);
                     commands.execute(command);
                 });
 
@@ -213,7 +218,7 @@ public class BlockController extends BaseController {
             var isSelected = this.selected.get();
             if (!isSelected) {
                 var id = BlockId.from(model.getId());
-                var command = commands.factory().createUpdateSelectionCommand(id, false);
+                var command = new UpdateSelectionCommand(session, id, false);
                 commands.execute(command);
             }
         }
@@ -254,12 +259,12 @@ public class BlockController extends BaseController {
                 double dY = delta.getY() / session.viewport().zoomFactor();
                 delta = new Point2D(dX, dY);
 
-                var command = commands.factory().createMoveBlocksCommand(ids, delta.getX(), delta.getY());
+                var command = new MoveBlocksCommand(session, ids, delta.getX(), delta.getY());
                 commands.execute(command);
 
             } else {
                 var id = BlockId.from(model.getId());
-                var command = commands.factory().createUpdateSelectionCommand(id, EventUtils.isModifierDown(event));
+                var command = new UpdateSelectionCommand(session, id, EventUtils.isModifierDown(event));
                 commands.execute(command);
             }
         } finally {
@@ -342,7 +347,7 @@ public class BlockController extends BaseController {
             double newWidth = model.widthProperty().get();
             double newHeight = model.heightProperty().get();
             var id = BlockId.from(model.getId());
-            var command = commands.factory().createResizeBlockCommand(id, newWidth, newHeight);
+            var command = new ResizeBlockCommand(session, id, newWidth, newHeight);
             commands.execute(command);
         }
         event.consume();

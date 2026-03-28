@@ -1,5 +1,7 @@
-package blocksmith.ui;
+package blocksmith.ui.help;
 
+import blocksmith.ui.Config;
+import blocksmith.ui.UiApp;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Node;

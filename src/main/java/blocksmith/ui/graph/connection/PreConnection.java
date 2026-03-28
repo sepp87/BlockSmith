@@ -1,5 +1,6 @@
 package blocksmith.ui.graph.connection;
 
+import blocksmith.app.connection.command.AddConnectionCommand;
 import blocksmith.domain.graph.ConnectionPolicy;
 import blocksmith.domain.value.Port;
 import blocksmith.app.workspace.WorkspaceCommandBus;
@@ -96,7 +97,7 @@ public class PreConnection extends Line {
              * Where is multi connect?
              */
 
-            var command = commands.factory().createAddConnectionCommand(fromPort.toDomain(), toPort.toDomain());
+            var command = new AddConnectionCommand(session, fromPort.toDomain(), toPort.toDomain());
             commands.execute(command);
 
         }

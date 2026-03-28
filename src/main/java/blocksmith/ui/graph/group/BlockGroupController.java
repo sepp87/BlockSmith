@@ -1,5 +1,6 @@
 package blocksmith.ui.graph.group;
 
+import blocksmith.app.group.command.RemoveGroupCommand;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.group.GroupId;
 import java.util.Collection;
@@ -109,7 +110,7 @@ public class BlockGroupController extends BaseController {
 
     private void handleBinButtonClicked(ActionEvent event) {
         var id = GroupId.from(model.getId());
-        var command = commands.factory().createRemoveGroupCommand(id);
+        var command = new RemoveGroupCommand(session, id);
         commands.execute(command);
     }
 

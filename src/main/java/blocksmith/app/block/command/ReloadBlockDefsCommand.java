@@ -1,5 +1,6 @@
-package blocksmith.app.command;
+package blocksmith.app.block.command;
 
+import blocksmith.app.command.AppCommand;
 import blocksmith.app.command.AppCommand;
 
 /**

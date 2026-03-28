@@ -57,7 +57,7 @@ public class MenuBarView extends MenuBar {
         viewMenu.getItems().addAll(zoomToFit, zoomIn, zoomOut);
 
         Menu extrasMenu = new Menu("Extras");
-        MenuItem reloadPlugins = new MenuItem("Reload plugins", RELOAD_PLUGINS.name());
+        MenuItem reloadPlugins = new MenuItem("Reload plugins", RELOAD_BLOCK_DEFS.name());
         MenuItem logErrors = new MenuItem("Log errors", "LOG_ERRORS");
         MenuItem help = new MenuItem("Help", HELP.name());
         this.styleMenu = new Menu("Style");

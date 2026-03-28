@@ -1,5 +1,6 @@
 package blocksmith.ui.graph.connection;
 
+import blocksmith.app.connection.command.RemoveConnectionCommand;
 import blocksmith.domain.value.Port;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Point2D;
@@ -129,7 +130,7 @@ public class ConnectionController extends BaseController {
             return;
         }
 
-        var command = commands.factory().createRemoveConnectionCommand(model.toDomain());
+        var command = new RemoveConnectionCommand(session, model.toDomain());
         commands.execute(command);
 
     }

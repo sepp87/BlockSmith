@@ -2,7 +2,6 @@ package blocksmith.app.workspace;
 
 import blocksmith.app.command.WorkspaceCommand;
 import blocksmith.app.command.Command;
-import blocksmith.app.workspace.WorkspaceSession;
 import java.util.logging.Logger;
 
 /**
@@ -13,12 +12,8 @@ public class WorkspaceCommandBus {
 
     private final static Logger LOGGER = Logger.getLogger(WorkspaceCommandBus.class.getName());
 
-    private final WorkspaceCommandFactory factory;
-    private final WorkspaceSession session;
+    public WorkspaceCommandBus() {
 
-    public WorkspaceCommandBus(WorkspaceCommandFactory factory, WorkspaceSession session) {
-        this.factory = factory;
-        this.session = session;
     }
 
     public void execute(Command command) {
@@ -29,8 +24,5 @@ public class WorkspaceCommandBus {
         }
     }
 
-    public WorkspaceCommandFactory factory() {
-        return factory;
-    }
 
 }

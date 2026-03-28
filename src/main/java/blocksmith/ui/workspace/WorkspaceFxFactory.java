@@ -10,7 +10,6 @@ import blocksmith.ui.align.AlignmentService;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.WorkspaceSessionFactory;
 import blocksmith.app.workspace.WorkspaceCommandBus;
-import blocksmith.app.workspace.WorkspaceCommandFactory;
 import java.nio.file.Path;
 import javafx.application.Platform;
 
@@ -48,8 +47,7 @@ public class WorkspaceFxFactory implements WorkspaceFactory {
         var runtime = session.runtimeState();
         var mapper = new GraphProjectionAssembler(blockFactory, runtime);
         var projection = new GraphProjection(mapper, session.graphSnapshot());
-        var commandFactory = new WorkspaceCommandFactory(session);
-        var commandBus = new WorkspaceCommandBus(commandFactory, session);
+        var commandBus = new WorkspaceCommandBus();
         var state = new WorkspaceState();
         var renderer = new WorkspaceController(commandBus, session, state, view, projection);
         var zoom = new ZoomService(session, session.selection(), view, projection);

@@ -1,13 +1,13 @@
 package blocksmith.ui.editor.navigation.command;
 
-import blocksmith.app.command.Command;
+import blocksmith.app.command.WorkspaceCommand;
 import blocksmith.ui.editor.navigation.ZoomService;
 
 /**
  *
  * @author JoostMeulenkamp
  */
-public class ZoomToFitCommand implements Command {
+public class ZoomToFitCommand implements WorkspaceCommand {
 
     private final ZoomService zoomService;
 

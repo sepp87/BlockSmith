@@ -7,10 +7,9 @@ import javafx.scene.input.MouseEvent;
 import blocksmith.app.command.CommandDispatcher;
 import blocksmith.ui.editor.EditorEventRouter;
 import blocksmith.app.command.Command;
-import blocksmith.ui.command.AppFxCommandFactory;
+import blocksmith.ui.editor.selection.command.RectangleSelectCommand;
 import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import static blocksmith.ui.utils.EditorUtils.onFreeSpace;
-import javafx.geometry.BoundingBox;
 
 /**
  *
@@ -18,19 +17,22 @@ import javafx.geometry.BoundingBox;
  */
 public class SelectionRectangleController {
 
-    private final CommandDispatcher actionManager;
-    private final AppFxCommandFactory commandFactory;
+    private final CommandDispatcher commandDispatcher;
     private final EditorEventRouter eventRouter;
-    private final WorkspaceFxRegistry context;
+    private final WorkspaceFxRegistry workspaces;
     private final SelectionRectangleView view;
 
     private Point2D startPoint;
 
-    public SelectionRectangleController(CommandDispatcher actionManager, AppFxCommandFactory commandFactory, EditorEventRouter eventRouter, WorkspaceFxRegistry context, SelectionRectangleView selectionRectangleView) {
-        this.actionManager = actionManager;
-        this.commandFactory = commandFactory;
+    public SelectionRectangleController(
+            CommandDispatcher commandDispatcher,
+            EditorEventRouter eventRouter,
+            WorkspaceFxRegistry workspaces,
+            SelectionRectangleView selectionRectangleView) {
+
+        this.commandDispatcher = commandDispatcher;
         this.eventRouter = eventRouter;
-        this.context = context;
+        this.workspaces = workspaces;
         this.view = selectionRectangleView;
 
         eventRouter.addEventListener(MouseEvent.MOUSE_PRESSED, this::handleSelectionStarted);
@@ -39,7 +41,7 @@ public class SelectionRectangleController {
     }
 
     public void handleSelectionStarted(MouseEvent event) {
-        var workspace = context.active();
+        var workspace = workspaces.active();
         boolean onFreeSpace = onFreeSpace(event);
         boolean isPrimary = event.getButton() == MouseButton.PRIMARY;
         boolean isIdle = workspace.state().isIdle();
@@ -55,7 +57,7 @@ public class SelectionRectangleController {
     }
 
     public void handleSelectionUpdated(MouseEvent event) {
-        var workspace = context.active();
+        var workspace = workspaces.active();
         boolean isPrimary = event.getButton() == MouseButton.PRIMARY;
         boolean isSelecting = workspace.state().isSelecting();
 
@@ -68,7 +70,7 @@ public class SelectionRectangleController {
     }
 
     public void handleSelectionFinished(MouseEvent event) {
-        var workspace = context.active();
+        var workspace = workspaces.active();
 
         // do NOT reset startPoint to null, because this will throw null pointer exceptions, when accidentally clicking another button when selecting
         if (event.getButton() == MouseButton.PRIMARY) {
@@ -81,8 +83,7 @@ public class SelectionRectangleController {
                     removeSelectionRectangle();
                 } else {
                     // Deselect all blocks if no selection rectangle was active
-                    var command = commandFactory.createCommand(Command.Id.DESELECT_ALL_BLOCKS);
-                    actionManager.executeCommand(command);
+                    commandDispatcher.execute(Command.Id.DESELECT_ALL_BLOCKS);
                 }
             }
         }
@@ -117,10 +118,11 @@ public class SelectionRectangleController {
     private void updateSelection() {
 
         var rectOnScene = view.getParent().localToScene(view.getBoundsInParent());
-        var rectOnWorkspace = context.active().view().sceneToLocal(rectOnScene);
+        var rectOnWorkspace = workspaces.active().view().sceneToLocal(rectOnScene);
 
-        var command = commandFactory.createRectangleSelectCommand(rectOnWorkspace);
-        actionManager.executeCommand(command);
+        var selection = workspaces.active().selection();
+        var command = new RectangleSelectCommand(selection, rectOnWorkspace);
+        commandDispatcher.execute(command);
     }
 
     private void removeSelectionRectangle() {

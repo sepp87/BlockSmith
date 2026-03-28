@@ -83,14 +83,6 @@ public class MethodBlockNew extends BlockModel {
         var inspector = new ValueInspector(ref, display);
         valueInspectors.add(inspector);
         resizableProperty().set(true);
-
-        if (!UiApp.USE_EXEC_LAYER) {
-            var ports = ref.direction() == INPUT ? getInputPorts() : getOutputPorts();
-            ports.stream()
-                    .filter(p -> p.valueId().equals(ref.valueId()))
-                    .findFirst()
-                    .ifPresent(m -> m.dataProperty().addListener((b, o, n) -> inspector.setData(n)));
-        }
     }
 
     public BlockDef getBlockDef() {
@@ -157,55 +149,44 @@ public class MethodBlockNew extends BlockModel {
         super.onIncomingConnectionRemoved(data);
     }
 
-//    @Override
-//    public void processSafely() {
-//    }
-
-//    @Override
-//    public void process() {
-//    }
-
-
     public void updateFrom(ExecutionState runtime) {
-        if (UiApp.USE_EXEC_LAYER) {
-            var block = BlockId.from(getId());
-            var status = runtime.statusOf(block);
-            switch (status) {
-                case RUNNING: // set spinner
-                    if (spinner != null && label.getWidth() != 0.0) {
-                        spinner.setMinWidth(label.getWidth());
-                        container.getChildren().clear();
-                        container.getChildren().add(spinner);
-                    }
-                    break;
-                default: // remove spinner
-                    if (spinner != null && label.getWidth() != 0.0) {
-                        container.getChildren().clear();
-                        container.getChildren().add(label);
-                    }
-                    break;
-            }
+        var block = BlockId.from(getId());
+        var status = runtime.statusOf(block);
+        switch (status) {
+            case RUNNING: // set spinner
+                if (spinner != null && label.getWidth() != 0.0) {
+                    spinner.setMinWidth(label.getWidth());
+                    container.getChildren().clear();
+                    container.getChildren().add(spinner);
+                }
+                break;
+            default: // remove spinner
+                if (spinner != null && label.getWidth() != 0.0) {
+                    container.getChildren().clear();
+                    container.getChildren().add(label);
+                }
+                break;
+        }
 
-            var values = runtime.valuesOf(block);
-            for (var val : values.entrySet()) {
-                var ref = val.getKey();
+        var values = runtime.valuesOf(block);
+        for (var val : values.entrySet()) {
+            var ref = val.getKey();
 //                System.out.println("METHODBLOCK " + GraphLogFmt.port(ref) + " = " + String.valueOf(val.getValue()));
-            }
-            
-            var errors = runtime.exceptionsOf(block);
+        }
 
-            for (var inspector : valueInspectors) {
-                var value = values.get(inspector.ref());
-                inspector.setData(value);
-            }
+        var errors = runtime.exceptionsOf(block);
 
-            int size = exceptions.size();
-            exceptions.addAll(errors);
-            exceptions.remove(0, size);
+        for (var inspector : valueInspectors) {
+            var value = values.get(inspector.ref());
+            inspector.setData(value);
+        }
+
+        int size = exceptions.size();
+        exceptions.addAll(errors);
+        exceptions.remove(0, size);
 //            if (!inputPorts.isEmpty() && inputPorts.stream().noneMatch(PortModel::isActive)) {
 //                exceptions.clear();
 //            }
-        }
 
     }
 

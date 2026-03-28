@@ -2,37 +2,34 @@ package blocksmith.app.command;
 
 import blocksmith.app.outbound.WorkspaceRegistry;
 import blocksmith.app.command.WorkspaceCommand;
-import blocksmith.ui.command.AppFxCommandFactory;
 import blocksmith.app.command.Command;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Joost
  */
 public class CommandDispatcher {
+    
+    private static final Logger LOGGER = Logger.getLogger(CommandDispatcher.class.getName());
 
     private final WorkspaceRegistry workspaces;
-    private final AppFxCommandFactory commandFactory;
+    private final CommandRegistry commands;
 
-    public CommandDispatcher(WorkspaceRegistry workspaces, AppFxCommandFactory commandFactory) {
+    public CommandDispatcher(WorkspaceRegistry workspaces, CommandRegistry commands) {
         this.workspaces = workspaces;
-        this.commandFactory = commandFactory;
+        this.commands = commands;
     }
 
-    public AppFxCommandFactory getCommandFactory() {
-        return commandFactory;
+    public void execute(Enum<?> id) {
+        commands.create(id).ifPresentOrElse(
+                command -> execute(command),
+                () -> LOGGER.severe("Command NOT found: " + id)
+        );
+
     }
 
-    public void executeCommand(Command.Id name) {
-        Command command = commandFactory.createCommand(name);
-        if (command != null) {
-            executeCommand(command);
-        } else {
-            System.out.println("Command not found: " + name);
-        }
-    }
-
-    public void executeCommand(Command command) {
+    public void execute(Command command) {
 
         if (command instanceof WorkspaceCommand) {
             var workspace = workspaces.active();

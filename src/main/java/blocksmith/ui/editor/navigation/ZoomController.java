@@ -13,7 +13,8 @@ import blocksmith.ui.utils.NodeHierarchyUtils;
 import blocksmith.app.command.CommandDispatcher;
 import blocksmith.ui.editor.EditorEventRouter;
 import blocksmith.app.command.Command;
-import blocksmith.ui.command.AppFxCommandFactory;
+import blocksmith.app.workspace.ViewportState;
+import blocksmith.ui.editor.navigation.command.ZoomCommand;
 import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import blocksmith.utils.OperatingSystem;
 import javafx.beans.property.DoubleProperty;
@@ -23,8 +24,7 @@ import javafx.beans.property.DoubleProperty;
  */
 public class ZoomController {
 
-    private final CommandDispatcher actionManager;
-    private final AppFxCommandFactory commandFactory;
+    private final CommandDispatcher commandDispatcher;
     private final EditorEventRouter eventRouter;
     private final WorkspaceFxRegistry workspaces;
     private final ZoomMenuView view;
@@ -34,14 +34,12 @@ public class ZoomController {
     private final long zoomThrottleInterval = 50;  // Throttle time in milliseconds (tune for macOS)
 
     public ZoomController(
-            CommandDispatcher actionManager, 
-            AppFxCommandFactory commandFactory,
+            CommandDispatcher commandDispatcher,
             EditorEventRouter eventRouter,
             WorkspaceFxRegistry workspaces,
             ZoomMenuView zoomView) {
 
-        this.actionManager = actionManager;
-        this.commandFactory = commandFactory;
+        this.commandDispatcher = commandDispatcher;
         this.eventRouter = eventRouter;
         this.workspaces = workspaces;
         this.view = zoomView;
@@ -60,19 +58,18 @@ public class ZoomController {
     }
 
     private void handleZoomIn(ActionEvent event) {
-        var command = commandFactory.createCommand(Command.Id.ZOOM_IN);
-        actionManager.executeCommand(command);
+        commandDispatcher.execute(Command.Id.ZOOM_IN);
     }
 
     private void handleZoomOut(ActionEvent event) {
-        var command = commandFactory.createCommand(Command.Id.ZOOM_OUT);
-        actionManager.executeCommand(command);
+        commandDispatcher.execute(Command.Id.ZOOM_OUT);
     }
 
     private void handleZoomReset(MouseEvent event) {
         // Zoom is not from scrolling; no pivot point needed, since scene center is
-        var command = commandFactory.createZoomCommand(1.0, null);
-        actionManager.executeCommand(command);
+        var zoomService = workspaces.active().zoom();
+        var command = new ZoomCommand(zoomService, ViewportState.DEFAULT_ZOOM_FACTOR, null);
+        commandDispatcher.execute(command);
     }
 
     public void handleScrollStarted(ScrollEvent event) {
@@ -119,8 +116,10 @@ public class ZoomController {
             Point2D pivotPoint = new Point2D(event.getSceneX(), event.getSceneY());
 
             // Zoom from scrolling; keep zoom centered around mouse position
-            var command = commandFactory.createZoomCommand(newScale, pivotPoint);
-            actionManager.executeCommand(command);
+            var zoomService = workspace.zoom();
+            var command = new ZoomCommand(zoomService, newScale, pivotPoint);
+
+            commandDispatcher.execute(command);
         }
     }
 

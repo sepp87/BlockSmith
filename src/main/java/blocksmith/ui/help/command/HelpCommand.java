@@ -1,6 +1,6 @@
-package blocksmith.ui.command.app;
+package blocksmith.ui.help.command;
 
-import blocksmith.ui.HelpDialog;
+import blocksmith.ui.help.HelpDialog;
 import blocksmith.app.command.AppCommand;
 
 /**

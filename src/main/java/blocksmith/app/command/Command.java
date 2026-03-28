@@ -1,6 +1,5 @@
 package blocksmith.app.command;
 
-import blocksmith.ui.workspace.WorkspaceFxHandle;
 
 /**
  *
@@ -31,7 +30,7 @@ public interface Command {
         ZOOM_TO_FIT,
         ZOOM_IN,
         ZOOM_OUT,
-        RELOAD_PLUGINS,
+        RELOAD_BLOCK_DEFS,
         HELP
     }
 }

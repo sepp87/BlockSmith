@@ -17,14 +17,21 @@ import blocksmith.app.GraphEditorFactory;
 import blocksmith.app.block.CopyBlocks;
 import blocksmith.app.block.PasteBlocks;
 import blocksmith.app.clipboard.CopyMemory;
+import blocksmith.app.command.CommandRegistry;
+import blocksmith.app.command.CoreCommands;
 import blocksmith.app.connection.RemoveConnection;
 import blocksmith.app.outbound.GraphRepo;
+import blocksmith.app.outbound.WorkspaceFactory;
+import blocksmith.app.outbound.WorkspaceHandle;
+import blocksmith.app.outbound.WorkspaceRegistry;
+import blocksmith.app.workspace.WorkspaceLifecycle;
 import blocksmith.domain.block.BlockFactory;
 import blocksmith.exec.ExecutionSessionFactory;
 import blocksmith.xml.v2.ObjectFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
@@ -43,6 +50,7 @@ public class App {
     private final GraphRepo graphRepo;
     private final GraphEditorFactory graphEditorFactory;
     private final ExecutionSessionFactory executionSessionFactory;
+    private final CommandRegistry commandRegistry;
 
     public App() throws IOException, JAXBException {
         configureLogging();
@@ -76,8 +84,11 @@ public class App {
                 addGroup, 
                 copyBlocks, pasteBlocks
         );
-
+        
         this.executionSessionFactory = new ExecutionSessionFactory(blockDefLibrary, blockFuncLibrary);
+        
+        this.commandRegistry = new CommandRegistry();
+
     }
 
     private void configureLogging() {
@@ -125,6 +136,10 @@ public class App {
     
     public ExecutionSessionFactory getExecutionSessionFactory() {
         return executionSessionFactory;
+    }
+    
+    public CommandRegistry getCommandRegistry () {
+        return commandRegistry;
     }
 
 }

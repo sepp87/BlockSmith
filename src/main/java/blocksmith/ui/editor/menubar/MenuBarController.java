@@ -72,7 +72,7 @@ public class MenuBarController {
 
     private void handleMenuBarItemClicked(ActionEvent event) {
         if (event.getSource() instanceof MenuItem menuItem) {
-            actionManager.executeCommand(Command.Id.valueOf(menuItem.getId()));
+            actionManager.execute(Command.Id.valueOf(menuItem.getId()));
         }
     }
 

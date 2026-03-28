@@ -1,5 +1,6 @@
 package blocksmith.ui;
 
+import blocksmith.ui.help.HelpDialog;
 import blocksmith.App;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.SaveDocument;
@@ -27,7 +28,8 @@ import blocksmith.ui.editor.navigation.ZoomMenuView;
 import blocksmith.ui.editor.blocksearch.BlockSearchController;
 import blocksmith.ui.editor.blocksearch.BlockSearchView;
 import blocksmith.app.command.CommandDispatcher;
-import blocksmith.ui.command.AppFxCommandFactory;
+import blocksmith.app.command.CoreCommands;
+import blocksmith.ui.command.UiCommands;
 import blocksmith.ui.editor.tab.TabContent;
 import blocksmith.ui.editor.tab.TabManagerView;
 import blocksmith.ui.workspace.WorkspaceFxFactory;
@@ -60,13 +62,18 @@ public class UiApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        this.stage = stage;
+        stage.setTitle("BlockSmith: Blocks to Script");
+
 //        var path = new File("btsxml/days-between-v2.btsxml").toPath();
         var path = new File("btsxml/aslist-v2.btsxml").toPath();
 
+        // block factories
         var blockDefLibrary = app.getBlockDefLibrary();
         var blockFuncLibrary = app.getBlockFuncLibrary();
         var blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
 
+        // core (graph, execution, workspace) 
         var graphRepo = app.getGraphRepo();
         var graphEditorFactory = app.getGraphEditorFactory();
         var executionSessionFactory = app.getExecutionSessionFactory();
@@ -78,10 +85,7 @@ public class UiApp extends Application {
                         executionSessionFactory,
                         saveDocument);
 
-        this.stage = stage;
-        stage.setTitle("BlockSmith: Blocks to Script");
-
-        // Initialize views
+        // views
         var blockSearchView = new BlockSearchView();
         var selectionRectangleView = new SelectionRectangleView();
         var zoomView = new ZoomMenuView();
@@ -99,27 +103,33 @@ public class UiApp extends Application {
                 blockSearchView
         );
 
+        // workspace
         var workspaceRegistry = new WorkspaceFxRegistry(editorView);
         var workspaceFactory = new WorkspaceFxFactory(workspaceSessionFactory, blockModelFactory);
         var workspaceLifecycle = new WorkspaceLifecycle(workspaceFactory, workspaceRegistry);
         var workspaceContext = workspaceFactory.openDocument(path);
 
-        var commandFactory = new AppFxCommandFactory(workspaceLifecycle, workspaceRegistry, graphRepo);
-        var commandDispatcher = new CommandDispatcher(workspaceRegistry, commandFactory);
+        // commands
+        var commandRegistry = app.getCommandRegistry();
+        var commandDispatcher = new CommandDispatcher(workspaceRegistry, commandRegistry);
+        var coreCommands = new CoreCommands(workspaceLifecycle, workspaceRegistry);
+        var uiCommands = new UiCommands(workspaceLifecycle, workspaceRegistry);
+        coreCommands.registerTo(commandRegistry);
+        uiCommands.registerTo(commandRegistry);
 
-        // initialize EventRouter for Context
+        // editor event router
         EditorEventRouter eventRouter = new EditorEventRouter();
 
-        // Initialize controllers
-        var zoomController = new ZoomController(commandDispatcher, commandFactory, eventRouter, workspaceRegistry, zoomView);
-        var blockSearchController = new BlockSearchController(commandDispatcher, commandFactory, eventRouter, workspaceRegistry, blockSearchView, blockDefLibrary);
-        var selectionRectangleController = new SelectionRectangleController(commandDispatcher, commandFactory, eventRouter, workspaceRegistry, selectionRectangleView);
+        // controllers
+        var zoomController = new ZoomController(commandDispatcher, eventRouter, workspaceRegistry, zoomView);
+        var blockSearchController = new BlockSearchController(commandDispatcher, eventRouter, workspaceRegistry, blockSearchView, blockDefLibrary);
+        var selectionRectangleController = new SelectionRectangleController(commandDispatcher, eventRouter, workspaceRegistry, selectionRectangleView);
         var panController = new PanController(eventRouter, workspaceRegistry);
-        var radialMenuController = new RadialMenuController(commandDispatcher, commandFactory, eventRouter, workspaceRegistry, radialMenuView);
+        var radialMenuController = new RadialMenuController(commandDispatcher, eventRouter, workspaceRegistry, radialMenuView);
         var menuBarController = new MenuBarController(commandDispatcher, workspaceRegistry, menuBarView);
         var editorController = new EditorController(eventRouter, editorView);
 
-        // initialize ActionManager for Context
+        // active workspace listener
         workspaceRegistry.setOnActiveWorkspaceChanged(activeWorkspaceContext -> {
             tabManagerView.closeAll();
             zoomController.bindZoomLabel(activeWorkspaceContext.viewport().zoomFactorProperty());
@@ -148,7 +158,7 @@ public class UiApp extends Application {
             System.exit(0);  // Force JVM shutdown, triggering the shutdown hook
         });
 
-        var keyboardController = new KeyboardController(commandDispatcher, commandFactory);
+        var keyboardController = new KeyboardController(commandDispatcher);
         scene.setOnKeyPressed(event -> keyboardController.handleShortcutTriggered(event));
 
         if (Config.showHelpOnStartup()) {

@@ -1,7 +1,6 @@
 package blocksmith.app.workspace.command;
 
 import blocksmith.ui.Config;
-import blocksmith.app.command.Command;
 import blocksmith.app.workspace.WorkspaceSession;
 import blocksmith.app.command.WorkspaceCommand;
 import blocksmith.ui.workspace.command.SaveAsFileCommand;

@@ -1,7 +1,7 @@
 package blocksmith.ui.editor.blocksearch;
 
 import blocksmith.app.block.BlockDefLibrary;
-import blocksmith.Launcher;
+import blocksmith.app.block.command.AddBlockCommand;
 import javafx.beans.value.ChangeListener;
 import static javafx.collections.FXCollections.observableArrayList;
 import javafx.collections.ObservableList;
@@ -14,7 +14,6 @@ import javafx.scene.input.MouseEvent;
 import blocksmith.ui.utils.ListViewUtils;
 import blocksmith.ui.utils.NodeHierarchyUtils;
 import blocksmith.app.command.CommandDispatcher;
-import blocksmith.ui.command.AppFxCommandFactory;
 import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import blocksmith.ui.editor.EditorEventRouter;
 import static blocksmith.ui.utils.EditorUtils.onFreeSpace;
@@ -32,7 +31,6 @@ public class BlockSearchController {
     private static final int ROWS_VISIBLE = 17;
 
     private final CommandDispatcher actionManager;
-    private final AppFxCommandFactory commandFactory;
     private final EditorEventRouter eventRouter;
     private final WorkspaceFxRegistry context;
     private final BlockSearchView view;
@@ -45,10 +43,14 @@ public class BlockSearchController {
 
     private final ChangeListener<Boolean> searchFieldFocusChangedListener;
 
-    public BlockSearchController(CommandDispatcher actionManager, AppFxCommandFactory commandFactory, EditorEventRouter eventRouter, WorkspaceFxRegistry context, BlockSearchView blockSearchView, BlockDefLibrary blockDefLibrary) {
+    public BlockSearchController(
+            CommandDispatcher actionManager,
+            EditorEventRouter eventRouter,
+            WorkspaceFxRegistry context,
+            BlockSearchView blockSearchView,
+            BlockDefLibrary blockDefLibrary) {
+        
         this.actionManager = actionManager;
-        this.commandFactory = commandFactory;
-
         this.eventRouter = eventRouter;
         this.context = context;
 
@@ -152,10 +154,12 @@ public class BlockSearchController {
             return;
         }
 
-//        System.out.println("Create block " + blockType);
         var location = context.sceneToWorkspace(creationPoint);
-        var command = commandFactory.createAddBlockCommand(blockType, location.getX(), location.getY());
-        actionManager.executeCommand(command);
+        var session = this.context.active().session();
+
+        var command = new AddBlockCommand(session, blockType, location.getX(), location.getY());
+        actionManager.execute(command);
+
         hideView();
     }
 

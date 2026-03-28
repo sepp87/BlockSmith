@@ -1,6 +1,5 @@
 package blocksmith.ui.editor.keyboard;
 
-import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.C;
 import static javafx.scene.input.KeyCode.DELETE;
@@ -14,7 +13,7 @@ import blocksmith.ui.UiApp;
 import blocksmith.app.command.CommandDispatcher;
 import blocksmith.ui.utils.EventUtils;
 import blocksmith.app.command.Command;
-import blocksmith.ui.command.AppFxCommandFactory;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,98 +21,94 @@ import blocksmith.ui.command.AppFxCommandFactory;
  */
 public class KeyboardController {
 
-    private final CommandDispatcher actionManager;
-    private final AppFxCommandFactory commandFactory;
+    private static final Logger LOGGER = Logger.getLogger(KeyboardController.class.getName());
 
-    public KeyboardController(CommandDispatcher actionManager, AppFxCommandFactory commandFactory) {
-        this.actionManager = actionManager;
-        this.commandFactory = commandFactory;
+    private final CommandDispatcher commandDispatcher;
+
+    public KeyboardController(CommandDispatcher commandDispatcher) {
+        this.commandDispatcher = commandDispatcher;
     }
 
     public void handleShortcutTriggered(KeyEvent event) {
 
-        if (UiApp.LOG_METHOD_CALLS) {
-            System.out.println("KeyboardController.handleShortcutTriggered()");
-        }
-        Command command = null;
-        boolean isModifierDown = EventUtils.isModifierDown(event);
+
+        var isModifierDown = EventUtils.isModifierDown(event);
+        
+        var withModifier = isModifierDown ? ", with modifier key down" : "";
+        LOGGER.fine("Key pressed: " + event.getCode() + withModifier);
 
         switch (event.getCode()) {
+
             case BACK_SPACE:
             case DELETE:
-                command = commandFactory.createCommand(Command.Id.REMOVE_BLOCKS);
+                commandDispatcher.execute(Command.Id.REMOVE_BLOCKS);
 
                 break;
             case C:
                 if (isModifierDown) {
-                    command = commandFactory.createCommand(Command.Id.COPY_BLOCKS);
+                    commandDispatcher.execute(Command.Id.COPY_BLOCKS);
                 }
                 break;
             case V:
                 if (isModifierDown) {
-                    command = commandFactory.createCommand(Command.Id.PASTE_BLOCKS);
+                    commandDispatcher.execute(Command.Id.PASTE_BLOCKS);
                 }
                 break;
             case G:
                 if (isModifierDown) {
-                    command = commandFactory.createCommand(Command.Id.ADD_GROUP);
+                    commandDispatcher.execute(Command.Id.ADD_GROUP);
                 }
                 break;
             case N:
                 if (isModifierDown) {
-                    command = commandFactory.createCommand(Command.Id.NEW_FILE);
+                    commandDispatcher.execute(Command.Id.NEW_FILE);
                 }
                 break;
             case S:
                 if (isModifierDown) {
                     if (event.isShiftDown()) {
-                        command = commandFactory.createCommand(Command.Id.SAVE_AS_FILE);
+                        commandDispatcher.execute(Command.Id.SAVE_AS_FILE);
 
                     } else {
-                        command = commandFactory.createCommand(Command.Id.SAVE_FILE);
+                        commandDispatcher.execute(Command.Id.SAVE_FILE);
                     }
                 }
                 break;
             case O:
                 if (isModifierDown) {
-                    command = commandFactory.createCommand(Command.Id.OPEN_FILE);
+                    commandDispatcher.execute(Command.Id.OPEN_FILE);
                 }
                 break;
             case A:
                 if (isModifierDown) {
-                    command = commandFactory.createCommand(Command.Id.SELECT_ALL_BLOCKS);
+                    commandDispatcher.execute(Command.Id.SELECT_ALL_BLOCKS);
                 }
                 break;
             case PLUS:
                 if (isModifierDown) {
-                    command = commandFactory.createCommand(Command.Id.ZOOM_IN);
+                    commandDispatcher.execute(Command.Id.ZOOM_IN);
 
                 }
                 break;
             case MINUS:
                 if (isModifierDown) {
-                    command = commandFactory.createCommand(Command.Id.ZOOM_OUT);
+                    commandDispatcher.execute(Command.Id.ZOOM_OUT);
                 }
                 break;
             case SPACE:
-                command = commandFactory.createCommand(Command.Id.ZOOM_TO_FIT);
+                commandDispatcher.execute(Command.Id.ZOOM_TO_FIT);
                 break;
             case Z:
                 if (isModifierDown) {
-                    actionManager.undo();
-//                    session.undo();
+                    commandDispatcher.undo();
                 }
                 break;
             case Y:
                 if (isModifierDown) {
-                    actionManager.redo();
-//                    session.redo();
+                    commandDispatcher.redo();
                 }
                 break;
 
-        }
-        if (command != null) {
-            actionManager.executeCommand(command);
         }
     }
 }

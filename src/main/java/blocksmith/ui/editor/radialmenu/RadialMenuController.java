@@ -7,7 +7,6 @@ import javafx.scene.input.MouseEvent;
 import blocksmith.ui.utils.NodeHierarchyUtils;
 import blocksmith.ui.editor.EditorEventRouter;
 import blocksmith.app.command.Command;
-import blocksmith.ui.command.AppFxCommandFactory;
 import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import static blocksmith.ui.utils.EditorUtils.onFreeSpace;
 import static blocksmith.ui.utils.EventUtils.isRightClick;
@@ -18,15 +17,20 @@ import static blocksmith.ui.utils.EventUtils.isRightClick;
  */
 public class RadialMenuController {
 
-    private final CommandDispatcher actionManager;
+    private final CommandDispatcher commandDispatcher;
     private final EditorEventRouter eventRouter;
     private final WorkspaceFxRegistry context;
     private final RadialMenuView view;
 
     private final ChangeListener<Boolean> visibilityToggledHandler;
 
-    public RadialMenuController(CommandDispatcher actionManager, AppFxCommandFactory commandFactory, EditorEventRouter eventRouter, WorkspaceFxRegistry context, RadialMenuView radialMenuView) {
-        this.actionManager = actionManager;
+    public RadialMenuController(
+            CommandDispatcher commandDispatcher,
+            EditorEventRouter eventRouter,
+            WorkspaceFxRegistry context,
+            RadialMenuView radialMenuView) {
+
+        this.commandDispatcher = commandDispatcher;
         this.eventRouter = eventRouter;
         this.context = context;
         this.view = radialMenuView;
@@ -53,7 +57,7 @@ public class RadialMenuController {
 
     private void handleRadialMenuItemClicked(MouseEvent event) {
         if (event.getSource() instanceof RadialMenuItem menuItem) {
-            actionManager.executeCommand(Command.Id.valueOf(menuItem.getId()));
+            commandDispatcher.execute(Command.Id.valueOf(menuItem.getId()));
         }
         hideView();
     }

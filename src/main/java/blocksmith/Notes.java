@@ -9,7 +9,6 @@ public class Notes {
 }
 
 // Seperate UI from Core
-// Blocksmith.app.outbound.workspacehandle > workspacecommandbus, workspace session
 // blocksmith.ui.editormodel
 
 // IN PROGRESS
