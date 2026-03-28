@@ -2,7 +2,7 @@ package blocksmith.ui;
 
 import blocksmith.ui.help.HelpDialog;
 import blocksmith.App;
-import blocksmith.app.Config;
+import blocksmith.Config;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.SaveDocument;
 import blocksmith.app.workspace.WorkspaceLifecycle;
@@ -66,8 +66,8 @@ public class UiApp extends Application {
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
 
-//        var path = new File("btsxml/days-between-v2.btsxml").toPath();
-        var path = new File("btsxml/aslist-v2.btsxml").toPath();
+//        var path = new File("../sbtsxml/days-between-v2.btsxml").toPath();
+        var path = new File("../btsxml/aslist-v2.btsxml").toPath();
 
         // block factories
         var blockDefLibrary = app.getBlockDefLibrary();

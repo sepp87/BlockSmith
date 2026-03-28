@@ -1,6 +1,6 @@
 package blocksmith.app.workspace.command;
 
-import blocksmith.app.Config;
+import blocksmith.Config;
 import blocksmith.app.workspace.WorkspaceSession;
 import blocksmith.app.command.WorkspaceCommand;
 import java.util.logging.Level;

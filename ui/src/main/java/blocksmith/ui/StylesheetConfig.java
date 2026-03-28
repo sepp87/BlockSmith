@@ -23,12 +23,9 @@ import javafx.scene.Scene;
  */
 public class StylesheetConfig {
 
-    private static final Preferences PREFERENCES = Preferences.userNodeForPackage(blocksmith.app.Config.class);
-
+    private static final Preferences PREFERENCES = Preferences.userNodeForPackage(blocksmith.Config.class);
     private static final String PREF_STYLESHEET = "stylesheet";
-
     private static final String DEFAULT_STYLE = "Dark";
-
     public static final Map<String, String> STYLESHEETS = new HashMap<String, String>() {
         {
             put("Dark", "css/dark_mode.css");
@@ -70,7 +67,7 @@ public class StylesheetConfig {
     public static void setStylesheetToScene(Scene scene) {
         // Load the CSS from classpath using ClassLoader
         String stylesheetPath = getStylesheet(); // Adjust based on your structure
-        URL resourceUrl = blocksmith.app.Config.get().getClass().getClassLoader().getResource(stylesheetPath);
+        URL resourceUrl = StylesheetConfig.class.getClassLoader().getResource(stylesheetPath);
 
         if (resourceUrl != null) {
             scene.getStylesheets().clear();

@@ -12,7 +12,7 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Shape;
-import blocksmith.app.Config;
+import blocksmith.Config;
 import blocksmith.utils.icons.FontAwesomeSolid;
 
 /**

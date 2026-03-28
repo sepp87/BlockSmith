@@ -3,7 +3,7 @@ package blocksmith.ui.workspace.command;
 import java.io.File;
 import javafx.stage.FileChooser;
 import blocksmith.ui.UiApp;
-import blocksmith.app.Config;
+import blocksmith.Config;
 import blocksmith.app.workspace.WorkspaceSession;
 import blocksmith.app.command.WorkspaceCommand;
 import java.util.logging.Level;

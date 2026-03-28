@@ -3,7 +3,7 @@ package blocksmith.ui.utils;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import blocksmith.app.Config;
+import blocksmith.Config;
 
 /**
  *

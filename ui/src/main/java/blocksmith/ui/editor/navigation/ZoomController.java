@@ -8,7 +8,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import blocksmith.app.Config;
+import blocksmith.Config;
 import blocksmith.ui.utils.NodeHierarchyUtils;
 import blocksmith.app.command.CommandDispatcher;
 import blocksmith.ui.editor.EditorEventRouter;

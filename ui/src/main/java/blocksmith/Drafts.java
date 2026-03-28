@@ -1,35 +1,9 @@
 package blocksmith;
 
-import blocksmith.app.block.command.CopyBlocksCommand;
-import blocksmith.app.block.command.DeselectAllBlocksCommand;
-import blocksmith.app.block.command.PasteBlocksCommand;
-import blocksmith.app.block.command.RemoveBlocksCommand;
-import blocksmith.app.block.command.SelectAllBlocksCommand;
-import blocksmith.app.command.Command;
-import blocksmith.app.group.command.AddGroupCommand;
-import blocksmith.app.outbound.WorkspaceRegistry;
-import blocksmith.app.workspace.WorkspaceLifecycle;
-import blocksmith.app.workspace.WorkspaceSession;
-import blocksmith.app.workspace.command.NewFileCommand;
-import blocksmith.app.workspace.command.SaveFileCommand;
-import blocksmith.ui.align.command.AlignBottomCommand;
-import blocksmith.ui.align.command.AlignHorizontallyCommand;
-import blocksmith.ui.align.command.AlignLeftCommand;
-import blocksmith.ui.align.command.AlignRightCommand;
-import blocksmith.ui.align.command.AlignTopCommand;
-import blocksmith.ui.align.command.AlignVerticallyCommand;
-import blocksmith.ui.editor.navigation.command.ZoomToFitCommand;
-import blocksmith.ui.workspace.WorkspaceFxHandle;
-import blocksmith.ui.workspace.WorkspaceFxRegistry;
-import blocksmith.ui.workspace.command.OpenFileCommand;
-import blocksmith.ui.workspace.command.SaveAsFileCommand;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  *

@@ -5,7 +5,7 @@ import blocksmith.app.workspace.WorkspaceLifecycle;
 import java.io.File;
 import javafx.stage.FileChooser;
 import blocksmith.ui.UiApp;
-import blocksmith.app.Config;
+import blocksmith.Config;
 import blocksmith.app.command.AppCommand;
 import blocksmith.app.workspace.WorkspaceSession;
 

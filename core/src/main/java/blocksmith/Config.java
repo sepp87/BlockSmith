@@ -1,4 +1,4 @@
-package blocksmith.app;
+package blocksmith;
 
 import java.io.File;
 import java.util.Properties;

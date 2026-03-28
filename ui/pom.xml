@@ -118,7 +118,7 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <sourceFile>${basedir}/../target/BlockSmith-jar-with-dependencies.jar</sourceFile>
+                            <sourceFile>${basedir}/target/BlockSmith-jar-with-dependencies.jar</sourceFile>
                             <destinationFile>${basedir}/../build/BlockSmith.jar</destinationFile>
                         </configuration>
                     </execution>

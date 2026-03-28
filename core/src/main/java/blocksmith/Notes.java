@@ -9,7 +9,9 @@ public class Notes {
 }
 
 // Seperate UI from Core
-// blocksmith.ui.editormodel
+// - blocksmith.ui.editormodel
+// - cleanup resources folder for core and ui
+// - ensure appRootDir is correctly identified
 
 // IN PROGRESS
 // - IN PROGRESS sliders enable mix, max and step
