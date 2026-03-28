@@ -66,7 +66,7 @@ public class UiApp extends Application {
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
 
-//        var path = new File("../sbtsxml/days-between-v2.btsxml").toPath();
+//        var path = new File("../btsxml/days-between-v2.btsxml").toPath();
         var path = new File("../btsxml/aslist-v2.btsxml").toPath();
 
         // block factories
