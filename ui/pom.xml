@@ -112,7 +112,7 @@
                 <artifactId>copy-rename-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>rename-file</id>
+                        <id>fat-jar</id>
                         <phase>install</phase>
                         <goals>
                             <goal>copy</goal>
@@ -120,6 +120,17 @@
                         <configuration>
                             <sourceFile>${basedir}/target/BlockSmith-jar-with-dependencies.jar</sourceFile>
                             <destinationFile>${basedir}/../build/BlockSmith.jar</destinationFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>template-css</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${basedir}/target/classes/css/flat_white.css</sourceFile>
+                            <destinationFile>${basedir}/../build/config/style-template.css</destinationFile>
                         </configuration>
                     </execution>
                 </executions>

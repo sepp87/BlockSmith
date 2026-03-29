@@ -1,15 +1,12 @@
 package blocksmith.ui.control;
 
-import blocksmith.xml.v2.ValueXml;
 import blocksmith.ui.control.utils.NumberSliderExpander;
-import java.util.Optional;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
-import javax.xml.namespace.QName;
 
 /**
  *
@@ -38,7 +35,6 @@ public abstract class NumberSliderInput extends InputControl<String> {
         this.isInteger = isInteger;
         this.fxListener = (b, o, n) -> valueChangedByUser(isInteger ? String.valueOf(n.intValue()) : n.toString());
 
-//        slider = new Slider(0, 10, 0);
         slider = new Slider();
         slider.setBlockIncrement(this.step.getValue().doubleValue());
         slider.setSnapToTicks(true);
@@ -94,17 +90,6 @@ public abstract class NumberSliderInput extends InputControl<String> {
         slider.maxProperty().unbindBidirectional(max);
         slider.blockIncrementProperty().unbindBidirectional(step);
         expander.dispose();
-    }
-
-    @Override
-    public Optional<ValueXml> serialize() {
-        var value = new ValueXml();
-        value.setValue(getValue().toString());
-        value.getOtherAttributes().put(new QName("min"), min.getValue().toString());
-        value.getOtherAttributes().put(new QName("max"), max.getValue().toString());
-        value.getOtherAttributes().put(new QName("step"), step.getValue().toString());
-        return Optional.ofNullable(value);
-
     }
 
     public void setMin(Number newVal) {

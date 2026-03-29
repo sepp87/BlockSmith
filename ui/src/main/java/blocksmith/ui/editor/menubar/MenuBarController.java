@@ -7,7 +7,8 @@ import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import blocksmith.app.command.CommandDispatcher;
 import blocksmith.app.command.Command;
-import blocksmith.ui.StylesheetConfig;
+import blocksmith.ui.PredefinedStyle;
+import blocksmith.ui.StylesheetService;
 
 /**
  *
@@ -19,12 +20,14 @@ public class MenuBarController {
     private final WorkspaceFxRegistry context;
 
     private final MenuBarView view;
+    private final StylesheetService styles;
 
-    public MenuBarController(CommandDispatcher actionManager, WorkspaceFxRegistry context, MenuBarView menuBarView) {
+    public MenuBarController(CommandDispatcher actionManager, WorkspaceFxRegistry context, MenuBarView menuBarView, StylesheetService stylesheetService) {
         this.actionManager = actionManager;
 
         this.context = context;
         this.view = menuBarView;
+        this.styles = stylesheetService;
 
         for (MenuItem item : view.getAllMenuItems()) {
             item.setOnAction(menuBarItemClickedHandler);
@@ -36,7 +39,7 @@ public class MenuBarController {
         view.getRedoMenuItem().setOnAction((e) -> redo());
 
         for (MenuItem styleItem : view.getStyleMenuItems()) {
-            styleItem.setOnAction((e) -> StylesheetConfig.setStylesheet(view.getScene(), styleItem.getText()));
+            styleItem.setOnAction((e) -> styles.setStyle(PredefinedStyle.valueOf(styleItem.getId())));
         }
     }
 

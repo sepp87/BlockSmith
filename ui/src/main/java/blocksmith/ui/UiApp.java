@@ -3,6 +3,7 @@ package blocksmith.ui;
 import blocksmith.ui.help.HelpDialog;
 import blocksmith.App;
 import blocksmith.Config;
+import blocksmith.Launcher;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.SaveDocument;
 import blocksmith.app.workspace.WorkspaceLifecycle;
@@ -62,6 +63,8 @@ public class UiApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        var prefsService = Launcher.ON_DEV ? StylesheetService.forDev() : StylesheetService.forProd();
 
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
@@ -127,7 +130,7 @@ public class UiApp extends Application {
         var selectionRectangleController = new SelectionRectangleController(commandDispatcher, eventRouter, workspaceRegistry, selectionRectangleView);
         var panController = new PanController(eventRouter, workspaceRegistry);
         var radialMenuController = new RadialMenuController(commandDispatcher, eventRouter, workspaceRegistry, radialMenuView);
-        var menuBarController = new MenuBarController(commandDispatcher, workspaceRegistry, menuBarView);
+        var menuBarController = new MenuBarController(commandDispatcher, workspaceRegistry, menuBarView, prefsService);
         var editorController = new EditorController(eventRouter, editorView);
 
         // active workspace listener
@@ -146,6 +149,12 @@ public class UiApp extends Application {
 
         // Setup scene
         Scene scene = new Scene(editorView, APP_WIDTH, APP_HEIGHT);
+                    scene.getStylesheets().add(prefsService.getCss());
+
+        prefsService.setOnCssUpdated(css -> {
+            scene.getStylesheets().clear();
+            scene.getStylesheets().add(css);
+        });
         stage.setScene(scene);
         stage.show();
         stage.setFullScreen(false);
@@ -153,7 +162,7 @@ public class UiApp extends Application {
         editorView.printMenuBarHeight();
         editorView.requestFocus();
 
-        StylesheetConfig.setStylesheetToScene(scene);
+//        UserPreferencesService.setStylesheetToScene(scene);
         stage.setOnCloseRequest(event -> {
             System.out.println("Closing application...");
             System.exit(0);  // Force JVM shutdown, triggering the shutdown hook

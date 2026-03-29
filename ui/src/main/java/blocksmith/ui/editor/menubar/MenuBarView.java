@@ -1,6 +1,7 @@
 package blocksmith.ui.editor.menubar;
 
 import static blocksmith.app.command.Command.Id.*;
+import blocksmith.ui.PredefinedStyle;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.control.Menu;
@@ -19,7 +20,7 @@ public class MenuBarView extends MenuBar {
     private final MenuItem undo;
     private final MenuItem redo;
     private final MenuItem group;
-    
+
     private final Menu styleMenu;
 
     public MenuBarView() {
@@ -63,9 +64,9 @@ public class MenuBarView extends MenuBar {
         this.styleMenu = new Menu("Style");
         extrasMenu.getItems().addAll(reloadPlugins, logErrors, help, styleMenu);
 
-        MenuItem light = new MenuItem("Light", "STYLESHEET");
-        MenuItem dark = new MenuItem("Dark", "STYLESHEET");
-        MenuItem singer = new MenuItem("Singer", "STYLESHEET");
+        MenuItem light = new MenuItem("Light", PredefinedStyle.LIGHT.name());
+        MenuItem dark = new MenuItem("Dark", PredefinedStyle.DARK.name());
+        MenuItem singer = new MenuItem("Singer", PredefinedStyle.SINGER.name());
         styleMenu.getItems().addAll(light, dark, singer);
 
         logErrors.setDisable(true);
@@ -96,8 +97,8 @@ public class MenuBarView extends MenuBar {
     public MenuItem getGroupMenuItem() {
         return group;
     }
-    
-    public List<MenuItem> getStyleMenuItems(){
+
+    public List<MenuItem> getStyleMenuItems() {
         return getMenuItemsFrom(styleMenu);
     }
 

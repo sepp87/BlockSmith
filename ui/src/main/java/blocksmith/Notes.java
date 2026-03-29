@@ -39,6 +39,7 @@ public class Notes {
 
 
 // TODO
+// - InputControl - manage value on super class, and enhance with sync, so updates from domain are not registered as user edits 
 // - UnknownBlocks for missing BlockDefs
 // - selectionstate to immutable
 // - Copy/Paste (todo paste point)

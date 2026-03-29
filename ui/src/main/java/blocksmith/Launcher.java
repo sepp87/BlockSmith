@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
  */
 public class Launcher {
 
+    public static boolean ON_DEV = false;
 
     public static void main(String[] args) throws IOException, OpenXML4JException, SAXException, Exception {
 
@@ -26,6 +27,7 @@ public class Launcher {
         App app = new App();
 
         if (devMode) {
+            ON_DEV = true;
             System.out.println("RUNNING IN DEV MODE");
             new UiAppRunner(app).run();
 
