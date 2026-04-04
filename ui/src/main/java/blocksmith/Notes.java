@@ -50,7 +50,7 @@ public class Notes {
 // - Notification layer
 // - update method executor algorithm
 // - Reload block def/func library
-// - split project into core, UI and extended lib
+// - DONE split project into core, UI and extended lib
 // - port data types
 // - handle analogue user input e.g. when user changes slider input, it triggers multiple graph snapshot changes, leading to endless todos
 // - clean up - InputControl, MethodBlockNew, PortModel, ConnectionModel

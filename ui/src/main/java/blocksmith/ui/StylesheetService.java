@@ -1,11 +1,13 @@
 package blocksmith.ui;
 
 import blocksmith.infra.utils.PathWatcher;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.prefs.Preferences;
 
 /**
@@ -20,26 +22,37 @@ public class StylesheetService {
     private static final PredefinedStyle DEFAULT_STYLESHEET = PredefinedStyle.LIGHT;
 
     private final boolean watchPredefinedAlso;
+    private Function<String, String> cssPathOverride;
+
     private String activeCss;
     private final List<Consumer<String>> cssListeners = new ArrayList<>();
     private Thread cssWatcher;
 
-    private StylesheetService(boolean watchPredefinedAlso) {
-        this.watchPredefinedAlso = watchPredefinedAlso;
+    private StylesheetService(Function<String, String> cssPathOverride) {
+        this.watchPredefinedAlso = cssPathOverride != null;
+        this.cssPathOverride = cssPathOverride;
         this.activeCss = lastCssOrDefault();
 
         startWatcher();
     }
 
-    private Thread watchStyle(String css) {
-        return PathWatcher.watchFile(Path.of(css), __ -> onCssUpdated());
+    private void startWatcher() {
+        cssWatcher = watchPredefinedAlso
+                ? watchStyle(activeCss)
+                : watchUserDefinedOnly(activeCss);
     }
 
     private Thread watchUserDefinedOnly(String css) {
         if (PredefinedStyle.contains(css)) {
             return null;
         }
-        return PathWatcher.watchFile(Path.of(css), __ -> onCssUpdated());
+        return watchStyle(css);
+    }
+
+    private Thread watchStyle(String css) {
+        var url = toUrl(css);
+        var path = Path.of(URI.create(url));
+        return PathWatcher.watchFile(path, __ -> onCssUpdated());
     }
 
     private String lastCssOrDefault() {
@@ -64,6 +77,9 @@ public class StylesheetService {
 
     private String toUrl(String rawPath) {
         if (PredefinedStyle.contains(rawPath)) {
+            if (watchPredefinedAlso) {
+                return Path.of(cssPathOverride.apply(rawPath)).toUri().toString();
+            }
             return StylesheetService.class.getClassLoader().getResource(rawPath).toExternalForm();
         } else {
             return Path.of(rawPath).toUri().toString();
@@ -91,22 +107,16 @@ public class StylesheetService {
         onCssUpdated();
     }
 
-    public void setOnCssUpdated(Consumer<String> listener) {
-        cssListeners.clear();
-        cssListeners.add(listener);
-    }
-
-    private void startWatcher() {
-        cssWatcher = watchPredefinedAlso
-                ? watchStyle(activeCss)
-                : watchUserDefinedOnly(activeCss);
-    }
-
     private void stopWatcher() {
         if (cssWatcher != null) {
             cssWatcher.interrupt();
             cssWatcher = null;
         }
+    }
+
+    public void setOnCssUpdated(Consumer<String> listener) {
+        cssListeners.clear();
+        cssListeners.add(listener);
     }
 
     private void onCssUpdated() {
@@ -115,11 +125,11 @@ public class StylesheetService {
     }
 
     public static StylesheetService forDev() {
-        return new StylesheetService(true);
+        return new StylesheetService(css -> "src/main/resources/" + css);
     }
 
     public static StylesheetService forProd() {
-        return new StylesheetService(false);
+        return new StylesheetService(null);
     }
 
 }

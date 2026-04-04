@@ -57,13 +57,11 @@ public abstract class BlockModel extends BaseModel {
         return result;
     }
 
-
-    public void onIncomingConnectionAdded(Object data) {
+    public void onIncomingConnectionAdded() {
 
     }
 
-
-    public void onIncomingConnectionRemoved(Object data) {
+    public void onIncomingConnectionRemoved() {
 
     }
 
@@ -81,23 +79,23 @@ public abstract class BlockModel extends BaseModel {
         return FXCollections.unmodifiableObservableList(outputPorts);
     }
 
-    public PortModel addInputPort(String valueId, String valueName, ValueType valueType, Class<?> type) {
-        return addInputPort(valueId, valueName, valueType, type, false);
+    public PortModel addInputPort(String valueId, String valueName, ValueType valueType) {
+        return addInputPort(valueId, valueName, valueType, false);
     }
 
-    public PortModel addInputPort(String valueId, String valueName, ValueType valueType, Class<?> type, boolean isAutoConnectable) {
-        PortModel port = new PortModel(valueId, valueName, Port.Direction.INPUT, valueType, type, this, false);
+    public PortModel addInputPort(String valueId, String valueName, ValueType valueType, boolean isAutoConnectable) {
+        PortModel port = new PortModel(valueId, valueName, Port.Direction.INPUT, valueType, this, false);
         port.autoConnectableProperty().set(isAutoConnectable);
         inputPorts.add(port);
         return port;
     }
 
-    public PortModel addOutputPort(String valueId, String valueName, ValueType valueType, Class<?> type) {
-        return addOutputPort(valueId, valueName, valueType, type, false);
+    public PortModel addOutputPort(String valueId, String valueName, ValueType valueType) {
+        return addOutputPort(valueId, valueName, valueType, false);
     }
 
-    public PortModel addOutputPort(String valueId, String valueName, ValueType valueType, Class<?> type, boolean isAutoConnectable) {
-        PortModel port = new PortModel(valueId, valueName, Port.Direction.OUTPUT, valueType, type, this, true);
+    public PortModel addOutputPort(String valueId, String valueName, ValueType valueType, boolean isAutoConnectable) {
+        PortModel port = new PortModel(valueId, valueName, Port.Direction.OUTPUT, valueType, this, true);
         port.autoConnectableProperty().set(isAutoConnectable);
         outputPorts.add(port);
         return port;

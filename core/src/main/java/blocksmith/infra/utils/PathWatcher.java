@@ -1,4 +1,3 @@
-
 package blocksmith.infra.utils;
 
 import java.io.IOException;
@@ -16,11 +15,13 @@ import java.util.function.Consumer;
  */
 public class PathWatcher {
 
-    
     public static Thread watchFile(Path path, Consumer<Path> pathListener) {
         var thread = new Thread(() -> {
             try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
+                System.out.println("Watching " + path);
+
                 path.getParent().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+
                 while (true) {
                     WatchKey key = watchService.take();
                     for (WatchEvent<?> event : key.pollEvents()) {

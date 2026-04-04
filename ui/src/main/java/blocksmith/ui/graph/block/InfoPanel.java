@@ -23,7 +23,6 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import blocksmith.utils.icons.FontAwesomeSolid;
 import blocksmith.ui.workspace.WorkspaceView;
-import blocksmith.infra.blockloader.annotations.Block;
 
 /**
  *
@@ -179,15 +178,18 @@ public class InfoPanel extends Pane {
         }
         for (PortModel port : ports) {
             Label label = new Label();
-            label.textProperty().bind(Bindings.createStringBinding(()
-                    -> buildPortDescription(port), port.labelProperty(), port.dataTypeProperty()));
+            label.textProperty().bind(
+                    Bindings.createStringBinding(
+                            () -> buildPortDescription(port),
+                            port.labelProperty()
+                    ));
             result.add(label);
         }
         return result;
     }
 
     private String buildPortDescription(PortModel portModel) {
-        return portModel.labelProperty().get() + " : " + portModel.getDataType().getSimpleName();
+        return portModel.labelProperty().get();
     }
 
     private Path buildTail() {

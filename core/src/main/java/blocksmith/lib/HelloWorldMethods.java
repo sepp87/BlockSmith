@@ -26,4 +26,17 @@ public class HelloWorldMethods {
     public static String helloYou(@Value String name) {
         return "Hello " + name + "!";
     }
+
+    public record Hello(String foo, String bar) {
+
+    }
+
+    @Block(
+            type = "Hello.Record",
+            category = "core",
+            description = "A template block for further customization",
+            tags = {"template", "dummy", "example"})
+    public static Hello helloRecord() {
+        return new Hello("Hello, ", "world!");
+    }
 }

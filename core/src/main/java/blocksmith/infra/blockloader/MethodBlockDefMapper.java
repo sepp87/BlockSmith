@@ -14,10 +14,9 @@ public class MethodBlockDefMapper {
     public static BlockDef blockDefFromMethod(Method method) throws Exception {
 
         var metadata = method.getAnnotation(Block.class);
-        var params = MethodParamDefMapper.paramDefsFromParameters(method);
-        var inputs = MethodPortDefMapper.inputDefsFromParameters(method);
-        var output = MethodPortDefMapper.outputDefFromReturnType(method);
-        var isListOperator = isListOperator(method);
+        var params = MethodParamMapper.map(method);
+        var inputs = MethodInputMapper.map(method);
+        var outputs = MethodOutputMapper.map(method);
 
         return new BlockDef(
                 metadata.type(),
@@ -29,17 +28,9 @@ public class MethodBlockDefMapper {
                 metadata.icon(),
                 params,
                 inputs,
-                List.of(output),
-                isListOperator
+                outputs.ports(),
+                outputs.extractor()
         );
     }
 
-    // TODO move somewhere else
-    private static boolean isListOperator(Method method) {
-        // If first input parameter is of type list, then this is a list operator block
-        if (method.getParameters().length > 0 && List.class.isAssignableFrom(method.getParameters()[0].getType())) {
-            return true;
-        }
-        return false;
-    }
 }

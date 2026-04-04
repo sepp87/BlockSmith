@@ -37,6 +37,7 @@ public class ClassIndex {
                 blocksmith.lib.BooleanMethods.class,
                 blocksmith.lib.DateMethods.class,
                 blocksmith.lib.FileMethods.class,
+                blocksmith.lib.HelloWorldMethods.class,
                 blocksmith.lib.JsonMethods.class,
                 blocksmith.lib.ListMethods.class,
                 blocksmith.lib.MathMethods.class,

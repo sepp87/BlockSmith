@@ -9,9 +9,7 @@ import blocksmith.domain.value.ValueType;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import blocksmith.ui.graph.base.BaseModel;
@@ -30,9 +28,7 @@ public class PortModel extends BaseModel {
     private ValueType valueType;
 
     private final BooleanProperty autoConnectable = new SimpleBooleanProperty(this, "autoConnectable", false);
-    private final ObjectProperty<Object> data = new SimpleObjectProperty<>(this, "data", null);
     private final ObservableSet<ConnectionModel> connections = FXCollections.observableSet();
-    private final ObjectProperty<Class<?>> dataType = new SimpleObjectProperty<>(this, "dataType", null);
 
     private final int index;
     private final boolean multiDockAllowed;
@@ -43,7 +39,6 @@ public class PortModel extends BaseModel {
             String valueName,
             Direction direction,
             ValueType valueType,
-            Class<?> type,
             BlockModel block,
             boolean multiDockAllowed) {
 
@@ -56,8 +51,6 @@ public class PortModel extends BaseModel {
         this.index = (direction == Port.Direction.INPUT) ? block.getInputPorts().size() : block.getOutputPorts().size();
         this.block = block;
         this.multiDockAllowed = multiDockAllowed;
-        this.dataType.set(type);
-
     }
 
     public String valueId() {
@@ -94,29 +87,14 @@ public class PortModel extends BaseModel {
         return block;
     }
 
-    public ObjectProperty<Class<?>> dataTypeProperty() {
-        return dataType;
-    }
 
-    public Class<?> getDataType() {
-        return dataType.get();
-    }
-
-    public ObjectProperty<Object> dataProperty() {
-        return data;
-    }
-
-    public Object getData() {
-        return data.get();
-    }
 
     public void addConnection(ConnectionModel connection) {
         connections.add(connection);
         active.set(true);
 
         if (direction == Port.Direction.INPUT) {
-            Object sourceData = connection.getStartPort().getData();
-            block.onIncomingConnectionAdded(sourceData);
+            block.onIncomingConnectionAdded();
         }
     }
 
@@ -125,13 +103,8 @@ public class PortModel extends BaseModel {
         connections.remove(connection);
         active.set(!connections.isEmpty());
 
-        if (!isActive() && direction == Port.Direction.INPUT) {
-            this.data.set(null);
-        }
-
         if (direction == Port.Direction.INPUT) {
-            Object sourceData = connection.getStartPort().getData();
-            block.onIncomingConnectionRemoved(sourceData);
+            block.onIncomingConnectionRemoved();
         }
     }
 

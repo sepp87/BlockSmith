@@ -43,8 +43,8 @@ public class ObserveFileBlock extends BlockModel {
     
     public ObserveFileBlock() {
         labelProperty().set("Observe");
-        addInputPort("observed","observed", ValueType.of(File.class), File.class);
-        addOutputPort("updated","updated", ValueType.of(File.class), File.class);
+        addInputPort("observed","observed", ValueType.of(File.class));
+        addOutputPort("updated","updated", ValueType.of(File.class));
 
         // Register shutdown hook to stop the watcher when the app closes
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

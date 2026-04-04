@@ -18,17 +18,6 @@ public sealed interface ValueType {
 
     }
 
-    public static Class<?> toDataType(ValueType valueType) {
-        var current = valueType;
-        while (current instanceof ListType listType) {
-            current = listType.elementType;
-        }
-        if (current instanceof SimpleType simpleType) {
-            return simpleType.raw;
-        }
-        return Object.class;
-    }
-
     public static SimpleType of(Class<?> raw) {
         return new SimpleType(raw);
     }

@@ -15,9 +15,9 @@ import java.util.Optional;
  *
  * @author joost
  */
-public class MethodParamDefMapper {
+public class MethodParamMapper {
 
-    public static List<ParamDef> paramDefsFromParameters(Method method) throws Exception {
+    public static List<ParamDef> map(Method method) throws Exception {
         var result = new ArrayList<ParamDef>();
         int argIndex = 0;
         for (Parameter parameter : method.getParameters()) {

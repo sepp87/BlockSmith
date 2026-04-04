@@ -28,6 +28,7 @@ public class Launcher {
 
         if (devMode) {
             ON_DEV = true;
+            Drafts.outputDefs();
             System.out.println("RUNNING IN DEV MODE");
             new UiAppRunner(app).run();
 

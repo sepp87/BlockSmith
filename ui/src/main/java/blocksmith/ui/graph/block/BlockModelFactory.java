@@ -67,13 +67,13 @@ public class BlockModelFactory {
         var block = new MethodBlockNew(def, func, id);
 
         for (var port : def.inputs()) {
-            block.addInputPort(port.valueId(), port.valueName(), port.valueType(), ValueType.toDataType(port.valueType()));
+            block.addInputPort(port.valueId(), port.valueName(), port.valueType());
             var ref = PortRef.of(BlockId.from(id), port.direction(), port.valueId());
             valueDisplayFrom(port).ifPresent(display -> block.addValueDisplay(ref, display));
         }
 
         for (var port : def.outputs()) {
-            block.addOutputPort(port.valueId(), port.valueName(), port.valueType(), ValueType.toDataType(port.valueType()));
+            block.addOutputPort(port.valueId(), port.valueName(), port.valueType());
             var ref = PortRef.of(BlockId.from(id), port.direction(), port.valueId());
             valueDisplayFrom(port).ifPresent(display -> block.addValueDisplay(ref, display));
         }

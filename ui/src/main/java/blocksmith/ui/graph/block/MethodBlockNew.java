@@ -5,28 +5,20 @@ import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.PortRef;
-import static blocksmith.domain.value.Port.Direction.INPUT;
-import blocksmith.exec.BlockExecutor;
 import blocksmith.exec.BlockFunc;
-import blocksmith.exec.BlockStatus;
 import blocksmith.exec.ExecutionState;
-import blocksmith.ui.UiApp;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.display.ValueInspector;
 import blocksmith.ui.display.ValueDisplay;
 import blocksmith.utils.icons.FontAwesomeSolid;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import blocksmith.ui.graph.port.PortModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -140,13 +132,13 @@ public class MethodBlockNew extends BlockModel {
     }
 
     @Override
-    public void onIncomingConnectionAdded(Object data) {
-        super.onIncomingConnectionAdded(data);
+    public void onIncomingConnectionAdded() {
+        super.onIncomingConnectionAdded();
     }
 
     @Override
-    public void onIncomingConnectionRemoved(Object data) {
-        super.onIncomingConnectionRemoved(data);
+    public void onIncomingConnectionRemoved() {
+        super.onIncomingConnectionRemoved();
     }
 
     public void updateFrom(ExecutionState runtime) {

@@ -3,7 +3,6 @@ package blocksmith.domain.block;
 import blocksmith.domain.value.ParamDef;
 import blocksmith.domain.value.PortDef;
 import java.util.List;
-import blocksmith.infra.blockloader.annotations.Block;
 import blocksmith.utils.icons.FontAwesomeIcon;
 
 /**
@@ -12,7 +11,7 @@ import blocksmith.utils.icons.FontAwesomeIcon;
  */
 public record BlockDef(
         String type,
-        String name, 
+        String name,
         String description,
         String category,
         List<String> tags,
@@ -21,6 +20,6 @@ public record BlockDef(
         List<ParamDef> params,
         List<PortDef> inputs,
         List<PortDef> outputs,
-        boolean isListOperator) {
+        OutputExtractor outputExtractor) {
 
 }

@@ -5,6 +5,7 @@ import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.exec.BlockException.Severity;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,19 +29,17 @@ public class BlockExecutor {
 
     public ExecutionResult invoke(Object... args) {
 
-        final IntermediateResult[] result = {null}; // Use an array instead of AtomicReference
+        IntermediateResult result = null;
 
         try {
-            result[0] = new UnifiedMethodExecutor(def, func).execute(args);
+            result = new UnifiedMethodExecutor(def, func).execute(args);
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
 
-        var values = new HashMap<PortRef, Object>();
-        values.put(PortRef.output(block, "value"), result[0].getData());
-        return new ExecutionResult(values, result[0].exceptions());
-
+        var values = def.outputExtractor().extract(block, result.getData());
+        return new ExecutionResult(values, result.exceptions());
     }
 
 }
