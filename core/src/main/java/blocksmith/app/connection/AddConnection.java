@@ -1,5 +1,6 @@
 package blocksmith.app.connection;
 
+import blocksmith.domain.block.ArrayBlock;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
@@ -40,10 +41,20 @@ public class AddConnection {
         }
 
         var connection = new Connection(from, to);
-        return graph.withConnection(connection);
+
+        var updatedGraph = graph.withConnection(connection);
+        System.out.println("Updated Graph with connection " + toBlock.get().type() + " " + toBlock.get().getClass().getSimpleName() );
+        if (toBlock.get() instanceof ArrayBlock toArray) {
+            System.out.println("Updated Graph with arrayBlock");
+
+            var updatedArray = toArray.withFittedElements(updatedGraph);
+                        System.out.println("Updated Graph with fitted elements");
+
+            return updatedGraph.withBlock(updatedArray);
+        }
+
+        return updatedGraph;
 
     }
-
-
 
 }

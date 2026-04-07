@@ -23,6 +23,7 @@ public class MethodInputMapper {
             Value value = parameter.getAnnotation(Value.class);
             boolean hasAnnotation = value != null;
 
+            
             try {
                 // by default if:
                 // - value annotation missing > source of value is port by default

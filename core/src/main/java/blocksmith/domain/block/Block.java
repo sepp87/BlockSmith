@@ -15,7 +15,7 @@ import java.util.function.Function;
  *
  * @author joostmeulenkamp
  */
-public final class Block {
+public sealed class Block permits ArrayBlock, UnknownBlock {
 
     private final BlockId id;
     private final String type;
@@ -78,6 +78,10 @@ public final class Block {
         return outputPorts().stream().map(p -> PortRef.output(id, p.valueId())).toList();
     }
 
+    protected Block copy(Collection<Param> params, Collection<Port> ports, BlockLayout layout) {
+        return new Block(id, type, params, ports, layout);
+    }
+
     public Block withParamValue(String valueId, String value) {
         return withParamUpdated(valueId, (param) -> param.withValue(value));
     }
@@ -97,9 +101,7 @@ public final class Block {
             }
         }
 
-        return new Block(
-                id,
-                type,
+        return copy(
                 updated,
                 ports,
                 layout
@@ -107,9 +109,7 @@ public final class Block {
     }
 
     public Block withLabel(String label) {
-        return new Block(
-                id,
-                type,
+        return copy(
                 params,
                 ports,
                 layout.withLabel(label)
@@ -117,9 +117,7 @@ public final class Block {
     }
 
     public Block withPosition(double x, double y) {
-        return new Block(
-                id,
-                type,
+        return copy(
                 params,
                 ports,
                 layout.withPosition(x, y)
@@ -127,9 +125,7 @@ public final class Block {
     }
 
     public Block withSize(double width, double height) {
-        return new Block(
-                id,
-                type,
+        return copy(
                 params,
                 ports,
                 layout.withSize(width, height)
@@ -137,9 +133,7 @@ public final class Block {
     }
 
     public Block withLayout(BlockLayout layout) {
-        return new Block(
-                id,
-                type,
+        return copy(
                 params,
                 ports,
                 layout
@@ -147,9 +141,7 @@ public final class Block {
     }
 
     public Block duplicate(BlockId id) {
-        return new Block(
-                id,
-                type,
+        return copy(
                 params,
                 ports,
                 layout

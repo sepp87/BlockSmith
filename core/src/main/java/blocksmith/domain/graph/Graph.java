@@ -84,9 +84,13 @@ public final class Graph {
     }
 
     public Graph withBlock(Block block) {
-        var updated = new ArrayList<Block>(blocks.values());
-        updated.add(block);
-        return withAll(updated, connections, groups.values());
+        var existing = blocks.get(block.id()) ;
+        if(Objects.equals(existing, block)) {
+            return this;
+        }
+        var updated = new HashMap<BlockId, Block>(blocks);
+        updated.put(block.id(), block);
+        return withAll(updated.values(), connections, groups.values());
     }
 
     public Graph withoutBlock(BlockId id) {

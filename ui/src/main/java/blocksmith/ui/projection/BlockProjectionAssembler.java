@@ -5,11 +5,13 @@ import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.ValueTypeResolver;
+import blocksmith.domain.value.Port;
 import static blocksmith.domain.value.Port.Direction.INPUT;
 import blocksmith.exec.ExecutionState;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.graph.port.PortModel;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +34,8 @@ public class BlockProjectionAssembler {
     public Map<BlockId, MethodBlockNew> create(Collection<Block> blocks, Graph graph) {
         var result = new HashMap<BlockId, MethodBlockNew>();
         for (var block : blocks) {
-            var blockFx = blockFactory.create(block.type(), block.id().toString());
+//            var blockFx = blockFactory.create(block.type(), block.id().toString());
+            var blockFx = blockFactory.create(block);
 
             updatePorts(blockFx, block, graph);
             updateBlock(blockFx, block, graph);
@@ -64,6 +67,29 @@ public class BlockProjectionAssembler {
     public void updateBlock(MethodBlockNew projection, Block state, Graph graph) {
         projection.updateLayoutFrom(state.layout());
 //        projection.updateInputControlsFrom(state);
+
+        var fxPorts = projection.getInputPorts().stream().map(PortModel::valueId).toList();
+        var domainPorts = state.inputPorts().stream().map(Port::valueId).toList();
+
+        var removed = new ArrayList<String>(fxPorts);
+        var added = new ArrayList<String>();
+
+        for (var id : domainPorts) {
+            var isPresent = removed.remove(id);
+            if (!isPresent) {
+                added.add(id);
+            }
+        }
+        
+        for (var id : removed) {
+            projection.removeInputPort(id);
+        }
+
+        for (var id : added) {
+            var valueType = state.port(INPUT, id).get().valueType();
+            projection.addInputPort(id, id, valueType);
+
+        }
 
     }
 

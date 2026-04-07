@@ -58,7 +58,8 @@ public class Drafts {
                         Port.Direction.OUTPUT,
                         valueType,
                         isAutoConnectable,
-                        display
+                        display,
+                        false
                 );
                 argIndex++;
             }
@@ -80,6 +81,7 @@ public class Drafts {
                     Port.Direction.OUTPUT,
                     valueType,
                     isAutoConnectable,
+                    false,
                     false
             );
 

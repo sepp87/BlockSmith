@@ -8,6 +8,17 @@ public class Notes {
 
 }
 
+// Support VarArgs
+// - allow varargs as params OR throw exception? 
+// - blockdef - save input, output and element ports as one and provide comfort getters?
+// - support within remove multiple blocks 
+// - support within paste blocks
+// - element port to typed ElementPort/PartialInput/...
+// - refactor BlockModelFactory to use Block only from creation and PortDefMappingUtils
+// - > fitting of ports
+// - > string expected not array of objects
+// - > duplicate added values 
+//
 // Seperate UI from Core
 // - blocksmith.ui.editormodel
 // - cleanup resources folder for core and ui

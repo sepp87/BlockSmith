@@ -100,6 +100,12 @@ public abstract class BlockModel extends BaseModel {
         outputPorts.add(port);
         return port;
     }
+    
+    public void removeInputPort(String valueId) {
+        var port = inputPorts.stream().filter(p -> p.valueId().equals(valueId)).findFirst().orElseThrow();
+        inputPorts.remove(port);
+        port.dispose();
+    }
 
     @Override
     public void dispose() {

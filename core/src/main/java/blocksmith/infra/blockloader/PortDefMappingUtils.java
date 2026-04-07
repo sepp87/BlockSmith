@@ -1,9 +1,9 @@
 package blocksmith.infra.blockloader;
 
 import blocksmith.domain.value.AutoConnectable;
-import blocksmith.domain.value.Port;
 import blocksmith.domain.value.Port.Direction;
 import blocksmith.domain.value.PortDef;
+import blocksmith.domain.value.ValueType;
 import blocksmith.infra.blockloader.annotations.Display;
 import blocksmith.infra.blockloader.annotations.Value;
 import java.lang.reflect.AnnotatedElement;
@@ -27,32 +27,50 @@ public class PortDefMappingUtils {
             int argIndex,
             Direction direction) {
 
-        return PortDefMappingUtils.from(parameter, parameter.getType(), parameter.getParameterizedType(), parameter.getName(), argIndex, direction);
+        var isAggregated = parameter.isVarArgs();
+        var def = PortDefMappingUtils.from(parameter, parameter.getType(), parameter.getParameterizedType(), parameter.getName(), argIndex, direction, isAggregated);
+        
+        if (isAggregated) {
+            var raw = parameter.getType().getComponentType();
+            var valueType = ValueType.of(raw);
+            return new PortDef(
+                    def.valueId(), 
+                    def.argIndex(), 
+                    def.valueName(), 
+                    def.direction(), 
+                    valueType, 
+                    def.isAutoConnectable(), 
+                    def.display(), 
+                    isAggregated);
+        }
+
+        return def;
     }
 
     public static PortDef fromComponent(
             RecordComponent component,
             int argIndex,
             Direction direction) {
-        
-        return PortDefMappingUtils.from(component, component.getType(), component.getGenericType(), component.getName(), argIndex, direction);
+
+        return PortDefMappingUtils.from(component, component.getType(), component.getGenericType(), component.getName(), argIndex, direction, false);
     }
 
     public static PortDef fromReturnType(
-            Method method, 
-            Direction direction, 
+            Method method,
+            Direction direction,
             String valueName) {
-        
-        return PortDefMappingUtils.from(method.getReturnType(), method.getReturnType(), method.getGenericReturnType(), valueName, 0, direction);
+
+        return PortDefMappingUtils.from(method.getReturnType(), method.getReturnType(), method.getGenericReturnType(), valueName, 0, direction, false);
     }
 
     private static PortDef from(
-            AnnotatedElement annotated, 
-            Class<?> rawType, 
-            Type genericType, 
-            String valueName, 
-            int argIndex, 
-            Direction direction) {
+            AnnotatedElement annotated,
+            Class<?> rawType,
+            Type genericType,
+            String valueName,
+            int argIndex,
+            Direction direction,
+            boolean isAggregated) {
 
         boolean isAutoConnectable = AutoConnectable.class.isAssignableFrom(rawType);
 
@@ -70,7 +88,8 @@ public class PortDefMappingUtils {
                 direction,
                 valueType,
                 isAutoConnectable,
-                display
+                display,
+                isAggregated
         );
         return portDef;
     }

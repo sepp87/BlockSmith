@@ -5,6 +5,8 @@ import blocksmith.ui.control.TextInput;
 import blocksmith.ui.control.InputControl;
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.app.block.BlockFuncLibrary;
+import blocksmith.domain.block.ArrayBlock;
+import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.value.ParamDef;
@@ -51,6 +53,45 @@ public class BlockModelFactory {
     public MethodBlockNew create(String type) {
         var id = UUID.randomUUID().toString();
         return create(type, id);
+    }
+
+    public MethodBlockNew create(Block domain) {
+        var def = defLibrary.resolve(domain.type())
+                .orElseThrow(() -> new IllegalArgumentException("Type does not exist: " + domain.type()));
+
+        var type = def.type();
+        var func = funcLibrary.resolve(type).get();
+
+        var id = domain.id().toString();
+        var block = new MethodBlockNew(def, func, id);
+
+        for (var port : def.inputs()) {
+            if (port.isAggregatedValue()) {
+                continue;
+            }
+            block.addInputPort(port.valueId(), port.valueId(), port.valueType());
+            var ref = PortRef.of(BlockId.from(id), port.direction(), port.valueId());
+            valueDisplayFrom(port).ifPresent(display -> block.addValueDisplay(ref, display));
+        }
+
+        for (var port : domain.inputPorts()) {
+            if (port.isElement()) {
+                block.addInputPort(port.valueId(), port.valueId(), port.valueType());
+            }
+        }
+
+        for (var port : def.outputs()) {
+            block.addOutputPort(port.valueId(), port.valueName(), port.valueType());
+            var ref = PortRef.of(BlockId.from(id), port.direction(), port.valueId());
+            valueDisplayFrom(port).ifPresent(display -> block.addValueDisplay(ref, display));
+        }
+
+        for (var param : def.params()) {
+            var control = inputControlFrom(param);
+            block.addInputControl(param.valueId(), control);
+        }
+
+        return block;
     }
 
     public MethodBlockNew create(String type, String id) {

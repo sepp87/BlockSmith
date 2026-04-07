@@ -205,13 +205,13 @@ public class StringMethods {
             type = "String.concatList",
             category = "Core",
             description = "Concatenates the list of string value into a single string")
-    public static String concat(String[] list) {
-        if (list.length == 0) {
+    public static String concat(String... value) {
+        if (value.length == 0) {
             return null;
         }
         String result = "";
-        for (String value : list) {
-            result += value;
+        for (String v : value) {
+            result += v;
         }
         return result;
     }

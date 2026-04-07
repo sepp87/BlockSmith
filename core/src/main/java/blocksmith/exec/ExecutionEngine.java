@@ -3,6 +3,7 @@ package blocksmith.exec;
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.app.block.BlockFuncLibrary;
 import blocksmith.app.logging.GraphLogFmt;
+import blocksmith.domain.block.ArrayBlock;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
@@ -85,7 +86,28 @@ public class ExecutionEngine {
         var byRef = new HashMap<PortRef, Object>();
 
         var inputs = block.inputPorts();
-        var params = block.params();
+
+        if (block instanceof ArrayBlock arrayBlock) {
+            inputs = arrayBlock.fixedInputPorts();
+
+            var elements = arrayBlock.connectedElements();
+            var any = arrayBlock.anyElement();
+            var index = any.argIndex();
+            var ref = PortRef.input(block.id(), any.valueId().split("#")[0]);
+
+            var values = new ArrayList<Object>();
+            for (var element : elements) {
+                var value = resolveInputValueOf(current, state, block, element);
+                System.out.println("VALUE OF CONNECTED ELEMENTS ADDED " + String.valueOf(value));
+
+                values.add(value);
+//            System.out.println("Port received " + GraphLogFmt.block(block.id()) + "." + input.valueId() + " = " + String.valueOf(value));
+            }
+            var array = values.toArray();
+            System.out.println("BLOCK ARRAY VALUES " + values + " + " + array);
+            byIndex.put(index, array);
+            byRef.put(ref, array);
+        }
 
         for (var input : inputs) {
             var index = input.argIndex();
@@ -95,6 +117,8 @@ public class ExecutionEngine {
             byIndex.put(index, value);
             byRef.put(ref, value);
         }
+
+        var params = block.params();
 
         for (var param : params) {
             var index = param.argIndex();

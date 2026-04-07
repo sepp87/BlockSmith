@@ -20,6 +20,7 @@ public record BlockDef(
         List<ParamDef> params,
         List<PortDef> inputs,
         List<PortDef> outputs,
-        OutputExtractor outputExtractor) {
+        OutputExtractor outputExtractor,
+        boolean hasAggregatedInput) {
 
 }

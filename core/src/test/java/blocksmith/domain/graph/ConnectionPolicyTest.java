@@ -38,8 +38,8 @@ public class ConnectionPolicyTest {
 
         var outputVarType = blockWithPort(Port.output("value", 0, ValueType.of("T")));
 
-        var inputString = blockWithPort(Port.input("value", 0, ValueType.of(String.class)));
-        var inputDouble = blockWithPort(Port.input("value", 1, ValueType.of(Double.class)));
+        var inputString = blockWithPort(Port.input("value", 0, ValueType.of(String.class), false));
+        var inputDouble = blockWithPort(Port.input("value", 1, ValueType.of(Double.class), false));
 
         var varTypeToString = new Connection(
                 PortRef.output(outputVarType.id(), "value"),
@@ -66,11 +66,11 @@ public class ConnectionPolicyTest {
         var outputString = blockWithPort(Port.output("value", 0, ValueType.of(String.class)));
 
         var varTyped = blockWithPorts(List.of(
-                Port.input("value", 0, ValueType.of("T")),
+                Port.input("value", 0, ValueType.of("T"), false),
                 Port.output("value", 0, ValueType.of("T"))
         ));
 
-        var inputDouble = blockWithPort(Port.input("value", 0, ValueType.of(Double.class)));
+        var inputDouble = blockWithPort(Port.input("value", 0, ValueType.of(Double.class), false));
 
         var stringToVarType = new Connection(
                 PortRef.output(outputString.id(), "value"),

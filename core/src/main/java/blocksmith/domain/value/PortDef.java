@@ -13,7 +13,8 @@ public record PortDef(
         Direction direction,
         ValueType valueType,
         boolean isAutoConnectable,
-        boolean display
+        boolean display,
+        boolean isAggregatedValue
         ) implements ValueDef{
 
 
