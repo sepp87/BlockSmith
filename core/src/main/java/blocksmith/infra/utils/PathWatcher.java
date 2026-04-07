@@ -8,6 +8,8 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,10 +17,12 @@ import java.util.function.Consumer;
  */
 public class PathWatcher {
 
+    private final static Logger LOGGER = Logger.getLogger(PathWatcher.class.getName());
+
     public static Thread watchFile(Path path, Consumer<Path> pathListener) {
         var thread = new Thread(() -> {
             try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
-                System.out.println("Watching " + path);
+                LOGGER.log(Level.FINEST, "Watching " + path);
 
                 path.getParent().register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
 
@@ -32,7 +36,9 @@ public class PathWatcher {
                     key.reset();
                 }
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.FINEST, "Stopped watching " + path);
+
+//                e.printStackTrace();
             }
         });
         thread.start();

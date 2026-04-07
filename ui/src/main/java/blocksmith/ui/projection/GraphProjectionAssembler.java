@@ -1,5 +1,6 @@
 package blocksmith.ui.projection;
 
+import blocksmith.domain.block.ArrayBlock;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
@@ -142,9 +143,29 @@ public class GraphProjectionAssembler {
 
         for (var ref : candidates) {
             var block = graph.block(ref.blockId()).orElseThrow();
-            var input = block.port(ref.direction(), ref.valueId()).orElseThrow();
+            var input = block.port(ref.direction(), ref.valueId());
 
-            var varType = ValueTypeResolver.varTypeWithin(input.valueType());
+            if (input.isEmpty()) {
+                // port was pruned - propagate via remaining sibling elements
+                if (block instanceof ArrayBlock arrayBlock) {
+                    var elements = arrayBlock.elements();
+                    if (!elements.isEmpty()) {
+                        var any = elements.iterator().next();
+                        var varType = ValueTypeResolver.varTypeWithin(any.valueType());
+                        if (varType.isPresent()) {
+                            elements.forEach(e -> result.add(PortRef.input(block.id(), e.valueId())));
+                            ValueTypeResolver.boundOutputsOf(block, varType.get()).forEach(o -> {
+                                var boundOutput = PortRef.output(block.id(), o.valueId());
+                                result.add(boundOutput);
+                                graph.connectionsOf(boundOutput).forEach(c -> downstreamCandidates.add(c.to()));
+                            });
+                        }
+                    }
+                }
+                continue;
+            }
+
+            var varType = ValueTypeResolver.varTypeWithin(input.get().valueType());
             if (varType.isPresent()) {
                 result.add(ref);
             } else {

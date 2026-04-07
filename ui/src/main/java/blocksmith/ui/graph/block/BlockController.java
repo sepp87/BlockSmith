@@ -31,6 +31,7 @@ import blocksmith.ui.utils.EventUtils;
 import blocksmith.ui.projection.GraphProjection;
 import blocksmith.ui.workspace.WorkspaceController;
 import blocksmith.app.workspace.WorkspaceSession;
+import blocksmith.domain.value.Port.Direction;
 import java.util.function.Consumer;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -130,9 +131,31 @@ public class BlockController extends BaseController {
                 model.getExceptions().clear();
             }
         }));
+        
+        model.inputPorts.addListener(new ListChangeListener<PortModel>() {
+            @Override
+            public void onChanged(Change<? extends PortModel> change) {
+                while (change.next()) {
+                    addPorts(change.getAddedSubList(), Direction.INPUT);
+
+                    var models = change.getRemoved();
+                    var controllers = models.stream().map(p -> ports.remove(p)).toList();
+                    for (var controller : controllers) {
+                        controller.remove();
+                        workspaceController.unregisterPort(controller);
+                    }
+                    var views = controllers.stream().map(PortController::getView).toList();
+                    for (var view : views) {
+                        view.boundsInParentProperty().removeListener(transformListener);
+                    }
+                    
+                    view.removeInputPorts(views);
+                }
+            }
+        });
     }
 
-    private void addPorts(List<PortModel> portModels, Port.Direction direction) {
+    private void addPorts(List<? extends PortModel> portModels, Port.Direction direction) {
         List<PortView> portViews = new ArrayList<>();
         for (PortModel portModel : portModels) {
             PortView portView = new PortView(direction);

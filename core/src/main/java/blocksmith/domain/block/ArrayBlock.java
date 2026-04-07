@@ -2,7 +2,6 @@ package blocksmith.domain.block;
 
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.value.Param;
-import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.Port;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
@@ -34,7 +32,7 @@ public final class ArrayBlock extends Block {
         return inputPorts().stream().filter(p -> !p.isElement()).toList();
     }
 
-    private List<Port> elements() {
+    public List<Port> elements() {
         return inputPorts().stream().filter(p -> p.isElement()).toList();
     }
 
@@ -50,7 +48,7 @@ public final class ArrayBlock extends Block {
 
     public ArrayBlock withFittedElements(Graph graph) {
 
-        var fitted = new ArrayList<Port>(inputPorts());
+        var fitted = new ArrayList<Port>(fixedInputPorts());
         fitted.addAll(fitElements(graph));
         fitted.addAll(outputPorts());
 
@@ -108,6 +106,17 @@ public final class ArrayBlock extends Block {
     @Override
     protected Block copy(Collection<Param> params, Collection<Port> ports, BlockLayout layout) {
         return new ArrayBlock(id(), type(), params, ports, layout);
+    }
+
+    @Override
+    public Block duplicate(BlockId id) {
+        return new ArrayBlock(
+                id,
+                type(),
+                params(),
+                ports(),
+                layout()
+        );
     }
 
 }

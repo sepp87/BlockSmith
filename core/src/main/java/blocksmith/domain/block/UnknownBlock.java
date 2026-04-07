@@ -18,4 +18,20 @@ public final class UnknownBlock extends Block {
     public static UnknownBlock create(BlockId id, String type) {
         return new UnknownBlock(id, type, List.of(), List.of(), null);
     }
+
+    @Override
+    protected Block copy(Collection<Param> params, Collection<Port> ports, BlockLayout layout) {
+        return new UnknownBlock(id(), type(), params, ports, layout);
+    }
+
+    @Override
+    public Block duplicate(BlockId id) {
+        return new UnknownBlock(
+                id,
+                type(),
+                params(),
+                ports(),
+                layout()
+        );
+    }
 }

@@ -87,11 +87,11 @@ public class App {
 
     private void configureLogging() {
         Logger root = Logger.getLogger("blocksmith");
-        root.setLevel(Level.INFO);
+        root.setLevel(Level.FINEST);
         root.setUseParentHandlers(false);
 
         ConsoleHandler handler = new ConsoleHandler();
-        handler.setLevel(Level.INFO);
+        handler.setLevel(Level.FINEST);
         handler.setFormatter(new Formatter() {
 
             @Override

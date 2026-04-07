@@ -78,10 +78,6 @@ public sealed class Block permits ArrayBlock, UnknownBlock {
         return outputPorts().stream().map(p -> PortRef.output(id, p.valueId())).toList();
     }
 
-    protected Block copy(Collection<Param> params, Collection<Port> ports, BlockLayout layout) {
-        return new Block(id, type, params, ports, layout);
-    }
-
     public Block withParamValue(String valueId, String value) {
         return withParamUpdated(valueId, (param) -> param.withValue(value));
     }
@@ -140,8 +136,14 @@ public sealed class Block permits ArrayBlock, UnknownBlock {
         );
     }
 
+    protected Block copy(Collection<Param> params, Collection<Port> ports, BlockLayout layout) {
+        return new Block(id, type, params, ports, layout);
+    }
+
     public Block duplicate(BlockId id) {
-        return copy(
+        return new Block(
+                id,
+                type,
                 params,
                 ports,
                 layout

@@ -175,6 +175,13 @@ public class BlockView extends GridPane {
 
     }
 
+    public void removeInputPorts(List<PortView> ports) {
+        if (ports.isEmpty()) {
+            return;
+        }
+        inPortBox.getChildren().removeAll(ports);
+    }
+
     /**
      * Add control to the block. A control extends region so it can be a layout,
      * but also a simple control like a button.

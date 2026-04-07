@@ -45,7 +45,7 @@ public class MethodBlockFuncLoader implements BlockFuncLoader {
 
     private static BlockFunc blockFuncFrom(Method method) {
         try {
-            MethodHandle handle = MethodHandles.lookup().unreflect(method);
+            MethodHandle handle = MethodHandles.lookup().unreflect(method).asFixedArity();
 
             return inputs -> {
                 try {

@@ -8,7 +8,10 @@ import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
+import blocksmith.domain.graph.ValueTypeResolver;
 import blocksmith.domain.value.Port;
+import blocksmith.domain.value.ValueType.SimpleType;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -98,13 +102,16 @@ public class ExecutionEngine {
             var values = new ArrayList<Object>();
             for (var element : elements) {
                 var value = resolveInputValueOf(current, state, block, element);
-                System.out.println("VALUE OF CONNECTED ELEMENTS ADDED " + String.valueOf(value));
-
-                values.add(value);
-//            System.out.println("Port received " + GraphLogFmt.block(block.id()) + "." + input.valueId() + " = " + String.valueOf(value));
+                LOGGER.log(Level.FINEST, GraphLogFmt.block(block.id()) + "." + element.valueId() + " = " + String.valueOf(value));
             }
-            var array = values.toArray();
-            System.out.println("BLOCK ARRAY VALUES " + values + " + " + array);
+
+            var valueType = ValueTypeResolver.typeOf(current, PortRef.input(block.id(), any.valueId()));
+            var rawType = valueType instanceof SimpleType simple ? simple.raw() : Object.class;
+            var size = values.size();
+            var array = Array.newInstance(rawType, size);
+            for (int i = 0; i < size; i++) {
+                Array.set(array, i, values.get(i));
+            }
             byIndex.put(index, array);
             byRef.put(ref, array);
         }
@@ -113,7 +120,8 @@ public class ExecutionEngine {
             var index = input.argIndex();
             var ref = PortRef.input(block.id(), input.valueId());
             var value = resolveInputValueOf(current, state, block, input);
-//            System.out.println("Port received " + GraphLogFmt.block(block.id()) + "." + input.valueId() + " = " + String.valueOf(value));
+            LOGGER.log(Level.FINEST, GraphLogFmt.block(block.id()) + "." + input.valueId() + " = " + String.valueOf(value));
+
             byIndex.put(index, value);
             byRef.put(ref, value);
         }
@@ -135,19 +143,12 @@ public class ExecutionEngine {
 
         var inputRef = PortRef.input(block.id(), input.valueId());
 
-        if (GraphLogFmt.block(block.id()).equals("411de2cd")) {
-            System.out.println("state.hasValueOf(inputRef) " + state.hasValueOf(inputRef));
-        }
-
         if (state.hasValueOf(inputRef)) {
             return state.valueOf(inputRef);
         }
 
         // retrieve upstream - case: unconnected
         var connection = current.incomingConnection(inputRef);
-        if (GraphLogFmt.block(block.id()).equals("411de2cd")) {
-            System.out.println("connection.isEmpty() " + connection.isEmpty());
-        }
 
         if (connection.isEmpty()) {
             return null;
@@ -156,13 +157,7 @@ public class ExecutionEngine {
         // retrieve upstream - case: connected and provides value
         var connectedOutput = connection.get().from();
         var connectedBlock = connectedOutput.blockId();
-        if (GraphLogFmt.block(block.id()).equals("411de2cd")) {
-            System.out.println("state.statusOf(connectedBlock) " + state.statusOf(connectedBlock));
-            System.out.println("state.hasValueOf(connectedOutput) " + state.hasValueOf(connectedOutput));
-            System.out.println("state.valueOf(connectedOutput) " + state.valueOf(connectedOutput));
-        }
 
-//        if (state.statusOf(connectedBlock) == BlockStatus.FINISHED) {
         if (state.hasValueOf(connectedOutput)) {
             // TODO convert effective values if needed e.g. single to list, path to file, file to path
             var value = state.valueOf(connectedOutput);
@@ -176,17 +171,10 @@ public class ExecutionEngine {
 //            throw new RuntimeException("Execution process interrupted, because connected upstream block yielded a severe runtime exception.");
         }
 
-        if (GraphLogFmt.block(block.id()).equals("411de2cd")) {
-            System.out.println("run(connectedBlock, current, state);");
-        }
-
         // retrieve upstream - case: connected, but not yet executed
         run(connectedBlock, current, state);
         // TODO convert effective values if needed e.g. single to list, path to file, file to path
         // TODO collect blocks and execute concurrently
-        if (GraphLogFmt.block(block.id()).equals("411de2cd")) {
-            System.out.println("state.statusOf(connectedBlock) " + state.statusOf(connectedBlock));
-        }
 
         if (state.statusOf(connectedBlock) == BlockStatus.FINISHED) {
             var value = state.valueOf(connectedOutput);
