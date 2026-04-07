@@ -75,7 +75,8 @@ public class ExecutionEngine {
         } catch (RuntimeException ex) {
             var critical = BlockException.critical(ex);
             state.updateBlockState(id, Map.of(), BlockStatus.FAILED, List.of(critical));
-            LOGGER.severe(ex.getMessage());
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+            ex.printStackTrace();
         }
 
     }
@@ -102,6 +103,7 @@ public class ExecutionEngine {
             var values = new ArrayList<Object>();
             for (var element : elements) {
                 var value = resolveInputValueOf(current, state, block, element);
+                values.add(value);
                 LOGGER.log(Level.FINEST, GraphLogFmt.block(block.id()) + "." + element.valueId() + " = " + String.valueOf(value));
             }
 

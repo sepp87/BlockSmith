@@ -3,6 +3,7 @@ package blocksmith.infra.blockloader.extractor;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.block.OutputExtractor;
 import blocksmith.domain.connection.PortRef;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,6 +20,8 @@ public class SingleOutputExtractor implements OutputExtractor {
     }
 
     public Map<PortRef, Object> extract(BlockId block, Object result) {
-        return Map.of(PortRef.output(block, valueId), result);
+        var byPort = new HashMap<PortRef, Object>();
+        byPort.put(PortRef.output(block, valueId), result);
+        return byPort;
     }
 }

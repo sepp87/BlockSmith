@@ -56,9 +56,7 @@ public final class ArrayBlock extends Block {
         if (fitted.size() == ports.size() && fitted.containsAll(ports)) {
             return this;
         }
-
-        System.out.println("WITH FITTED ELEMENTS");
-
+        
         return new ArrayBlock(
                 id(),
                 type(),

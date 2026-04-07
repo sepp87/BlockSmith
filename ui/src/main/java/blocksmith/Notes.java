@@ -17,7 +17,9 @@ public class Notes {
 // - refactor BlockModelFactory to use Block only from creation and PortDefMappingUtils
 // - > fitting of ports
 // - > string expected not array of objects
-// - > duplicate added values 
+// - > duplicate added values
+
+// bug - undo does not show old param value
 //
 // Seperate UI from Core
 // - blocksmith.ui.editormodel

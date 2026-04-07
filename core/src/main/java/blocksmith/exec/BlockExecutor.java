@@ -2,10 +2,6 @@ package blocksmith.exec;
 
 import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.block.BlockId;
-import blocksmith.domain.connection.PortRef;
-import blocksmith.exec.BlockException.Severity;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
