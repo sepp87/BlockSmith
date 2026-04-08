@@ -35,7 +35,7 @@ public class PasteBlocks {
 
         var blocks = copied.blocks()
                 .stream()
-                .map(b -> b.duplicate(newId.get(b.id())))
+                .map(b -> b.copy(newId.get(b.id())))
                 .map(b -> b.withPosition(b.layout().x() + 20, b.layout().y() + 20)) // offset pasted blocks
                 .toList();
 

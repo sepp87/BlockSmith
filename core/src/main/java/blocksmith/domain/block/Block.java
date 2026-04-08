@@ -97,7 +97,7 @@ public sealed class Block permits ArrayBlock, UnknownBlock {
             }
         }
 
-        return copy(
+        return with(
                 updated,
                 ports,
                 layout
@@ -105,7 +105,7 @@ public sealed class Block permits ArrayBlock, UnknownBlock {
     }
 
     public Block withLabel(String label) {
-        return copy(
+        return with(
                 params,
                 ports,
                 layout.withLabel(label)
@@ -113,7 +113,7 @@ public sealed class Block permits ArrayBlock, UnknownBlock {
     }
 
     public Block withPosition(double x, double y) {
-        return copy(
+        return with(
                 params,
                 ports,
                 layout.withPosition(x, y)
@@ -121,7 +121,7 @@ public sealed class Block permits ArrayBlock, UnknownBlock {
     }
 
     public Block withSize(double width, double height) {
-        return copy(
+        return with(
                 params,
                 ports,
                 layout.withSize(width, height)
@@ -129,18 +129,18 @@ public sealed class Block permits ArrayBlock, UnknownBlock {
     }
 
     public Block withLayout(BlockLayout layout) {
-        return copy(
+        return with(
                 params,
                 ports,
                 layout
         );
     }
 
-    protected Block copy(Collection<Param> params, Collection<Port> ports, BlockLayout layout) {
+    protected Block with(Collection<Param> params, Collection<Port> ports, BlockLayout layout) {
         return new Block(id, type, params, ports, layout);
     }
 
-    public Block duplicate(BlockId id) {
+    public Block copy(BlockId id) {
         return new Block(
                 id,
                 type,

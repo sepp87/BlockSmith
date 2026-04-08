@@ -1,8 +1,5 @@
 package blocksmith.ui.control;
 
-import blocksmith.ui.control.InputControl;
-import java.util.Objects;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -13,7 +10,6 @@ import javafx.scene.input.KeyEvent;
  */
 public class TextInput extends InputControl<String> {
 
-    private final ChangeListener<String> fxListener = (b, o, n) -> valueChangedByUser(n);
     private final TextField textField;
 
     public TextInput(String valueId) {
@@ -25,7 +21,7 @@ public class TextInput extends InputControl<String> {
         textField.setMinWidth(100);
         textField.setStyle("-fx-pref-column-count: 26;");
         textField.setOnKeyPressed(this::ignoreShortcuts);
-        textField.textProperty().addListener(fxListener);
+        textField.textProperty().bindBidirectional(value);
         textField.setOnMouseEntered(eh -> textField.requestFocus());
     }
 
@@ -37,26 +33,15 @@ public class TextInput extends InputControl<String> {
     public Node node() {
         return textField;
     }
-
+    
     @Override
-    public String getValue() {
-        return textField.getText();
-    }
-
-    @Override
-    public void setValue(String newVal) {
-        if(Objects.equals(textField.getText(), newVal)) {
-            return;
-        }
-        textField.setText(newVal);
+    public void onValueChangedByApp(String newVal) {
     }
 
     @Override
     public void onDispose() {
-        textField.textProperty().removeListener(fxListener);
         textField.setOnKeyPressed(null);
         textField.setOnMouseEntered(null);
     }
-
-
+    
 }

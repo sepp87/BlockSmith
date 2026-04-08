@@ -17,8 +17,6 @@ import javafx.scene.layout.HBox;
  */
 public abstract class AbstractPathInput extends InputControl<String> {
 
-    private final ChangeListener<String> fxListener = (b, o, n) -> valueChangedByUser(n);
-    private final StringProperty value = new SimpleStringProperty();
 
     private HBox root;
     protected TextField textField;
@@ -42,7 +40,6 @@ public abstract class AbstractPathInput extends InputControl<String> {
         root.getChildren().addAll(textField, button);
         root.setOnMouseEntered(eh -> textField.requestFocus());
 
-        value.addListener(fxListener);
 
     }
 
@@ -53,17 +50,9 @@ public abstract class AbstractPathInput extends InputControl<String> {
         return root;
     }
 
-    @Override
-    public String getValue() {
-        return value.get();
-    }
 
     @Override
-    public void setValue(String newVal) {
-        if (Objects.equals(value.get(), newVal)) {
-            return;
-        }
-        value.set(newVal);
+    protected void onValueChangedByApp(String newVal) {
     }
 
     @Override
@@ -71,7 +60,7 @@ public abstract class AbstractPathInput extends InputControl<String> {
         textField.textProperty().unbindBidirectional(value);
         button.setOnAction(null);
         root.setOnMouseEntered(null);
-        value.removeListener(fxListener);
+//        value.removeListener(fxListener);
     }
 
 

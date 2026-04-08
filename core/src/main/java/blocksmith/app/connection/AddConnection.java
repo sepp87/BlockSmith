@@ -42,18 +42,18 @@ public class AddConnection {
 
         var connection = new Connection(from, to);
 
-        var updatedGraph = graph.withConnection(connection);
-        System.out.println("Updated Graph with connection " + toBlock.get().type() + " " + toBlock.get().getClass().getSimpleName() );
-        if (toBlock.get() instanceof ArrayBlock toArray) {
-            System.out.println("Updated Graph with arrayBlock");
+//        var updatedGraph = graph.withConnection(connection);
+//        System.out.println("Updated Graph with connection " + toBlock.get().type() + " " + toBlock.get().getClass().getSimpleName() );
+//        if (toBlock.get() instanceof ArrayBlock toArray) {
+//            System.out.println("Updated Graph with arrayBlock");
+//
+//            var updatedArray = toArray.withFittedElements(updatedGraph);
+//                        System.out.println("Updated Graph with fitted elements");
+//
+//            return updatedGraph.withBlock(updatedArray);
+//        }
 
-            var updatedArray = toArray.withFittedElements(updatedGraph);
-                        System.out.println("Updated Graph with fitted elements");
-
-            return updatedGraph.withBlock(updatedArray);
-        }
-
-        return updatedGraph;
+        return graph.withConnection(connection);
 
     }
 

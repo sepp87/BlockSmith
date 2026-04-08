@@ -10,16 +10,11 @@ public class Notes {
 
 // Support VarArgs
 // - allow varargs as params OR throw exception? 
-// - blockdef - save input, output and element ports as one and provide comfort getters?
 // - support within remove multiple blocks 
 // - support within paste blocks
 // - element port to typed ElementPort/PartialInput/...
 // - refactor BlockModelFactory to use Block only from creation and PortDefMappingUtils
-// - > fitting of ports
-// - > string expected not array of objects
-// - > duplicate added values
 
-// bug - undo does not show old param value
 //
 // Seperate UI from Core
 // - blocksmith.ui.editormodel
@@ -52,7 +47,6 @@ public class Notes {
 
 
 // TODO
-// - InputControl - manage value on super class, and enhance with sync, so updates from domain are not registered as user edits 
 // - UnknownBlocks for missing BlockDefs
 // - selectionstate to immutable
 // - Copy/Paste (todo paste point)

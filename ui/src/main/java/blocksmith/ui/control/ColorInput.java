@@ -1,7 +1,6 @@
 package blocksmith.ui.control;
 
 import blocksmith.ui.control.utils.ColorBox;
-import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
@@ -13,42 +12,44 @@ import javafx.scene.paint.Color;
  */
 public class ColorInput extends InputControl<String> {
 
-    private final ChangeListener<Color> fxListener = (b, o, n) -> valueChangedByUser(n.toString());
-    private ObjectProperty<Color> value;
+    private final ObjectProperty<Color> colorValue;
+    private final ChangeListener<Color> colorListener;
+    private boolean syncing = false;
 
-    private ColorBox picker;
+    private ColorBox colorPicker;
 
     public ColorInput(String valueId) {
         super(valueId);
-        
-        picker = new ColorBox();
-        value = picker.customColorProperty();
-        value.addListener(fxListener);
+
+        colorPicker = new ColorBox();
+        colorValue = colorPicker.customColorProperty();
+
+        colorListener = (b, o, n) -> {
+            if (syncing) {
+                return;
+            }
+            value.set(colorValue.get().toString());
+        };
+
+        colorValue.addListener(colorListener);
     }
 
     @Override
     public Node node() {
-        return picker;
+        return colorPicker;
     }
 
     @Override
-    public String getValue() {
-        return value.get().toString();
-    }
-
-    @Override
-    public void setValue(String newVal) {
+    public void onValueChangedByApp(String newVal) {
         var newColor = Color.valueOf(newVal);
-        if (!Objects.equals(value.get(), newColor)) {
-            return;
-        }
-        value.set(newColor);
+
+        syncing = true;
+        colorValue.set(newColor);
+        syncing = false;
     }
 
     @Override
     public void onDispose() {
-        value.removeListener(fxListener);
     }
-
 
 }

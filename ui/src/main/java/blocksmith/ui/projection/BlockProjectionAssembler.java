@@ -1,5 +1,7 @@
 package blocksmith.ui.projection;
 
+import blocksmith.app.logging.GraphLogFmt;
+import blocksmith.domain.block.ArrayBlock;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
@@ -16,12 +18,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author joost
  */
 public class BlockProjectionAssembler {
+
+    private static final Logger LOGGER = Logger.getLogger(BlockProjectionAssembler.class.getName());
 
     private final BlockModelFactory blockFactory;
     private final ExecutionState runtime;
@@ -64,31 +70,35 @@ public class BlockProjectionAssembler {
         }
     }
 
-    public void updateBlock(MethodBlockNew projection, Block state, Graph graph) {
-        projection.updateLayoutFrom(state.layout());
-//        projection.updateInputControlsFrom(state);
+    public void updateBlock(MethodBlockNew blockFx, Block block, Graph graph) {
+        blockFx.updateLayoutFrom(block.layout());
+        updateInputControls(blockFx, block, graph);
 
-        var fxPorts = projection.getInputPorts().stream().map(PortModel::valueId).toList();
-        var domainPorts = state.inputPorts().stream().map(Port::valueId).toList();
+        if (block instanceof ArrayBlock) {
 
-        var removed = new ArrayList<String>(fxPorts);
-        var added = new ArrayList<String>();
+            var fxPorts = blockFx.getInputPorts().stream().map(PortModel::valueId).toList();
+            var domainPorts = block.inputPorts().stream().map(Port::valueId).toList();
 
-        for (var id : domainPorts) {
-            var isPresent = removed.remove(id);
-            if (!isPresent) {
-                added.add(id);
+            var removed = new ArrayList<String>(fxPorts);
+            var added = new ArrayList<String>();
+
+            for (var id : domainPorts) {
+                var isPresent = removed.remove(id);
+                if (!isPresent) {
+                    added.add(id);
+                }
             }
-        }
-        
-        for (var id : removed) {
-            projection.removeInputPort(id);
-        }
 
-        for (var id : added) {
-            var valueType = state.port(INPUT, id).get().valueType();
-            projection.addInputPort(id, id, valueType);
+            for (var id : removed) {
+                LOGGER.log(Level.FINEST, GraphLogFmt.block(block.id()) + "." + id + " array element port removed");
+                blockFx.removeInputPort(id);
+            }
 
+            for (var id : added) {
+                LOGGER.log(Level.FINEST, GraphLogFmt.block(block.id()) + "." + id + " array element port added");
+                var valueType = block.port(INPUT, id).get().valueType();
+                blockFx.addInputPort(id, id, valueType);
+            }
         }
 
     }

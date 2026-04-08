@@ -5,6 +5,7 @@ import java.util.List;
 import blocksmith.domain.value.ParamInput.Password;
 import blocksmith.infra.blockloader.annotations.Value;
 import blocksmith.infra.blockloader.annotations.Block;
+import java.lang.reflect.Array;
 
 /**
  *
@@ -194,17 +195,17 @@ public class StringMethods {
     }
 
     @Block(
-            type = "String.concat",
+            type = "String.concatList",
             category = "Core",
-            description = "Concatenates string b to the end of string a.")
-    public static String concat(String a, String b) {
-        return a.concat(b);
+            description = "Concatenates a list of string values into a single string.")
+    public static String concat(List<String> values) {
+        return concat(values.stream().toArray(String[]::new));
     }
 
     @Block(
-            type = "String.concatList",
+            type = "String.concat",
             category = "Core",
-            description = "Concatenates the list of string value into a single string")
+            description = "Concatenates multiple string values into a single string.")
     public static String concat(String... value) {
         if (value.length == 0) {
             return null;

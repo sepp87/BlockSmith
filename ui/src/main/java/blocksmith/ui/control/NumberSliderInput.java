@@ -14,12 +14,13 @@ import javafx.scene.layout.Pane;
  */
 public abstract class NumberSliderInput extends InputControl<String> {
 
-    protected DoubleProperty value = new SimpleDoubleProperty();
+    protected DoubleProperty doubleValue = new SimpleDoubleProperty();
     protected DoubleProperty min = new SimpleDoubleProperty();
     protected DoubleProperty max = new SimpleDoubleProperty();
     protected DoubleProperty step = new SimpleDoubleProperty();
     private final boolean isInteger;
-    private final ChangeListener<Number> fxListener;
+    private final ChangeListener<Number> doubleListener;
+    private boolean syncing = false;
 
     private final Pane root;
     private final Slider slider;
@@ -28,26 +29,32 @@ public abstract class NumberSliderInput extends InputControl<String> {
     public NumberSliderInput(String valueId, double value, double min, double max, double step, boolean isInteger) {
         super(valueId);
 
-        this.value.set(value);
+        this.doubleValue.set(value);
         this.min.set(min);
         this.max.set(max);
         this.step.set(step);
         this.isInteger = isInteger;
-        this.fxListener = (b, o, n) -> valueChangedByUser(isInteger ? String.valueOf(n.intValue()) : n.toString());
+        this.setValue(numberToString(value));
+        this.doubleListener = (b, o, n) -> {
+            if (syncing) {
+                return;
+            }
+            this.value.set(numberToString(n));
+        };
 
         slider = new Slider();
-        slider.setBlockIncrement(this.step.getValue().doubleValue());
+        slider.setBlockIncrement(this.step.getValue());
         slider.setSnapToTicks(true);
         slider.majorTickUnitProperty().bind(slider.blockIncrementProperty());
         slider.setMinorTickCount(0);
 
-        slider.valueProperty().bindBidirectional(this.value);
+        slider.valueProperty().bindBidirectional(this.doubleValue);
         slider.minProperty().bindBidirectional(this.min);
         slider.maxProperty().bindBidirectional(this.max);
         slider.blockIncrementProperty().bindBidirectional(this.step);
 
         root = new Pane();
-        expander = new NumberSliderExpander(slider, isInteger, this.value, this.min, this.max, this.step);
+        expander = new NumberSliderExpander(slider, isInteger, this.doubleValue, this.min, this.max, this.step);
         expander.setLayoutX(0);
         expander.setLayoutY(0);
         slider.setLayoutX(30);
@@ -55,7 +62,11 @@ public abstract class NumberSliderInput extends InputControl<String> {
         root.getChildren().addAll(expander, slider);
         root.setOnMouseEntered(eh -> slider.requestFocus());
 
-        this.value.addListener(fxListener);
+        this.doubleValue.addListener(doubleListener);
+    }
+
+    private String numberToString(Number number) {
+        return isInteger ? String.valueOf(number.intValue()) : number.toString();
     }
 
     @Override
@@ -64,28 +75,22 @@ public abstract class NumberSliderInput extends InputControl<String> {
     }
 
     @Override
-    public String getValue() {
-        if (isInteger) {
-            return value.getValue().intValue() + "";
-        }
-        return value.getValue().toString();
-    }
-
-    @Override
-    public void setValue(String newVal) {
+    public void onValueChangedByApp(String newVal) {
         newVal = newVal == null ? "0" : newVal;
         var newNum = Double.parseDouble(newVal);
-        var oldNum = value.getValue().doubleValue();
+        var oldNum = doubleValue.getValue();
         if (Double.compare(newNum, oldNum) == 0) {
             return;
         }
-        value.setValue(newNum);
+        syncing = true;
+        doubleValue.setValue(newNum);
+        syncing = false;
     }
 
     @Override
     public void onDispose() {
-        value.removeListener(fxListener);
-        slider.valueProperty().unbindBidirectional(value);
+        doubleValue.removeListener(doubleListener);
+        slider.valueProperty().unbindBidirectional(doubleValue);
         slider.minProperty().unbindBidirectional(min);
         slider.maxProperty().unbindBidirectional(max);
         slider.blockIncrementProperty().unbindBidirectional(step);

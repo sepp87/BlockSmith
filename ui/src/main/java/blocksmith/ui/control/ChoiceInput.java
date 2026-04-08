@@ -2,12 +2,8 @@ package blocksmith.ui.control;
 
 import blocksmith.ui.utils.ListViewHoverSelectBehaviour;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
@@ -20,10 +16,8 @@ import javafx.scene.layout.VBox;
  */
 public class ChoiceInput extends InputControl<String> {
 
-    private final ChangeListener<String> fxListener = (b, o, n) -> valueChangedByUser(n);
 
     private final Set<String> options = new TreeSet<>();
-    private final StringProperty value = new SimpleStringProperty();
 
     private final VBox root;
     private final ComboBox<String> comboBox;
@@ -49,7 +43,6 @@ public class ChoiceInput extends InputControl<String> {
         root.setOnMouseEntered(eh -> comboBox.requestFocus());
 
         setValue(selected);
-        value.addListener(fxListener);
 
     }
 
@@ -59,24 +52,13 @@ public class ChoiceInput extends InputControl<String> {
     }
 
     @Override
-    public String getValue() {
-        return value.get();
-    }
-
-    @Override
-    public void setValue(String newVal) {
-        if (Objects.equals(value.get(), newVal)) {
-            return;
-        }
-        value.set(newVal);
+    protected void onValueChangedByApp(String newVal) {
     }
 
     @Override
     public void onDispose() {
         root.setOnMouseEntered(null);
         value.unbindBidirectional(comboBox.valueProperty());
-        value.removeListener(fxListener);
     }
-
 
 }

@@ -1,5 +1,6 @@
 package blocksmith.domain.graph;
 
+import blocksmith.domain.block.ArrayBlock;
 import blocksmith.domain.connection.Connection;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
@@ -84,13 +85,13 @@ public final class Graph {
     }
 
     public Graph withBlock(Block block) {
-        var existing = blocks.get(block.id()) ;
-        if(Objects.equals(existing, block)) {
+        var existing = blocks.get(block.id());
+        if (Objects.equals(existing, block)) {
             return this;
         }
         var updated = new HashMap<BlockId, Block>(blocks);
         updated.put(block.id(), block);
-        return withAll(updated.values(), connections, groups.values());
+        return with(updated.values(), connections, groups.values());
     }
 
     public Graph withoutBlock(BlockId id) {
@@ -125,7 +126,7 @@ public final class Graph {
             });
         }
 
-        return withAll(updatedBlocks, updatedConnections, updatedGroups);
+        return with(updatedBlocks, updatedConnections, updatedGroups);
     }
 
     public Graph updateParamValue(BlockId id, String valueId, String value) {
@@ -135,7 +136,7 @@ public final class Graph {
         }
         var updatedBlocks = new HashMap<BlockId, Block>(blocks);
         updatedBlocks.computeIfPresent(id, (k, v) -> v.withParamValue(valueId, value));
-        return withAll(updatedBlocks.values(), connections, groups.values());
+        return with(updatedBlocks.values(), connections, groups.values());
     }
 
     public Graph updateParamInput(BlockId id, String valueId, ParamInput input) {
@@ -145,7 +146,7 @@ public final class Graph {
         }
         var updatedBlocks = new HashMap<BlockId, Block>(blocks);
         updatedBlocks.computeIfPresent(id, (k, v) -> v.withParamInput(valueId, input));
-        return withAll(updatedBlocks.values(), connections, groups.values());
+        return with(updatedBlocks.values(), connections, groups.values());
     }
 
     public Graph renameBlock(BlockId id, String label) {
@@ -166,7 +167,7 @@ public final class Graph {
         for (var pos : positions) {
             updatedBlocks.computeIfPresent(pos.id(), (k, v) -> v.withPosition(pos.x(), pos.y()));
         }
-        return withAll(updatedBlocks.values(), connections, groups.values());
+        return with(updatedBlocks.values(), connections, groups.values());
     }
 
     public Graph resizeBlock(BlockId id, double width, double height) {
@@ -191,7 +192,7 @@ public final class Graph {
         }
         updatedConnections.add(connection);
 
-        return withAll(blocks.values(), updatedConnections, groups.values());
+        return with(blocks.values(), updatedConnections, groups.values());
     }
 
     public Graph withoutConnection(Connection connection) {
@@ -199,7 +200,7 @@ public final class Graph {
                 .filter(c -> !c.equals(connection))
                 .toList();
 
-        return withAll(blocks.values(), updatedConnections, groups.values());
+        return with(blocks.values(), updatedConnections, groups.values());
     }
 
     public Optional<Group> group(GroupId id) {
@@ -209,7 +210,7 @@ public final class Graph {
     public Graph withGroup(Group group) {
         var updated = new ArrayList<Group>(groups.values());
         updated.add(group);
-        return withAll(blocks.values(), connections, updated);
+        return with(blocks.values(), connections, updated);
     }
 
     public Graph withoutGroup(GroupId id) {
@@ -220,7 +221,7 @@ public final class Graph {
         var updated = new HashMap<GroupId, Group>(groups);
         updated.remove(id);
 
-        return withAll(blocks.values(), connections, updated.values());
+        return with(blocks.values(), connections, updated.values());
     }
 
     public boolean hasOutgoingConnections(BlockId id) {
@@ -268,8 +269,23 @@ public final class Graph {
         return Optional.ofNullable(blocksToGroups.get(block));
     }
 
-    private Graph withAll(Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
-        return new Graph(id, blocks, connections, groups);
+    private Graph with(Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
+        var updated = new Graph(id, blocks, connections, groups);
+        return normalize(updated);
+    }
+
+    private static Graph normalize(Graph graph) {
+        var normalized = graph;
+        for (var block : graph.blocks.values()) {
+            if (block instanceof ArrayBlock arrayBlock) {
+                var fitted = arrayBlock.withFittedElements(normalized);
+                if (fitted == arrayBlock) {
+                    continue;
+                }
+                normalized = normalized.withBlock(fitted);
+            }
+        }
+        return normalized;
     }
 
 }

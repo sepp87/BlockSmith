@@ -2,12 +2,8 @@ package blocksmith.ui.control;
 
 import blocksmith.ui.graph.base.BaseButton;
 import blocksmith.utils.icons.FontAwesomeSolid;
-import java.util.Objects;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableBooleanValue;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -21,10 +17,7 @@ import javafx.scene.layout.HBox;
  */
 public class PasswordInput extends InputControl<String> {
 
-    private final ChangeListener<String> fxListener = (b, o, n) -> valueChangedByUser(n);
-
     private final BooleanProperty hidden = new SimpleBooleanProperty(true);
-    private final StringProperty value = new SimpleStringProperty();
 
     private final HBox root;
     private final PasswordField passwordField;
@@ -39,15 +32,11 @@ public class PasswordInput extends InputControl<String> {
 
         textField = new TextField();
         configureField(textField, hidden);
-//        textField.setManaged(false); // Initially hide the text field
-//        textField.setVisible(false);
-
+        
         toggleButton = new BaseButton(FontAwesomeSolid.EYE_SLASH);
         toggleButton.setOnAction(this::toggleHidden);
 
         root = new HBox(10, passwordField, textField, toggleButton);
-
-        value.addListener(fxListener);
 
     }
 
@@ -75,25 +64,13 @@ public class PasswordInput extends InputControl<String> {
     }
 
     @Override
-    public String getValue() {
-        return value.get();
-    }
-
-    @Override
-    public void setValue(String newVal) {
-        if (Objects.equals(textField.getText(), newVal)) {
-            return;
-        }
-        value.set(newVal);
+    public void onValueChangedByApp(String newVal) {
     }
 
     @Override
     public void onDispose() {
-        value.removeListener(fxListener);
-
         disposeField(passwordField);
         disposeField(textField);
-
         toggleButton.setOnAction(null);
     }
 
@@ -103,6 +80,5 @@ public class PasswordInput extends InputControl<String> {
         field.textProperty().unbindBidirectional(value);
         field.setOnMouseEntered(null);
     }
-
 
 }

@@ -20,12 +20,12 @@ public final class UnknownBlock extends Block {
     }
 
     @Override
-    protected Block copy(Collection<Param> params, Collection<Port> ports, BlockLayout layout) {
+    protected Block with(Collection<Param> params, Collection<Port> ports, BlockLayout layout) {
         return new UnknownBlock(id(), type(), params, ports, layout);
     }
 
     @Override
-    public Block duplicate(BlockId id) {
+    public Block copy(BlockId id) {
         return new UnknownBlock(
                 id,
                 type(),

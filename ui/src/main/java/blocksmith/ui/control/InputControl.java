@@ -2,7 +2,11 @@ package blocksmith.ui.control;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 
 /**
@@ -12,16 +16,22 @@ import javafx.scene.Node;
 public abstract class InputControl<T> {
 
     private final String valueId;
-
-//    protected final StringProperty value = new SimpleStringProperty();
-//    protected final ChangeListener<String> valueListener = (b, o, n) -> onValueChanged(n);
+    protected final StringProperty value = new SimpleStringProperty();
+    protected final ChangeListener<String> valueListener;
+    private boolean syncing = false;
 
     private final List<Consumer<String>> listeners = new ArrayList<>();
 
     public InputControl(String valueId) {
         this.valueId = valueId;
 
-//        value.addListener(valueListener);
+        valueListener = (b, o, n) -> {
+            if (syncing) {
+                return;
+            }
+            valueChangedByUser(n);
+        };
+        value.addListener(valueListener);
     }
 
     public String valueId() {
@@ -29,44 +39,34 @@ public abstract class InputControl<T> {
     }
 
     public abstract Node node();
-//
-//    public final ReadOnlyStringProperty valueProperty() {
-//        return value;
-//    }
-//
-//    public final void bindValuePropertyTo(ObservableValue<?> target) {
-//        var binding = Bindings.createStringBinding(() -> format(target.getValue()), target);
-//        value.bind(binding);
-//    }
-//
-//    private String format(Object raw) {
-//        return raw == null ? null : raw.toString();
-//    }
-//
-//    public final void unbindValueProperty() {
-//        value.unbind();
-//    }
 
-//    public final String getValue() {
-//        return value.get();
-//    }
+    public final String getValue() {
+        return value.get();
+    }
 
-    public abstract String getValue();
+    public void setValue(String newVal) {
+        if (Objects.equals(value.get(), newVal)) {
+            return;
+        }
+        syncing = true;
+        value.set(newVal);
+        onValueChangedByApp(newVal);
+        syncing = false;
+    }
 
-    public abstract void setValue(String newVal);
+    protected abstract void onValueChangedByApp(String newVal);
 
     public final void setOnValueChangedByUser(Consumer<String> listener) {
         listeners.clear();
         listeners.add(listener);
     }
 
-    protected final void valueChangedByUser(String value) {
-            listeners.forEach(c -> c.accept(value));
+    private void valueChangedByUser(String value) {
+        listeners.forEach(c -> c.accept(value));
     }
 
     public void dispose() {
-//        value.removeListener(valueListener);
-//        value.unbind();
+        value.removeListener(valueListener);
         onDispose();
     }
 
