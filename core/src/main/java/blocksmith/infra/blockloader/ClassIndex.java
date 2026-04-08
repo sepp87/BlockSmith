@@ -40,6 +40,7 @@ public class ClassIndex {
                 blocksmith.lib.HelloWorldMethods.class,
                 blocksmith.lib.JsonMethods.class,
                 blocksmith.lib.ListMethods.class,
+                blocksmith.lib.LocaleMethods.class,
                 blocksmith.lib.MathMethods.class,
                 blocksmith.lib.NumberMethods.class,
                 blocksmith.lib.ObjectMethods.class,

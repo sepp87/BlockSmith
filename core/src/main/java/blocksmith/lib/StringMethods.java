@@ -5,7 +5,7 @@ import java.util.List;
 import blocksmith.domain.value.ParamInput.Password;
 import blocksmith.infra.blockloader.annotations.Value;
 import blocksmith.infra.blockloader.annotations.Block;
-import java.lang.reflect.Array;
+import java.util.Locale;
 
 /**
  *
@@ -198,7 +198,7 @@ public class StringMethods {
             type = "String.concatList",
             category = "Core",
             description = "Concatenates a list of string values into a single string.")
-    public static String concat(List<String> values) {
+    public static String concatList(List<String> values) {
         return concat(values.stream().toArray(String[]::new));
     }
 
@@ -215,6 +215,22 @@ public class StringMethods {
             result += v;
         }
         return result;
+    }
+
+    @Block(
+            type = "String.joinList",
+            category = "Core",
+            description = "Returns a new String composed of the values joined together with the specified delimiter.")
+    public static String joinList(String delimiter, List<String> values) {
+        return String.join(delimiter, values.stream().toArray(String[]::new));
+    }
+
+    @Block(
+            type = "String.join",
+            category = "Core",
+            description = "Returns a new String composed of the values joined together with the specified delimiter.")
+    public static String join(String delimiter, String... value) {
+        return String.join(delimiter, value);
     }
 
     @Block(
@@ -247,6 +263,22 @@ public class StringMethods {
             description = "Returns true if, and only if, length() is 0.")
     public static Boolean isEmpty(String value) {
         return value.isEmpty();
+    }
+
+    @Block(
+            type = "String.format",
+            category = "Core",
+            description = "Returns a formatted string using the specified format string and arguments. The letter after % determines the type: s for strings, d for integers, f for floats, b for booleans. %n inserts a platform-safe newline. A number sets minimum field width, - left-aligns, and . sets decimal precision. For example, \"Hello, %s! You are ~%d years old.\" with \"World\" and 6000 produces \"Hello, World! You are ~6000 years old.\".")
+    public static String format(String format, Object... arg) {
+        return String.format(format, arg);
+    }
+
+    @Block(
+            type = "String.formatLocale",
+            category = "Core",
+            description = "Returns a formatted string using the specified locale, format string, and arguments. The letter after % determines the type: s for strings, d for integers, f for floats, b for booleans. %n inserts a platform-safe newline. A number sets minimum field width, - left-aligns, and . sets decimal precision. For example, \"Hello, %s! You are ~%d years old.\" with \"World\" and 6000 produces \"Hello, World! You are ~6000 years old.\".")
+    public static String formatByLocale(Locale l, String format, Object... arg) {
+        return String.format(l, format, arg);
     }
 
 }

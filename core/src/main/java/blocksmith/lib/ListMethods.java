@@ -3,8 +3,8 @@ package blocksmith.lib;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import blocksmith.utils.ListUtils;
 import blocksmith.infra.blockloader.annotations.Block;
+import java.util.stream.Stream;
 
 /**
  *
@@ -16,8 +16,8 @@ public class ListMethods {
             type = "List.create",
             category = "Core",
             description = "")
-    public static List<Object> create() {
-        return new ArrayList<>();
+    public static List<Object> create(Object... item) {
+        return List.of(item);
     }
 
     @Block(
@@ -216,7 +216,7 @@ public class ListMethods {
             type = "List.sort",
             category = "Core",
             description = "Sorts the specified list into ascending order, according to the natural ordering of its elements. All elements in the list must implement the Comparable interface. Furthermore, all elements in the list must be mutually comparable (that is, e1.compareTo(e2) must not throw a ClassCastException for any elements e1 and e2 in the list).")
-    public static <T extends Comparable<? super T>> List<T> sort(List<T> list, Integer index) {
+    public static <T extends Comparable<? super T>> List<T> sort(List<T> list) {
         List<T> result = new ArrayList<>(list);
         Collections.sort(result);
         return result;
@@ -255,34 +255,20 @@ public class ListMethods {
         return list.indexOf(o);
     }
 
-    private static boolean allLists(List list) {
-        for (Object o : list) {
-            if (!ListUtils.isList(o)) {
-                return false;
-            }
-        }
-        return true;
+    @Block(
+            type = "List.merge",
+            category = "Core",
+            description = "Appends all of the elements in list B to the end of list A.")
+    public static <T> List<T> merge(List<T> a, List<T> b) {
+        return Stream.concat(a.stream(), b.stream()).toList();
     }
 
-    private static int countNestedLists(List list) {
-        int result = 0;
-        for (Object p : list) {
-            if (ListUtils.isList(p)) {
-                result++;
-            }
-        }
-        return result;
-    }
-
-    private static int sizeOfLongestNestedList(List list) {
-        int result = -1;
-        for (Object p : list) {
-            if (ListUtils.isList(p)) {
-                List<?> nestedList = (List<?>) p;
-                result = nestedList.size() > result ? nestedList.size() : result;
-            }
-        }
-        return result;
+    @Block(
+            type = "List.nCopies",
+            category = "Core",
+            description = "Returns an immutable list consisting of n copies of the specified object.")
+    public static <T> List<T> nCopies(int n, T object) {
+        return Collections.nCopies(n, object);
     }
 
 }

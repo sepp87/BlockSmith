@@ -10,8 +10,6 @@ public class Notes {
 
 // Support VarArgs
 // - allow varargs as params OR throw exception? 
-// - support within remove multiple blocks 
-// - support within paste blocks
 // - element port to typed ElementPort/PartialInput/...
 // - refactor BlockModelFactory to use Block only from creation and PortDefMappingUtils
 
@@ -23,12 +21,7 @@ public class Notes {
 
 // IN PROGRESS
 // - IN PROGRESS sliders enable mix, max and step
-// - DONE Pull-based execution
 // - IN PROGESS Refactor for GraphProjectionMapper to not needing to set blocks and connections to active
-//      - DONE switch exceptions reading
-//      - DONE switch display value reading
-//      - DONE add and remove spinner on running
-//      - DONE value conversion
 //      - DONE Bug: ExecutionInvalidator.invalidateDownstream(...) if(!removed) blocks downstream invalidation for added/new connections
 //      - Bug: load days-between not showing error on load
 //      - INVESTIGATED: Bug: BigInt and string-to-text not loaded

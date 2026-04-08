@@ -37,7 +37,7 @@ public class ArrayBlockTest {
     public void prepareGraph() throws IOException {
         input1 = factory.create(BlockId.create(), "Input.string").withParamValue("string", "test1");
         input2 = factory.create(BlockId.create(), "Input.string").withParamValue("string", "test2");
-        concat = (ArrayBlock) factory.create(BlockId.create(), "String.concatList");
+        concat = (ArrayBlock) factory.create(BlockId.create(), "String.concat");
 
         graph = GraphFactory.create(
                 GraphId.create(),
