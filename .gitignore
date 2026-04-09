@@ -16,5 +16,6 @@ build/
 
 # NetBeans
 nbactions.xml
+nbactions-dev.xml
 nb-configuration.xml
 /nbproject/
