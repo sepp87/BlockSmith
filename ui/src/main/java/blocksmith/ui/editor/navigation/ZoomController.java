@@ -8,7 +8,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import blocksmith.Config;
 import blocksmith.ui.utils.NodeHierarchyUtils;
 import blocksmith.app.command.CommandDispatcher;
 import blocksmith.ui.editor.EditorEventRouter;
@@ -17,6 +16,7 @@ import blocksmith.app.workspace.ViewportState;
 import blocksmith.ui.editor.navigation.command.ZoomCommand;
 import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import blocksmith.utils.OperatingSystem;
+import blocksmith.utils.SystemUtils;
 import javafx.beans.property.DoubleProperty;
 
 /**
@@ -37,7 +37,8 @@ public class ZoomController {
             CommandDispatcher commandDispatcher,
             EditorEventRouter eventRouter,
             WorkspaceFxRegistry workspaces,
-            ZoomMenuView zoomView) {
+            ZoomMenuView zoomView
+    ) {
 
         this.commandDispatcher = commandDispatcher;
         this.eventRouter = eventRouter;
@@ -85,7 +86,7 @@ public class ZoomController {
 
         var workspace = workspaces.active();
 
-        boolean onMac = Config.get().operatingSystem() == OperatingSystem.MACOS;
+        boolean onMac = SystemUtils.operatingSystem() == OperatingSystem.MACOS;
         boolean isZoomModeAndOnMac = workspace.state().isZooming() && onMac;
         boolean isIdleAndNotOnMac = workspace.state().isIdle() && !onMac;
 

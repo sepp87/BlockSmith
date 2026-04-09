@@ -3,6 +3,7 @@ package blocksmith;
 import blocksmith.App;
 import blocksmith.ui.UiAppRunner;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
 import java.io.IOException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.util.IOUtils;
@@ -24,19 +25,24 @@ public class Launcher {
         boolean isHeadless = GraphicsEnvironment.isHeadless();
 
         IOUtils.setByteArrayMaxOverride(300_000_000);
-        App app = new App();
+        var env = devMode ? Environment.dev() : Environment.prod();
+        var app = new App(env.paths().getLibDirectory());
 
         if (devMode) {
             ON_DEV = true;
-            Drafts.outputDefs();
+//            Drafts.outputDefs();
             System.out.println("RUNNING IN DEV MODE");
-            new UiAppRunner(app).run();
+
+//            var path = new File("../btsxml/days-between-v2.btsxml").toPath();
+            var path = new File("../btsxml/aslist-v2.btsxml").toPath();
+
+            new UiAppRunner(app, env, path).run();
 
         } else if (hasConsole || isHeadless) {
-            // run CLI
+            new UiAppRunner(app, env, null).run();
 
         } else {
-            new UiAppRunner(app).run();
+            new UiAppRunner(app, env, null).run();
         }
 
     }

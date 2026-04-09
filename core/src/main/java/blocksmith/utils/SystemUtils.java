@@ -1,39 +1,22 @@
 package blocksmith.utils;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author Joost
  */
 public class SystemUtils {
-
-    /**
-     *
-     * @param any
-     * @param fallbackPath
-     * @return the app root directory if any object is inside a .jar file
-     */
-    public static String getAppRootDirectory(Object any, String fallbackPath) {
-        try {
-            URI uri = any.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-            String path = new File(uri).getAbsolutePath();
-            String targetSeperatorCharClasses = "target" + File.separatorChar + "classes";
-            if (path.endsWith(targetSeperatorCharClasses)) {
-                fallbackPath = path.substring(0, path.length() - targetSeperatorCharClasses.length()) + fallbackPath;
-            }
-            return path.endsWith(".jar") ? path.substring(0, path.lastIndexOf(File.separatorChar) + 1) : fallbackPath;
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(SystemUtils.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return fallbackPath;
+    
+    private static final OperatingSystem OPERATING_SYSTEM;
+    
+    static {
+        OPERATING_SYSTEM = determineOperatingSystem();
+    }
+    
+    public static OperatingSystem operatingSystem() {
+        return OPERATING_SYSTEM;
     }
 
-    public static OperatingSystem determineOperatingSystem() {
+    private static OperatingSystem determineOperatingSystem() {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
             return OperatingSystem.WINDOWS;

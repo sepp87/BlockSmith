@@ -13,6 +13,7 @@ import blocksmith.ui.UiApp;
 import blocksmith.app.command.CommandDispatcher;
 import blocksmith.ui.utils.EventUtils;
 import blocksmith.app.command.Command;
+import blocksmith.utils.OperatingSystem;
 import java.util.logging.Logger;
 
 /**
@@ -31,9 +32,8 @@ public class KeyboardController {
 
     public void handleShortcutTriggered(KeyEvent event) {
 
-
         var isModifierDown = EventUtils.isModifierDown(event);
-        
+
         var withModifier = isModifierDown ? ", with modifier key down" : "";
         LOGGER.fine("Key pressed: " + event.getCode() + withModifier);
 

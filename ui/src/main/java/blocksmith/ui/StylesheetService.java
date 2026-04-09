@@ -124,8 +124,8 @@ public class StylesheetService {
         cssListeners.forEach(c -> c.accept(url));
     }
 
-    public static StylesheetService forDev() {
-        return new StylesheetService(css -> "src/main/resources/" + css);
+    public static StylesheetService forDev(String resourcesDirectory) {
+        return new StylesheetService(css -> resourcesDirectory + css);
     }
 
     public static StylesheetService forProd() {

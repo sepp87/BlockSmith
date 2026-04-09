@@ -110,7 +110,7 @@ public class JsonMethods {
         }
         var array = new JsonArray();
         results.forEach(array::add);
-        return array.toString();
+        return GSON.toJson(array);
     }
 
     private static String toOutput(JsonElement element) {

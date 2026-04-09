@@ -31,10 +31,12 @@ import blocksmith.ui.editor.blocksearch.BlockSearchController;
 import blocksmith.ui.editor.blocksearch.BlockSearchView;
 import blocksmith.app.command.CommandDispatcher;
 import blocksmith.app.command.CoreCommands;
+import blocksmith.app.outbound.WorkspaceHandle;
 import blocksmith.ui.command.UiCommands;
 import blocksmith.ui.editor.tab.TabContent;
 import blocksmith.ui.editor.tab.TabManagerView;
 import blocksmith.ui.workspace.WorkspaceFxFactory;
+import java.nio.file.Path;
 
 /**
  *
@@ -42,12 +44,16 @@ import blocksmith.ui.workspace.WorkspaceFxFactory;
  */
 public class UiApp extends Application {
 
-    public static final boolean USE_EXEC_LAYER = true;
     private static App app;
+    private static Path initialDocument;
+    private static StylesheetService stylesheetService;
 
-    public static void setApp(App app) {
-        UiApp.app = app;
+    public static void configure(UiAppConfig config) {
+        app = config.app();
+        initialDocument = config.initialDocument();
+        stylesheetService = config.stylesheetService();
     }
+
 
     public static final boolean LOG_FOCUS_OWNER = false;
     public static final boolean LOG_FREE_SPACE_CHECK = false;
@@ -64,13 +70,8 @@ public class UiApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        var prefsService = Launcher.ON_DEV ? StylesheetService.forDev() : StylesheetService.forProd();
-
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
-
-//        var path = new File("../btsxml/days-between-v2.btsxml").toPath();
-        var path = new File("../btsxml/aslist-v2.btsxml").toPath();
 
         // block factories
         var blockDefLibrary = app.getBlockDefLibrary();
@@ -111,7 +112,12 @@ public class UiApp extends Application {
         var workspaceRegistry = new WorkspaceFxRegistry(editorView);
         var workspaceFactory = new WorkspaceFxFactory(workspaceSessionFactory, blockModelFactory);
         var workspaceLifecycle = new WorkspaceLifecycle(workspaceFactory, workspaceRegistry);
-        var workspaceContext = workspaceFactory.openDocument(path);
+        WorkspaceHandle workspaceContext = null;
+        if (initialDocument != null) {
+            workspaceContext = workspaceFactory.openDocument(initialDocument);
+        } else {
+            workspaceContext = workspaceFactory.newDocument();
+        }
 
         // commands
         var commandRegistry = app.getCommandRegistry();
@@ -130,7 +136,7 @@ public class UiApp extends Application {
         var selectionRectangleController = new SelectionRectangleController(commandDispatcher, eventRouter, workspaceRegistry, selectionRectangleView);
         var panController = new PanController(eventRouter, workspaceRegistry);
         var radialMenuController = new RadialMenuController(commandDispatcher, eventRouter, workspaceRegistry, radialMenuView);
-        var menuBarController = new MenuBarController(commandDispatcher, workspaceRegistry, menuBarView, prefsService);
+        var menuBarController = new MenuBarController(commandDispatcher, workspaceRegistry, menuBarView, stylesheetService);
         var editorController = new EditorController(eventRouter, editorView);
 
         // active workspace listener
@@ -149,9 +155,9 @@ public class UiApp extends Application {
 
         // Setup scene
         Scene scene = new Scene(editorView, APP_WIDTH, APP_HEIGHT);
-                    scene.getStylesheets().add(prefsService.getCss());
+        scene.getStylesheets().add(stylesheetService.getCss());
 
-        prefsService.setOnCssUpdated(css -> {
+        stylesheetService.setOnCssUpdated(css -> {
             scene.getStylesheets().clear();
             scene.getStylesheets().add(css);
         });
@@ -162,7 +168,6 @@ public class UiApp extends Application {
         editorView.printMenuBarHeight();
         editorView.requestFocus();
 
-//        UserPreferencesService.setStylesheetToScene(scene);
         stage.setOnCloseRequest(event -> {
             System.out.println("Closing application...");
             System.exit(0);  // Force JVM shutdown, triggering the shutdown hook

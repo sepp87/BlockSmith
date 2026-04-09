@@ -26,6 +26,7 @@ import blocksmith.xml.v2.ObjectFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
@@ -46,11 +47,10 @@ public class App {
     private final ExecutionSessionFactory executionSessionFactory;
     private final CommandRegistry commandRegistry;
 
-    public App() throws IOException, JAXBException {
+    public App(Path libDirectory) throws IOException, JAXBException {
         configureLogging();
 
-        var paths = new AppPaths();
-        var classIndex = new ClassIndex(paths);
+        var classIndex = new ClassIndex(libDirectory);
         var methodIndex = new MethodIndex(classIndex.classes());
 
         var methodDefLoader = new MethodBlockDefLoader(methodIndex.methods());

@@ -33,11 +33,27 @@ public final class Graph {
     private final Map<BlockId, GroupId> blocksToGroups;
 
     Graph(GraphId id, Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
+        
         this.id = Objects.requireNonNull(id);
-        this.blocks = indexBlocks(blocks);
+
+        var normalized = normalizeBlocks(blocks, connections);
+        this.blocks = indexBlocks(normalized);
         this.connections = List.copyOf(Objects.requireNonNull(connections));
         this.groups = indexGroups(groups);
         this.blocksToGroups = indexBlocksToGroups(groups);
+    }
+
+    private static List<Block> normalizeBlocks(Collection<Block> blocks, Collection<Connection> connections) {
+        var normalized = new ArrayList<Block>();
+        for (var block : blocks) {
+            if (block instanceof ArrayBlock arrayBlock) {
+                var fitted = arrayBlock.withFittedElements(connections);
+                normalized.add(fitted);
+            } else {
+                normalized.add(block);
+            }
+        }
+        return normalized;
     }
 
     private static Map<BlockId, Block> indexBlocks(Collection<Block> blocks) {
@@ -270,22 +286,7 @@ public final class Graph {
     }
 
     private Graph with(Collection<Block> blocks, Collection<Connection> connections, Collection<Group> groups) {
-        var updated = new Graph(id, blocks, connections, groups);
-        return normalize(updated);
-    }
-
-    private static Graph normalize(Graph graph) {
-        var normalized = graph;
-        for (var block : graph.blocks.values()) {
-            if (block instanceof ArrayBlock arrayBlock) {
-                var fitted = arrayBlock.withFittedElements(normalized);
-                if (fitted == arrayBlock) {
-                    continue;
-                }
-                normalized = normalized.withBlock(fitted);
-            }
-        }
-        return normalized;
+        return new Graph(id, blocks, connections, groups);
     }
 
 }

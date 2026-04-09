@@ -13,12 +13,10 @@ import blocksmith.infra.blockloader.annotations.Block;
  */
 public class MethodIndex {
 
-    private final AppPaths paths;
     private final List<Method> methods;
     
 
     public MethodIndex(Collection<Class<?>> classes) throws IOException {
-        this.paths = new AppPaths();
         this.methods = List.copyOf(loadEligbleMethods(classes));
     }
 

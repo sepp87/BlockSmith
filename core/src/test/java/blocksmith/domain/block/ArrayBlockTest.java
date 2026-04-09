@@ -69,7 +69,7 @@ public class ArrayBlockTest {
         );
 
         graph = graph.withConnection(connection);
-        concat = concat.withFittedElements(graph);
+        concat = concat.withFittedElements(graph.connections());
 
         var expected = 2;
         var result = concat.inputPorts().size();
@@ -87,7 +87,7 @@ public class ArrayBlockTest {
         );
         
         graph = graph.withConnection(connection).withoutConnection(connection).withConnection(connection);
-        concat = concat.withFittedElements(graph);
+        concat = concat.withFittedElements(graph.connections());
 
         var expected = 2;
         var result = concat.inputPorts().size();
@@ -116,7 +116,7 @@ public class ArrayBlockTest {
         );
 
         graph = graph.withConnection(connection);
-        concat = concat.withFittedElements(graph);
+        concat = concat.withFittedElements(graph.connections());
 
         var expected = 1;
         var result = concat.connectedElements().size();

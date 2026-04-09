@@ -60,5 +60,9 @@ public final class Port implements ValueSlot {
     public static Port output(String valueId, int argIndex, ValueType valueType) {
         return new Port(Direction.OUTPUT, valueId, argIndex, valueType, false);
     }
+    
+    public Port copy (String valueId) {
+        return new Port(direction, valueId, argIndex, valueType, isElement);
+    }
 
 }

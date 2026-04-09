@@ -1,6 +1,6 @@
 package blocksmith.domain.block;
 
-import blocksmith.domain.graph.Graph;
+import blocksmith.domain.connection.Connection;
 import blocksmith.domain.value.Param;
 import blocksmith.domain.value.Port;
 import java.util.ArrayList;
@@ -46,17 +46,17 @@ public final class ArrayBlock extends Block {
         return List.copyOf(elements.subList(0, lastActive));
     }
 
-    public ArrayBlock withFittedElements(Graph graph) {
+    public ArrayBlock withFittedElements(Collection<Connection> connections) {
 
         var fitted = new ArrayList<Port>(fixedInputPorts());
-        fitted.addAll(fitElements(graph));
+        fitted.addAll(fitElements(connections));
         fitted.addAll(outputPorts());
 
         var ports = ports();
         if (fitted.size() == ports.size() && fitted.containsAll(ports)) {
             return this;
         }
-        
+
         return new ArrayBlock(
                 id(),
                 type(),
@@ -66,9 +66,21 @@ public final class ArrayBlock extends Block {
         );
     }
 
-    private List<Port> fitElements(Graph graph) {
+    private List<Port> fitElements(Collection<Connection> connections) {
         var elements = elements();
-        var connectedInputs = connectedInputs(graph);
+        var connectedInputs = connectedInputs(connections);
+
+        var elementIds = elements.stream().map(e -> e.valueId()).toList();
+        var arrayId = arrayId();
+        var missingIds = connectedInputs.stream()
+                .filter(id -> id.startsWith(arrayId))
+                .filter(id -> !elementIds.contains(id))
+                .toList();
+        
+        if(!missingIds.isEmpty()) {
+            var missing = createMissingFrom(missingIds);
+            elements = Stream.concat(elements.stream(), missing.stream()).toList();
+        }
 
         var connectedElements = elements.stream()
                 .filter(e -> connectedInputs.contains(e.valueId()))
@@ -83,6 +95,16 @@ public final class ArrayBlock extends Block {
         return Stream.concat(connectedElements.stream(), Stream.of(lastElement)).toList();
     }
 
+    private List<Port> createMissingFrom(List<String> elementIds) {
+        var last = elements().getFirst();
+        return elementIds.stream().map(id -> last.copy(id)).toList();
+    }
+
+    private String arrayId() {
+        var last = elements().getFirst();
+        return last.valueId().split("#")[0];
+    }
+
     private Port createNextFrom(Port last) {
         var index = Integer.parseInt(last.valueId().split("#")[1]) + 1;
         var argIndex = last.argIndex();
@@ -91,9 +113,9 @@ public final class ArrayBlock extends Block {
         return Port.input(valueId, argIndex, valueType, true);
     }
 
-    private Set<String> connectedInputs(Graph graph) {
+    private Set<String> connectedInputs(Collection<Connection> connections) {
         var result = new HashSet<String>();
-        for (var connection : graph.connections()) {
+        for (var connection : connections) {
             if (connection.to().blockId().equals(id())) {
                 result.add(connection.to().valueId());
             }

@@ -4,17 +4,17 @@
 # Compiled class file
 *.class
 
-
 # Package Files
 *.jar
-
+*.zip
 
 # Maven
 target/
 
+# Build dir
+build/
 
 # NetBeans
-build/
 nbactions.xml
 nb-configuration.xml
 /nbproject/

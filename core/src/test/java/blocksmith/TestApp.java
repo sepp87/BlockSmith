@@ -3,7 +3,6 @@ package blocksmith;
 
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.domain.block.BlockFactory;
-import blocksmith.infra.AppPaths;
 import blocksmith.infra.blockloader.ClassIndex;
 import blocksmith.infra.blockloader.CompositeBlockDefLoader;
 import blocksmith.infra.blockloader.MethodBlockDefLoader;
@@ -22,8 +21,8 @@ public class TestApp {
 
     public TestApp() throws IOException {
 
-        var paths = new AppPaths();
-        var classIndex = new ClassIndex(paths);
+        var env = Environment.test();
+        var classIndex = new ClassIndex(env.paths().getLibDirectory());
         var methodIndex = new MethodIndex(classIndex.classes());
 
         var methodDefLoader = new MethodBlockDefLoader(methodIndex.methods());

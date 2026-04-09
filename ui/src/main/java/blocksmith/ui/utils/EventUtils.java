@@ -3,7 +3,7 @@ package blocksmith.ui.utils;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import blocksmith.Config;
+import blocksmith.utils.SystemUtils;
 
 /**
  *
@@ -11,8 +11,8 @@ import blocksmith.Config;
  */
 public class EventUtils {
 
-    public static boolean isModifierDown(KeyEvent event) {
-        switch (Config.get().operatingSystem()) {
+    public static boolean isModifierDown( KeyEvent event) {
+        switch (SystemUtils.operatingSystem()) {
             case WINDOWS:
                 return event.isControlDown();
             case MACOS:
@@ -24,8 +24,8 @@ public class EventUtils {
         }
     }
 
-    public static boolean isModifierDown(MouseEvent event) {
-        switch (Config.get().operatingSystem()) {
+    public static boolean isModifierDown( MouseEvent event) {
+        switch (SystemUtils.operatingSystem()) {
             case WINDOWS:
                 return event.isControlDown();
             case MACOS:
