@@ -17,12 +17,12 @@ public final class AppPaths {
 
     private final Path root;
 
-    private static final String BUILD_DIRECTORY = "build/";
-    private static final String CONFIG_DIRECTORY = "config/";
-    private static final String LIB_DIRECTORY = "lib/";
+    private static final String BUILD_DIR = "build/";
+    private static final String CONFIG_DIR = "config/";
+    private static final String LIB_DIR = "lib/";
 
     private AppPaths() throws IOException {
-        this.root = detectRoot(AppPaths.class, BUILD_DIRECTORY);
+        this.root = detectRoot(AppPaths.class, BUILD_DIR);
     }
 
     /**
@@ -61,18 +61,18 @@ public final class AppPaths {
         return root;
     }
 
-    public Path getConfigDirectory() {
-        return resolve(CONFIG_DIRECTORY);
+    public Path getConfigDir() {
+        return resolve(CONFIG_DIR);
     }
 
-    public Path getLibDirectory() {
-        return resolve(LIB_DIRECTORY);
+    public Path getLibDir() {
+        return resolve(LIB_DIR);
     }
 
     public static AppPaths create() throws IOException {
         var paths = new AppPaths();
-        paths.ensureDir(paths.getConfigDirectory());
-        paths.ensureDir(paths.getLibDirectory());
+        paths.ensureDir(paths.getConfigDir());
+        paths.ensureDir(paths.getLibDir());
         return paths;
     }
 

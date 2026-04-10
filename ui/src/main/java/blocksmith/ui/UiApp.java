@@ -2,8 +2,6 @@ package blocksmith.ui;
 
 import blocksmith.ui.help.HelpDialog;
 import blocksmith.App;
-import blocksmith.Config;
-import blocksmith.Launcher;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.SaveDocument;
 import blocksmith.app.workspace.WorkspaceLifecycle;
@@ -12,7 +10,6 @@ import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.File;
 
 import blocksmith.ui.editor.EditorEventRouter;
 import blocksmith.ui.editor.EditorController;
@@ -36,7 +33,6 @@ import blocksmith.ui.command.UiCommands;
 import blocksmith.ui.editor.tab.TabContent;
 import blocksmith.ui.editor.tab.TabManagerView;
 import blocksmith.ui.workspace.WorkspaceFxFactory;
-import java.nio.file.Path;
 
 /**
  *
@@ -45,13 +41,13 @@ import java.nio.file.Path;
 public class UiApp extends Application {
 
     private static App app;
-    private static Path initialDocument;
     private static StylesheetService stylesheetService;
+    private static UserPrefsService userPrefsService;
 
     public static void configure(UiAppConfig config) {
         app = config.app();
-        initialDocument = config.initialDocument();
         stylesheetService = config.stylesheetService();
+        userPrefsService = config.userPrefsService();
     }
 
 
@@ -74,9 +70,8 @@ public class UiApp extends Application {
         stage.setTitle("BlockSmith: Blocks to Script");
 
         // block factories
-        var blockDefLibrary = app.getBlockDefLibrary();
-        var blockFuncLibrary = app.getBlockFuncLibrary();
-        var blockModelFactory = new BlockModelFactory(blockDefLibrary, blockFuncLibrary);
+        var blockLibrary = app.getBlockLibrary();
+        var blockModelFactory = new BlockModelFactory(blockLibrary);
 
         // core (graph, execution, workspace) 
         var graphRepo = app.getGraphRepo();
@@ -113,8 +108,9 @@ public class UiApp extends Application {
         var workspaceFactory = new WorkspaceFxFactory(workspaceSessionFactory, blockModelFactory);
         var workspaceLifecycle = new WorkspaceLifecycle(workspaceFactory, workspaceRegistry);
         WorkspaceHandle workspaceContext = null;
-        if (initialDocument != null) {
-            workspaceContext = workspaceFactory.openDocument(initialDocument);
+        var initialDocument = userPrefsService.getInitialDocument();
+        if (initialDocument.isPresent()) {
+            workspaceContext = workspaceFactory.openDocument(initialDocument.get());
         } else {
             workspaceContext = workspaceFactory.newDocument();
         }
@@ -122,8 +118,8 @@ public class UiApp extends Application {
         // commands
         var commandRegistry = app.getCommandRegistry();
         var commandDispatcher = new CommandDispatcher(workspaceRegistry, commandRegistry);
-        var coreCommands = new CoreCommands(workspaceLifecycle, workspaceRegistry);
-        var uiCommands = new UiCommands(workspaceLifecycle, workspaceRegistry);
+        var coreCommands = new CoreCommands(workspaceLifecycle, workspaceRegistry, blockLibrary);
+        var uiCommands = new UiCommands(workspaceLifecycle, workspaceRegistry, userPrefsService);
         coreCommands.registerTo(commandRegistry);
         uiCommands.registerTo(commandRegistry);
 
@@ -132,7 +128,7 @@ public class UiApp extends Application {
 
         // controllers
         var zoomController = new ZoomController(commandDispatcher, eventRouter, workspaceRegistry, zoomView);
-        var blockSearchController = new BlockSearchController(commandDispatcher, eventRouter, workspaceRegistry, blockSearchView, blockDefLibrary);
+        var blockSearchController = new BlockSearchController(commandDispatcher, eventRouter, workspaceRegistry, blockSearchView, blockLibrary);
         var selectionRectangleController = new SelectionRectangleController(commandDispatcher, eventRouter, workspaceRegistry, selectionRectangleView);
         var panController = new PanController(eventRouter, workspaceRegistry);
         var radialMenuController = new RadialMenuController(commandDispatcher, eventRouter, workspaceRegistry, radialMenuView);
@@ -176,8 +172,8 @@ public class UiApp extends Application {
         var keyboardController = new KeyboardController(commandDispatcher);
         scene.setOnKeyPressed(event -> keyboardController.handleShortcutTriggered(event));
 
-        if (Config.showHelpOnStartup()) {
-            HelpDialog.show();
+        if (userPrefsService.showHelpOnStart()) {
+            HelpDialog.show(stage, userPrefsService);
         }
 
     }

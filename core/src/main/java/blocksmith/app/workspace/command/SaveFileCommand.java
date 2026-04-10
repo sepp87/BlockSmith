@@ -1,6 +1,5 @@
 package blocksmith.app.workspace.command;
 
-import blocksmith.Config;
 import blocksmith.app.workspace.WorkspaceSession;
 import blocksmith.app.command.WorkspaceCommand;
 import java.util.logging.Level;
@@ -29,7 +28,6 @@ public class SaveFileCommand implements WorkspaceCommand {
         if (path != null) {
             try {
                 workspace.saveDocument(path);
-                Config.setLastOpenedDirectory(path.toFile());
                 return true;
                 
             } catch (Exception ex) {

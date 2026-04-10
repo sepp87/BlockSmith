@@ -1,6 +1,6 @@
 package blocksmith.app.block.command;
 
-import blocksmith.app.command.AppCommand;
+import blocksmith.app.block.BlockLibraryService;
 import blocksmith.app.command.AppCommand;
 
 /**
@@ -9,12 +9,15 @@ import blocksmith.app.command.AppCommand;
  */
 public class ReloadBlockDefsCommand implements AppCommand {
 
-    public ReloadBlockDefsCommand() {
+    private final BlockLibraryService blockLibrary;
+    
+    public ReloadBlockDefsCommand(BlockLibraryService blockLibrary) {
+        this.blockLibrary = blockLibrary;
     }
 
     @Override
     public boolean execute() {
-
+        blockLibrary.reload();
         return true;
 
     }

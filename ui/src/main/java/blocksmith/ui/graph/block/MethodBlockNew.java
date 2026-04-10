@@ -5,7 +5,6 @@ import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.PortRef;
-import blocksmith.exec.BlockFunc;
 import blocksmith.exec.ExecutionState;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.display.ValueInspector;
@@ -35,23 +34,21 @@ import javafx.scene.layout.VBox;
 public class MethodBlockNew extends BlockModel {
 
     private final BlockDef def;
-    private final BlockFunc func;
     private final Map<String, InputControl<?>> inputControls = new HashMap<>();
     private final List<ValueInspector> valueInspectors = new ArrayList<>();
     private Pane container;
     private ProgressIndicator spinner;
     private Label label;
 
-    public MethodBlockNew(BlockDef def, BlockFunc func) {
-        this(def, func, null);
+    public MethodBlockNew(BlockDef def) {
+        this(def,  null);
     }
 
-    public MethodBlockNew(BlockDef def, BlockFunc func, String id) {
+    public MethodBlockNew(BlockDef def,  String id) {
         if (id != null) {
             this.id.set(id);
         }
         this.def = def;
-        this.func = func;
     }
 
     public void updateLayoutFrom(BlockLayout update) {
@@ -77,16 +74,8 @@ public class MethodBlockNew extends BlockModel {
         resizableProperty().set(true);
     }
 
-    public BlockDef getBlockDef() {
-        return def;
-    }
-
     public Map<String, InputControl<?>> getInputControls() {
         return inputControls;
-    }
-
-    @Override
-    protected void initialize() {
     }
 
     @Override
@@ -131,15 +120,6 @@ public class MethodBlockNew extends BlockModel {
         return container;
     }
 
-    @Override
-    public void onIncomingConnectionAdded() {
-        super.onIncomingConnectionAdded();
-    }
-
-    @Override
-    public void onIncomingConnectionRemoved() {
-        super.onIncomingConnectionRemoved();
-    }
 
     public void updateFrom(ExecutionState runtime) {
         var block = BlockId.from(getId());

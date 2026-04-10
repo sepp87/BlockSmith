@@ -16,7 +16,6 @@ import org.xml.sax.SAXException;
  */
 public class Launcher {
 
-    public static boolean ON_DEV = false;
 
     public static void main(String[] args) throws IOException, OpenXML4JException, SAXException, Exception {
 
@@ -26,10 +25,9 @@ public class Launcher {
 
         IOUtils.setByteArrayMaxOverride(300_000_000);
         var env = devMode ? Environment.dev() : Environment.prod();
-        var app = new App(env.paths().getLibDirectory());
+        var app = new App(env.paths().getLibDir());
 
         if (devMode) {
-            ON_DEV = true;
 //            Drafts.outputDefs();
             System.out.println("RUNNING IN DEV MODE");
 

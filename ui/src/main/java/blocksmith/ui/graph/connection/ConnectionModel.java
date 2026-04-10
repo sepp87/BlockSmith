@@ -19,16 +19,7 @@ public class ConnectionModel extends BaseModel {
     public ConnectionModel(PortModel startPort, PortModel endPort) {
         this.startPort = startPort;
         this.endPort = endPort;
-        initialize();
-    }
 
-
-    public boolean isAutoConnectable() {
-        return startPort.autoConnectableProperty().get();
-    }
-
-    private void initialize() {
-        // add connection to ports here, to ensure connections are re-added on revival
         startPort.addConnection(this);
         endPort.addConnection(this);
     }

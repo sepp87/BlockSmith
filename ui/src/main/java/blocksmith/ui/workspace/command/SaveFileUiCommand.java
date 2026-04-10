@@ -1,8 +1,8 @@
 package blocksmith.ui.workspace.command;
 
-import blocksmith.Config;
 import blocksmith.app.workspace.WorkspaceSession;
 import blocksmith.app.command.WorkspaceCommand;
+import blocksmith.ui.UserPrefsService;
 import blocksmith.ui.workspace.command.SaveAsFileCommand;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,9 +14,11 @@ import java.util.logging.Logger;
 public class SaveFileUiCommand implements WorkspaceCommand {
 
     private final WorkspaceSession workspace;
+    private final UserPrefsService userPrefsService;
 
-    public SaveFileUiCommand(WorkspaceSession workspaceModel) {
+    public SaveFileUiCommand(WorkspaceSession workspaceModel, UserPrefsService userPrefsService) {
         this.workspace = workspaceModel;
+        this.userPrefsService = userPrefsService;
     }
 
     @Override
@@ -30,14 +32,15 @@ public class SaveFileUiCommand implements WorkspaceCommand {
         if (path != null) {
             try {
                 workspace.saveDocument(path);
-                Config.setLastOpenedDirectory(path.toFile());
+                userPrefsService.setLastOpenedDir(path);
+                userPrefsService.setInitialDocument(path);
                 return true;
                 
             } catch (Exception ex) {
                 Logger.getLogger(SaveFileUiCommand.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return new SaveAsFileCommand(workspace).execute();
+        return new SaveAsFileCommand(workspace, userPrefsService).execute();
     }
 
 }

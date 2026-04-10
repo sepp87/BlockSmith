@@ -17,7 +17,7 @@ import java.util.prefs.Preferences;
 public class StylesheetService {
 
     private static final Preferences PREFS = Preferences.userNodeForPackage(StylesheetService.class);
-    private static final String PREFS_KEY = "stylesheet";
+    private static final String PREF_STYLESHEET = "stylesheet";
 
     private static final PredefinedStyle DEFAULT_STYLESHEET = PredefinedStyle.LIGHT;
 
@@ -56,7 +56,7 @@ public class StylesheetService {
     }
 
     private String lastCssOrDefault() {
-        String raw = PREFS.get(PREFS_KEY, DEFAULT_STYLESHEET.path());
+        String raw = PREFS.get(PREF_STYLESHEET, DEFAULT_STYLESHEET.path());
         if (PredefinedStyle.contains(raw)) {
             return raw;
         }
@@ -100,7 +100,7 @@ public class StylesheetService {
         if (activeCss.equals(css)) {
             return;
         }
-        PREFS.put(PREFS_KEY, css);
+        PREFS.put(PREF_STYLESHEET, css);
         activeCss = css;
         stopWatcher();
         startWatcher();

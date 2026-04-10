@@ -39,7 +39,7 @@ public final class GraphLogFmt {
     }
 
     public static String port(PortRef ref) {
-        return block(ref.blockId()) + "." + ref.valueId();
+        return block(ref.blockId()) + "~." + ref.valueId();
     }
     
     public static String valueType(ValueType type) {
@@ -80,7 +80,7 @@ public final class GraphLogFmt {
     }
 
     public static String shortId(UUID id) {
-        return id.toString().substring(0, 8);
+        return id.toString().substring(0, 8) + "~";
     }
 
     public static String shortIdOrMissing(UUID id) {

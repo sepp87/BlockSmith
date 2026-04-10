@@ -22,7 +22,7 @@ public class TestApp {
     public TestApp() throws IOException {
 
         var env = Environment.test();
-        var classIndex = new ClassIndex(env.paths().getLibDirectory());
+        var classIndex = new ClassIndex(env.paths().getLibDir());
         var methodIndex = new MethodIndex(classIndex.classes());
 
         var methodDefLoader = new MethodBlockDefLoader(methodIndex.methods());

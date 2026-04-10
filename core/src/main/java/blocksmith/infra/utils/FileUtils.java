@@ -19,9 +19,6 @@ public class FileUtils {
     public static String readResourceAsString(String path) {
         String result = "";
         try {
-//            InputStream inputStream = FileUtils.class.getClassLoader().getResourceAsStream(path);
-//            System.out.println("Searching for: " + path);
-//            System.out.println("URL: " + FileUtils.class.getClassLoader().getResource(path));
 
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
             result = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);

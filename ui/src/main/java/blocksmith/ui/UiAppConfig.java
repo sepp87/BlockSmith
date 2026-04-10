@@ -10,6 +10,6 @@ import java.nio.file.Path;
 public record UiAppConfig(
         App app,
         StylesheetService stylesheetService,
-        Path initialDocument) {
+        UserPrefsService userPrefsService) {
 
 }

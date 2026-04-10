@@ -21,10 +21,15 @@ public class UiAppRunner {
                 ? StylesheetService.forDev(RESOURCES_DIRECTORY)
                 : StylesheetService.forProd();
         
+        var userPrefsService 
+                = env.isDev()
+                ? UserPrefsService.forDev(initialDocument)
+                : UserPrefsService.forProd();
+        
         this.config = new UiAppConfig(
                 app,
                 stylesheetService,
-                initialDocument
+                userPrefsService
         );
     }
 

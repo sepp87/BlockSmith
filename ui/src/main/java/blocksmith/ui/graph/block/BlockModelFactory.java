@@ -5,6 +5,7 @@ import blocksmith.ui.control.TextInput;
 import blocksmith.ui.control.InputControl;
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.app.block.BlockFuncLibrary;
+import blocksmith.app.block.BlockLibraryService;
 import blocksmith.domain.block.ArrayBlock;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
@@ -13,7 +14,6 @@ import blocksmith.domain.value.ParamDef;
 import blocksmith.domain.value.ParamInput;
 import blocksmith.domain.value.ParamInput.NumericType;
 import blocksmith.domain.value.PortDef;
-import blocksmith.domain.value.ValueType;
 import blocksmith.domain.value.ValueType.SimpleType;
 import blocksmith.domain.value.types.DataSheet;
 import blocksmith.ui.control.BooleanInput;
@@ -31,7 +31,6 @@ import blocksmith.ui.display.DataSheetDisplay;
 import blocksmith.ui.display.GenericDisplay;
 import blocksmith.ui.display.ValueDisplay;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -42,28 +41,21 @@ public class BlockModelFactory {
 
     private static final Logger LOGGER = Logger.getLogger(BlockModelFactory.class.getName());
 
-    private final BlockDefLibrary defLibrary;
-    private final BlockFuncLibrary funcLibrary;
+    private final BlockLibraryService blockLibrary;
 
-    public BlockModelFactory(BlockDefLibrary defLibrary, BlockFuncLibrary funcLibrary) {
-        this.defLibrary = defLibrary;
-        this.funcLibrary = funcLibrary;
-    }
-
-    public MethodBlockNew create(String type) {
-        var id = UUID.randomUUID().toString();
-        return create(type, id);
+    public BlockModelFactory(BlockLibraryService blockLibrary) {
+        this.blockLibrary = blockLibrary;
     }
 
     public MethodBlockNew create(Block domain) {
-        var def = defLibrary.resolve(domain.type())
+        var def = blockLibrary.defs().resolve(domain.type())
                 .orElseThrow(() -> new IllegalArgumentException("Type does not exist: " + domain.type()));
 
         var type = def.type();
-        var func = funcLibrary.resolve(type).get();
+        var func = blockLibrary.funcs().resolve(type).get();
 
         var id = domain.id().toString();
-        var block = new MethodBlockNew(def, func, id);
+        var block = new MethodBlockNew(def, id);
 
         for (var port : def.inputs()) {
             if (port.isAggregatedValue()) {
@@ -93,40 +85,6 @@ public class BlockModelFactory {
 
         return block;
     }
-
-    public MethodBlockNew create(String type, String id) {
-        var oDef = defLibrary.resolve(type);
-
-        if (oDef.isEmpty()) {
-            throw new IllegalArgumentException("Type does not exist: " + type);
-        }
-
-        var def = oDef.get();
-        type = def.type();
-        var func = funcLibrary.resolve(type).get();
-
-        var block = new MethodBlockNew(def, func, id);
-
-        for (var port : def.inputs()) {
-            block.addInputPort(port.valueId(), port.valueName(), port.valueType());
-            var ref = PortRef.of(BlockId.from(id), port.direction(), port.valueId());
-            valueDisplayFrom(port).ifPresent(display -> block.addValueDisplay(ref, display));
-        }
-
-        for (var port : def.outputs()) {
-            block.addOutputPort(port.valueId(), port.valueName(), port.valueType());
-            var ref = PortRef.of(BlockId.from(id), port.direction(), port.valueId());
-            valueDisplayFrom(port).ifPresent(display -> block.addValueDisplay(ref, display));
-        }
-
-        for (var param : def.params()) {
-            var control = inputControlFrom(param);
-            block.addInputControl(param.valueId(), control);
-        }
-
-        return block;
-    }
-
     private static Optional<ValueDisplay> valueDisplayFrom(PortDef port) {
 
         if (!port.display()) {

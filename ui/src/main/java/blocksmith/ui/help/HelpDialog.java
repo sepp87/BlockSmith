@@ -1,7 +1,6 @@
 package blocksmith.ui.help;
 
-import blocksmith.Config;
-import blocksmith.ui.UiApp;
+import blocksmith.ui.UserPrefsService;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -62,7 +61,11 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
         "Del/Backspace: delete selected blocks"
     };
 
-    public HelpDialog(Stage parentStage) {
+    private final UserPrefsService userPrefsService;
+
+    private HelpDialog(UserPrefsService userPrefsService) {
+        this.userPrefsService = userPrefsService;
+
         // Content container
         VBox content = new VBox(10);
         content.setPadding(new Insets(15));
@@ -103,10 +106,10 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
 
         // Footer - Show on start + close button
         CheckBox showOnStartCheckbox = new CheckBox("Show this help dialog on startup");
-        showOnStartCheckbox.setSelected(Config.showHelpOnStartup());
+        showOnStartCheckbox.setSelected(userPrefsService.showHelpOnStart());
         showOnStartCheckbox.setFocusTraversable(false);
         showOnStartCheckbox.setOnAction(event -> {
-            Config.setShowHelpOnStartup(showOnStartCheckbox.isSelected());
+            userPrefsService.setShowHelpOnStart(showOnStartCheckbox.isSelected());
         });
 
         Region spacer = new Region();
@@ -152,18 +155,18 @@ Connect blocks by linking their ports. Hover over a port to see what kind of dat
         return box;
     }
 
-    // Static method to show the WelcomeDialog
-    public static void show() {
-        Stage owner = UiApp.getStage();
+    public static void show(Stage owner, UserPrefsService userPrefsService) {
         Stage dialog = new Stage();
         dialog.setResizable(false);
         dialog.initOwner(owner);
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.setTitle("Welcome");
 
-        HelpDialog helpView = new HelpDialog(owner);
+        HelpDialog helpView = new HelpDialog(userPrefsService);
         Scene scene = new Scene(helpView, 520, 750);
         dialog.setScene(scene);
         dialog.show();
     }
+
+  
 }

@@ -1,6 +1,7 @@
 package blocksmith.ui.editor.blocksearch;
 
 import blocksmith.app.block.BlockDefLibrary;
+import blocksmith.app.block.BlockLibraryService;
 import blocksmith.app.block.command.AddBlockCommand;
 import javafx.beans.value.ChangeListener;
 import static javafx.collections.FXCollections.observableArrayList;
@@ -34,7 +35,7 @@ public class BlockSearchController {
     private final EditorEventRouter eventRouter;
     private final WorkspaceFxRegistry context;
     private final BlockSearchView view;
-    private final BlockDefLibrary blockDefLibrary;
+    private final BlockLibraryService blockLibrary;
 
     private Point2D creationPoint;
 
@@ -48,14 +49,14 @@ public class BlockSearchController {
             EditorEventRouter eventRouter,
             WorkspaceFxRegistry context,
             BlockSearchView blockSearchView,
-            BlockDefLibrary blockDefLibrary) {
+            BlockLibraryService blockLibrary) {
         
         this.actionManager = actionManager;
         this.eventRouter = eventRouter;
         this.context = context;
 
         this.view = blockSearchView;
-        this.blockDefLibrary = blockDefLibrary;
+        this.blockLibrary = blockLibrary;
 
         searchField = view.getSearchField();
         listView = view.getListView();
@@ -64,7 +65,7 @@ public class BlockSearchController {
         searchField.textProperty().addListener(this::handleSearchAction);
         searchFieldFocusChangedListener = this::handleRetainFocus;
 
-        listView.setItems(FXCollections.observableArrayList(blockDefLibrary.types()));
+        listView.setItems(FXCollections.observableArrayList(blockLibrary.defs().types()));
         listView.setOnMouseClicked(this::handleCreateBlock);
         new ListViewHoverSelectBehaviour(listView);
 
@@ -113,14 +114,14 @@ public class BlockSearchController {
     private void handleSearchAction(Object b, String o, String searchTerm) {
         searchTerm = searchTerm.toLowerCase();
         if (searchTerm.isBlank()) {
-            listView.setItems(FXCollections.observableArrayList(blockDefLibrary.types()));
+            listView.setItems(FXCollections.observableArrayList(blockLibrary.defs().types()));
             listView.getSelectionModel().select(-1);
             return;
         }
 
         ObservableList<String> result = observableArrayList();
 
-        for (String type : blockDefLibrary.types()) {
+        for (String type : blockLibrary.defs().types()) {
             if (type.toLowerCase().contains(searchTerm)) {
                 result.add(type);
             }

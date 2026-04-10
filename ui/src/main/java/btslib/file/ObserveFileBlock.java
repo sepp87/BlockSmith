@@ -55,19 +55,6 @@ public class ObserveFileBlock extends BlockModel {
     }
 
     @Override
-    protected void initialize() {
-        
-    }
-    
-//    @Override
-//    protected void onActiveChanged() {
-//        if (!this.isActive()) {
-//            stopObservation();
-//        }
-//        super.onActiveChanged();
-//    }
-
-    @Override
     public Region getCustomization() {
         Label icon = BlockView.getAwesomeIcon(FontAwesomeSolid.EYE);
         return icon;

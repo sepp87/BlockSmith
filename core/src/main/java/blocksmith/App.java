@@ -3,7 +3,6 @@ package blocksmith;
 import blocksmith.app.block.AddBlock;
 import blocksmith.app.connection.AddConnection;
 import blocksmith.app.group.AddGroup;
-import blocksmith.infra.AppPaths;
 import blocksmith.infra.blockloader.ClassIndex;
 import blocksmith.infra.blockloader.MethodIndex;
 import blocksmith.infra.blockloader.MethodBlockDefLoader;
@@ -14,6 +13,7 @@ import blocksmith.infra.xml.GraphXmlRepo;
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.app.block.BlockFuncLibrary;
 import blocksmith.app.GraphEditorFactory;
+import blocksmith.app.block.BlockLibraryService;
 import blocksmith.app.block.CopyBlocks;
 import blocksmith.app.block.PasteBlocks;
 import blocksmith.app.clipboard.CopyMemory;
@@ -42,6 +42,7 @@ public class App {
 
     private final BlockDefLibrary blockDefLibrary;
     private final BlockFuncLibrary blockFuncLibrary;
+    private final BlockLibraryService blockLibrary;
     private final GraphRepo graphRepo;
     private final GraphEditorFactory graphEditorFactory;
     private final ExecutionSessionFactory executionSessionFactory;
@@ -59,6 +60,8 @@ public class App {
 
         var methodFuncLoader = new MethodBlockFuncLoader(methodIndex.methods());
         this.blockFuncLibrary = new BlockFuncLibrary(methodFuncLoader.load());
+        
+        this.blockLibrary = new BlockLibraryService(compositeDefLoader, methodFuncLoader);
 
         var blockFactory = new BlockFactory(blockDefLibrary);
         var graphXmlMapper = new GraphXmlMapper(blockFactory);
@@ -111,14 +114,18 @@ public class App {
         });
         root.addHandler(handler);
     }
-
-    public BlockDefLibrary getBlockDefLibrary() {
-        return blockDefLibrary;
+    
+    public BlockLibraryService getBlockLibrary() {
+        return blockLibrary;
     }
 
-    public BlockFuncLibrary getBlockFuncLibrary() {
-        return blockFuncLibrary;
-    }
+//    public BlockDefLibrary getBlockDefLibrary() {
+//        return blockDefLibrary;
+//    }
+//
+//    public BlockFuncLibrary getBlockFuncLibrary() {
+//        return blockFuncLibrary;
+//    }
 
     public GraphRepo getGraphRepo() {
         return graphRepo;

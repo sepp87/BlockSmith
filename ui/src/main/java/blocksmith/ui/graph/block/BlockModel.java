@@ -4,7 +4,6 @@ import blocksmith.domain.value.Port;
 import blocksmith.domain.value.ValueType;
 import blocksmith.exec.BlockException;
 import blocksmith.ui.graph.base.BaseModel;
-import java.util.ArrayList;
 import java.util.List;
 import blocksmith.ui.graph.port.PortModel;
 import javafx.collections.FXCollections;
@@ -12,7 +11,6 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import blocksmith.ui.graph.connection.ConnectionModel;
 import blocksmith.infra.blockloader.annotations.Block;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -27,6 +25,8 @@ public abstract class BlockModel extends BaseModel {
     protected final ObjectProperty<Bounds> measuredBounds = new SimpleObjectProperty<>();
     protected final ObservableList<PortModel> inputPorts = FXCollections.observableArrayList();
     protected final ObservableList<PortModel> outputPorts = FXCollections.observableArrayList();
+    protected final ObservableList<PortModel> ports = FXCollections.observableArrayList();
+
     protected final ObservableList<BlockException> exceptions = FXCollections.observableArrayList();
 
     public BlockModel() {
@@ -40,29 +40,8 @@ public abstract class BlockModel extends BaseModel {
         measuredBounds.set(bounds);
     }
 
-    protected abstract void initialize();
-
     public ObservableList<BlockException> getExceptions() {
         return exceptions;
-    }
-
-    public List<ConnectionModel> getConnections() {
-        List<ConnectionModel> result = new ArrayList<>();
-        for (PortModel port : inputPorts) {
-            result.addAll(port.getConnections());
-        }
-        for (PortModel port : outputPorts) {
-            result.addAll(port.getConnections());
-        }
-        return result;
-    }
-
-    public void onIncomingConnectionAdded() {
-
-    }
-
-    public void onIncomingConnectionRemoved() {
-
     }
 
     public abstract Region getCustomization();
@@ -71,36 +50,32 @@ public abstract class BlockModel extends BaseModel {
         return null;
     }
 
-    public ObservableList<PortModel> getInputPorts() {
-        return FXCollections.unmodifiableObservableList(inputPorts);
+    public List<PortModel> getPorts() {
+        return List.copyOf(ports);
     }
 
-    public ObservableList<PortModel> getOutputPorts() {
-        return FXCollections.unmodifiableObservableList(outputPorts);
+    public List<PortModel> getInputPorts() {
+        return ports.stream().filter(p -> p.getDirection() == Port.Direction.INPUT).toList();
+    }
+
+    public List<PortModel> getOutputPorts() {
+        return ports.stream().filter(p -> p.getDirection() == Port.Direction.OUTPUT).toList();
     }
 
     public PortModel addInputPort(String valueId, String valueName, ValueType valueType) {
-        return addInputPort(valueId, valueName, valueType, false);
-    }
-
-    public PortModel addInputPort(String valueId, String valueName, ValueType valueType, boolean isAutoConnectable) {
         PortModel port = new PortModel(valueId, valueName, Port.Direction.INPUT, valueType, this, false);
-        port.autoConnectableProperty().set(isAutoConnectable);
         inputPorts.add(port);
+        ports.add(port);
         return port;
     }
 
     public PortModel addOutputPort(String valueId, String valueName, ValueType valueType) {
-        return addOutputPort(valueId, valueName, valueType, false);
-    }
-
-    public PortModel addOutputPort(String valueId, String valueName, ValueType valueType, boolean isAutoConnectable) {
         PortModel port = new PortModel(valueId, valueName, Port.Direction.OUTPUT, valueType, this, true);
-        port.autoConnectableProperty().set(isAutoConnectable);
         outputPorts.add(port);
+        ports.add(port);
         return port;
     }
-    
+
     public void removeInputPort(String valueId) {
         var port = inputPorts.stream().filter(p -> p.valueId().equals(valueId)).findFirst().orElseThrow();
         inputPorts.remove(port);
@@ -111,15 +86,7 @@ public abstract class BlockModel extends BaseModel {
     public void dispose() {
         // clean up routine for sub-classes
         onRemoved();
-
-        // remove listeners
-        for (PortModel port : inputPorts) {
-            port.dispose();
-        }
-        for (PortModel port : outputPorts) {
-            port.dispose();
-        }
-
+        ports.forEach(p -> p.dispose());
         super.dispose();
     }
 

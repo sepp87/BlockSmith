@@ -40,7 +40,7 @@ public class BlockProjectionAssembler {
     public Map<BlockId, MethodBlockNew> create(Collection<Block> blocks, Graph graph) {
         var result = new HashMap<BlockId, MethodBlockNew>();
         for (var block : blocks) {
-//            var blockFx = blockFactory.create(block.type(), block.id().toString());
+            
             var blockFx = blockFactory.create(block);
 
             updatePorts(blockFx, block, graph);

@@ -27,7 +27,6 @@ public class PortModel extends BaseModel {
     private final Direction direction;
     private ValueType valueType;
 
-    private final BooleanProperty autoConnectable = new SimpleBooleanProperty(this, "autoConnectable", false);
     private final ObservableSet<ConnectionModel> connections = FXCollections.observableSet();
 
     private final int index;
@@ -67,9 +66,6 @@ public class PortModel extends BaseModel {
         throw new UnsupportedOperationException("PortModel controls its own active state.");
     }
 
-    public BooleanProperty autoConnectableProperty() {
-        return autoConnectable;
-    }
 
     public Port.Direction getDirection() {
         return direction;
@@ -92,20 +88,11 @@ public class PortModel extends BaseModel {
     public void addConnection(ConnectionModel connection) {
         connections.add(connection);
         active.set(true);
-
-        if (direction == Port.Direction.INPUT) {
-            block.onIncomingConnectionAdded();
-        }
     }
 
     public void removeConnection(ConnectionModel connection) {
-
         connections.remove(connection);
         active.set(!connections.isEmpty());
-
-        if (direction == Port.Direction.INPUT) {
-            block.onIncomingConnectionRemoved();
-        }
     }
 
     public ObservableSet<ConnectionModel> getConnections() {
