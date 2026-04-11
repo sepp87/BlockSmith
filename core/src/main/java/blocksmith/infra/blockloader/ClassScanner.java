@@ -1,6 +1,5 @@
 package blocksmith.infra.blockloader;
 
-import blocksmith.infra.AppPaths;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,17 +16,21 @@ import java.util.stream.Stream;
  *
  * @author joostmeulenkamp
  */
-public class ClassIndex {
+public class ClassScanner {
 
-    private static final Logger LOGGER = Logger.getLogger(ClassIndex.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ClassScanner.class.getName());
     
     private final Path libDirectory;
-    private final List<Class<?>> classes;
+    private List<Class<?>> classes;
 
-    public ClassIndex(Path libDirectory) {
+    public ClassScanner(Path libDirectory) {
         this.libDirectory = libDirectory;
-        this.classes = List.copyOf(loadClasses());
+        rescan();
     }
+    
+    public void rescan() {
+        this.classes = List.copyOf(loadClasses());
+    } 
 
     public Collection<Class<?>> classes() {
         return classes;

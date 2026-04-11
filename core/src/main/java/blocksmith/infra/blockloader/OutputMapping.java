@@ -14,5 +14,8 @@ public record OutputMapping (
         OutputExtractor extractor
         ) {
  
+    public static OutputMapping empty() {
+        return new OutputMapping(List.of(), null);
+    }
     
 }

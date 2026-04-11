@@ -8,6 +8,8 @@ public class Notes {
 
 }
 
+// rescan classes and methods
+//
 // Support VarArgs
 // - allow varargs as params OR throw exception? 
 // - element port to typed ElementPort/PartialInput/...

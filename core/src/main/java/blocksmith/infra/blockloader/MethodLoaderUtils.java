@@ -1,4 +1,3 @@
-
 package blocksmith.infra.blockloader;
 
 import java.lang.annotation.Annotation;
@@ -6,18 +5,20 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author joost
  */
 public final class MethodLoaderUtils {
-    
+
     private MethodLoaderUtils() {
-        
+
     }
-    
+
     public static List<Method> getStaticMethodsFromClasses(Collection<Class<?>> classes) {
         List<Method> result = new ArrayList<>();
         for (Class<?> clazz : classes) {
@@ -47,6 +48,25 @@ public final class MethodLoaderUtils {
             }
         }
         return result;
+    }
+
+    public static Map<String, Method> methodsByName(Class<?> clazz) {
+        Map<String, Method> result = new HashMap<String, Method>();
+        Method[] methods = clazz.getDeclaredMethods();
+        for (int i = 0; i < methods.length; i++) {
+            Method method = methods[i];
+            var name = method.getName();
+            result.put(name, method);
+        }
+        return result;
+    }
+    
+    public static boolean isInstance(Method method) {
+        return !Modifier.isStatic(method.getModifiers());
+    }
+
+    public static boolean isPublic(Method method) {
+        return Modifier.isPublic(method.getModifiers());
     }
 
 }

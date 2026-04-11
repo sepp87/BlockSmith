@@ -3,10 +3,10 @@ package blocksmith;
 
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.domain.block.BlockFactory;
-import blocksmith.infra.blockloader.ClassIndex;
+import blocksmith.infra.blockloader.ClassScanner;
 import blocksmith.infra.blockloader.CompositeBlockDefLoader;
 import blocksmith.infra.blockloader.MethodBlockDefLoader;
-import blocksmith.infra.blockloader.MethodIndex;
+import blocksmith.infra.blockloader.MethodBlockScanner;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,8 +22,8 @@ public class TestApp {
     public TestApp() throws IOException {
 
         var env = Environment.test();
-        var classIndex = new ClassIndex(env.paths().getLibDir());
-        var methodIndex = new MethodIndex(classIndex.classes());
+        var classIndex = new ClassScanner(env.paths().getLibDir());
+        var methodIndex = new MethodBlockScanner(classIndex.classes());
 
         var methodDefLoader = new MethodBlockDefLoader(methodIndex.methods());
         var compositeDefLoader = new CompositeBlockDefLoader(List.of(methodDefLoader));

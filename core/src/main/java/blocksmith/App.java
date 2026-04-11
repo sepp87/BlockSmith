@@ -3,8 +3,8 @@ package blocksmith;
 import blocksmith.app.block.AddBlock;
 import blocksmith.app.connection.AddConnection;
 import blocksmith.app.group.AddGroup;
-import blocksmith.infra.blockloader.ClassIndex;
-import blocksmith.infra.blockloader.MethodIndex;
+import blocksmith.infra.blockloader.ClassScanner;
+import blocksmith.infra.blockloader.MethodBlockScanner;
 import blocksmith.infra.blockloader.MethodBlockDefLoader;
 import blocksmith.infra.blockloader.CompositeBlockDefLoader;
 import blocksmith.infra.blockloader.MethodBlockFuncLoader;
@@ -13,15 +13,19 @@ import blocksmith.infra.xml.GraphXmlRepo;
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.app.block.BlockFuncLibrary;
 import blocksmith.app.GraphEditorFactory;
-import blocksmith.app.block.BlockLibraryService;
+import blocksmith.infra.blockloader.ScannedBlockLibrary;
 import blocksmith.app.block.CopyBlocks;
 import blocksmith.app.block.PasteBlocks;
 import blocksmith.app.clipboard.CopyMemory;
 import blocksmith.app.command.CommandRegistry;
 import blocksmith.app.connection.RemoveConnection;
+import blocksmith.app.outbound.BlockLibrary;
 import blocksmith.app.outbound.GraphRepo;
 import blocksmith.domain.block.BlockFactory;
 import blocksmith.exec.ExecutionSessionFactory;
+import blocksmith.infra.blockloader.SourceBlockDefLoader;
+import blocksmith.infra.blockloader.SourceBlockExecLoader;
+import blocksmith.infra.blockloader.SourceBlockScanner;
 import blocksmith.xml.v2.ObjectFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -42,7 +46,7 @@ public class App {
 
     private final BlockDefLibrary blockDefLibrary;
     private final BlockFuncLibrary blockFuncLibrary;
-    private final BlockLibraryService blockLibrary;
+    private final BlockLibrary blockLibrary;
     private final GraphRepo graphRepo;
     private final GraphEditorFactory graphEditorFactory;
     private final ExecutionSessionFactory executionSessionFactory;
@@ -51,17 +55,23 @@ public class App {
     public App(Path libDirectory) throws IOException, JAXBException {
         configureLogging();
 
-        var classIndex = new ClassIndex(libDirectory);
-        var methodIndex = new MethodIndex(classIndex.classes());
-
-        var methodDefLoader = new MethodBlockDefLoader(methodIndex.methods());
-        var compositeDefLoader = new CompositeBlockDefLoader(List.of(methodDefLoader));
+        var classScanner = new ClassScanner(libDirectory);
+        var methodBlockScanner = new MethodBlockScanner(classScanner);
+        var sourceBlockScanner = new SourceBlockScanner(classScanner);
+        
+        
+        var sourceBlockDefLoader = new SourceBlockDefLoader(sourceBlockScanner.classes());
+        var sourceBlockExecLoader = new SourceBlockExecLoader(sourceBlockScanner.classes());
+        
+        
+        var methodDefLoader = new MethodBlockDefLoader(methodBlockScanner.methods());
+        var compositeDefLoader = new CompositeBlockDefLoader(List.of(methodDefLoader, sourceBlockDefLoader));
         this.blockDefLibrary = new BlockDefLibrary(compositeDefLoader.load());
 
-        var methodFuncLoader = new MethodBlockFuncLoader(methodIndex.methods());
+        var methodFuncLoader = new MethodBlockFuncLoader(methodBlockScanner.methods());
         this.blockFuncLibrary = new BlockFuncLibrary(methodFuncLoader.load());
         
-        this.blockLibrary = new BlockLibraryService(compositeDefLoader, methodFuncLoader);
+        this.blockLibrary = new ScannedBlockLibrary(classScanner, methodBlockScanner, compositeDefLoader, methodFuncLoader);
 
         var blockFactory = new BlockFactory(blockDefLibrary);
         var graphXmlMapper = new GraphXmlMapper(blockFactory);
@@ -115,7 +125,7 @@ public class App {
         root.addHandler(handler);
     }
     
-    public BlockLibraryService getBlockLibrary() {
+    public BlockLibrary getBlockLibrary() {
         return blockLibrary;
     }
 

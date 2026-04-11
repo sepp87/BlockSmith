@@ -6,13 +6,13 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-import blocksmith.exec.ReactiveBlock;
+import blocksmith.exec.SourceBlock;
 
 /**
  *
  * @author joost
  */
-public class PathWatcherBlock implements ReactiveBlock {
+public class PathWatcherBlock implements SourceBlock {
 
     @Override
     public void start(Map<String, Consumer<Object>> outputs) {

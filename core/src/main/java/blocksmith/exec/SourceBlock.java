@@ -8,7 +8,7 @@ import java.util.function.Consumer;
  *
  * @author joostmeulenkamp
  */
-public interface ReactiveBlock {
+public interface SourceBlock {
 
     void start(Map<String, Consumer<Object>> outputs);
 

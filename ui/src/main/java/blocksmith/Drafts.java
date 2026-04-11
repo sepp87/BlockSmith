@@ -9,16 +9,31 @@ import blocksmith.infra.blockloader.annotations.Display;
 import blocksmith.infra.blockloader.annotations.Value;
 import blocksmith.lib.HelloWorldMethods;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author joost
  */
 public class Drafts {
+
+    
+    private static Map<String, Method> methodsByName(Class<?> clazz) {
+        Map<String, Method> result = new HashMap<String, Method>();
+        Method[] methods = clazz.getDeclaredMethods();
+        for (int i = 0; i < methods.length; i++) {
+            Method method = methods[i];
+            var name = method.getName();
+            result.put(name, method);
+        }
+        return result;
+    }
 
     public static void outputDefs() throws ReflectiveOperationException {
 

@@ -13,16 +13,12 @@ public class MethodBlockDefMapper {
 
     public static BlockDef blockDefFromMethod(Method method) throws Exception {
 
-        var hasAggregatedInput = method.isVarArgs();
         var metadata = method.getAnnotation(Block.class);
         var params = MethodParamMapper.map(method);
         var inputs = MethodInputMapper.map(method);
         var outputs = MethodOutputMapper.map(method);
+        var hasAggregatedInput = method.isVarArgs();
 
-        if(metadata.type().equals("String.concatList")) {
-            System.out.println("hasAggregatedInput " + hasAggregatedInput);
-        }
-        
         return new BlockDef(
                 metadata.type(),
                 metadata.name(),
@@ -34,9 +30,8 @@ public class MethodBlockDefMapper {
                 params,
                 inputs,
                 outputs.ports(),
-                outputs.extractor(), 
+                outputs.extractor(),
                 hasAggregatedInput
-                
         );
     }
 

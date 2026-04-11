@@ -5,7 +5,7 @@ import blocksmith.ui.control.TextInput;
 import blocksmith.ui.control.InputControl;
 import blocksmith.app.block.BlockDefLibrary;
 import blocksmith.app.block.BlockFuncLibrary;
-import blocksmith.app.block.BlockLibraryService;
+import blocksmith.infra.blockloader.ScannedBlockLibrary;
 import blocksmith.domain.block.ArrayBlock;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
@@ -41,9 +41,9 @@ public class BlockModelFactory {
 
     private static final Logger LOGGER = Logger.getLogger(BlockModelFactory.class.getName());
 
-    private final BlockLibraryService blockLibrary;
+    private final ScannedBlockLibrary blockLibrary;
 
-    public BlockModelFactory(BlockLibraryService blockLibrary) {
+    public BlockModelFactory(ScannedBlockLibrary blockLibrary) {
         this.blockLibrary = blockLibrary;
     }
 
