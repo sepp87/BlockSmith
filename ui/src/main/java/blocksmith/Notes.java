@@ -8,7 +8,7 @@ public class Notes {
 
 }
 
-// rescan classes and methods
+// use BlockLibraryMarker to scan for internal blocks
 //
 // Support VarArgs
 // - allow varargs as params OR throw exception? 

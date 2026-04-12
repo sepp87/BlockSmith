@@ -12,17 +12,20 @@ public class ExecutionSession {
     private final ExecutionEngine engine;
     private final ExecutionState state;
     private final ExecutionInvalidator invalidator;
+    private final SourceBlockRegistry sourceBlockRegistry;
     private Graph current;
 
     public ExecutionSession(
             ExecutionEngine engine,
             ExecutionState state,
             ExecutionInvalidator invalidator,
+            SourceBlockRegistry sourceBlockRegistry,
             Graph graph) {
 
         this.engine = engine;
         this.state = state;
         this.invalidator = invalidator;
+        this.sourceBlockRegistry = sourceBlockRegistry;
         this.current = graph;
         onGraphChanged(GraphFactory.createEmpty(), graph);
     }
@@ -34,6 +37,8 @@ public class ExecutionSession {
     public void onGraphChanged(Graph oldGraph, Graph newGraph) {
         this.current = newGraph;
         var diff = GraphDiff.compare(oldGraph, newGraph);
+        sourceBlockRegistry.registerSourceBlocksWithin(diff.addedBlocks());
+        sourceBlockRegistry.registerSourceBlocksWithin(diff.removedBlocks());
         invalidator.invalidate(state, oldGraph, newGraph, diff);
         engine.runAll(newGraph, state);
     }

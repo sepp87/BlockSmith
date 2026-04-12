@@ -11,18 +11,19 @@ import blocksmith.domain.graph.Graph;
 public class ExecutionSessionFactory {
     
     private final BlockDefLibrary defLibrary;
-    private final BlockExecLibrary funcLibrary;
+    private final BlockExecLibrary execLibrary;
     
-    public ExecutionSessionFactory(BlockDefLibrary defLibrary, BlockExecLibrary funcLibrary) {
+    public ExecutionSessionFactory(BlockDefLibrary defLibrary, BlockExecLibrary execLibrary) {
         this.defLibrary = defLibrary;
-        this.funcLibrary = funcLibrary;
+        this.execLibrary = execLibrary;
     }
 
     public ExecutionSession create(Graph graph) {
-        var engine = new ExecutionEngine(defLibrary, funcLibrary);
+        var engine = new ExecutionEngine(defLibrary, execLibrary);
         var state = new ExecutionState();
         var invalidator = new ExecutionInvalidator();
-        var session = new ExecutionSession(engine, state, invalidator, graph);
+        var sourceBlockRegistry = new SourceBlockRegistry(execLibrary);
+        var session = new ExecutionSession(engine, state, invalidator, sourceBlockRegistry, graph);
         return session;
     }
 
