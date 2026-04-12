@@ -1,5 +1,6 @@
 package blocksmith.exec;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -9,7 +10,7 @@ import java.util.function.Supplier;
  */
 public record SourceBlockSpec(
         Supplier<SourceBlock> factory,
-        BiConsumer<SourceBlock, Object[]> injector
+        BiConsumer<SourceBlock, List<Object>> injector
         ) implements BlockExec {
 
 }

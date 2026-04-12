@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,17 +33,19 @@ public class ExecutionEngine {
 
     private final BlockDefLibrary defLibrary;
     private final BlockExecLibrary execLibrary;
+    private final SourceBlockIndex sourceBlocks;
 
-    public ExecutionEngine(BlockDefLibrary defLibrary, BlockExecLibrary execLibrary) {
+    public ExecutionEngine(BlockDefLibrary defLibrary, BlockExecLibrary execLibrary, SourceBlockIndex sourceBlocks) {
         this.defLibrary = defLibrary;
         this.execLibrary = execLibrary;
+        this.sourceBlocks = sourceBlocks;
     }
 
-    public void runAll(Graph current, ExecutionState state) {
+    public void runAll(Graph current, ExecutionState state, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
         var sinks = resolveSinksOf(current);
 
         for (var sink : sinks) {
-            run(sink, current, state);
+            run(sink, current, state, onSourceBlockEmitted);
         }
 
         // identify subgraphs and group blocks accordingly 
@@ -63,13 +66,13 @@ public class ExecutionEngine {
         return result;
     }
 
-    private void run(BlockId id, Graph current, ExecutionState state) {
+    private void run(BlockId id, Graph current, ExecutionState state, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
 
         try {
             var block = current.block(id).orElseThrow();
-            var inputs = collectInputValues(current, state, block);
+            var inputs = collectInputValues(current, state, block, onSourceBlockEmitted);
             state.updateBlockState(id, inputs.byRef(), BlockStatus.RUNNING, List.of());
-            var output = runBlock(block, inputs.byIndex());
+            var output = runBlock(block, inputs.byIndex(), onSourceBlockEmitted);
             state.updateBlockState(id, output.values(), BlockStatus.FINISHED, output.exceptions());
 
         } catch (RuntimeException ex) {
@@ -85,7 +88,7 @@ public class ExecutionEngine {
 
     }
 
-    private ResolvedValues collectInputValues(Graph current, ExecutionState state, Block block) {
+    private ResolvedValues collectInputValues(Graph current, ExecutionState state, Block block, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
 
         var byIndex = new TreeMap<Integer, Object>();
         var byRef = new HashMap<PortRef, Object>();
@@ -102,7 +105,7 @@ public class ExecutionEngine {
 
             var values = new ArrayList<Object>();
             for (var element : elements) {
-                var value = resolveInputValueOf(current, state, block, element);
+                var value = resolveInputValueOf(current, state, block, element, onSourceBlockEmitted);
                 values.add(value);
                 LOGGER.log(Level.FINEST, GraphLogFmt.block(block.id()) + "." + element.valueId() + " = " + String.valueOf(value));
             }
@@ -121,7 +124,7 @@ public class ExecutionEngine {
         for (var input : inputs) {
             var index = input.argIndex();
             var ref = PortRef.input(block.id(), input.valueId());
-            var value = resolveInputValueOf(current, state, block, input);
+            var value = resolveInputValueOf(current, state, block, input, onSourceBlockEmitted);
             LOGGER.log(Level.FINEST, GraphLogFmt.block(block.id()) + "." + input.valueId() + " = " + String.valueOf(value));
 
             byIndex.put(index, value);
@@ -141,7 +144,7 @@ public class ExecutionEngine {
         return new ResolvedValues(new ArrayList<>(byIndex.values()), byRef);
     }
 
-    private Object resolveInputValueOf(Graph current, ExecutionState state, Block block, Port input) {
+    private Object resolveInputValueOf(Graph current, ExecutionState state, Block block, Port input, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
 
         var inputRef = PortRef.input(block.id(), input.valueId());
 
@@ -174,7 +177,7 @@ public class ExecutionEngine {
         }
 
         // retrieve upstream - case: connected, but not yet executed
-        run(connectedBlock, current, state);
+        run(connectedBlock, current, state, onSourceBlockEmitted);
         // TODO convert effective values if needed e.g. single to list, path to file, file to path
         // TODO collect blocks and execute concurrently
 
@@ -187,21 +190,40 @@ public class ExecutionEngine {
         return null;
     }
 
-    private ExecutionResult runBlock(Block block, List<Object> inputValues) {
+    private ExecutionResult runBlock(Block block, List<Object> inputValues, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
 
         var def = defLibrary.resolve(block.type())
                 .orElseThrow(() -> new RuntimeException("Execution process interrupted, block def could NOT be resolved"));
         var exec = execLibrary.resolve(block.type())
                 .orElseThrow(() -> new RuntimeException("Execution process interrupted, block func could NOT be resolved")); // TODO set exception to state if none found
-        
+
         return switch (exec) {
 
             case BlockFunc func ->
                 new BlockRunner(block.id(), def, func).invoke(inputValues.toArray());
-            case SourceBlockSpec source ->
-                
-                new ExecutionResult(Map.of(), List.of());
+
+            case SourceBlockSpec spec -> {
+                var source = sourceBlocks.get(block.id()).orElseThrow();
+                spec.injector().accept(source, inputValues);
+
+                if (!source.isRunning()) {
+                    source.start(
+                            (result) -> {
+                                if (true) {
+                                    throw new RuntimeException("Not YET implemented");
+                                }
+
+                                var outputs = def.outputExtractor().extract(block.id(), result);
+                                onSourceBlockEmitted.accept(block.id(), outputs);
+                            }
+                    );
+                }
+                throw new RuntimeException("Temp circuit breaker for source blocks");
+//                yield new ExecutionResult(Map.of(), List.of());
+            }
+
         };
 
     }
+
 }

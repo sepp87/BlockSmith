@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
@@ -55,7 +56,7 @@ public class SourceBlockExecLoader implements BlockExecLoader {
 
     }
 
-    private static BiConsumer<SourceBlock, Object[]> injectorFrom(SourceBlockInspector clazz) {
+    private static BiConsumer<SourceBlock, List<Object>> injectorFrom(SourceBlockInspector clazz) {
 
         var inputMethod = clazz.inputMethod().orElse(null);
         if (inputMethod == null) {
@@ -68,7 +69,7 @@ public class SourceBlockExecLoader implements BlockExecLoader {
                 try {
                     var allArgs = new ArrayList<Object>();
                     allArgs.add(instance);
-                    allArgs.addAll(Arrays.asList(inputs));
+                    allArgs.addAll(inputs);
                     inputHandle.invokeWithArguments(allArgs);
 
                 } catch (Throwable ex) {

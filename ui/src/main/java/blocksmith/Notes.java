@@ -8,6 +8,8 @@ public class Notes {
 
 }
 
+// TODO check if execution is NOT triggered for blocks with values in state
+
 // use BlockLibraryMarker to scan for internal blocks
 //
 // Support VarArgs

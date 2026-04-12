@@ -1,6 +1,7 @@
 package blocksmith.exec;
 
 import blocksmith.domain.block.Block;
+import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
@@ -16,8 +17,8 @@ class ExecutionInvalidator {
 
     public void invalidate(ExecutionState state, Graph previous, Graph current, GraphDiff changes) {
 
-        var visited = new HashSet<PortRef> ();
-        
+        var visited = new HashSet<PortRef>();
+
         changes.addedConnections()
                 .forEach(c -> invalidateDownstream(state, current, c.to(), visited));
 
@@ -45,21 +46,32 @@ class ExecutionInvalidator {
                 });
     }
 
+    public void invalidateDownstreamExcluding(ExecutionState state, Graph current, BlockId source) {
+        var visited = new HashSet<PortRef>();
+
+        var block = current.block(source).orElseThrow();
+        var outputs = block.outputPorts().stream().map(output -> PortRef.output(source, output.valueId())).toList();
+
+        for (var output : outputs) {
+            var connected = current.connectionsOf(output).stream().map(c -> c.to()).toList();
+            connected.forEach(input -> invalidateDownstream(state, current, input, visited));
+        }
+    }
+
     private void invalidateDownstream(ExecutionState state, Graph current, PortRef ref, Set<PortRef> visited) {
 
         state.removeStatusOf(ref.blockId());
         state.removeValueOf(ref);
-        
-        if(!visited.add(ref)) {
+
+        if (!visited.add(ref)) {
             return;
         }
-        
+
 //        var removed = state.removeValueOf(ref); // if connection was added and no connection before then there is no remove done
 //
 //        if (!removed) { // already invalidated
 //            return;
 //        }
-
         var block = current.block(ref.blockId()).orElseThrow();
         var outputs = block.outputPorts().stream().map(output -> PortRef.output(ref.blockId(), output.valueId())).toList();
 
@@ -98,5 +110,5 @@ class ExecutionInvalidator {
                 .map(param -> PortRef.input(id, param.valueId()))
                 .toList();
     }
-       
+
 }
