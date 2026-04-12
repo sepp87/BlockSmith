@@ -3,10 +3,7 @@ package blocksmith.ui.graph.block;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.control.TextInput;
 import blocksmith.ui.control.InputControl;
-import blocksmith.app.block.BlockDefLibrary;
-import blocksmith.app.block.BlockFuncLibrary;
-import blocksmith.infra.blockloader.ScannedBlockLibrary;
-import blocksmith.domain.block.ArrayBlock;
+import blocksmith.app.block.BlockLibrary;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
@@ -41,9 +38,9 @@ public class BlockModelFactory {
 
     private static final Logger LOGGER = Logger.getLogger(BlockModelFactory.class.getName());
 
-    private final ScannedBlockLibrary blockLibrary;
+    private final BlockLibrary blockLibrary;
 
-    public BlockModelFactory(ScannedBlockLibrary blockLibrary) {
+    public BlockModelFactory(BlockLibrary blockLibrary) {
         this.blockLibrary = blockLibrary;
     }
 
@@ -52,7 +49,7 @@ public class BlockModelFactory {
                 .orElseThrow(() -> new IllegalArgumentException("Type does not exist: " + domain.type()));
 
         var type = def.type();
-        var func = blockLibrary.funcs().resolve(type).get();
+        var func = blockLibrary.execs().resolve(type).get();
 
         var id = domain.id().toString();
         var block = new MethodBlockNew(def, id);

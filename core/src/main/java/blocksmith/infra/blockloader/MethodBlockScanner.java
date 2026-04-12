@@ -1,5 +1,6 @@
 package blocksmith.infra.blockloader;
 
+import blocksmith.app.outbound.BlockScanner;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -10,7 +11,7 @@ import blocksmith.infra.blockloader.annotations.Block;
  *
  * @author joost
  */
-public class MethodBlockScanner {
+public class MethodBlockScanner implements BlockScanner {
 
     private final ClassScanner classScanner;
 
@@ -18,6 +19,7 @@ public class MethodBlockScanner {
 
     public MethodBlockScanner(ClassScanner classScanner) throws IOException {
         this.classScanner = classScanner;
+        rescan();
     }
 
     public void rescan() {

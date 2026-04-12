@@ -16,13 +16,14 @@ public class SourceBlockDefLoader implements BlockDefLoader {
 
     private static final Logger LOGGER = Logger.getLogger(SourceBlockDefLoader.class.getName());
 
-    private final Collection<SourceBlockInspector> inspectors;
+    private final SourceBlockScanner scanner;
 
-    public SourceBlockDefLoader(Collection<SourceBlockInspector> inspectors) {
-        this.inspectors = inspectors;
+    public SourceBlockDefLoader(SourceBlockScanner scanner) {
+        this.scanner = scanner;
     }
 
     public Collection<BlockDef> load() {
+        var inspectors = scanner.classes();
         return from(inspectors);
     }
 

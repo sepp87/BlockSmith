@@ -1,8 +1,6 @@
 package blocksmith.ui.command;
 
-import blocksmith.infra.blockloader.ScannedBlockLibrary;
 import blocksmith.app.block.command.PasteBlocksCommand;
-import blocksmith.app.block.command.ReloadBlockDefsCommand;
 import blocksmith.app.command.Command;
 import blocksmith.app.command.CommandRegistry;
 import blocksmith.app.workspace.WorkspaceLifecycle;

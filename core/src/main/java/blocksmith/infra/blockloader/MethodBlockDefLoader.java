@@ -17,13 +17,14 @@ public class MethodBlockDefLoader implements BlockDefLoader {
 
     private static final Logger LOGGER = Logger.getLogger(MethodBlockDefLoader.class.getName());
 
-    private final Collection<Method> methods;
+    private final MethodBlockScanner scanner;
 
-    public MethodBlockDefLoader(Collection<Method> methods) {
-        this.methods = methods;
+    public MethodBlockDefLoader(MethodBlockScanner scanner) {
+        this.scanner = scanner;
     }
 
     public Collection<BlockDef> load() {
+        var methods = scanner.methods();
         return blockDefsFromMethods(methods);
     }
 

@@ -1,7 +1,5 @@
 package blocksmith.ui.editor.blocksearch;
 
-import blocksmith.app.block.BlockDefLibrary;
-import blocksmith.infra.blockloader.ScannedBlockLibrary;
 import blocksmith.app.block.command.AddBlockCommand;
 import javafx.beans.value.ChangeListener;
 import static javafx.collections.FXCollections.observableArrayList;
@@ -15,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import blocksmith.ui.utils.ListViewUtils;
 import blocksmith.ui.utils.NodeHierarchyUtils;
 import blocksmith.app.command.CommandDispatcher;
+import blocksmith.app.block.BlockLibrary;
 import blocksmith.ui.workspace.WorkspaceFxRegistry;
 import blocksmith.ui.editor.EditorEventRouter;
 import static blocksmith.ui.utils.EditorUtils.onFreeSpace;
@@ -35,7 +34,7 @@ public class BlockSearchController {
     private final EditorEventRouter eventRouter;
     private final WorkspaceFxRegistry context;
     private final BlockSearchView view;
-    private final ScannedBlockLibrary blockLibrary;
+    private final BlockLibrary blockLibrary;
 
     private Point2D creationPoint;
 
@@ -49,7 +48,7 @@ public class BlockSearchController {
             EditorEventRouter eventRouter,
             WorkspaceFxRegistry context,
             BlockSearchView blockSearchView,
-            ScannedBlockLibrary blockLibrary) {
+            BlockLibrary blockLibrary) {
         
         this.actionManager = actionManager;
         this.eventRouter = eventRouter;

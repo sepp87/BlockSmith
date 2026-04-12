@@ -10,6 +10,6 @@ import java.util.function.Supplier;
 public record SourceBlockSpec(
         Supplier<SourceBlock> factory,
         BiConsumer<SourceBlock, Object[]> injector
-        ) implements BlockExecutable {
+        ) implements BlockExec {
 
 }

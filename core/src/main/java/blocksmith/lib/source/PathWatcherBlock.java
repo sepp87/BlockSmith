@@ -1,9 +1,7 @@
-package blocksmith.lib.emitter;
+package blocksmith.lib.source;
 
-import blocksmith.domain.block.BlockDef;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import blocksmith.exec.SourceBlock;
@@ -15,7 +13,7 @@ import blocksmith.exec.SourceBlock;
 public class PathWatcherBlock implements SourceBlock {
 
     @Override
-    public void start(Map<String, Consumer<Object>> outputs) {
+    public void start(Consumer<Object> outputListener) {
 
     }
 

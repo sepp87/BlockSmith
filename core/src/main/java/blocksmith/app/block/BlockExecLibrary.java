@@ -1,6 +1,6 @@
 package blocksmith.app.block;
 
-import blocksmith.exec.BlockFunc;
+import blocksmith.exec.BlockExec;
 import java.util.Map;
 import java.util.Optional;
 
@@ -8,15 +8,15 @@ import java.util.Optional;
  *
  * @author joost
  */
-public class BlockFuncLibrary {
+public class BlockExecLibrary {
     
-  private final Map<String, BlockFunc> byType;
+  private final Map<String, BlockExec> byType;
 
-    public BlockFuncLibrary(Map<String, BlockFunc> blockFuncs) {
+    public BlockExecLibrary(Map<String, BlockExec> blockFuncs) {
         this.byType = Map.copyOf(blockFuncs);
     }
     
-    public Optional<BlockFunc> resolve(String type) {
+    public Optional<BlockExec> resolve(String type) {
         return Optional.ofNullable(byType.get(type));
     }    
 }

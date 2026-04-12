@@ -1,5 +1,7 @@
 package blocksmith.infra.blockloader;
 
+import blocksmith.app.outbound.BlockExecLoader;
+import blocksmith.exec.BlockExec;
 import blocksmith.exec.SourceBlock;
 import blocksmith.exec.SourceBlockSpec;
 import java.lang.invoke.MethodHandles;
@@ -15,19 +17,20 @@ import java.util.logging.Logger;
  *
  * @author joost
  */
-public class SourceBlockExecLoader {
+public class SourceBlockExecLoader implements BlockExecLoader {
 
     private static final Logger LOGGER = Logger.getLogger(SourceBlockExecLoader.class.getName());
 
-    private final Collection<SourceBlockInspector> inspectors;
+    private final SourceBlockScanner scanner;
 
-    public SourceBlockExecLoader(Collection<SourceBlockInspector> inspectors) {
-        this.inspectors = inspectors;
+    public SourceBlockExecLoader(SourceBlockScanner scanner) {
+        this.scanner = scanner;
     }
 
-    public Map<String, SourceBlockSpec> load() {
+    public Map<String, BlockExec> load() {
 
-        var result = new HashMap<String, SourceBlockSpec>();
+        var inspectors = scanner.classes();
+        var result = new HashMap<String, BlockExec>();
 
         for (var inspector : inspectors) {
 

@@ -8,7 +8,6 @@ import blocksmith.infra.blockloader.CompositeBlockDefLoader;
 import blocksmith.infra.blockloader.MethodBlockDefLoader;
 import blocksmith.infra.blockloader.MethodBlockScanner;
 import java.io.IOException;
-import java.util.List;
 
 /**
  *
@@ -22,11 +21,11 @@ public class TestApp {
     public TestApp() throws IOException {
 
         var env = Environment.test();
-        var classIndex = new ClassScanner(env.paths().getLibDir());
-        var methodIndex = new MethodBlockScanner(classIndex.classes());
+        var classScanner = new ClassScanner(env.paths().getLibDir());
+        var methodBlockScanner = new MethodBlockScanner(classScanner);
 
-        var methodDefLoader = new MethodBlockDefLoader(methodIndex.methods());
-        var compositeDefLoader = new CompositeBlockDefLoader(List.of(methodDefLoader));
+        var methodDefLoader = new MethodBlockDefLoader(methodBlockScanner);
+        var compositeDefLoader = new CompositeBlockDefLoader(methodDefLoader);
         this.blockDefLibrary = new BlockDefLibrary(compositeDefLoader.load());
 
         this.blockFactory = new BlockFactory(blockDefLibrary);

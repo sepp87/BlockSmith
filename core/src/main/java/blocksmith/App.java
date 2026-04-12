@@ -11,18 +11,19 @@ import blocksmith.infra.blockloader.MethodBlockFuncLoader;
 import blocksmith.infra.xml.GraphXmlMapper;
 import blocksmith.infra.xml.GraphXmlRepo;
 import blocksmith.app.block.BlockDefLibrary;
-import blocksmith.app.block.BlockFuncLibrary;
+import blocksmith.app.block.BlockExecLibrary;
 import blocksmith.app.GraphEditorFactory;
-import blocksmith.infra.blockloader.ScannedBlockLibrary;
 import blocksmith.app.block.CopyBlocks;
 import blocksmith.app.block.PasteBlocks;
 import blocksmith.app.clipboard.CopyMemory;
 import blocksmith.app.command.CommandRegistry;
 import blocksmith.app.connection.RemoveConnection;
-import blocksmith.app.outbound.BlockLibrary;
+import blocksmith.app.block.BlockLibrary;
 import blocksmith.app.outbound.GraphRepo;
 import blocksmith.domain.block.BlockFactory;
 import blocksmith.exec.ExecutionSessionFactory;
+import blocksmith.infra.blockloader.CompositeBlockExecLoader;
+import blocksmith.infra.blockloader.CompositeBlockScanner;
 import blocksmith.infra.blockloader.SourceBlockDefLoader;
 import blocksmith.infra.blockloader.SourceBlockExecLoader;
 import blocksmith.infra.blockloader.SourceBlockScanner;
@@ -31,7 +32,6 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 public class App {
 
     private final BlockDefLibrary blockDefLibrary;
-    private final BlockFuncLibrary blockFuncLibrary;
+    private final BlockExecLibrary blockFuncLibrary;
     private final BlockLibrary blockLibrary;
     private final GraphRepo graphRepo;
     private final GraphEditorFactory graphEditorFactory;
@@ -58,20 +58,19 @@ public class App {
         var classScanner = new ClassScanner(libDirectory);
         var methodBlockScanner = new MethodBlockScanner(classScanner);
         var sourceBlockScanner = new SourceBlockScanner(classScanner);
-        
-        
-        var sourceBlockDefLoader = new SourceBlockDefLoader(sourceBlockScanner.classes());
-        var sourceBlockExecLoader = new SourceBlockExecLoader(sourceBlockScanner.classes());
-        
-        
-        var methodDefLoader = new MethodBlockDefLoader(methodBlockScanner.methods());
-        var compositeDefLoader = new CompositeBlockDefLoader(List.of(methodDefLoader, sourceBlockDefLoader));
+        var compositeBlockScanner = new CompositeBlockScanner(classScanner, methodBlockScanner, sourceBlockScanner);
+
+        var methodDefLoader = new MethodBlockDefLoader(methodBlockScanner);
+        var sourceBlockDefLoader = new SourceBlockDefLoader(sourceBlockScanner);
+        var compositeDefLoader = new CompositeBlockDefLoader(methodDefLoader, sourceBlockDefLoader);
         this.blockDefLibrary = new BlockDefLibrary(compositeDefLoader.load());
 
-        var methodFuncLoader = new MethodBlockFuncLoader(methodBlockScanner.methods());
-        this.blockFuncLibrary = new BlockFuncLibrary(methodFuncLoader.load());
-        
-        this.blockLibrary = new ScannedBlockLibrary(classScanner, methodBlockScanner, compositeDefLoader, methodFuncLoader);
+        var sourceBlockExecLoader = new SourceBlockExecLoader(sourceBlockScanner);
+        var methodFuncLoader = new MethodBlockFuncLoader(methodBlockScanner);
+        var compositeExecLoader = new CompositeBlockExecLoader(methodFuncLoader, sourceBlockExecLoader);
+        this.blockFuncLibrary = new BlockExecLibrary(compositeExecLoader.load());
+
+        this.blockLibrary = new BlockLibrary(compositeBlockScanner, compositeDefLoader, compositeExecLoader);
 
         var blockFactory = new BlockFactory(blockDefLibrary);
         var graphXmlMapper = new GraphXmlMapper(blockFactory);
@@ -86,14 +85,14 @@ public class App {
         var copyBlocks = new CopyBlocks(copyMemory);
         var pasteBlocks = new PasteBlocks(copyMemory);
         this.graphEditorFactory = new GraphEditorFactory(
-                addBlock, 
+                addBlock,
                 addConnection, removeConnection,
-                addGroup, 
+                addGroup,
                 copyBlocks, pasteBlocks
         );
-        
+
         this.executionSessionFactory = new ExecutionSessionFactory(blockDefLibrary, blockFuncLibrary);
-        
+
         this.commandRegistry = new CommandRegistry();
 
     }
@@ -124,18 +123,10 @@ public class App {
         });
         root.addHandler(handler);
     }
-    
+
     public BlockLibrary getBlockLibrary() {
         return blockLibrary;
     }
-
-//    public BlockDefLibrary getBlockDefLibrary() {
-//        return blockDefLibrary;
-//    }
-//
-//    public BlockFuncLibrary getBlockFuncLibrary() {
-//        return blockFuncLibrary;
-//    }
 
     public GraphRepo getGraphRepo() {
         return graphRepo;
@@ -144,12 +135,12 @@ public class App {
     public GraphEditorFactory getGraphEditorFactory() {
         return graphEditorFactory;
     }
-    
+
     public ExecutionSessionFactory getExecutionSessionFactory() {
         return executionSessionFactory;
     }
-    
-    public CommandRegistry getCommandRegistry () {
+
+    public CommandRegistry getCommandRegistry() {
         return commandRegistry;
     }
 

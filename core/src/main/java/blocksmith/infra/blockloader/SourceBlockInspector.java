@@ -16,9 +16,6 @@ import java.util.logging.Logger;
  */
 public class SourceBlockInspector {
 
-    private final static String INPUT_METHOD = "inputs";
-    private final static String OUTPUT_METHOD = "outputs";
-
     private final Class<? extends SourceBlock> clazz;
     private final Map<String, Method> methods;
 
@@ -37,8 +34,8 @@ public class SourceBlockInspector {
     }
 
     private void validate() {
-        validateModifiersOf(methods.get(INPUT_METHOD));
-        validateModifiersOf(methods.get(OUTPUT_METHOD));
+        validateModifiersOf(methods.get(SourceBlock.INPUT_METHOD));
+        validateModifiersOf(methods.get(SourceBlock.OUTPUT_METHOD));
     }
 
     private static void validateModifiersOf(Method method) {
@@ -59,11 +56,11 @@ public class SourceBlockInspector {
     }
 
     public Optional<Method> inputMethod() {
-        return Optional.ofNullable(methods.get(INPUT_METHOD));
+        return Optional.ofNullable(methods.get(SourceBlock.INPUT_METHOD));
     }
 
     public Optional<Method> outputMethod() {
-        return Optional.ofNullable(methods.get(OUTPUT_METHOD));
+        return Optional.ofNullable(methods.get(SourceBlock.OUTPUT_METHOD));
     }
 
     public Supplier<SourceBlock> factory() {

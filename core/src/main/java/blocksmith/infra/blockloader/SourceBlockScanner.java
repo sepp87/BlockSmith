@@ -1,8 +1,8 @@
 package blocksmith.infra.blockloader;
 
+import blocksmith.app.outbound.BlockScanner;
 import blocksmith.infra.blockloader.annotations.Block;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author joost
  */
-public class SourceBlockScanner {
+public class SourceBlockScanner implements BlockScanner {
 
     private static final Logger LOGGER = Logger.getLogger(SourceBlockScanner.class.getName());
 

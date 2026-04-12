@@ -9,8 +9,11 @@ import java.util.function.Consumer;
  * @author joostmeulenkamp
  */
 public interface SourceBlock {
+    
+    public static final String INPUT_METHOD = "inputs";
+    public static final String OUTPUT_METHOD = "outputs";
 
-    void start(Map<String, Consumer<Object>> outputs);
+    void start(Consumer<Object> outputListener);
 
     void stop();
 

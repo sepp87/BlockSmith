@@ -9,15 +9,15 @@ import java.util.logging.Logger;
  *
  * @author joostmeulenkamp
  */
-public class BlockExecutor {
+public class BlockRunner {
 
-    private static final Logger LOGGER = Logger.getLogger(BlockExecutor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BlockRunner.class.getName());
 
     private final BlockId block;
     private final BlockDef def;
     private final BlockFunc func;
 
-    public BlockExecutor(BlockId block, BlockDef def, BlockFunc func) {
+    public BlockRunner(BlockId block, BlockDef def, BlockFunc func) {
         this.block = block;
         this.def = def;
         this.func = func;

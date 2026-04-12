@@ -5,6 +5,6 @@ package blocksmith.exec;
  *
  * @author joostmeulenkamp
  */
-public interface BlockExecutable {
+public sealed interface BlockExec permits BlockFunc, SourceBlockSpec {
     
 }

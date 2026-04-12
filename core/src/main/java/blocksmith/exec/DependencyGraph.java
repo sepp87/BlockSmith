@@ -1,7 +1,7 @@
 package blocksmith.exec;
 
 import blocksmith.app.block.BlockDefLibrary;
-import blocksmith.app.block.BlockFuncLibrary;
+import blocksmith.app.block.BlockExecLibrary;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;

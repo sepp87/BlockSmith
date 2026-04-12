@@ -1,7 +1,7 @@
 package blocksmith.exec;
 
 import blocksmith.app.block.BlockDefLibrary;
-import blocksmith.app.block.BlockFuncLibrary;
+import blocksmith.app.block.BlockExecLibrary;
 import blocksmith.domain.graph.Graph;
 
 /**
@@ -11,9 +11,9 @@ import blocksmith.domain.graph.Graph;
 public class ExecutionSessionFactory {
     
     private final BlockDefLibrary defLibrary;
-    private final BlockFuncLibrary funcLibrary;
+    private final BlockExecLibrary funcLibrary;
     
-    public ExecutionSessionFactory(BlockDefLibrary defLibrary, BlockFuncLibrary funcLibrary) {
+    public ExecutionSessionFactory(BlockDefLibrary defLibrary, BlockExecLibrary funcLibrary) {
         this.defLibrary = defLibrary;
         this.funcLibrary = funcLibrary;
     }

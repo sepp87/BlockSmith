@@ -7,7 +7,7 @@ import java.util.List;
  * @author joost
  */
 @FunctionalInterface
-public interface BlockFunc extends BlockExecutable {
+public non-sealed interface BlockFunc extends BlockExec {
 
     Object apply(List<Object> inputs) throws Exception;
 }

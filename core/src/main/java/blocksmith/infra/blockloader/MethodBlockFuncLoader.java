@@ -1,31 +1,32 @@
 package blocksmith.infra.blockloader;
 
 import blocksmith.exec.BlockFunc;
-import blocksmith.app.outbound.BlockFuncLoader;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import blocksmith.infra.blockloader.annotations.Block;
+import blocksmith.app.outbound.BlockExecLoader;
+import blocksmith.exec.BlockExec;
 
 /**
  *
  * @author joost
  */
-public class MethodBlockFuncLoader implements BlockFuncLoader {
+public class MethodBlockFuncLoader implements BlockExecLoader {
 
-    private final Collection<Method> methods;
+    private final MethodBlockScanner scanner;
 
-    public MethodBlockFuncLoader(Collection<Method> methods) {
-        this.methods = methods;
+    public MethodBlockFuncLoader(MethodBlockScanner scanner) {
+        this.scanner = scanner;
     }
 
     @Override
-    public Map<String, BlockFunc> load() {
+    public Map<String, BlockExec> load() {
         
-        var result = new HashMap<String, BlockFunc>();
+        var methods = scanner.methods();
+        var result = new HashMap<String, BlockExec>();
         
         for(var method : methods) {
             

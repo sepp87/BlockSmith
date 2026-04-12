@@ -1,7 +1,7 @@
 package blocksmith.exec;
 
 import blocksmith.app.block.BlockDefLibrary;
-import blocksmith.app.block.BlockFuncLibrary;
+import blocksmith.app.block.BlockExecLibrary;
 import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.ArrayBlock;
 import blocksmith.domain.block.Block;
@@ -31,11 +31,11 @@ public class ExecutionEngine {
     private final static Logger LOGGER = Logger.getLogger(ExecutionEngine.class.getName());
 
     private final BlockDefLibrary defLibrary;
-    private final BlockFuncLibrary funcLibrary;
+    private final BlockExecLibrary execLibrary;
 
-    public ExecutionEngine(BlockDefLibrary defLibrary, BlockFuncLibrary funcLibrary) {
+    public ExecutionEngine(BlockDefLibrary defLibrary, BlockExecLibrary execLibrary) {
         this.defLibrary = defLibrary;
-        this.funcLibrary = funcLibrary;
+        this.execLibrary = execLibrary;
     }
 
     public void runAll(Graph current, ExecutionState state) {
@@ -191,9 +191,17 @@ public class ExecutionEngine {
 
         var def = defLibrary.resolve(block.type())
                 .orElseThrow(() -> new RuntimeException("Execution process interrupted, block def could NOT be resolved"));
-        var func = funcLibrary.resolve(block.type())
+        var exec = execLibrary.resolve(block.type())
                 .orElseThrow(() -> new RuntimeException("Execution process interrupted, block func could NOT be resolved")); // TODO set exception to state if none found
+        
+        return switch (exec) {
 
-        return new BlockExecutor(block.id(), def, func).invoke(inputValues.toArray());
+            case BlockFunc func ->
+                new BlockRunner(block.id(), def, func).invoke(inputValues.toArray());
+            case SourceBlockSpec source ->
+                
+                new ExecutionResult(Map.of(), List.of());
+        };
+
     }
 }

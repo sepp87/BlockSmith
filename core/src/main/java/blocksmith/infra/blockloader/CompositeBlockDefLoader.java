@@ -14,8 +14,8 @@ public class CompositeBlockDefLoader implements BlockDefLoader {
 
     private final List<BlockDefLoader> loaders;
 
-    public CompositeBlockDefLoader(List<BlockDefLoader> loaders) {
-        this.loaders = List.copyOf(loaders);
+    public CompositeBlockDefLoader(BlockDefLoader... loaders) {
+        this.loaders = List.of(loaders);
     }
 
     public Collection<BlockDef> load() {

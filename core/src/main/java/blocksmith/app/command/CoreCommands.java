@@ -1,6 +1,5 @@
 package blocksmith.app.command;
 
-import blocksmith.infra.blockloader.ScannedBlockLibrary;
 import blocksmith.app.block.command.CopyBlocksCommand;
 import blocksmith.app.block.command.DeselectAllBlocksCommand;
 import blocksmith.app.block.command.PasteBlocksCommand;
@@ -8,6 +7,7 @@ import blocksmith.app.block.command.ReloadBlockDefsCommand;
 import blocksmith.app.block.command.RemoveBlocksCommand;
 import blocksmith.app.block.command.SelectAllBlocksCommand;
 import blocksmith.app.group.command.AddGroupCommand;
+import blocksmith.app.block.BlockLibrary;
 import blocksmith.app.outbound.WorkspaceRegistry;
 import blocksmith.app.workspace.WorkspaceLifecycle;
 import blocksmith.app.workspace.command.NewFileCommand;
@@ -24,7 +24,7 @@ public class CoreCommands {
 
     private final Map<Enum<?>, Supplier<Command>> commands;
 
-    public CoreCommands(WorkspaceLifecycle lifecycle, WorkspaceRegistry workspaces, ScannedBlockLibrary blockLibrary) {
+    public CoreCommands(WorkspaceLifecycle lifecycle, WorkspaceRegistry workspaces, BlockLibrary blockLibrary) {
         var temp = new HashMap<Enum<?>, Supplier<Command>>();
         temp.put(Command.Id.NEW_FILE, () -> new NewFileCommand(lifecycle));
         temp.put(Command.Id.SAVE_FILE, () -> new SaveFileCommand(workspaces.active().session()));
