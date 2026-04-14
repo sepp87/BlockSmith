@@ -19,6 +19,7 @@ import blocksmith.app.clipboard.CopyMemory;
 import blocksmith.app.command.CommandRegistry;
 import blocksmith.app.connection.RemoveConnection;
 import blocksmith.app.block.BlockLibrary;
+import blocksmith.app.outbound.AppScheduler;
 import blocksmith.app.outbound.GraphRepo;
 import blocksmith.domain.block.BlockFactory;
 import blocksmith.exec.ExecutionSessionFactory;
@@ -52,7 +53,7 @@ public class App {
     private final ExecutionSessionFactory executionSessionFactory;
     private final CommandRegistry commandRegistry;
 
-    public App(Path libDirectory) throws IOException, JAXBException {
+    public App(Path libDirectory, AppScheduler scheduler) throws IOException, JAXBException {
         configureLogging();
 
         var classScanner = new ClassScanner(libDirectory);
@@ -91,7 +92,7 @@ public class App {
                 copyBlocks, pasteBlocks
         );
 
-        this.executionSessionFactory = new ExecutionSessionFactory(blockDefLibrary, blockFuncLibrary);
+        this.executionSessionFactory = new ExecutionSessionFactory(blockDefLibrary, blockFuncLibrary, scheduler);
 
         this.commandRegistry = new CommandRegistry();
 

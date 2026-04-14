@@ -65,9 +65,11 @@ public class WorkspaceFxFactory implements WorkspaceFactory {
         session.addGraphListener(projection::updateFromGraphState);
         projection.addProjectionListener(renderer::updateFrom);
 
-        runtime.setOnBlockUpdated(blockId -> Platform.runLater(() -> {
-            projection.block(blockId).updateFrom(runtime);
+        runtime.setOnBlockUpdated(stateUpdate -> Platform.runLater(() -> {
+            projection.block(stateUpdate.id()).updateFrom(stateUpdate);
         }));
+
+        session.start();
 
         return context;
     }

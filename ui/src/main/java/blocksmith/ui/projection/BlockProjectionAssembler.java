@@ -9,12 +9,15 @@ import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.ValueTypeResolver;
 import blocksmith.domain.value.Port;
 import static blocksmith.domain.value.Port.Direction.INPUT;
+import blocksmith.exec.BlockState;
+import blocksmith.exec.BlockStatus;
 import blocksmith.exec.ExecutionState;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.graph.port.PortModel;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -40,13 +43,16 @@ public class BlockProjectionAssembler {
     public Map<BlockId, MethodBlockNew> create(Collection<Block> blocks, Graph graph) {
         var result = new HashMap<BlockId, MethodBlockNew>();
         for (var block : blocks) {
-            
+
             var blockFx = blockFactory.create(block);
 
             updatePorts(blockFx, block, graph);
             updateBlock(blockFx, block, graph);
             updateInputControls(blockFx, block, graph);
-            blockFx.updateFrom(runtime);
+
+            var id = block.id();
+            var blockState = runtime.stateOf(id);
+            blockFx.updateFrom(blockState);
 
             result.put(block.id(), blockFx);
         }

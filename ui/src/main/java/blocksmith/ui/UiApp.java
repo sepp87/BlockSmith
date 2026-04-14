@@ -2,6 +2,7 @@ package blocksmith.ui;
 
 import blocksmith.ui.help.HelpDialog;
 import blocksmith.App;
+import blocksmith.Environment;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.SaveDocument;
 import blocksmith.app.workspace.WorkspaceLifecycle;
@@ -33,6 +34,7 @@ import blocksmith.ui.command.UiCommands;
 import blocksmith.ui.editor.tab.TabContent;
 import blocksmith.ui.editor.tab.TabManagerView;
 import blocksmith.ui.workspace.WorkspaceFxFactory;
+import java.nio.file.Path;
 
 /**
  *
@@ -40,16 +42,16 @@ import blocksmith.ui.workspace.WorkspaceFxFactory;
  */
 public class UiApp extends Application {
 
-    private static App app;
-    private static StylesheetService stylesheetService;
-    private static UserPrefsService userPrefsService;
+    private static Environment env;
+    private static Stage stage;
 
-    public static void configure(UiAppConfig config) {
-        app = config.app();
-        stylesheetService = config.stylesheetService();
-        userPrefsService = config.userPrefsService();
-    }
+    private static final String RESOURCES_DIRECTORY = "src/main/resources/";
+    private static final double APP_WIDTH = 800;
+    private static final double APP_HEIGHT = 800;
 
+    private App app;
+    private StylesheetService stylesheetService;
+    private UserPrefsService userPrefsService;
 
     public static final boolean LOG_FOCUS_OWNER = false;
     public static final boolean LOG_FREE_SPACE_CHECK = false;
@@ -59,12 +61,27 @@ public class UiApp extends Application {
 
     public static final boolean TYPE_SENSITIVE = true;
 
-    private static final double APP_WIDTH = 800;
-    private static final double APP_HEIGHT = 800;
-    private static Stage stage;
-
     @Override
     public void start(Stage stage) throws Exception {
+
+        Path path = null;
+        var args = this.getParameters().getRaw();
+        if (!args.isEmpty()) {
+            path = Path.of(args.get(0));
+        }
+
+        var scheduler = new UiAppScheduler();
+        this.app = new App(env.paths().getLibDir(), scheduler);
+
+        this.stylesheetService
+                = env.isDev()
+                ? StylesheetService.forDev(RESOURCES_DIRECTORY)
+                : StylesheetService.forProd();
+
+        this.userPrefsService
+                = env.isDev()
+                ? UserPrefsService.forDev(path)
+                : UserPrefsService.forProd();
 
         this.stage = stage;
         stage.setTitle("BlockSmith: Blocks to Script");
@@ -178,6 +195,10 @@ public class UiApp extends Application {
 
     }
 
+    public static void setEnv(Environment env) {
+        UiApp.env = env;
+    }
+    
     public static Stage getStage() {
         return stage;
     }

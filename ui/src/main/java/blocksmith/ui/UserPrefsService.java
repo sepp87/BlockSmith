@@ -60,7 +60,7 @@ public class UserPrefsService { // move to infra in the future e.g. if headless 
     }
 
     public void setInitialDocument(Path path) {
-        if (path == null || Files.exists(path)) {
+        if (path == null || !Files.exists(path)) {
             return;
         }
         if (Files.isRegularFile(path)) {

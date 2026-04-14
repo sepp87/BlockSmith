@@ -5,6 +5,7 @@ import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.PortRef;
+import blocksmith.exec.BlockState;
 import blocksmith.exec.ExecutionState;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.display.ValueInspector;
@@ -121,9 +122,8 @@ public class MethodBlockNew extends BlockModel {
     }
 
 
-    public void updateFrom(ExecutionState runtime) {
-        var block = BlockId.from(getId());
-        var status = runtime.statusOf(block);
+    public void updateFrom(BlockState update) {
+        var status = update.status();
         switch (status) {
             case RUNNING: // set spinner
                 if (spinner != null && label.getWidth() != 0.0) {
@@ -140,13 +140,13 @@ public class MethodBlockNew extends BlockModel {
                 break;
         }
 
-        var values = runtime.valuesOf(block);
+        var values = update.values();
         for (var val : values.entrySet()) {
             var ref = val.getKey();
 //                System.out.println("METHODBLOCK " + GraphLogFmt.port(ref) + " = " + String.valueOf(val.getValue()));
         }
 
-        var errors = runtime.exceptionsOf(block);
+        var errors = update.exceptions();
 
         for (var inspector : valueInspectors) {
             var value = values.get(inspector.ref());

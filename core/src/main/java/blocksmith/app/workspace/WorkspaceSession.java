@@ -145,4 +145,8 @@ public class WorkspaceSession {
         documentPathListeners.forEach(c -> c.accept(documentPath));
     }
 
+    
+    public void start() {
+        executionSession.start();
+    }
 }

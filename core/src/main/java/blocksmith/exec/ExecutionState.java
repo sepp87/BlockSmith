@@ -3,6 +3,7 @@ package blocksmith.exec;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,25 +19,25 @@ public class ExecutionState {
     private final Map<BlockId, BlockStatus> blockStatus = new HashMap<>();
     private final Map<BlockId, List<BlockException>> blockExceptions = new HashMap<>();
 
-    private final List<Consumer<BlockId>> listeners = new ArrayList<>();
+    private final List<Consumer<BlockState>> listeners = new ArrayList<>();
 
     public void setValueOf(PortRef ref, Object value) {
         valueIndex.put(ref, value);
     }
-    
+
     public boolean removeValueOf(PortRef ref) {
         return valueIndex.remove(ref) != null;
     }
-    
+
     public void removeStatusOf(BlockId block) {
         blockStatus.remove(block);
     }
-    
+
     public void clearExceptionsOf(BlockId block) {
         blockExceptions.remove(block);
     }
-    
-    public void setOnBlockUpdated(Consumer<BlockId> listener) {
+
+    public void setOnBlockUpdated(Consumer<BlockState> listener) {
         listeners.clear();
         listeners.add(listener);
     }
@@ -60,19 +61,25 @@ public class ExecutionState {
     }
 
     private void blockUpdated(BlockId block) {
-//        System.out.println("BLOCK UPDATED IN EXECUTION STATE");
-        listeners.forEach(c -> c.accept(block));
+        var update = stateOf(block);
+        listeners.forEach(c -> c.accept(update));
+    }
+
+    public BlockState stateOf(BlockId block) {
+        var status = statusOf(block);
+        var values = Collections.unmodifiableMap(new HashMap<>(valuesOf(block)));
+        var exceptions = exceptionsOf(block);
+        return new BlockState(block, status, values, exceptions);
     }
 
     public boolean hasValueOf(PortRef port) {
         return valueIndex.containsKey(port);
     }
-    
-    
+
     public Object valueOf(PortRef port) {
         return valueIndex.get(port);
     }
-    
+
     public Map<PortRef, Object> valuesOf(BlockId block) {
         var result = new HashMap<PortRef, Object>();
         valueIndex.entrySet().forEach(e -> {

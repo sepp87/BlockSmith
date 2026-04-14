@@ -1,13 +1,10 @@
 package blocksmith;
 
-import blocksmith.App;
-import blocksmith.ui.UiAppRunner;
+import blocksmith.ui.UiApp;
 import java.awt.GraphicsEnvironment;
-import java.io.File;
 import java.io.IOException;
-import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import javafx.application.Application;
 import org.apache.poi.util.IOUtils;
-import org.xml.sax.SAXException;
 
 //
 /**
@@ -16,8 +13,7 @@ import org.xml.sax.SAXException;
  */
 public class Launcher {
 
-
-    public static void main(String[] args) throws IOException, OpenXML4JException, SAXException, Exception {
+    public static void main(String[] args) throws IOException  {
 
         boolean devMode = Boolean.getBoolean("blocksmith.dev") || "dev".equalsIgnoreCase(System.getenv("BLOCKSMITH_MODE")); // set flag -Dblocksmith.dev=true
         boolean hasConsole = System.console() != null;
@@ -25,24 +21,22 @@ public class Launcher {
 
         IOUtils.setByteArrayMaxOverride(300_000_000);
         var env = devMode ? Environment.dev() : Environment.prod();
-        var app = new App(env.paths().getLibDir());
 
         if (devMode) {
 //            Drafts.outputDefs();
             System.out.println("RUNNING IN DEV MODE");
 
-//            var path = new File("../btsxml/days-between-v2.btsxml").toPath();
-            var path = new File("../btsxml/aslist-v2.btsxml").toPath();
-
-            new UiAppRunner(app, env, path).run();
-
         } else if (hasConsole || isHeadless) {
-            new UiAppRunner(app, env, null).run();
 
         } else {
-            new UiAppRunner(app, env, null).run();
+
         }
 
-    }
+//        var path = "../btsxml/days-between-v2.btsxml";
+        var path = "../btsxml/aslist-v2.btsxml";
+        
+        UiApp.setEnv(env);
+        Application.launch(UiApp.class, path);
 
+    }
 }
