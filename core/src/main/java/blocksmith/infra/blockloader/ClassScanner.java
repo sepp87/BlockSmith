@@ -55,7 +55,8 @@ public class ClassScanner {
                 blocksmith.lib.NumberMethods.class,
                 blocksmith.lib.ObjectMethods.class,
                 blocksmith.lib.SpreadsheetMethods.class,
-                blocksmith.lib.StringMethods.class
+                blocksmith.lib.StringMethods.class,
+                blocksmith.lib.source.ClockBlock.class
         );
     }
 

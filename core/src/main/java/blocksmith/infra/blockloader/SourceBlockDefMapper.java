@@ -3,14 +3,7 @@ package blocksmith.infra.blockloader;
 import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.value.ParamDef;
 import blocksmith.domain.value.PortDef;
-import blocksmith.infra.blockloader.annotations.Block;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -21,8 +14,8 @@ public class SourceBlockDefMapper {
 
     public static BlockDef map(SourceBlockInspector clazz) throws ReflectiveOperationException, Exception {
     
-        var inputMethod = clazz.inputMethod().get();
-        var outputMethod = clazz.outputMethod().get();
+        var inputMethod = clazz.inputMethod().orElse(null);
+        var outputMethod = clazz.outputMethod().orElse(null);
         
         var metadata = clazz.metadata();
         var params = inputMethod == null ? List.<ParamDef>of() : MethodParamMapper.map(inputMethod);

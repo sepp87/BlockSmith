@@ -1,10 +1,10 @@
 package blocksmith.lib.source;
 
-import java.time.LocalDate;
 import java.util.Optional;
 import java.util.function.Consumer;
 import blocksmith.exec.SourceBlock;
 import blocksmith.infra.blockloader.annotations.Block;
+import blocksmith.utils.icons.FontAwesomeSolid;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executors;
@@ -15,7 +15,12 @@ import java.util.concurrent.TimeUnit;
  *
  * @author joost
  */
-@Block(type = "Test.clock", name = "Clock", description = "Emits the current time every second", category = "Time")
+@Block(
+        type = "Time.clock",
+        name = "Clock",
+        description = "Emits the current time every second",
+        icon = FontAwesomeSolid.CLOCK,
+        category = "Time")
 public class ClockBlock implements SourceBlock {
 
     private ScheduledExecutorService scheduler;
@@ -26,7 +31,9 @@ public class ClockBlock implements SourceBlock {
         scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(() -> {
             try {
-                emitter.accept(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+                var value = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                System.out.println(value + " EMITTED");
+                emitter.accept(value);
             } catch (Exception e) {
                 error = e;
                 stop();

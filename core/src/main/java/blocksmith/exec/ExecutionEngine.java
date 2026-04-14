@@ -204,15 +204,14 @@ public class ExecutionEngine {
 
             case SourceBlockSpec spec -> {
                 var source = sourceBlocks.get(block.id()).orElseThrow();
-                spec.injector().accept(source, inputValues);
+
+                if (spec.injector() != null) {
+                    spec.injector().accept(source, inputValues);
+                }
 
                 if (!source.isRunning()) {
                     source.start(
                             (result) -> {
-                                if (true) {
-                                    throw new RuntimeException("Not YET implemented");
-                                }
-
                                 var outputs = def.outputExtractor().extract(block.id(), result);
                                 onSourceBlockEmitted.accept(block.id(), outputs);
                             }
