@@ -217,6 +217,7 @@ public class ExecutionEngine {
                             }
                     );
                 }
+                // exception is thrown to interrupt the execution recursion, since source blocks do not create an immediate output
                 throw new RuntimeException("Temp circuit breaker for source blocks");
 //                yield new ExecutionResult(Map.of(), List.of());
             }
