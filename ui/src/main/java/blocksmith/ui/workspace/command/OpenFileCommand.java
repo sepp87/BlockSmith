@@ -29,7 +29,7 @@ public class OpenFileCommand implements AppCommand {
         userPrefsService.getLastOpenedDir().ifPresent(dir -> chooser.setInitialDirectory(dir.toFile()));
         
         chooser.setTitle("Open a " + DocumentFormat.FILE_EXTENSION + " file");
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(DocumentFormat.NAMESPACE, "*." + DocumentFormat.FILE_EXTENSION));
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(DocumentFormat.NAMESPACE, "*" + DocumentFormat.FILE_EXTENSION));
 
         File file = chooser.showOpenDialog(UiApp.getStage());
 

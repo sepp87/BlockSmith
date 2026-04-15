@@ -52,7 +52,11 @@ public class ExecutionSession {
             var diff = GraphDiff.compare(oldGraph, newGraph);
             sourceBlocks.updateFrom(diff);
             invalidator.invalidate(state, oldGraph, newGraph, diff);
+
+            var start = System.currentTimeMillis();
             engine.runAll(newGraph, state, this::onSourceBlockEmitted);
+            System.out.println("execution cycle: " + (System.currentTimeMillis() - start) + "ms");
+
         });
     }
 
