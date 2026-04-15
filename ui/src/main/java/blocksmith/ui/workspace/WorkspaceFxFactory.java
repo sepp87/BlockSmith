@@ -11,6 +11,8 @@ import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.app.workspace.WorkspaceSessionFactory;
 import blocksmith.app.workspace.WorkspaceCommandBus;
 import java.nio.file.Path;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 
 /**
@@ -18,6 +20,8 @@ import javafx.application.Platform;
  * @author joost
  */
 public class WorkspaceFxFactory implements WorkspaceFactory {
+
+    private static final Logger LOGGER = Logger.getLogger(WorkspaceFxFactory.class.getName());
 
     private final WorkspaceSessionFactory sessionFactory;
     private final BlockModelFactory blockFactory;
@@ -66,7 +70,7 @@ public class WorkspaceFxFactory implements WorkspaceFactory {
         session.addGraphListener((old, next) -> {
             var start = System.currentTimeMillis();
             projection.updateFromGraphState(old, next);
-            System.out.println("projection update: " + (System.currentTimeMillis() - start) + "ms");
+            LOGGER.log(Level.FINEST, "projection update: {0}ms", System.currentTimeMillis() - start);
         });
         projection.addProjectionListener(renderer::updateFrom);
 

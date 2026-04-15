@@ -8,6 +8,8 @@ import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.graph.GraphFactory;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,12 +17,15 @@ import java.util.Map;
  */
 public class ExecutionSession {
 
+    private static final Logger LOGGER = Logger.getLogger(ExecutionSession.class.getName());
+
     private final ExecutionEngine engine;
     private final ExecutionState state;
     private final ExecutionInvalidator invalidator;
     private final SourceBlockIndex sourceBlocks;
     private final AppScheduler scheduler;
     private Graph current;
+    private boolean initialRun = true;
 
     public ExecutionSession(
             ExecutionEngine engine,
@@ -52,10 +57,11 @@ public class ExecutionSession {
             var diff = GraphDiff.compare(oldGraph, newGraph);
             sourceBlocks.updateFrom(diff);
             var shouldRun = invalidator.invalidate(state, oldGraph, newGraph, diff);
-            if (shouldRun) {
+            if (shouldRun || initialRun) {
+                initialRun = false;
                 var start = System.currentTimeMillis();
                 engine.runAll(newGraph, state, this::onSourceBlockEmitted);
-                System.out.println("execution cycle: " + (System.currentTimeMillis() - start) + "ms");
+                LOGGER.log(Level.FINEST, "execution cycle: {0}ms", System.currentTimeMillis() - start);
             }
         });
     }

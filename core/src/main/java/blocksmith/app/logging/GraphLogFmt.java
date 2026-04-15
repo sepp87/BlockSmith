@@ -39,7 +39,7 @@ public final class GraphLogFmt {
     }
 
     public static String port(PortRef ref) {
-        return block(ref.blockId()) + "~." + ref.valueId();
+        return block(ref.blockId()) + "." + ref.valueId();
     }
     
     public static String valueType(ValueType type) {
