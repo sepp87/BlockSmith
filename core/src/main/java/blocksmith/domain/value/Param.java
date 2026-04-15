@@ -53,4 +53,23 @@ public final class Param implements ValueSlot {
     public Param withInput(ParamInput input) {
         return new Param(valueId, argIndex, value, input);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Param other)) {
+            return false;
+        }
+        return argIndex == other.argIndex
+                && valueId.equals(other.valueId)
+                && Objects.equals(value, other.value)
+                && Objects.equals(input, other.input);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(valueId, argIndex, value, input);
+    }
 }

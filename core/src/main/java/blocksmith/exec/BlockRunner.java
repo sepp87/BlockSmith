@@ -23,7 +23,7 @@ public class BlockRunner {
         this.func = func;
     }
 
-    public ExecutionResult invoke(Object... args) {
+    public BlockFuncResult invoke(Object... args) {
 
         IntermediateResult result = null;
 
@@ -35,7 +35,7 @@ public class BlockRunner {
         }
 
         var values = def.outputExtractor().extract(block, result.getData());
-        return new ExecutionResult(values, result.exceptions());
+        return new BlockFuncResult(values, result.exceptions());
     }
 
 }

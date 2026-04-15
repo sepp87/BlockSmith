@@ -69,11 +69,16 @@ public class ExecutionEngine {
     private void run(BlockId id, Graph current, ExecutionState state, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
 
         try {
+            if (state.statusOf(id) == BlockStatus.FINISHED) {
+                return; // inputs haven't changed since last run — skip
+            }
             var block = current.block(id).orElseThrow();
             var inputs = collectInputValues(current, state, block, onSourceBlockEmitted);
             state.updateBlockState(id, inputs.byRef(), BlockStatus.RUNNING, List.of());
-            var output = runBlock(block, inputs.byIndex(), onSourceBlockEmitted);
-            state.updateBlockState(id, output.values(), BlockStatus.FINISHED, output.exceptions());
+            var outcome = runBlock(block, inputs.byIndex(), onSourceBlockEmitted);
+            if (outcome instanceof BlockFuncResult output) {
+                state.updateBlockState(id, output.values(), BlockStatus.FINISHED, output.exceptions());
+            }
 
         } catch (RuntimeException ex) {
             var critical = BlockException.critical(ex);
@@ -190,7 +195,7 @@ public class ExecutionEngine {
         return null;
     }
 
-    private ExecutionResult runBlock(Block block, List<Object> inputValues, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
+    private ExecutionOutcome runBlock(Block block, List<Object> inputValues, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
 
         var def = defLibrary.resolve(block.type())
                 .orElseThrow(() -> new RuntimeException("Execution process interrupted, block def could NOT be resolved"));
@@ -217,13 +222,9 @@ public class ExecutionEngine {
                             }
                     );
                 }
-                // exception is thrown to interrupt the execution recursion, since source blocks do not create an immediate output
-                throw new RuntimeException("Temp circuit breaker for source blocks");
-//                yield new ExecutionResult(Map.of(), List.of());
+                yield new SourceBlockRunning();
             }
-
         };
-
     }
 
 }

@@ -29,8 +29,8 @@ public class ExecutionState {
         return valueIndex.remove(ref) != null;
     }
 
-    public void removeStatusOf(BlockId block) {
-        blockStatus.remove(block);
+    public boolean removeStatusOf(BlockId block) {
+        return blockStatus.remove(block) != null;
     }
 
     public void clearExceptionsOf(BlockId block) {

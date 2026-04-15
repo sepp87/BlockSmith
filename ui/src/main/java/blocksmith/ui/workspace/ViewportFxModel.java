@@ -31,7 +31,6 @@ public class ViewportFxModel {
     }
 
     public void onViewportChanged(ViewportState viewport) {
-        System.out.println(viewport);
         zoomFactor.set(viewport.zoomFactor());
         translateX.set(viewport.translateX());
         translateY.set(viewport.translateY());

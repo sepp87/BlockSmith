@@ -150,4 +150,24 @@ public sealed class Block permits ArrayBlock, UnknownBlock {
         );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Block other)) {
+            return false;
+        }
+        return id.equals(other.id)
+                && type.equals(other.type)
+                && params.equals(other.params)
+                && ports.equals(other.ports)
+                && layout.equals(other.layout);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, params, ports, layout);
+    }
+
 }

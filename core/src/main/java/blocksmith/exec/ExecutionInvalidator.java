@@ -15,35 +15,38 @@ import java.util.Set;
  */
 class ExecutionInvalidator {
 
-    public void invalidate(ExecutionState state, Graph previous, Graph current, GraphDiff changes) {
+    public boolean invalidate(ExecutionState state, Graph previous, Graph current, GraphDiff changes) {
 
+        boolean changed = false;
         var visited = new HashSet<PortRef>();
 
-        changes.addedConnections()
-                .forEach(c -> invalidateDownstream(state, current, c.to(), visited));
 
-        var removedBlocks = changes.removedBlocks().stream().map(Block::id).toList();
+        for (var c : changes.addedConnections()) {
+            changed |= invalidateDownstream(state, current, c.to(), visited);
+        }
 
-        changes.removedConnections()
-                .stream()
-                .filter(c -> !removedBlocks.contains(c.to().blockId()))
-                .forEach(c -> {
-                    var unconnected = c.to();
-                    clearExceptionsIf(state, current, unconnected);
-                    invalidateDownstream(state, current, unconnected, visited);
-                });
+        var removedBlockIds = changes.removedBlocks().stream().map(Block::id).toList();
+        for (var c : changes.removedConnections()) {
+            if (!removedBlockIds.contains(c.to().blockId())) {
+                var unconnected = c.to();
+                clearExceptionsIf(state, current, unconnected);
+                changed |= invalidateDownstream(state, current, unconnected, visited);
+            }
+        }
 
-        changes.removedBlocks()
-                .forEach(block -> removeBlockFromState(state, block));
+        for (var block : changes.removedBlocks()) {
+            changed |= removeBlockFromState(state, block);
+        }
 
-        changes.updatedBlocks()
-                .forEach(block -> {
-                    var updatedParams = paramsChangedSince(previous, block);
-                    if (!updatedParams.isEmpty()) {
-                        invalidateDownstream(state, current, updatedParams.getFirst(), visited);
-                    }
-                    updatedParams.stream().skip(1).forEach(p -> state.removeValueOf(p));
-                });
+        for (var block : changes.updatedBlocks()) {
+            var updatedParams = paramsChangedSince(previous, block);
+            if (!updatedParams.isEmpty()) {
+                changed |= invalidateDownstream(state, current, updatedParams.getFirst(), visited);
+                updatedParams.stream().skip(1).forEach(p -> state.removeValueOf(p));
+            }
+        }
+
+        return changed;
     }
 
     public void invalidateDownstreamExcluding(ExecutionState state, Graph current, BlockId source) {
@@ -58,30 +61,29 @@ class ExecutionInvalidator {
         }
     }
 
-    private void invalidateDownstream(ExecutionState state, Graph current, PortRef ref, Set<PortRef> visited) {
+    private boolean invalidateDownstream(ExecutionState state, Graph current, PortRef ref, Set<PortRef> visited) {
 
-        state.removeStatusOf(ref.blockId());
-        state.removeValueOf(ref);
+        boolean changed = state.removeStatusOf(ref.blockId());
+        changed |= state.removeValueOf(ref);
 
         if (!visited.add(ref)) {
-            return;
+            return changed;
         }
 
-//        var removed = state.removeValueOf(ref); // if connection was added and no connection before then there is no remove done
-//
-//        if (!removed) { // already invalidated
-//            return;
-//        }
         var block = current.block(ref.blockId()).orElseThrow();
         var outputs = block.outputPorts().stream().map(output -> PortRef.output(ref.blockId(), output.valueId())).toList();
 
-        outputs.forEach(p -> state.removeValueOf(p));
-
-        for (var output : outputs) {
-            var connected = current.connectionsOf(output).stream().map(c -> c.to()).toList();
-            connected.forEach(input -> invalidateDownstream(state, current, input, visited));
+        for (var p : outputs) {
+            changed |= state.removeValueOf(p);
         }
 
+        for (var output : outputs) {
+            for (var input : current.connectionsOf(output).stream().map(c -> c.to()).toList()) {
+                changed |= invalidateDownstream(state, current, input, visited);
+            }
+        }
+
+        return changed;
     }
 
     private void clearExceptionsIf(ExecutionState state, Graph current, PortRef ref) {
@@ -91,14 +93,15 @@ class ExecutionInvalidator {
         }
     }
 
-    private void removeBlockFromState(ExecutionState state, Block block) {
+    private boolean removeBlockFromState(ExecutionState state, Block block) {
         state.clearExceptionsOf(block.id());
-        state.removeStatusOf(block.id());
+        var changed = state.removeStatusOf(block.id());
 
         var ports = block.ports().stream().map(p -> PortRef.of(block.id(), p.direction(), p.valueId())).toList();
         for (var port : ports) {
-            state.removeValueOf(port);
+            changed |= state.removeValueOf(port);
         }
+        return changed;
     }
 
     private List<PortRef> paramsChangedSince(Graph previous, Block current) {

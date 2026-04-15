@@ -48,7 +48,7 @@ public final class Port implements ValueSlot {
     public ValueType valueType() {
         return valueType;
     }
-    
+
     public boolean isElement() {
         return isElement;
     }
@@ -60,9 +60,28 @@ public final class Port implements ValueSlot {
     public static Port output(String valueId, int argIndex, ValueType valueType) {
         return new Port(Direction.OUTPUT, valueId, argIndex, valueType, false);
     }
-    
-    public Port copy (String valueId) {
+
+    public Port copy(String valueId) {
         return new Port(direction, valueId, argIndex, valueType, isElement);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Port other)) {
+            return false;
+        }
+        return argIndex == other.argIndex
+                && isElement == other.isElement
+                && direction == other.direction
+                && valueId.equals(other.valueId)
+                && valueType.equals(other.valueType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(direction, valueId, argIndex, valueType, isElement);
+    }
 }

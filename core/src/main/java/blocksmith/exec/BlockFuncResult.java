@@ -8,8 +8,8 @@ import java.util.Map;
  *
  * @author joost
  */
-public record ExecutionResult(
+public record BlockFuncResult(
         Map<PortRef, Object> values,
-        List<BlockException> exceptions) {
+        List<BlockException> exceptions) implements ExecutionOutcome {
 
 }

@@ -51,12 +51,12 @@ public class ExecutionSession {
             this.current = newGraph;
             var diff = GraphDiff.compare(oldGraph, newGraph);
             sourceBlocks.updateFrom(diff);
-            invalidator.invalidate(state, oldGraph, newGraph, diff);
-
-            var start = System.currentTimeMillis();
-            engine.runAll(newGraph, state, this::onSourceBlockEmitted);
-            System.out.println("execution cycle: " + (System.currentTimeMillis() - start) + "ms");
-
+            var shouldRun = invalidator.invalidate(state, oldGraph, newGraph, diff);
+            if (shouldRun) {
+                var start = System.currentTimeMillis();
+                engine.runAll(newGraph, state, this::onSourceBlockEmitted);
+                System.out.println("execution cycle: " + (System.currentTimeMillis() - start) + "ms");
+            }
         });
     }
 

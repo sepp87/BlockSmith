@@ -172,7 +172,7 @@ public final class Graph {
         }
         var updatedBlocks = new HashMap<BlockId, Block>(blocks);
         updatedBlocks.computeIfPresent(id, (k, v) -> v.withLabel(label));
-        return new Graph(this.id, updatedBlocks.values(), connections, groups.values());
+        return with(updatedBlocks.values(), connections, groups.values());
     }
 
     public Graph moveBlocks(Collection<BlockPosition> positions) {
@@ -189,7 +189,7 @@ public final class Graph {
     public Graph resizeBlock(BlockId id, double width, double height) {
         var updatedBlocks = new HashMap<BlockId, Block>(blocks);
         updatedBlocks.computeIfPresent(id, (k, v) -> v.withSize(width, height));
-        return new Graph(this.id, updatedBlocks.values(), connections, groups.values());
+        return with(updatedBlocks.values(), connections, groups.values());
     }
 
     public Graph withConnection(Connection connection) {

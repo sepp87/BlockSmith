@@ -9,7 +9,6 @@ public class Notes {
 }
 
 // TODO check where BlockDefs are loaded twice
-// TODO check if execution is NOT triggered for blocks with values in state
 
 // use BlockLibraryMarker to scan for internal blocks
 //
@@ -46,14 +45,12 @@ public class Notes {
 // - UnknownBlocks for missing BlockDefs
 // - selectionstate to immutable
 // - Copy/Paste (todo paste point)
-// - Execution on a seperate thread
 // - notification - load document error (e.g. when port ids are not found for connections, just omit connection and log) 
 // - notification - save document succes
 // - block label default values
 // - Notification layer
 // - handle analogue user input e.g. when user changes slider input, it triggers multiple graph snapshot changes, leading to endless todos
 // - clean up - InputControl, MethodBlockNew, PortModel, ConnectionModel
-// - ExecutionState.valuesOf() return a mutable map (leave it or solve it?), because immutable throws nullpointers with nullable values
 
 
 
@@ -95,9 +92,6 @@ public class Notes {
 // MethodBlock - lacing of lists
 // Remove block - remove block and connections
 // Auto-create connection undo/redo
-//
-// REMINDERS / THOUGTHS
-// do block.onIncomingConnectionAdded/Removed make sense, what could their use be? not trigger processing
 //
 //
 // SMALL UI BUGS

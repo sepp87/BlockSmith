@@ -14,7 +14,7 @@ public class UiAppScheduler implements AppScheduler {
     private final ExecutorService background;
     
     public UiAppScheduler() {
-        this.background = Executors.newVirtualThreadPerTaskExecutor();
+        this.background = Executors.newSingleThreadExecutor(Thread.ofVirtual().factory());
     }
     
     @Override
