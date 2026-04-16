@@ -8,6 +8,7 @@ import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.group.GroupId;
 import blocksmith.domain.value.ValueType;
 import blocksmith.domain.value.ValueType.ListType;
+import blocksmith.domain.value.ValueType.MapType;
 import blocksmith.domain.value.ValueType.SimpleType;
 import blocksmith.domain.value.ValueType.VarType;
 import java.util.Collection;
@@ -41,16 +42,18 @@ public final class GraphLogFmt {
     public static String port(PortRef ref) {
         return block(ref.blockId()) + "." + ref.valueId();
     }
-    
+
     public static String valueType(ValueType type) {
-        if(type instanceof SimpleType simpleType) {
-            return simpleType.raw().getSimpleName();
-        }
-        if(type instanceof ListType listType) {
-            return "List<" + valueType(listType.elementType()) + ">";
-        }
-        var varType = (VarType) type;
-        return varType.name();
+        return switch (type) {
+            case SimpleType s ->
+                s.raw().getSimpleName();
+            case VarType v ->
+                v.name();
+            case ListType l ->
+                "List<" + valueType(l.elementType()) + ">";
+            case MapType m ->
+                "Map<" + valueType(m.keyType()) + ", " + valueType(m.elementType()) + ">";
+        };
     }
 
     public static String connections(Collection<Connection> connections) {
