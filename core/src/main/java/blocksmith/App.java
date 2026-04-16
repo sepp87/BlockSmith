@@ -10,8 +10,6 @@ import blocksmith.infra.blockloader.CompositeBlockDefLoader;
 import blocksmith.infra.blockloader.MethodBlockFuncLoader;
 import blocksmith.infra.xml.GraphXmlMapper;
 import blocksmith.infra.xml.GraphXmlRepo;
-import blocksmith.app.block.BlockDefLibrary;
-import blocksmith.app.block.BlockExecLibrary;
 import blocksmith.app.GraphEditorFactory;
 import blocksmith.app.block.CopyBlocks;
 import blocksmith.app.block.PasteBlocks;
@@ -45,8 +43,6 @@ import java.util.logging.Logger;
  */
 public class App {
 
-    private final BlockDefLibrary blockDefLibrary;
-    private final BlockExecLibrary blockFuncLibrary;
     private final BlockLibrary blockLibrary;
     private final GraphRepo graphRepo;
     private final GraphEditorFactory graphEditorFactory;
@@ -56,7 +52,7 @@ public class App {
     public App(Path libDirectory, AppScheduler scheduler) throws IOException, JAXBException {
         configureLogging();
 
-        var classScanner = new ClassScanner(libDirectory);
+        var classScanner = ClassScanner.create(libDirectory);
         var methodBlockScanner = new MethodBlockScanner(classScanner);
         var sourceBlockScanner = new SourceBlockScanner(classScanner);
         var compositeBlockScanner = new CompositeBlockScanner(classScanner, methodBlockScanner, sourceBlockScanner);
@@ -64,16 +60,14 @@ public class App {
         var methodDefLoader = new MethodBlockDefLoader(methodBlockScanner);
         var sourceBlockDefLoader = new SourceBlockDefLoader(sourceBlockScanner);
         var compositeDefLoader = new CompositeBlockDefLoader(methodDefLoader, sourceBlockDefLoader);
-        this.blockDefLibrary = new BlockDefLibrary(compositeDefLoader.load());
 
         var sourceBlockExecLoader = new SourceBlockExecLoader(sourceBlockScanner);
         var methodFuncLoader = new MethodBlockFuncLoader(methodBlockScanner);
         var compositeExecLoader = new CompositeBlockExecLoader(methodFuncLoader, sourceBlockExecLoader);
-        this.blockFuncLibrary = new BlockExecLibrary(compositeExecLoader.load());
 
         this.blockLibrary = new BlockLibrary(compositeBlockScanner, compositeDefLoader, compositeExecLoader);
 
-        var blockFactory = new BlockFactory(blockDefLibrary);
+        var blockFactory = new BlockFactory(blockLibrary);
         var graphXmlMapper = new GraphXmlMapper(blockFactory);
         var jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
         this.graphRepo = new GraphXmlRepo(graphXmlMapper, jaxbContext);
@@ -92,7 +86,7 @@ public class App {
                 copyBlocks, pasteBlocks
         );
 
-        this.executionSessionFactory = new ExecutionSessionFactory(blockDefLibrary, blockFuncLibrary, scheduler);
+        this.executionSessionFactory = new ExecutionSessionFactory(blockLibrary, scheduler);
 
         this.commandRegistry = new CommandRegistry();
 

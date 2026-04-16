@@ -8,10 +8,6 @@ public class Notes {
 
 }
 
-// TODO check where BlockDefs are loaded twice
-
-// use BlockLibraryMarker to scan for internal blocks
-//
 // Support VarArgs
 // - allow varargs as params OR throw exception? 
 // - element port to typed ElementPort/PartialInput/...

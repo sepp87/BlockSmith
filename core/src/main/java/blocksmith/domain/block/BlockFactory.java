@@ -1,7 +1,7 @@
 package blocksmith.domain.block;
 
 import blocksmith.domain.value.Port;
-import blocksmith.app.block.BlockDefLibrary;
+import blocksmith.app.block.BlockLibrary;
 import blocksmith.domain.value.Param;
 import blocksmith.domain.value.PortDef;
 import java.util.ArrayList;
@@ -15,14 +15,14 @@ import java.util.stream.Stream;
 public class BlockFactory {
 
     private static final String DEFAULT_VALUE = null;
-    private final BlockDefLibrary library;
+    private final BlockLibrary library;
 
-    public BlockFactory(BlockDefLibrary library) {
+    public BlockFactory(BlockLibrary library) {
         this.library = library;
     }
 
     public Block create(BlockId id, String type) {
-        var def = library.resolve(type).orElse(null);
+        var def = library.defs().resolve(type).orElse(null);
         if (def == null) {
             return UnknownBlock.create(id, type);
         }

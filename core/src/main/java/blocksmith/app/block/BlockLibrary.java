@@ -1,7 +1,5 @@
 package blocksmith.app.block;
 
-import blocksmith.app.block.BlockDefLibrary;
-import blocksmith.app.block.BlockExecLibrary;
 import blocksmith.app.outbound.BlockDefLoader;
 import blocksmith.app.outbound.BlockExecLoader;
 import blocksmith.app.outbound.BlockScanner;

@@ -17,6 +17,10 @@ public sealed interface ValueType {
     public record VarType(String name) implements ValueType {
 
     }
+    
+    public record MapType(ValueType keyType, ValueType elementType) implements ValueType {
+        
+    }
 
     public static SimpleType of(Class<?> raw) {
         return new SimpleType(raw);

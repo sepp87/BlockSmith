@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -19,50 +20,43 @@ import java.util.stream.Stream;
 public class ClassScanner {
 
     private static final Logger LOGGER = Logger.getLogger(ClassScanner.class.getName());
-    
+
     private final Path libDirectory;
     private List<Class<?>> classes;
 
-    public ClassScanner(Path libDirectory) {
+    private ClassScanner(Path libDirectory) {
         this.libDirectory = libDirectory;
         rescan();
     }
-    
+
     public void rescan() {
         this.classes = List.copyOf(loadClasses());
-    } 
+    }
 
     public Collection<Class<?>> classes() {
         return classes;
     }
 
     private List<Class<?>> loadClasses() {
-        var result = new ArrayList<>(internalClasses());
+        var result = new ArrayList<Class<?>>();
+        result.addAll(loadInternalClasses());
         result.addAll(loadExternalClasses());
         return result;
     }
 
-    private List<Class<?>> internalClasses() {
-        return List.of(
-                blocksmith.lib.BooleanMethods.class,
-                blocksmith.lib.DateMethods.class,
-                blocksmith.lib.FileMethods.class,
-                blocksmith.lib.HelloWorldMethods.class,
-                blocksmith.lib.JsonMethods.class,
-                blocksmith.lib.ListMethods.class,
-                blocksmith.lib.LocaleMethods.class,
-                blocksmith.lib.MathMethods.class,
-                blocksmith.lib.NumberMethods.class,
-                blocksmith.lib.ObjectMethods.class,
-                blocksmith.lib.SpreadsheetMethods.class,
-                blocksmith.lib.StringMethods.class,
-                blocksmith.lib.source.ClockBlock.class
-        );
+
+    private List<Class<?>> loadInternalClasses() {
+        var internalLibrary = blocksmith.lib.BlockLibraryMarker.class.getPackageName();
+        return ClassScannerUtils.findOnClasspath(internalLibrary);
     }
 
     private List<Class<?>> loadExternalClasses() {
+        if(libDirectory == null) {
+            return List.of();
+        }
         var jars = getJarFiles(libDirectory).stream().map(Path::toFile).toArray(File[]::new);
-        return JarClassLoaderUtils.getClassesFromLibraries(jars);
+        return ClassScannerUtils.findInJars(jars);
+//        return JarClassLoaderUtils.getClassesFromLibraries(jars);
     }
 
     private List<Path> getJarFiles(Path dir) {
@@ -76,4 +70,15 @@ public class ClassScanner {
         }
         return Collections.emptyList();
     }
+    
+    public static ClassScanner create(Path libDirectory) {
+        Objects.requireNonNull(libDirectory);
+        return new ClassScanner(libDirectory);
+    }
+    
+    public static ClassScanner forTest() {
+        return new ClassScanner(null);
+    }
 }
+
+

@@ -9,6 +9,7 @@ import static blocksmith.domain.value.Port.Direction.INPUT;
 import static blocksmith.domain.value.Port.Direction.OUTPUT;
 import blocksmith.domain.value.ValueType;
 import blocksmith.domain.value.ValueType.ListType;
+import blocksmith.domain.value.ValueType.MapType;
 import blocksmith.domain.value.ValueType.SimpleType;
 import blocksmith.domain.value.ValueType.VarType;
 import java.util.ArrayList;
@@ -173,19 +174,11 @@ public class ValueTypeResolver {
                 type;
             case ListType l ->
                 valueTypeWithin(l.elementType());
+            case MapType m ->
+                type;
         };
     }
 
-//    public static Optional<VarType> varTypeWithin(ValueType type) {
-//        if (type instanceof SimpleType) {
-//            return Optional.empty();
-//        }
-//        if (type instanceof ListType listType) {
-//            return varTypeWithin(listType.elementType());
-//        }
-//        var varType = (VarType) type;
-//        return Optional.of(varType);
-//    }
     private static ValueType substitute(ValueType varTyped, SimpleType withSimpleType) {
         if (varTyped instanceof ValueType.VarType) {
             return withSimpleType;

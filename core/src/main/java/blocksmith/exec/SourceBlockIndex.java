@@ -1,6 +1,6 @@
 package blocksmith.exec;
 
-import blocksmith.app.block.BlockExecLibrary;
+import blocksmith.app.block.BlockLibrary;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.graph.GraphDiff;
@@ -15,11 +15,11 @@ import java.util.Optional;
  */
 public class SourceBlockIndex {
 
-    private final BlockExecLibrary library;
+    private final BlockLibrary library;
 
     private final Map<BlockId, SourceBlock> index = new HashMap<>();
 
-    public SourceBlockIndex(BlockExecLibrary library) {
+    public SourceBlockIndex(BlockLibrary library) {
         this.library = library;
     }
     
@@ -34,7 +34,7 @@ public class SourceBlockIndex {
     private void registerSourceBlocksWithin(Collection<Block> added) {
         for (var candidate : added) {
             var type = candidate.type();
-            var exec = library.resolve(type).orElse(null);
+            var exec = library.execs().resolve(type).orElse(null);
             if (exec instanceof SourceBlockSpec spec) {
                 var id = candidate.id();
                 var source = spec.factory().get();

@@ -1,7 +1,6 @@
 package blocksmith.exec;
 
-import blocksmith.app.block.BlockDefLibrary;
-import blocksmith.app.block.BlockExecLibrary;
+import blocksmith.app.block.BlockLibrary;
 import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.ArrayBlock;
 import blocksmith.domain.block.Block;
@@ -31,13 +30,11 @@ public class ExecutionEngine {
 
     private final static Logger LOGGER = Logger.getLogger(ExecutionEngine.class.getName());
 
-    private final BlockDefLibrary defLibrary;
-    private final BlockExecLibrary execLibrary;
+    private final BlockLibrary blockLibrary;
     private final SourceBlockIndex sourceBlocks;
 
-    public ExecutionEngine(BlockDefLibrary defLibrary, BlockExecLibrary execLibrary, SourceBlockIndex sourceBlocks) {
-        this.defLibrary = defLibrary;
-        this.execLibrary = execLibrary;
+    public ExecutionEngine(BlockLibrary blockLibrary,  SourceBlockIndex sourceBlocks) {
+        this.blockLibrary = blockLibrary;
         this.sourceBlocks = sourceBlocks;
     }
 
@@ -197,9 +194,9 @@ public class ExecutionEngine {
 
     private ExecutionOutcome runBlock(Block block, List<Object> inputValues, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
 
-        var def = defLibrary.resolve(block.type())
+        var def = blockLibrary.defs().resolve(block.type())
                 .orElseThrow(() -> new RuntimeException("Execution process interrupted, block def could NOT be resolved"));
-        var exec = execLibrary.resolve(block.type())
+        var exec = blockLibrary.execs().resolve(block.type())
                 .orElseThrow(() -> new RuntimeException("Execution process interrupted, block func could NOT be resolved")); // TODO set exception to state if none found
 
         return switch (exec) {
