@@ -7,6 +7,7 @@ import blocksmith.domain.value.ValueType;
 import blocksmith.infra.blockloader.annotations.Display;
 import blocksmith.infra.blockloader.annotations.Value;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.RecordComponent;
@@ -28,23 +29,7 @@ public class PortDefMappingUtils {
             Direction direction) {
 
         var isAggregated = parameter.isVarArgs();
-        var def = PortDefMappingUtils.from(parameter, parameter.getType(), parameter.getParameterizedType(), parameter.getName(), argIndex, direction, isAggregated);
-        
-        if (isAggregated) {
-            var raw = parameter.getType().getComponentType();
-            var valueType = ValueType.of(raw);
-            return new PortDef(
-                    def.valueId(), 
-                    def.argIndex(), 
-                    def.valueName(), 
-                    def.direction(), 
-                    valueType, 
-                    def.isAutoConnectable(), 
-                    def.display(), 
-                    isAggregated);
-        }
-
-        return def;
+        return PortDefMappingUtils.from(parameter, parameter.getType(), parameter.getParameterizedType(), parameter.getName(), argIndex, direction, isAggregated);
     }
 
     public static PortDef fromComponent(

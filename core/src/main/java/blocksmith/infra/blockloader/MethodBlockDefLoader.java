@@ -33,11 +33,19 @@ public class MethodBlockDefLoader implements BlockDefLoader {
 
         for (Method method : methods) {
             try {
-                var def = MethodBlockDefMapper.blockDefFromMethod(method);
+                var def = MethodBlockDefMapper.map(method);
                 result.add(def);
 
             } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "Block definition failed to load for method \"{0}\". {1}", new Object[]{method.getName(), ex.getMessage()});
+                LOGGER.log(
+                        Level.SEVERE, 
+                        "Block definition failed to load for method \"{0}.{1}()\". {2}", 
+                        new Object[]{
+                            method.getDeclaringClass().getSimpleName(), 
+                            method.getName(), 
+                            ex.getMessage()
+                        }
+                );
             }
         }
 

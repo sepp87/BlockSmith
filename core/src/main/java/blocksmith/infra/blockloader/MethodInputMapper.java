@@ -38,7 +38,7 @@ public class MethodInputMapper {
             } catch (Exception e) {
                 throw new IllegalArgumentException(
                         "INPUT of block definition unknown: "
-                        + method.getClass().getSimpleName() + "."
+                        + method.getDeclaringClass().getSimpleName() + "."
                         + method.getName() + "() "
                         + parameter.getName(), e);
             }

@@ -108,9 +108,9 @@ public class MapMethods {
             aliases = {"Dictionary.remove"},
             description = "Removes the mapping for the specified key from this map if present.",
             category = "Core")
-    public static <K, V> Map<K, V> remove(Map<K, V> map, K... key) {
+    public static <K, V> Map<K, V> remove(Map<K, V> map, K... keys) {
         var result = new HashMap<K, V>(map);
-        for (var k : key) {
+        for (var k : keys) {
             result.remove(k);
         }
         return Collections.unmodifiableMap(result);

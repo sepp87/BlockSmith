@@ -11,7 +11,7 @@ import blocksmith.infra.blockloader.annotations.Block;
  */
 public class MethodBlockDefMapper {
 
-    public static BlockDef blockDefFromMethod(Method method) throws Exception {
+    public static BlockDef map(Method method) throws Exception {
 
         var metadata = method.getAnnotation(Block.class);
         var params = MethodParamMapper.map(method);

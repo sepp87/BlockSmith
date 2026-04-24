@@ -57,6 +57,10 @@ public final class ArrayBlock extends Block {
             return this;
         }
 
+        System.out.println();
+        fitted.forEach(p -> System.out.println(p.valueId()));
+        System.out.println();
+        
         return new ArrayBlock(
                 id(),
                 type(),
