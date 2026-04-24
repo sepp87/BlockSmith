@@ -79,6 +79,7 @@ public abstract class BlockModel extends BaseModel {
     public void removeInputPort(String valueId) {
         var port = inputPorts.stream().filter(p -> p.valueId().equals(valueId)).findFirst().orElseThrow();
         inputPorts.remove(port);
+        ports.remove(port);
         port.dispose();
     }
 
