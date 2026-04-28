@@ -4,7 +4,10 @@ import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.TypeCastUtils;
 import blocksmith.domain.graph.ValueTypeResolver;
+import blocksmith.domain.graph.ValueTypeResolver2;
+import blocksmith.domain.value.ValueType;
 import blocksmith.domain.value.ValueType.ListType;
+import blocksmith.domain.value.ValueType.MapType;
 import blocksmith.domain.value.ValueType.SimpleType;
 import blocksmith.domain.value.ValueType.VarType;
 import java.io.File;
@@ -23,6 +26,15 @@ public class ValueConverter {
 
         var sourceType = ValueTypeResolver.typeOf(graph, source);
         var targetType = ValueTypeResolver.typeOf(graph, target);
+        
+//        if (sourceType instanceof MapType fromMap && targetType instanceof MapType toMap) {
+//            // TODO - no conversion for maps             
+//            return sourceValue;
+//        }
+//
+//        if (sourceType instanceof ValueType.MapType || targetType instanceof ValueType.MapType) {
+//            throw new IllegalStateException("Invalid connection between MapType and singular ValueType port");
+//        }
 
         var sourceInner = ValueTypeResolver.valueTypeWithin(sourceType);
         var targetInner = ValueTypeResolver.valueTypeWithin(targetType);

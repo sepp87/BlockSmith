@@ -8,10 +8,15 @@ public class Notes {
 
 }
 
+// Resolve ValueTypes upstream also (GraphProjectionAssembler)
+
 // Support VarArgs
 // - allow varargs as params OR throw exception? 
 // - element port to typed ElementPort/PartialInput/...
 // - refactor BlockModelFactory to use Block only from creation and PortDefMappingUtils
+
+// Refactor ValueTypeResolver
+// - resolve all VarTypes once on graph updated
 
 //
 // Seperate UI from Core

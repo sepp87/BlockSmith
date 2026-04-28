@@ -8,8 +8,10 @@ import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.ValueTypeResolver;
+import blocksmith.domain.graph.ValueTypeResolver2;
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.ValueType.SimpleType;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +35,7 @@ public class ExecutionEngine {
     private final BlockLibrary blockLibrary;
     private final SourceBlockIndex sourceBlocks;
 
-    public ExecutionEngine(BlockLibrary blockLibrary,  SourceBlockIndex sourceBlocks) {
+    public ExecutionEngine(BlockLibrary blockLibrary, SourceBlockIndex sourceBlocks) {
         this.blockLibrary = blockLibrary;
         this.sourceBlocks = sourceBlocks;
     }
@@ -115,7 +117,12 @@ public class ExecutionEngine {
             var valueType = ValueTypeResolver.typeOf(current, PortRef.input(block.id(), any.valueId()));
             var rawType = valueType instanceof SimpleType simple ? simple.raw() : Object.class;
             var size = values.size();
-            var array = Array.newInstance(rawType, size);
+
+            var boxedType = rawType.isPrimitive()
+                    ? MethodType.methodType(rawType).wrap().returnType()
+                    : rawType;
+            var array = Array.newInstance(boxedType, size);
+
             for (int i = 0; i < size; i++) {
                 Array.set(array, i, values.get(i));
             }

@@ -25,7 +25,6 @@ public final class ArrayBlock extends Block {
             BlockLayout layout) {
 
         super(id, type, params, ports, layout);
-        System.out.println("ARRAY BLOCK " + type);
     }
 
     public Collection<Port> fixedInputPorts() {
@@ -56,10 +55,6 @@ public final class ArrayBlock extends Block {
         if (fitted.size() == ports.size() && fitted.containsAll(ports)) {
             return this;
         }
-
-        System.out.println();
-        fitted.forEach(p -> System.out.println(p.valueId()));
-        System.out.println();
         
         return new ArrayBlock(
                 id(),

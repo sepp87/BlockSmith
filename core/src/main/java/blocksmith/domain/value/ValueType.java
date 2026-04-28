@@ -34,5 +34,8 @@ public sealed interface ValueType {
         return new VarType(name);
     }
     
+    public static MapType of(ValueType keyType, ValueType elementType) {
+        return new MapType(keyType, elementType);
+    }
 
 }
