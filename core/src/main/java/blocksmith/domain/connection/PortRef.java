@@ -1,6 +1,8 @@
 package blocksmith.domain.connection;
 
+import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
+import blocksmith.domain.value.Port;
 import blocksmith.domain.value.Port.Direction;
 import java.util.Objects;
 
@@ -23,6 +25,10 @@ public record PortRef(
         return new PortRef(blockId, direction, valueId);
     }
 
+    public static PortRef of(Block block, Port port) {
+        return new PortRef(block.id(), port.direction(), port.valueId());
+    }
+    
     public static PortRef of(BlockId blockId, Direction direction, String valueId) {
         return new PortRef(blockId, direction, valueId);
     }

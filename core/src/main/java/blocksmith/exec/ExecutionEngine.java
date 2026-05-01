@@ -7,6 +7,7 @@ import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
+import blocksmith.domain.graph.GraphUtils;
 import blocksmith.domain.graph.ValueTypeResolver;
 import blocksmith.domain.graph.ValueTypeResolver2;
 import blocksmith.domain.value.Port;
@@ -41,7 +42,7 @@ public class ExecutionEngine {
     }
 
     public void runAll(Graph current, ExecutionState state, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
-        var sinks = resolveSinksOf(current);
+        var sinks = GraphUtils.sinksOf(current);
 
         for (var sink : sinks) {
             run(sink, current, state, onSourceBlockEmitted);
@@ -54,16 +55,7 @@ public class ExecutionEngine {
         // execute blocks (if IDLE) one after the other
     }
 
-    private Collection<BlockId> resolveSinksOf(Graph current) {
-        var result = new HashSet<BlockId>();
-        for (var block : current.blocks()) {
-            if (current.hasOutgoingConnections(block.id())) {
-                continue;
-            }
-            result.add(block.id());
-        }
-        return result;
-    }
+
 
     private void run(BlockId id, Graph current, ExecutionState state, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
 

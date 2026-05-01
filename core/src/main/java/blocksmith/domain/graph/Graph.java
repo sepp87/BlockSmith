@@ -99,6 +99,10 @@ public final class Graph {
     public Optional<Block> block(BlockId id) {
         return Optional.ofNullable(blocks.get(id));
     }
+    
+    public Port port(PortRef ref) {
+        return block(ref.blockId()).get().port(ref.direction(), ref.valueId()).get();
+    }
 
     public Graph withBlock(Block block) {
         var existing = blocks.get(block.id());
