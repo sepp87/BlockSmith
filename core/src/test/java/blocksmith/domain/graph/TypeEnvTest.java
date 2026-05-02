@@ -57,6 +57,7 @@ public class TypeEnvTest {
 
         // perform test
         var target = PortRef.input(list.id(), "list");
+        System.out.println("List<String> = " + env.typeOf(target));
         var resolved = (ListType) env.typeOf(target);
         var simple = (SimpleType) resolved.elementType();
 
@@ -92,8 +93,8 @@ public class TypeEnvTest {
         System.out.println("String = " + env.typeOf(target));
         System.out.println("List<String> = " + env.typeOf(PortRef.output(create.id(), "value")));
         System.out.println("List<T> = " + env.typeOf(PortRef.input(first.id(), "list")));
-        System.out.println("String = " + env.typeOf(PortRef.input(create.id(), "values#0")));
-        System.out.println("String = " + env.typeOf(PortRef.input(create.id(), "values#1")));
+        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#0")));
+        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#1")));
         var resolved = (SimpleType) env.typeOf(target);
 
         // prepare result
@@ -156,9 +157,43 @@ public class TypeEnvTest {
         System.out.println("Expected element: " + expectedElement.getSimpleName() + ",  Result element: " + resultElement.getSimpleName());
         Assertions.assertTrue(expectedElement == resultElement);
 
-//        Map<Integer, String> = MapType[keyType=VarType[name=K], elementType=VarType[name=V]]
-//        List<K> = ListType[elementType=SimpleType[raw=class java.lang.Integer]]
-//        List<V> = ListType[elementType=SimpleType[raw=class java.lang.String]]
     }
+    
+    @Test
+    public void testTypeOfList_WhenInputIntegerAndDouble_ThenListOfNumber() {
+        System.out.println("testTypeOfList_WhenInputIntegerAndDouble_ThenListOfNumber");
 
+        // prepare test data
+        var intSlider = factory.create(BlockId.create(), "Input.integerSlider");
+        var dblSlider = factory.create(BlockId.create(), "Input.doubleSlider");
+        var create = factory.create(BlockId.create(), "List.create");
+        var intToCreate = Connection.of(intSlider.id(), "value", create.id(), "values#0");
+        var dblToCreate = Connection.of(create.id(), "value", create.id(), "values#1");
+
+        var graph = GraphFactory.createEmpty();
+        graph = graph.withBlock(intSlider);
+        graph = graph.withBlock(dblSlider);
+        graph = graph.withBlock(create);
+        graph = graph.withConnection(intToCreate);
+        graph = graph.withConnection(dblToCreate);
+        var env = TypeEnv.of(graph);
+
+        // perform test
+        var target = PortRef.output(create.id(), "value");
+        System.out.println("List<Number> = " + env.typeOf(target));
+        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#0")));
+        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#1")));
+        var resolved = (SimpleType) env.typeOf(target);
+
+        // prepare result
+        var expected = Number.class;
+        var result = resolved.raw();
+
+        System.out.println("Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName());
+        Assertions.assertTrue(expected == result);
+    }
+    
+
+    
+    
 }
