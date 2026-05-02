@@ -2,11 +2,9 @@ package blocksmith.ui.graph.block;
 
 import blocksmith.ui.control.InputControl;
 import blocksmith.domain.block.BlockDef;
-import blocksmith.domain.block.BlockId;
 import blocksmith.domain.block.BlockLayout;
 import blocksmith.domain.connection.PortRef;
-import blocksmith.exec.BlockState;
-import blocksmith.exec.ExecutionState;
+import blocksmith.exec.block.BlockState;
 import blocksmith.ui.control.MultilineTextInput;
 import blocksmith.ui.display.ValueInspector;
 import blocksmith.ui.display.ValueDisplay;

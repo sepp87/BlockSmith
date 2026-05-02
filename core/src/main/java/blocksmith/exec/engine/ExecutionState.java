@@ -1,7 +1,10 @@
-package blocksmith.exec;
+package blocksmith.exec.engine;
 
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
+import blocksmith.exec.block.BlockException;
+import blocksmith.exec.block.BlockState;
+import blocksmith.exec.block.BlockStatus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

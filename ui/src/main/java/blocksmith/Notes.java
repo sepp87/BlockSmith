@@ -8,7 +8,8 @@ public class Notes {
 
 }
 
-// Resolve ValueTypes upstream also (GraphProjectionAssembler)
+
+// 
 
 // Support VarArgs
 // - allow varargs as params OR throw exception? 
@@ -17,6 +18,14 @@ public class Notes {
 
 // Refactor ValueTypeResolver
 // - resolve all VarTypes once on graph updated
+// - OBSOLETE Resolve ValueTypes upstream also (GraphProjectionAssembler)
+// - implement TypeSession
+// - listen to graph changes
+// - identify if TypeEnv needs to be rebuild
+// - rebuild TypeEnv 
+// - identify all VarTyped ports
+// - notify listeners of value types of VarTyped ports
+
 
 //
 // Seperate UI from Core

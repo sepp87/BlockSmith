@@ -2,7 +2,7 @@ package blocksmith.lib.source;
 
 import java.util.Optional;
 import java.util.function.Consumer;
-import blocksmith.exec.SourceBlock;
+import blocksmith.exec.block.SourceBlock;
 import blocksmith.infra.blockloader.annotations.Block;
 import blocksmith.utils.icons.FontAwesomeSolid;
 import java.time.LocalTime;

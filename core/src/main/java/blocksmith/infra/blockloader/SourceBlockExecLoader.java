@@ -1,13 +1,11 @@
 package blocksmith.infra.blockloader;
 
 import blocksmith.app.outbound.BlockExecLoader;
-import blocksmith.exec.BlockExec;
-import blocksmith.exec.SourceBlock;
-import blocksmith.exec.SourceBlockSpec;
+import blocksmith.exec.block.SourceBlock;
+import blocksmith.exec.block.SourceBlockSpec;
+import blocksmith.exec.block.BlockExec;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

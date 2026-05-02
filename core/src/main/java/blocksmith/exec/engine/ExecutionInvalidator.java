@@ -1,4 +1,4 @@
-package blocksmith.exec;
+package blocksmith.exec.engine;
 
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @author joost
  */
-class ExecutionInvalidator {
+public class ExecutionInvalidator {
 
     public boolean invalidate(ExecutionState state, Graph previous, Graph current, GraphDiff changes) {
 

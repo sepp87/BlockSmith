@@ -1,5 +1,6 @@
-package blocksmith.exec;
+package blocksmith.exec.engine;
 
+import blocksmith.exec.block.ExecutionOutcome;
 import blocksmith.app.block.BlockLibrary;
 import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.ArrayBlock;
@@ -12,6 +13,12 @@ import blocksmith.domain.graph.ValueTypeResolver;
 import blocksmith.domain.graph.ValueTypeResolver2;
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.ValueType.SimpleType;
+import blocksmith.exec.block.BlockException;
+import blocksmith.exec.block.BlockFunc;
+import blocksmith.exec.block.BlockFuncResult;
+import blocksmith.exec.block.BlockStatus;
+import blocksmith.exec.block.SourceBlockRunning;
+import blocksmith.exec.block.SourceBlockSpec;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Array;
 import java.util.ArrayList;

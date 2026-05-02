@@ -1,5 +1,6 @@
-package blocksmith.exec;
+package blocksmith.exec.engine;
 
+import blocksmith.exec.block.BlockException;
 import java.util.ArrayList;
 import java.util.List;
 

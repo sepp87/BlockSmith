@@ -1,6 +1,6 @@
 package blocksmith.app.block;
 
-import blocksmith.exec.BlockExec;
+import blocksmith.exec.block.BlockExec;
 import java.util.Map;
 import java.util.Optional;
 

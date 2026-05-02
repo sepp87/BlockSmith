@@ -1,6 +1,6 @@
 package blocksmith.infra.blockloader;
 
-import blocksmith.exec.SourceBlock;
+import blocksmith.exec.block.SourceBlock;
 import blocksmith.infra.blockloader.annotations.Block;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

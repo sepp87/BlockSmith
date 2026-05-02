@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.function.Consumer;
-import blocksmith.exec.SourceBlock;
+import blocksmith.exec.block.SourceBlock;
 
 /**
  *

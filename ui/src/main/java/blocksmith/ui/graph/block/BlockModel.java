@@ -2,7 +2,7 @@ package blocksmith.ui.graph.block;
 
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.ValueType;
-import blocksmith.exec.BlockException;
+import blocksmith.exec.block.BlockException;
 import blocksmith.ui.graph.base.BaseModel;
 import java.util.List;
 import blocksmith.ui.graph.port.PortModel;

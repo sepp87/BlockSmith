@@ -1,7 +1,7 @@
 package blocksmith.ui.graph.block;
 
-import blocksmith.exec.BlockException;
-import blocksmith.exec.BlockException.Severity;
+import blocksmith.exec.block.BlockException;
+import blocksmith.exec.block.BlockException.Severity;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;

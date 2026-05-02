@@ -11,7 +11,7 @@ import blocksmith.app.inbound.GraphMutationAndHistory;
 import blocksmith.app.workspace.SaveDocument;
 import blocksmith.exec.ExecutionSession;
 import blocksmith.exec.ExecutionSessionFactory;
-import blocksmith.exec.ExecutionState;
+import blocksmith.exec.engine.ExecutionState;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.BiConsumer;

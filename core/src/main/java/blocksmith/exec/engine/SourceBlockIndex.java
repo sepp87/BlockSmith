@@ -1,9 +1,11 @@
-package blocksmith.exec;
+package blocksmith.exec.engine;
 
 import blocksmith.app.block.BlockLibrary;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.graph.GraphDiff;
+import blocksmith.exec.block.SourceBlock;
+import blocksmith.exec.block.SourceBlockSpec;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

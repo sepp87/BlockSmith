@@ -1,7 +1,9 @@
-package blocksmith.exec;
+package blocksmith.exec.engine;
 
 import blocksmith.domain.block.BlockDef;
 import blocksmith.domain.block.BlockId;
+import blocksmith.exec.block.BlockFunc;
+import blocksmith.exec.block.BlockFuncResult;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

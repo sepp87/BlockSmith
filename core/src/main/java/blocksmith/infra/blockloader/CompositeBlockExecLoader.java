@@ -2,7 +2,7 @@
 package blocksmith.infra.blockloader;
 
 import blocksmith.app.outbound.BlockExecLoader;
-import blocksmith.exec.BlockExec;
+import blocksmith.exec.block.BlockExec;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

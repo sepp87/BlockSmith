@@ -7,7 +7,7 @@ import blocksmith.app.block.command.UpdateParamValueCommand;
 import blocksmith.app.block.command.UpdateSelectionCommand;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.value.Port;
-import blocksmith.exec.BlockException;
+import blocksmith.exec.block.BlockException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;

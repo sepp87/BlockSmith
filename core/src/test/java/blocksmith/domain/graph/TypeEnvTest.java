@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
 /**
  *
  * @author joost
@@ -41,8 +42,8 @@ public class TypeEnvTest {
     }
 
     @Test
-    public void testTypeOfGenericList_WhenStringRequired_ThenListOfString() {
-        System.out.println("testTypeOf_WhenStringRequiredDownstream_ThenListOfString");
+    public void testTypeOfList_WhenStringDownstream_ThenListOfString() {
+        System.out.println("testTypeOfList_WhenStringDownstream_ThenListOfString");
 
         // prepare test data
         var list = factory.create(BlockId.create(), "List.getFirst");
@@ -70,8 +71,8 @@ public class TypeEnvTest {
     }
 
     @Test
-    public void testTypeOfGenericList_WhenStringListFirst_ThenListOfString() {
-        System.out.println("testTypeOfGenericList_WhenStringListFirst_ThenListOfString");
+    public void testTypeOfList_WhenStringUpstream_ThenListOfString() {
+        System.out.println("testTypeOfList_WhenStringUpstream_ThenListOfString");
 
         // prepare test data
         var string = factory.create(BlockId.create(), "Input.string");
@@ -123,8 +124,8 @@ public class TypeEnvTest {
     }
 
     @Test
-    public void testTypeOfGenericMap_WhenIntegerAndStringRequired_ThenMapOfIntegerString() {
-        System.out.println("testTypeOfGenericMap_WhenIntegerAndStringRequired_ThenMapOfIntegerString");
+    public void testTypeOfMap_WhenIntegerAndStringDownstream_ThenMapOfIntegerAndString() {
+        System.out.println("testTypeOfMap_WhenIntegerAndStringDownstream_ThenMapOfIntegerAndString");
 
         // prepare test data
         var map = factory.create(BlockId.create(), "Map.create");
@@ -158,10 +159,10 @@ public class TypeEnvTest {
         Assertions.assertTrue(expectedElement == resultElement);
 
     }
-    
+
     @Test
-    public void testTypeOfList_WhenInputIntegerAndDouble_ThenListOfNumber() {
-        System.out.println("testTypeOfList_WhenInputIntegerAndDouble_ThenListOfNumber");
+    public void testTypeOfList_WhenIntegerAndDoubleUpstream_ThenListOfNumber() {
+        System.out.println("testTypeOfList_WhenIntegerAndDoubleUpstream_ThenListOfNumber");
 
         // prepare test data
         var intSlider = factory.create(BlockId.create(), "Input.integerSlider");
@@ -193,8 +194,39 @@ public class TypeEnvTest {
         System.out.println("Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName());
         Assertions.assertTrue(expected == result);
     }
-    
 
-    
-    
+    @Test
+    public void testTypeOfList_WhenNumberAndIntegerDownstream_ThenListOfInteger() {
+        System.out.println("testTypeOfList_WhenNumberAndIntegerDownstream_ThenListOfInteger");
+
+        // prepare test data
+        var first = factory.create(BlockId.create(), "List.getFirst");
+        var number = factory.create(BlockId.create(), "Math.abs");
+        var integer = factory.create(BlockId.create(), "List.getIndex");
+        var firstToNumber = Connection.of(first.id(), "value", number.id(), "a");
+        var firstToInteger = Connection.of(first.id(), "value", integer.id(), "index");
+
+        var graph = GraphFactory.createEmpty();
+        graph = graph.withBlock(first);
+        graph = graph.withBlock(number);
+        graph = graph.withBlock(integer);
+        graph = graph.withConnection(firstToNumber);
+        graph = graph.withConnection(firstToInteger);
+        var env = TypeEnv.of(graph);
+
+        // perform test
+        var target = PortRef.input(first.id(), "list");
+        System.out.println("List<Integer> = " + env.typeOf(target));
+        System.out.println("Integer = " + env.typeOf(PortRef.output(first.id(), "value")));
+        var resolved = (ListType) env.typeOf(target);
+        var simple = (SimpleType) resolved.elementType();
+
+        // prepare result
+        var expected = Integer.class;
+        var result = simple.raw();
+
+        System.out.println("Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName());
+        Assertions.assertTrue(expected == result);
+    }
+
 }

@@ -1,4 +1,4 @@
-package blocksmith.exec;
+package blocksmith.exec.block;
 
 import blocksmith.domain.connection.PortRef;
 import java.util.List;
