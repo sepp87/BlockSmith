@@ -168,7 +168,7 @@ public class TypeEnvTest {
         var dblSlider = factory.create(BlockId.create(), "Input.doubleSlider");
         var create = factory.create(BlockId.create(), "List.create");
         var intToCreate = Connection.of(intSlider.id(), "value", create.id(), "values#0");
-        var dblToCreate = Connection.of(create.id(), "value", create.id(), "values#1");
+        var dblToCreate = Connection.of(dblSlider.id(), "value", create.id(), "values#1");
 
         var graph = GraphFactory.createEmpty();
         graph = graph.withBlock(intSlider);
@@ -183,11 +183,12 @@ public class TypeEnvTest {
         System.out.println("List<Number> = " + env.typeOf(target));
         System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#0")));
         System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#1")));
-        var resolved = (SimpleType) env.typeOf(target);
+        var resolved = (ListType) env.typeOf(target);
+        var simple = (SimpleType) resolved.elementType();
 
         // prepare result
         var expected = Number.class;
-        var result = resolved.raw();
+        var result = simple.raw();
 
         System.out.println("Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName());
         Assertions.assertTrue(expected == result);
