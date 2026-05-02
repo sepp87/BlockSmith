@@ -16,8 +16,8 @@ public class ListMethods {
             type = "List.create",
             category = "Core",
             description = "")
-    public static <T> List<T> create(T... item) {
-        return List.of(item);
+    public static <T> List<T> create(T... values) {
+        return List.of(values);
     }
 
     @Block(

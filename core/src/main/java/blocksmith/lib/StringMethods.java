@@ -206,12 +206,12 @@ public class StringMethods {
             type = "String.concat",
             category = "Core",
             description = "Concatenates multiple string values into a single string.")
-    public static String concat(String... value) {
-        if (value.length == 0) {
+    public static String concat(String... values) {
+        if (values.length == 0) {
             return null;
         }
         String result = "";
-        for (String v : value) {
+        for (String v : values) {
             result += v;
         }
         return result;
@@ -229,8 +229,8 @@ public class StringMethods {
             type = "String.join",
             category = "Core",
             description = "Returns a new String composed of the values joined together with the specified delimiter.")
-    public static String join(String delimiter, String... value) {
-        return String.join(delimiter, value);
+    public static String join(String delimiter, String... values) {
+        return String.join(delimiter, values);
     }
 
     @Block(
@@ -269,16 +269,16 @@ public class StringMethods {
             type = "String.format",
             category = "Core",
             description = "Returns a formatted string using the specified format string and arguments. The letter after % determines the type: s for strings, d for integers, f for floats, b for booleans. %n inserts a platform-safe newline. A number sets minimum field width, - left-aligns, and . sets decimal precision. For example, \"Hello, %s! You are ~%d years old.\" with \"World\" and 6000 produces \"Hello, World! You are ~6000 years old.\".")
-    public static String format(String format, Object... arg) {
-        return String.format(format, arg);
+    public static String format(String format, Object... args) {
+        return String.format(format, args);
     }
 
     @Block(
             type = "String.formatLocale",
             category = "Core",
             description = "Returns a formatted string using the specified locale, format string, and arguments. The letter after % determines the type: s for strings, d for integers, f for floats, b for booleans. %n inserts a platform-safe newline. A number sets minimum field width, - left-aligns, and . sets decimal precision. For example, \"Hello, %s! You are ~%d years old.\" with \"World\" and 6000 produces \"Hello, World! You are ~6000 years old.\".")
-    public static String formatByLocale(Locale l, String format, Object... arg) {
-        return String.format(l, format, arg);
+    public static String formatByLocale(Locale l, String format, Object... args) {
+        return String.format(l, format, args);
     }
 
 }

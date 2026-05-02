@@ -65,7 +65,7 @@ public class ArrayBlockTest {
 
         var connection = new Connection(
                 PortRef.output(input1.id(), "value"),
-                PortRef.input(concat.id(), "value#0")
+                PortRef.input(concat.id(), "values#0")
         );
 
         graph = graph.withConnection(connection);
@@ -83,7 +83,7 @@ public class ArrayBlockTest {
 
         var connection = new Connection(
                 PortRef.output(input1.id(), "value"),
-                PortRef.input(concat.id(), "value#0")
+                PortRef.input(concat.id(), "values#0")
         );
         
         graph = graph.withConnection(connection).withoutConnection(connection).withConnection(connection);
@@ -112,7 +112,7 @@ public class ArrayBlockTest {
 
         var connection = new Connection(
                 PortRef.output(input1.id(), "value"),
-                PortRef.input(concat.id(), "value#0")
+                PortRef.input(concat.id(), "values#0")
         );
 
         graph = graph.withConnection(connection);

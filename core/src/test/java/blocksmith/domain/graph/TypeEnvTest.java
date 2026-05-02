@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author joost
  */
-public class ValueTypeResolverTest {
+public class TypeEnvTest {
 
     private static BlockFactory factory;
 
@@ -53,10 +53,11 @@ public class ValueTypeResolverTest {
         graph = graph.withBlock(list);
         graph = graph.withBlock(string);
         graph = graph.withConnection(connection);
+        var env = TypeEnv.of(graph);
 
         // perform test
         var target = PortRef.input(list.id(), "list");
-        var resolved = (ListType) ValueTypeResolver.typeOf(graph, target);
+        var resolved = (ListType) env.typeOf(target);
         var simple = (SimpleType) resolved.elementType();
 
         // prepare result
@@ -77,17 +78,23 @@ public class ValueTypeResolverTest {
         var first = factory.create(BlockId.create(), "List.getFirst");
         var stringToCreate = Connection.of(string.id(), "value", create.id(), "values#0");
         var createToFirst = Connection.of(create.id(), "value", first.id(), "list");
-        
+
         var graph = GraphFactory.createEmpty();
         graph = graph.withBlock(string);
         graph = graph.withBlock(create);
         graph = graph.withBlock(first);
         graph = graph.withConnection(stringToCreate);
         graph = graph.withConnection(createToFirst);
+        var env = TypeEnv.of(graph);
 
         // perform test
         var target = PortRef.output(first.id(), "value");
-        var resolved = (SimpleType) ValueTypeResolver.typeOf(graph, target);
+        System.out.println("String = " + env.typeOf(target));
+        System.out.println("List<String> = " + env.typeOf(PortRef.output(create.id(), "value")));
+        System.out.println("List<T> = " + env.typeOf(PortRef.input(first.id(), "list")));
+        System.out.println("String = " + env.typeOf(PortRef.input(create.id(), "values#0")));
+        System.out.println("String = " + env.typeOf(PortRef.input(create.id(), "values#1")));
+        var resolved = (SimpleType) env.typeOf(target);
 
         // prepare result
         var expected = String.class;
@@ -127,10 +134,14 @@ public class ValueTypeResolverTest {
         graph = graph.withBlock(map);
         graph = graph.withBlock(concrete);
         graph = graph.withConnection(connection);
+        var env = TypeEnv.of(graph);
 
         // perform test
         var target = PortRef.output(map.id(), "value");
-        var resolved = (MapType) ValueTypeResolver2.typeOf(graph, target);
+        System.out.println("Map<Integer, String> = " + env.typeOf(target));
+        System.out.println("List<Integer> = " + env.typeOf(PortRef.input(map.id(), "keys")));
+        System.out.println("List<String> = " + env.typeOf(PortRef.input(map.id(), "values")));
+        var resolved = (MapType) env.typeOf(target);
         var key = (SimpleType) resolved.keyType();
         var element = (SimpleType) resolved.elementType();
 
@@ -144,6 +155,10 @@ public class ValueTypeResolverTest {
         Assertions.assertTrue(expectedKey == resultKey);
         System.out.println("Expected element: " + expectedElement.getSimpleName() + ",  Result element: " + resultElement.getSimpleName());
         Assertions.assertTrue(expectedElement == resultElement);
+
+//        Map<Integer, String> = MapType[keyType=VarType[name=K], elementType=VarType[name=V]]
+//        List<K> = ListType[elementType=SimpleType[raw=class java.lang.Integer]]
+//        List<V> = ListType[elementType=SimpleType[raw=class java.lang.String]]
     }
 
 }

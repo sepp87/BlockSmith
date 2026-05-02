@@ -20,21 +20,21 @@ import java.util.Set;
  *
  * @author joost
  */
-public class TypeGraph {
+public class TypeEnv {
 
     private final Map<PortRef, ValueType> resolved;
 
-    private TypeGraph(Map<PortRef, ValueType> resolved) {
+    private TypeEnv(Map<PortRef, ValueType> resolved) {
         this.resolved = Map.copyOf(resolved);
     }
 
-    public static TypeGraph of(Graph graph) {
+    public static TypeEnv of(Graph graph) {
         var cache = new HashMap<PortRef, ValueType>();
         var visiting = new HashSet<BlockId>();
         for (var block : graph.blocks()) {
             resolveBlock(graph, block, cache, visiting);
         }
-        return new TypeGraph(cache);
+        return new TypeEnv(cache);
     }
 
     public ValueType typeOf(PortRef ref) {
@@ -44,19 +44,20 @@ public class TypeGraph {
     // --- resolution ---
     private static void resolveBlock(Graph graph, Block block, Map<PortRef, ValueType> cache, Set<BlockId> visiting) {
         if (!visiting.add(block.id())) {
-            return;
+            return;  // cycle guard only
         }
-
-        // output ports are narrowed by upstream (input) connections
         var upstreamEnv = buildEnv(graph, block, cache, visiting, INPUT);
-        // input ports stay receptive to downstream (output) connections
         var downstreamEnv = buildEnv(graph, block, cache, visiting, OUTPUT);
+
+        var outputEnv = new HashMap<>(downstreamEnv);
+        outputEnv.putAll(upstreamEnv);
 
         for (var port : block.ports()) {
             var ref = PortRef.of(block.id(), port.direction(), port.valueId());
-            var env = port.direction() == OUTPUT ? upstreamEnv : downstreamEnv;
-            cache.put(ref, applyEnv(port.valueType(), env));
+            cache.put(ref, applyEnv(port.valueType(), outputEnv));
         }
+
+        visiting.remove(block.id());  // allow re-resolution by outer loop with more context
     }
 
     private static Map<VarType, SimpleType> buildEnv(Graph graph, Block block, Map<PortRef, ValueType> cache, Set<BlockId> visiting, Port.Direction side) {
