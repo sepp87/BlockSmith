@@ -16,7 +16,7 @@ import blocksmith.domain.value.ValueType.SimpleType;
 import blocksmith.exec.block.BlockException;
 import blocksmith.exec.block.BlockFunc;
 import blocksmith.exec.block.BlockFuncResult;
-import blocksmith.exec.block.BlockStatus;
+import blocksmith.exec.block.ExecutionStatus;
 import blocksmith.exec.block.SourceBlockRunning;
 import blocksmith.exec.block.SourceBlockSpec;
 import java.lang.invoke.MethodType;
@@ -67,20 +67,20 @@ public class ExecutionEngine {
     private void run(BlockId id, Graph current, ExecutionState state, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
 
         try {
-            if (state.statusOf(id) == BlockStatus.FINISHED) {
+            if (state.statusOf(id) == ExecutionStatus.FINISHED) {
                 return; // inputs haven't changed since last run — skip
             }
             var block = current.block(id).orElseThrow();
             var inputs = collectInputValues(current, state, block, onSourceBlockEmitted);
-            state.updateBlockState(id, inputs.byRef(), BlockStatus.RUNNING, List.of());
+            state.updateBlockState(id, inputs.byRef(), ExecutionStatus.RUNNING, List.of());
             var outcome = runBlock(block, inputs.byIndex(), onSourceBlockEmitted);
             if (outcome instanceof BlockFuncResult output) {
-                state.updateBlockState(id, output.values(), BlockStatus.FINISHED, output.exceptions());
+                state.updateBlockState(id, output.values(), ExecutionStatus.FINISHED, output.exceptions());
             }
 
         } catch (RuntimeException ex) {
             var critical = BlockException.critical(ex);
-            state.updateBlockState(id, Map.of(), BlockStatus.FAILED, List.of(critical));
+            state.updateBlockState(id, Map.of(), ExecutionStatus.FAILED, List.of(critical));
             LOGGER.log(Level.SEVERE, ex.getMessage());
             ex.printStackTrace();
         }
@@ -178,7 +178,7 @@ public class ExecutionEngine {
             return converted;
         }
 
-        if (state.statusOf(connectedBlock) == BlockStatus.RUNNING) {
+        if (state.statusOf(connectedBlock) == ExecutionStatus.RUNNING) {
             return null;
             // TBD cycle detected?
 //            throw new RuntimeException("Execution process interrupted, because connected upstream block yielded a severe runtime exception.");
@@ -189,7 +189,7 @@ public class ExecutionEngine {
         // TODO convert effective values if needed e.g. single to list, path to file, file to path
         // TODO collect blocks and execute concurrently
 
-        if (state.statusOf(connectedBlock) == BlockStatus.FINISHED) {
+        if (state.statusOf(connectedBlock) == ExecutionStatus.FINISHED) {
             var value = state.valueOf(connectedOutput);
             var converted = ValueConverter.convert(value, connectedOutput, inputRef, current);
             return converted;

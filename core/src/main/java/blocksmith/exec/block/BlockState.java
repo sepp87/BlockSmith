@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public record BlockState(
         BlockId id,
-        BlockStatus status,
+        ExecutionStatus status,
         Map<PortRef, Object> values,
         List<BlockException> exceptions) {
 

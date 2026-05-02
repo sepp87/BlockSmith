@@ -4,7 +4,7 @@ import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.exec.block.BlockException;
 import blocksmith.exec.block.BlockState;
-import blocksmith.exec.block.BlockStatus;
+import blocksmith.exec.block.ExecutionStatus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 public class ExecutionState {
 
     private final Map<PortRef, Object> valueIndex = new HashMap<>();
-    private final Map<BlockId, BlockStatus> blockStatus = new HashMap<>();
+    private final Map<BlockId, ExecutionStatus> blockStatus = new HashMap<>();
     private final Map<BlockId, List<BlockException>> blockExceptions = new HashMap<>();
 
     private final List<Consumer<BlockState>> listeners = new ArrayList<>();
@@ -46,7 +46,7 @@ public class ExecutionState {
     }
 
     public void setBlockRunning(BlockId block) {
-        blockStatus.put(block, BlockStatus.RUNNING);
+        blockStatus.put(block, ExecutionStatus.RUNNING);
         blockExceptions.remove(block);
         blockUpdated(block);
     }
@@ -54,7 +54,7 @@ public class ExecutionState {
     public void updateBlockState(
             BlockId block,
             Map<PortRef, Object> values,
-            BlockStatus status,
+            ExecutionStatus status,
             List<BlockException> exceptions) {
 
         valueIndex.putAll(values);
@@ -94,8 +94,8 @@ public class ExecutionState {
         return result; // do NOT return Map.copyOf() since the result can hold keys with null values
     }
 
-    public BlockStatus statusOf(BlockId block) {
-        return blockStatus.getOrDefault(block, BlockStatus.IDLE);
+    public ExecutionStatus statusOf(BlockId block) {
+        return blockStatus.getOrDefault(block, ExecutionStatus.IDLE);
     }
 
     public List<BlockException> exceptionsOf(BlockId block) {

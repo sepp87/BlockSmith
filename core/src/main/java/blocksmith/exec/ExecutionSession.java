@@ -7,7 +7,7 @@ import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.graph.GraphFactory;
 import blocksmith.exec.block.BlockException;
-import blocksmith.exec.block.BlockStatus;
+import blocksmith.exec.block.ExecutionStatus;
 import blocksmith.exec.engine.ExecutionEngine;
 import blocksmith.exec.engine.ExecutionState;
 import blocksmith.exec.engine.ExecutionInvalidator;
@@ -82,7 +82,7 @@ public class ExecutionSession {
             var source = sourceBlocks.get(block).orElseThrow();
             var exception = source.error().isPresent() ? new BlockException(null, BlockException.Severity.ERROR, source.error().get()) : null;
             var exceptions = exception != null ? List.of(exception) : List.<BlockException>of();
-            state.updateBlockState(block, outputs, BlockStatus.FINISHED, exceptions);
+            state.updateBlockState(block, outputs, ExecutionStatus.FINISHED, exceptions);
 
             // re-run to push source block state
             engine.runAll(current, state, this::onSourceBlockEmitted);

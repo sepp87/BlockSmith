@@ -4,6 +4,6 @@ package blocksmith.exec.block;
  *
  * @author joost
  */
-public enum BlockStatus {
+public enum ExecutionStatus {
     IDLE, RUNNING, FINISHED, FAILED;
 }
