@@ -7,9 +7,9 @@ import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.ValueTypeResolver;
-import blocksmith.domain.graph.ValueTypeResolver2;
 import blocksmith.domain.value.Port;
 import static blocksmith.domain.value.Port.Direction.INPUT;
+import blocksmith.domain.value.ValueType;
 import blocksmith.exec.engine.ExecutionState;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.graph.block.MethodBlockNew;
@@ -126,6 +126,14 @@ public class BlockProjectionAssembler {
         var type = ValueTypeResolver.typeOf(graph, ref);
         var ports = ref.direction() == INPUT ? projection.getInputPorts() : projection.getOutputPorts();
 
+        findPort(ports, ref.valueId()).ifPresentOrElse(
+                p -> p.updateValueType(type),
+                () -> new IllegalStateException("Port NOT found")
+        );
+    }
+
+    public void updatePort(MethodBlockNew projection, PortRef ref, ValueType type) {
+        var ports = ref.direction() == INPUT ? projection.getInputPorts() : projection.getOutputPorts();
         findPort(ports, ref.valueId()).ifPresentOrElse(
                 p -> p.updateValueType(type),
                 () -> new IllegalStateException("Port NOT found")

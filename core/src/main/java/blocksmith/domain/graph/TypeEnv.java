@@ -1,5 +1,7 @@
 package blocksmith.domain.graph;
 
+import blocksmith.app.inbound.TypeResolver;
+import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
@@ -39,7 +41,7 @@ import java.util.Set;
  *
  * @author joost
  */
-public class TypeEnv {
+public class TypeEnv implements TypeResolver {
 
     private final Map<PortRef, ValueType> resolved;
 
@@ -56,8 +58,16 @@ public class TypeEnv {
         return new TypeEnv(cache);
     }
 
+    public boolean contains(PortRef ref) {
+        return resolved.containsKey(ref);
+    }
+
     public ValueType typeOf(PortRef ref) {
         return resolved.getOrDefault(ref, ValueType.of(Object.class));
+//        if (resolved.containsKey(ref)) {
+//            resolved.get(ref);
+//        }
+//        throw new IllegalStateException(GraphLogFmt.port(ref) + " NOT found");
     }
 
     // --- resolution ---
@@ -110,11 +120,11 @@ public class TypeEnv {
     }
 
     private static ValueType resolvedTypeOf(
-            Graph graph, 
+            Graph graph,
             PortRef ref,
-            Map<PortRef, ValueType> cache, 
+            Map<PortRef, ValueType> cache,
             Set<BlockId> visiting) {
-        
+
         if (cache.containsKey(ref)) {
             return cache.get(ref);
         }

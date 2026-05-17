@@ -1,11 +1,10 @@
 package blocksmith.exec.engine;
 
+import blocksmith.app.inbound.TypeResolver;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.TypeCastUtils;
 import blocksmith.domain.graph.ValueTypeResolver;
-import blocksmith.domain.graph.ValueTypeResolver2;
-import blocksmith.domain.value.ValueType;
 import blocksmith.domain.value.ValueType.ListType;
 import blocksmith.domain.value.ValueType.MapType;
 import blocksmith.domain.value.ValueType.SimpleType;
@@ -22,22 +21,26 @@ import java.util.function.Function;
  */
 public class ValueConverter {
 
-    public static Object convert(Object sourceValue, PortRef source, PortRef target, Graph graph) {
+    private final TypeResolver valueTypeResolver;
 
+    public ValueConverter(TypeResolver valueTypeResolver) {
+        this.valueTypeResolver = valueTypeResolver;
+    }
+
+    public Object convert(Graph graph, Object sourceValue, PortRef source, PortRef target) {
+
+//        var sourceType = valueTypeResolver.typeOf(source);
+//        var targetType = valueTypeResolver.typeOf(target);
         var sourceType = ValueTypeResolver.typeOf(graph, source);
         var targetType = ValueTypeResolver.typeOf(graph, target);
-        
-//        if (sourceType instanceof MapType fromMap && targetType instanceof MapType toMap) {
-//            // TODO - no conversion for maps             
-//            return sourceValue;
-//        }
-//
-//        if (sourceType instanceof ValueType.MapType || targetType instanceof ValueType.MapType) {
-//            throw new IllegalStateException("Invalid connection between MapType and singular ValueType port");
-//        }
 
-        var sourceInner = ValueTypeResolver.valueTypeWithin(sourceType);
-        var targetInner = ValueTypeResolver.valueTypeWithin(targetType);
+        if (sourceType instanceof MapType fromMap && targetType instanceof MapType toMap) {
+            // TODO - no conversion for maps             
+            return sourceValue;
+        }
+
+        var sourceInner = sourceType.valueTypeWithin();
+        var targetInner = targetType.valueTypeWithin();
 
         if (sourceInner instanceof VarType || targetInner instanceof VarType) {
             return sourceValue;

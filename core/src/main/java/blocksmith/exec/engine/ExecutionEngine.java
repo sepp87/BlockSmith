@@ -2,6 +2,7 @@ package blocksmith.exec.engine;
 
 import blocksmith.exec.block.ExecutionOutcome;
 import blocksmith.app.block.BlockLibrary;
+import blocksmith.app.inbound.TypeResolver;
 import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.ArrayBlock;
 import blocksmith.domain.block.Block;
@@ -10,7 +11,6 @@ import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphUtils;
 import blocksmith.domain.graph.ValueTypeResolver;
-import blocksmith.domain.graph.ValueTypeResolver2;
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.ValueType.SimpleType;
 import blocksmith.exec.block.BlockException;
@@ -22,9 +22,7 @@ import blocksmith.exec.block.SourceBlockSpec;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -41,10 +39,14 @@ public class ExecutionEngine {
     private final static Logger LOGGER = Logger.getLogger(ExecutionEngine.class.getName());
 
     private final BlockLibrary blockLibrary;
+    private final TypeResolver valueTypeResolver;
+    private final ValueConverter valueConverter;
     private final SourceBlockIndex sourceBlocks;
 
-    public ExecutionEngine(BlockLibrary blockLibrary, SourceBlockIndex sourceBlocks) {
+    public ExecutionEngine(BlockLibrary blockLibrary, TypeResolver valueTypeResolver, ValueConverter valueConverter, SourceBlockIndex sourceBlocks) {
         this.blockLibrary = blockLibrary;
+        this.valueTypeResolver = valueTypeResolver;
+        this.valueConverter = valueConverter;
         this.sourceBlocks = sourceBlocks;
     }
 
@@ -61,8 +63,6 @@ public class ExecutionEngine {
         // check if block status is AWAITING/PENDING/IDLE
         // execute blocks (if IDLE) one after the other
     }
-
-
 
     private void run(BlockId id, Graph current, ExecutionState state, BiConsumer<BlockId, Map<PortRef, Object>> onSourceBlockEmitted) {
 
@@ -114,6 +114,7 @@ public class ExecutionEngine {
             }
 
             var valueType = ValueTypeResolver.typeOf(current, PortRef.input(block.id(), any.valueId()));
+//            var valueType = valueTypeResolver.typeOf(PortRef.input(block.id(), any.valueId()));
             var rawType = valueType instanceof SimpleType simple ? simple.raw() : Object.class;
             var size = values.size();
 
@@ -174,7 +175,7 @@ public class ExecutionEngine {
         if (state.hasValueOf(connectedOutput)) {
             // TODO convert effective values if needed e.g. single to list, path to file, file to path
             var value = state.valueOf(connectedOutput);
-            var converted = ValueConverter.convert(value, connectedOutput, inputRef, current);
+            var converted = valueConverter.convert(current, value, connectedOutput, inputRef);
             return converted;
         }
 
@@ -191,7 +192,7 @@ public class ExecutionEngine {
 
         if (state.statusOf(connectedBlock) == ExecutionStatus.FINISHED) {
             var value = state.valueOf(connectedOutput);
-            var converted = ValueConverter.convert(value, connectedOutput, inputRef, current);
+            var converted = valueConverter.convert(current, value, connectedOutput, inputRef);
             return converted;
 //            throw new RuntimeException("Execution process interrupted, because connected upstream block yielded a severe runtime exception.");
         }

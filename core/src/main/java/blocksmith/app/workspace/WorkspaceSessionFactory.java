@@ -13,30 +13,33 @@ public class WorkspaceSessionFactory {
 
     private final GraphRepo repo;
     private final GraphEditorFactory graphEditorFactory;
+    private final TypeSessionFactory typeSessionFactory;
     private final ExecutionSessionFactory executionSessionFactory;
     private final SaveDocument saveDocument;
 
     public WorkspaceSessionFactory(
             GraphRepo repo,
             GraphEditorFactory graphEditorFactory,
+            TypeSessionFactory typeSessionFactory,
             ExecutionSessionFactory executionSessionFactory,
             SaveDocument saveDocument
     ) {
         this.repo = repo;
         this.graphEditorFactory = graphEditorFactory;
+        this.typeSessionFactory = typeSessionFactory;
         this.executionSessionFactory = executionSessionFactory;
         this.saveDocument = saveDocument;
 
     }
 
     public WorkspaceSession newDocument() {
-        var workspace = WorkspaceSession.newDocument(graphEditorFactory, executionSessionFactory, saveDocument);
+        var workspace = WorkspaceSession.newDocument(graphEditorFactory, typeSessionFactory, executionSessionFactory, saveDocument);
         return workspace;
     }
 
     public WorkspaceSession openDocument(Path path) throws Exception {
         var document = repo.load(path);
-        var workspace = WorkspaceSession.openDocument(path, document, graphEditorFactory, executionSessionFactory, saveDocument);
+        var workspace = WorkspaceSession.openDocument(path, document, graphEditorFactory, typeSessionFactory, executionSessionFactory, saveDocument);
         return workspace;
     }
 }

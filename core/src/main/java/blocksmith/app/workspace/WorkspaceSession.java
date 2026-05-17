@@ -9,10 +9,13 @@ import java.util.List;
 import java.util.Objects;
 import blocksmith.app.inbound.GraphMutationAndHistory;
 import blocksmith.app.workspace.SaveDocument;
+import blocksmith.domain.connection.PortRef;
+import blocksmith.domain.value.ValueType;
 import blocksmith.exec.ExecutionSession;
 import blocksmith.exec.ExecutionSessionFactory;
 import blocksmith.exec.engine.ExecutionState;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -27,6 +30,7 @@ public class WorkspaceSession {
     private final static Logger LOGGER = Logger.getLogger(WorkspaceSession.class.getName());
 
     private final GraphEditor editor;
+    private final TypeSession typeSession;
     private final ExecutionSession executionSession;
     private final SaveDocument saveDocument;
 
@@ -42,39 +46,58 @@ public class WorkspaceSession {
             Path documentPath,
             GraphDocument document,
             GraphEditorFactory editorFactory,
+            TypeSessionFactory typeSessionFactory,
             ExecutionSessionFactory executionSessionFactory,
             SaveDocument saveDocument
     ) {
         this.documentPath = documentPath;
         this.document = document;
         this.editor = editorFactory.createDefault(document.graph());
-        this.executionSession = executionSessionFactory.create(document.graph());
+        this.typeSession = typeSessionFactory.create(document.graph());
+        this.executionSession = executionSessionFactory.create(document.graph(), typeSession);
         this.saveDocument = saveDocument;
 
         this.selection = new SelectionState(editor);
         this.viewport = ViewportState.of(document);
 
         editor.addGraphListener(executionSession::onGraphChanged);
+        editor.addGraphListener(typeSession::onGraphChanged);
     }
 
     public static WorkspaceSession newDocument(
             GraphEditorFactory editorFactory,
+            TypeSessionFactory typeSessionFactory,
             ExecutionSessionFactory executionSessionFactory,
             SaveDocument saveDocument
     ) {
         Path path = null;
         var document = GraphDocument.createEmpty();
-        return new WorkspaceSession(path, document, editorFactory, executionSessionFactory, saveDocument);
+        return new WorkspaceSession(
+                path,
+                document,
+                editorFactory,
+                typeSessionFactory,
+                executionSessionFactory,
+                saveDocument
+        );
     }
 
     public static WorkspaceSession openDocument(
             Path path,
             GraphDocument document,
             GraphEditorFactory editorFactory,
+            TypeSessionFactory typeSessionFactory,
             ExecutionSessionFactory executionSessionFactory,
             SaveDocument saveDocument
     ) {
-        return new WorkspaceSession(path, document, editorFactory, executionSessionFactory, saveDocument);
+        return new WorkspaceSession(
+                path,
+                document,
+                editorFactory,
+                typeSessionFactory,
+                executionSessionFactory,
+                saveDocument
+        );
     }
 
     public SelectionState selection() {
@@ -85,7 +108,7 @@ public class WorkspaceSession {
         viewport = update;
         onViewportChanged();
     }
-    
+
     public ViewportState viewport() {
         return viewport;
     }
@@ -145,8 +168,18 @@ public class WorkspaceSession {
         documentPathListeners.forEach(c -> c.accept(documentPath));
     }
 
-    
     public void start() {
+        // add graph listener here or in constructor?
+        // pass the graph into the start method or keep in the constructor of execution session?
         executionSession.start();
+        typeSession.start();
+    }
+    
+    public void addTypeEnvListener(Consumer<Map<PortRef, ValueType>> listener) {
+        typeSession.addTypeEnvListener(listener);
+    }
+    
+    public void addExecutionStateListener() {
+        // TODO
     }
 }

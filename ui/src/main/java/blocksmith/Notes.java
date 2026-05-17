@@ -9,7 +9,17 @@ public class Notes {
 }
 
 
-// 
+// TypeEnv.typeOf(...)
+// - stepping away from getOrDefault generates exceptions
+
+// Change threading seam
+// - scheduler not in exec engine?
+
+// ValueConverter
+// - convert values for map types
+
+// WorkspaceSession 
+// - implement addExecutionStateListener(...)
 
 // Support VarArgs
 // - allow varargs as params OR throw exception? 

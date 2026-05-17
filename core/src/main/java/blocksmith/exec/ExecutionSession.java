@@ -72,7 +72,7 @@ public class ExecutionSession {
         });
     }
 
-    public void onSourceBlockEmitted(BlockId block, Map<PortRef, Object> outputs) {
+    private void onSourceBlockEmitted(BlockId block, Map<PortRef, Object> outputs) {
         scheduler.runInBackground(() -> {
 
             // invalidate downstream

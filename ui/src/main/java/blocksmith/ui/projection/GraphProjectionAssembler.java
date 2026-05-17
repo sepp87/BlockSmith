@@ -6,12 +6,13 @@ import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.graph.ValueTypeResolver;
-import blocksmith.domain.graph.ValueTypeResolver2;
+import blocksmith.domain.value.ValueType;
 import blocksmith.exec.engine.ExecutionState;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.projection.GraphProjection.GraphProjectionState;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,6 +47,15 @@ public class GraphProjectionAssembler {
         removeAll(state, diff);
         createAll(state, diff, graph);
         updateAll(state, diff, graph);
+    }
+
+    public void applyTypeEnvUpdate(GraphProjectionState state, Map<PortRef, ValueType> updatedValueTypes) {
+        for (var entry : updatedValueTypes.entrySet()) {
+            var ref = entry.getKey();
+            var valueType = entry.getValue();
+            var projection = state.blocks().get(ref.blockId());
+            blockAssembler.updatePort(projection, ref, valueType);
+        }
     }
 
     private void removeAll(GraphProjectionState state, GraphDiff diff) {

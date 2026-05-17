@@ -3,10 +3,12 @@ package blocksmith.ui.projection;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.Connection;
+import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
 import blocksmith.domain.group.Group;
 import blocksmith.domain.group.GroupId;
+import blocksmith.domain.value.ValueType;
 import blocksmith.ui.graph.block.MethodBlockNew;
 import blocksmith.ui.graph.connection.ConnectionModel;
 import blocksmith.ui.graph.group.BlockGroupModel;
@@ -66,8 +68,10 @@ public class GraphProjection {
         projectionChanged(projectionDiff);
     }
 
-    
-    
+    public void updateFromTypeEnv(Map<PortRef, ValueType> updatedValueTypes) {
+        assembler.applyTypeEnvUpdate(state(), updatedValueTypes);
+    }
+
     public MethodBlockNew block(BlockId id) {
         return blocks.get(id);
     }

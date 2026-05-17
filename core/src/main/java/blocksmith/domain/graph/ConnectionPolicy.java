@@ -23,26 +23,30 @@ public class ConnectionPolicy {
         var toEvaluate = graph.incomingConnection(to)
                 .map(graph::withoutConnection)
                 .orElse(graph);
+        var typeEnv = TypeEnv.of(toEvaluate);
 
+//        var fromType = typeEnv.typeOf(from);
+//        var toType = typeEnv.typeOf(to);
         var fromType = ValueTypeResolver.typeOf(toEvaluate, from);
         var toType = ValueTypeResolver.typeOf(toEvaluate, to);
+        
 
-//        if (fromType instanceof MapType fromMap && toType instanceof MapType toMap) {
-//            var fromKey = ValueTypeResolver2.valueTypeWithin(fromMap.keyType());
-//            var toKey = ValueTypeResolver2.valueTypeWithin(toMap.keyType());
-//            
-//            var fromElement = ValueTypeResolver2.valueTypeWithin(fromMap.elementType());
-//            var toElement = ValueTypeResolver2.valueTypeWithin(toMap.elementType());
-//            
-//            return isCompatible(fromKey, toKey) && isCompatible(fromElement, toElement);
-//        }
-//
-//        if (fromType instanceof MapType || toType instanceof MapType) {
-//            return false;
-//        }
+        if (fromType instanceof MapType fromMap && toType instanceof MapType toMap) {
+            var fromKey = fromMap.keyType().valueTypeWithin();
+            var toKey = toMap.keyType().valueTypeWithin();
 
-        var fromLeafType = ValueTypeResolver.valueTypeWithin(fromType);
-        var toLeafType = ValueTypeResolver.valueTypeWithin(toType);
+            var fromElement = fromMap.elementType().valueTypeWithin();
+            var toElement = toMap.elementType().valueTypeWithin();
+
+            return isCompatible(fromKey, toKey) && isCompatible(fromElement, toElement);
+        }
+
+        if (fromType instanceof MapType || toType instanceof MapType) {
+            return false;
+        }
+        
+        var fromLeafType = fromType.valueTypeWithin();
+        var toLeafType = toType.valueTypeWithin();
 
         return isCompatible(fromLeafType, toLeafType);
 

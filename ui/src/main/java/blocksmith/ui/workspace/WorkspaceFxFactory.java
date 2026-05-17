@@ -78,6 +78,11 @@ public class WorkspaceFxFactory implements WorkspaceFactory {
             projection.block(stateUpdate.id()).updateFrom(stateUpdate);
         }));
 
+        session.addTypeEnvListener(valueTypeByPort -> Platform.runLater(() -> {
+//            projection.updateFromTypeEnv(valueTypeByPort);
+            
+        }));
+
         session.start();
 
         return context;

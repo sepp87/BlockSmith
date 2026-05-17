@@ -19,6 +19,7 @@ import blocksmith.app.connection.RemoveConnection;
 import blocksmith.app.block.BlockLibrary;
 import blocksmith.app.outbound.AppScheduler;
 import blocksmith.app.outbound.GraphRepo;
+import blocksmith.app.workspace.TypeSessionFactory;
 import blocksmith.exec.ExecutionSessionFactory;
 import blocksmith.domain.block.BlockFactory;
 import blocksmith.infra.blockloader.CompositeBlockExecLoader;
@@ -46,6 +47,7 @@ public class App {
     private final BlockLibrary blockLibrary;
     private final GraphRepo graphRepo;
     private final GraphEditorFactory graphEditorFactory;
+    private final TypeSessionFactory typeSessionFactory;
     private final ExecutionSessionFactory executionSessionFactory;
     private final CommandRegistry commandRegistry;
 
@@ -85,6 +87,8 @@ public class App {
                 addGroup,
                 copyBlocks, pasteBlocks
         );
+
+        this.typeSessionFactory = new TypeSessionFactory();
 
         this.executionSessionFactory = new ExecutionSessionFactory(blockLibrary, scheduler);
 
@@ -129,6 +133,10 @@ public class App {
 
     public GraphEditorFactory getGraphEditorFactory() {
         return graphEditorFactory;
+    }
+
+    public TypeSessionFactory getTypeSessionFactory() {
+        return typeSessionFactory;
     }
 
     public ExecutionSessionFactory getExecutionSessionFactory() {

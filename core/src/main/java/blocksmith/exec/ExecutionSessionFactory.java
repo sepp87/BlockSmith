@@ -1,12 +1,14 @@
 package blocksmith.exec;
 
 import blocksmith.app.block.BlockLibrary;
+import blocksmith.app.inbound.TypeResolver;
 import blocksmith.app.outbound.AppScheduler;
 import blocksmith.domain.graph.Graph;
 import blocksmith.exec.engine.ExecutionEngine;
 import blocksmith.exec.engine.ExecutionInvalidator;
 import blocksmith.exec.engine.ExecutionState;
 import blocksmith.exec.engine.SourceBlockIndex;
+import blocksmith.exec.engine.ValueConverter;
 
 /**
  *
@@ -20,12 +22,12 @@ public class ExecutionSessionFactory {
     public ExecutionSessionFactory(BlockLibrary blockLibrary, AppScheduler scheduler) {
         this.blockLibrary = blockLibrary;
         this.scheduler = scheduler;
-        
     }
 
-    public ExecutionSession create(Graph graph) {
+    public ExecutionSession create(Graph graph, TypeResolver valueTypeResolver) {
         var sourceBlocks = new SourceBlockIndex(blockLibrary);
-        var engine = new ExecutionEngine(blockLibrary, sourceBlocks);
+        var valueConverter = new ValueConverter(valueTypeResolver);
+        var engine = new ExecutionEngine(blockLibrary, valueTypeResolver, valueConverter, sourceBlocks);
         var state = new ExecutionState();
         var invalidator = new ExecutionInvalidator();
         var session = new ExecutionSession(engine, state, invalidator, sourceBlocks, scheduler, graph);

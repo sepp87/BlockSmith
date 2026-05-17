@@ -30,6 +30,7 @@ import blocksmith.ui.editor.blocksearch.BlockSearchView;
 import blocksmith.app.command.CommandDispatcher;
 import blocksmith.app.command.CoreCommands;
 import blocksmith.app.outbound.WorkspaceHandle;
+import blocksmith.app.workspace.TypeSessionFactory;
 import blocksmith.ui.command.UiCommands;
 import blocksmith.ui.editor.tab.TabContent;
 import blocksmith.ui.editor.tab.TabManagerView;
@@ -90,15 +91,17 @@ public class UiApp extends Application {
         var blockLibrary = app.getBlockLibrary();
         var blockModelFactory = new BlockModelFactory(blockLibrary);
 
-        // core (graph, execution, workspace) 
+        // core (graph, execution, type, workspace) 
         var graphRepo = app.getGraphRepo();
         var graphEditorFactory = app.getGraphEditorFactory();
+        var typeSessionFactory = app.getTypeSessionFactory();
         var executionSessionFactory = app.getExecutionSessionFactory();
         var saveDocument = new SaveDocument(graphRepo);
         var workspaceSessionFactory
                 = new WorkspaceSessionFactory(
                         graphRepo,
                         graphEditorFactory,
+                        typeSessionFactory,
                         executionSessionFactory,
                         saveDocument);
 
@@ -198,7 +201,7 @@ public class UiApp extends Application {
     public static void setEnv(Environment env) {
         UiApp.env = env;
     }
-    
+
     public static Stage getStage() {
         return stage;
     }

@@ -3,7 +3,6 @@ package blocksmith.infra.xml;
 import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
-import blocksmith.domain.graph.ParamStatusResolver;
 import blocksmith.domain.value.ParamInput;
 import blocksmith.xml.v2.ObjectFactory;
 import blocksmith.xml.v2.ValueXml;
