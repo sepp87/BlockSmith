@@ -7,7 +7,7 @@ import blocksmith.domain.value.ValueType;
  *
  * @author joostmeulenkamp
  */
-public interface TypeResolver {
+public interface TypeLookup {
 
     ValueType typeOf(PortRef ref);
 }

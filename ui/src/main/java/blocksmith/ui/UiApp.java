@@ -129,7 +129,8 @@ public class UiApp extends Application {
         var workspaceLifecycle = new WorkspaceLifecycle(workspaceFactory, workspaceRegistry);
         WorkspaceHandle workspaceContext = null;
         var initialDocument = userPrefsService.getInitialDocument();
-        if (initialDocument.isPresent()) {
+        if (true
+                && initialDocument.isPresent()) {
             workspaceContext = workspaceFactory.openDocument(initialDocument.get());
         } else {
             workspaceContext = workspaceFactory.newDocument();

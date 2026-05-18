@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<document xmlns="http://www.blocksmith.io/xml/v2" zoomFactor="1.0" translateX="0.0" translateY="0.0">
+    <blocks>
+        <block type="Input.integerSlider" id="92a48a52-7677-41a0-abf7-3f601c2b3cdf" label="" x="179.0" y="165.0" width="-1.0" height="-1.0"/>
+        <block type="Input.integerSlider" id="649a59f4-ba4b-499f-b54e-e9703fd30915" label="" x="203.0" y="383.0" width="-1.0" height="-1.0"/>
+    </blocks>
+    <connections/>
+    <values>
+        <value block="92a48a52-7677-41a0-abf7-3f601c2b3cdf" id="value" min="0.0" max="10.0" step="1.0"/>
+        <value block="649a59f4-ba4b-499f-b54e-e9703fd30915" id="value" value="1" min="0.0" max="10.0" step="1.0"/>
+    </values>
+    <groups/>
+</document>

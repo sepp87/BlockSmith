@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import blocksmith.infra.blockloader.annotations.Block;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
@@ -17,7 +18,7 @@ public class ListMethods {
             category = "Core",
             description = "")
     public static <T> List<T> create(T... values) {
-        return List.of(values);
+        return Collections.unmodifiableList(Arrays.asList(values));
     }
 
     @Block(

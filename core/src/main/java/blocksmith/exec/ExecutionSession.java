@@ -63,6 +63,7 @@ public class ExecutionSession {
             var diff = GraphDiff.compare(oldGraph, newGraph);
             sourceBlocks.updateFrom(diff);
             var shouldRun = invalidator.invalidate(state, oldGraph, newGraph, diff);
+            System.out.println("shouldRun || initialRun > " + shouldRun + " || "+  initialRun);
             if (shouldRun || initialRun) {
                 initialRun = false;
                 var start = System.currentTimeMillis();

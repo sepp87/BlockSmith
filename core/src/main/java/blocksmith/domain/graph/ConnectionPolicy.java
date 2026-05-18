@@ -3,6 +3,8 @@ package blocksmith.domain.graph;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.value.ValueType;
 import blocksmith.domain.value.ValueType.MapType;
+import blocksmith.domain.value.ValueType.SimpleType;
+import blocksmith.domain.value.ValueType.VarType;
 
 /**
  *
@@ -25,11 +27,8 @@ public class ConnectionPolicy {
                 .orElse(graph);
         var typeEnv = TypeEnv.of(toEvaluate);
 
-//        var fromType = typeEnv.typeOf(from);
-//        var toType = typeEnv.typeOf(to);
-        var fromType = ValueTypeResolver.typeOf(toEvaluate, from);
-        var toType = ValueTypeResolver.typeOf(toEvaluate, to);
-        
+        var fromType = typeEnv.typeOf(from);
+        var toType = typeEnv.typeOf(to);
 
         if (fromType instanceof MapType fromMap && toType instanceof MapType toMap) {
             var fromKey = fromMap.keyType().valueTypeWithin();
@@ -44,9 +43,17 @@ public class ConnectionPolicy {
         if (fromType instanceof MapType || toType instanceof MapType) {
             return false;
         }
-        
+
+//        var initialFromLeafType = graph.port(from).valueType().valueTypeWithin();
         var fromLeafType = fromType.valueTypeWithin();
         var toLeafType = toType.valueTypeWithin();
+
+//        if (initialFromLeafType instanceof VarType
+//                && fromLeafType instanceof SimpleType
+//                && toLeafType instanceof SimpleType) {
+//
+//            
+//        }
 
         return isCompatible(fromLeafType, toLeafType);
 
@@ -54,11 +61,11 @@ public class ConnectionPolicy {
 
     private static boolean isCompatible(ValueType from, ValueType to) {
 
-        if (from instanceof ValueType.VarType || to instanceof ValueType.VarType) {
+        if (from instanceof VarType || to instanceof VarType) {
             return true;
         }
 
-        if (from instanceof ValueType.SimpleType simpleFrom && to instanceof ValueType.SimpleType simpleTo) {
+        if (from instanceof SimpleType simpleFrom && to instanceof SimpleType simpleTo) {
             return TypeCastUtils.isCastableTo(simpleFrom.raw(), simpleTo.raw());
         }
 

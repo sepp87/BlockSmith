@@ -1,7 +1,6 @@
 package blocksmith.exec;
 
 import blocksmith.app.block.BlockLibrary;
-import blocksmith.app.inbound.TypeResolver;
 import blocksmith.app.outbound.AppScheduler;
 import blocksmith.domain.graph.Graph;
 import blocksmith.exec.engine.ExecutionEngine;
@@ -9,6 +8,7 @@ import blocksmith.exec.engine.ExecutionInvalidator;
 import blocksmith.exec.engine.ExecutionState;
 import blocksmith.exec.engine.SourceBlockIndex;
 import blocksmith.exec.engine.ValueConverter;
+import blocksmith.app.inbound.TypeLookup;
 
 /**
  *
@@ -24,7 +24,7 @@ public class ExecutionSessionFactory {
         this.scheduler = scheduler;
     }
 
-    public ExecutionSession create(Graph graph, TypeResolver valueTypeResolver) {
+    public ExecutionSession create(Graph graph, TypeLookup valueTypeResolver) {
         var sourceBlocks = new SourceBlockIndex(blockLibrary);
         var valueConverter = new ValueConverter(valueTypeResolver);
         var engine = new ExecutionEngine(blockLibrary, valueTypeResolver, valueConverter, sourceBlocks);

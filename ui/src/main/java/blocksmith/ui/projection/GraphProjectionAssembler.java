@@ -1,19 +1,13 @@
 package blocksmith.ui.projection;
 
-import blocksmith.domain.block.ArrayBlock;
-import blocksmith.domain.block.Block;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
-import blocksmith.domain.graph.ValueTypeResolver;
 import blocksmith.domain.value.ValueType;
 import blocksmith.exec.engine.ExecutionState;
 import blocksmith.ui.graph.block.BlockModelFactory;
 import blocksmith.ui.projection.GraphProjection.GraphProjectionState;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -95,20 +89,6 @@ public class GraphProjectionAssembler {
 
     private void updateAll(GraphProjectionState state, GraphDiff diff, Graph graph) {
 
-        // update blocks' input control isEditable
-        var paramsWithStatusAffected = paramsWithStatusAffected(diff);
-        for (var ref : paramsWithStatusAffected) {
-            var projection = state.blocks().get(ref.blockId());
-            blockAssembler.updateInputControl(projection, ref, graph);
-        }
-
-        // update blocks' port value types
-        var portsWithValueTypeAffected = portsWithValueTypeAffected(diff, graph);
-        for (var ref : portsWithValueTypeAffected) {
-            var projection = state.blocks().get(ref.blockId());
-            blockAssembler.updatePort(projection, ref, graph);
-        }
-
         // update blocks' layout (label, position, size) or input control value
         for (var block : diff.updatedBlocks()) { // 
             var projection = state.blocks().get(block.id());
@@ -120,83 +100,6 @@ public class GraphProjectionAssembler {
             var projection = state.groups().get(group.id());
             projection.updateFrom(group, state.blocks());
         }
-    }
-
-    private Collection<PortRef> paramsWithStatusAffected(GraphDiff diff) {
-        return connectedPortsDownstream(diff);
-    }
-
-    private Collection<PortRef> portsWithValueTypeAffected(GraphDiff diff, Graph graph) {
-        var candidates = connectedPortsDownstream(diff);
-        return portsWithValueTypeAffectedDownstream(graph, candidates, new HashSet<>());
-    }
-
-    private Collection<PortRef> connectedPortsDownstream(GraphDiff diff) {
-        var result = new HashSet<PortRef>();
-
-        diff.addedConnections().forEach(c -> result.add(c.to()));
-
-        var removedBlocks = diff.removedBlocks().stream().map(Block::id).toList();
-        diff.removedConnections().forEach(c -> {
-            if (!removedBlocks.contains(c.to().blockId())) {
-                result.add(c.to());
-            }
-        });
-
-        return Set.copyOf(result);
-    }
-
-    private Collection<PortRef> portsWithValueTypeAffectedDownstream(Graph graph, Collection<PortRef> candidates, Collection<PortRef> visited) {
-        visited.addAll(candidates);
-
-        var result = new HashSet<PortRef>();
-        var downstreamCandidates = new HashSet<PortRef>();
-
-        for (var ref : candidates) {
-            var block = graph.block(ref.blockId()).orElseThrow();
-            var input = block.port(ref.direction(), ref.valueId());
-
-            if (input.isEmpty()) {
-                // port was pruned - propagate via remaining sibling elements
-                if (block instanceof ArrayBlock arrayBlock) {
-                    var elements = arrayBlock.elements();
-                    if (!elements.isEmpty()) {
-                        var any = elements.iterator().next();
-                        var varType = ValueTypeResolver.varTypeWithin(any.valueType());
-                        if (varType.isPresent()) {
-                            elements.forEach(e -> result.add(PortRef.input(block.id(), e.valueId())));
-                            ValueTypeResolver.boundOutputsOf(block, varType.get()).forEach(o -> {
-                                var boundOutput = PortRef.output(block.id(), o.valueId());
-                                result.add(boundOutput);
-                                graph.connectionsOf(boundOutput).forEach(c -> downstreamCandidates.add(c.to()));
-                            });
-                        }
-                    }
-                }
-                continue;
-            }
-
-            var varType = ValueTypeResolver.varTypeWithin(input.get().valueType());
-            if (varType.isPresent()) {
-                result.add(ref);
-            } else {
-                continue;
-            }
-
-            var outputs = ValueTypeResolver.boundOutputsOf(block, varType.get());
-            outputs.forEach(o -> {
-                var boundOutput = PortRef.output(block.id(), o.valueId());
-                result.add(boundOutput);
-                graph.connectionsOf(boundOutput).forEach(c -> downstreamCandidates.add(c.to()));
-            });
-        }
-
-        if (!downstreamCandidates.isEmpty()) {
-            var affected = portsWithValueTypeAffectedDownstream(graph, downstreamCandidates, visited);
-            result.addAll(affected);
-        }
-
-        return result;
     }
 
 }

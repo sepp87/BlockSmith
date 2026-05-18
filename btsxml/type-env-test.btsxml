@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<document xmlns="http://www.blocksmith.io/xml/v2" zoomFactor="1.0" translateX="48.0" translateY="-38.0">
+    <blocks>
+        <block type="List.getFirst" id="814e5e65-a2e6-423b-a43e-21896c49a5c9" label="" x="87.0" y="608.0" width="-1.0" height="-1.0"/>
+        <block type="List.get" id="bd9aa87f-1178-4613-9efe-448becc83372" label="" x="426.0" y="637.0" width="-1.0" height="-1.0"/>
+        <block type="Object.inspect" id="0e2f6a1d-c61e-4c46-bdad-afb95daa0ce6" label="" x="605.0" y="376.0" width="-1.0" height="-1.0"/>
+        <block type="List.create" id="6e95820f-1bb4-400a-842e-cf2d4268b1ba" label="" x="346.0" y="213.0" width="-1.0" height="-1.0"/>
+        <block type="List.create" id="ee9f6b33-996e-4b0c-b88f-c0ec433fab77" label="" x="440.0" y="369.0" width="-1.0" height="-1.0"/>
+        <block type="Input.string" id="dd2b4c0a-e2f1-4685-8db9-f43ffcfba48e" label="" x="58.0" y="268.0" width="-1.0" height="-1.0"/>
+        <block type="Input.doubleSlider" id="24c4cdd4-f649-4f93-ae06-d4a720084a8b" label="" x="68.0" y="472.0" width="-1.0" height="-1.0"/>
+        <block type="String.length" id="fe5024d8-6778-4d3a-820e-fa02314be4c7" label="" x="392.0" y="53.0" width="-1.0" height="-1.0"/>
+        <block type="Math.abs" id="f1adce3c-b0c6-4d47-a3b7-b27667c0bf6b" label="" x="426.0" y="550.0" width="-1.0" height="-1.0"/>
+        <block type="List.getFirst" id="f2582be0-b863-45bc-b23b-7ed3a7f89a79" label="" x="515.0" y="240.0" width="-1.0" height="-1.0"/>
+        <block type="List.getFirst" id="e7204864-903f-488d-9b0d-266027da6d9e" label="" x="98.0" y="109.0" width="-1.0" height="-1.0"/>
+        <block type="Input.integerSlider" id="eb82ba4d-7a7f-4e2d-a0fa-afc166de0497" label="" x="65.0" y="380.0" width="-1.0" height="-1.0"/>
+    </blocks>
+    <connections>
+        <connection fromBlock="e7204864-903f-488d-9b0d-266027da6d9e" fromPort="value" toBlock="fe5024d8-6778-4d3a-820e-fa02314be4c7" toPort="string"/>
+        <connection fromBlock="dd2b4c0a-e2f1-4685-8db9-f43ffcfba48e" fromPort="value" toBlock="6e95820f-1bb4-400a-842e-cf2d4268b1ba" toPort="values#0"/>
+        <connection fromBlock="6e95820f-1bb4-400a-842e-cf2d4268b1ba" fromPort="value" toBlock="f2582be0-b863-45bc-b23b-7ed3a7f89a79" toPort="list"/>
+        <connection fromBlock="eb82ba4d-7a7f-4e2d-a0fa-afc166de0497" fromPort="value" toBlock="ee9f6b33-996e-4b0c-b88f-c0ec433fab77" toPort="values#0"/>
+        <connection fromBlock="24c4cdd4-f649-4f93-ae06-d4a720084a8b" fromPort="value" toBlock="ee9f6b33-996e-4b0c-b88f-c0ec433fab77" toPort="values#1"/>
+        <connection fromBlock="814e5e65-a2e6-423b-a43e-21896c49a5c9" fromPort="value" toBlock="bd9aa87f-1178-4613-9efe-448becc83372" toPort="index"/>
+        <connection fromBlock="814e5e65-a2e6-423b-a43e-21896c49a5c9" fromPort="value" toBlock="f1adce3c-b0c6-4d47-a3b7-b27667c0bf6b" toPort="a"/>
+        <connection fromBlock="f2582be0-b863-45bc-b23b-7ed3a7f89a79" fromPort="value" toBlock="0e2f6a1d-c61e-4c46-bdad-afb95daa0ce6" toPort="object"/>
+    </connections>
+    <values>
+        <value block="dd2b4c0a-e2f1-4685-8db9-f43ffcfba48e" id="string" value="test"/>
+        <value block="24c4cdd4-f649-4f93-ae06-d4a720084a8b" id="value" value="0.0" min="0.0" max="10.0" step="0.1"/>
+        <value block="eb82ba4d-7a7f-4e2d-a0fa-afc166de0497" id="value" value="0" min="0.0" max="10.0" step="1.0"/>
+    </values>
+    <groups/>
+</document>

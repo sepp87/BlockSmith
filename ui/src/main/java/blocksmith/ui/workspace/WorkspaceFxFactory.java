@@ -79,10 +79,11 @@ public class WorkspaceFxFactory implements WorkspaceFactory {
         }));
 
         session.addTypeEnvListener(valueTypeByPort -> Platform.runLater(() -> {
-//            projection.updateFromTypeEnv(valueTypeByPort);
+            projection.updateFromTypeEnv(valueTypeByPort);
             
         }));
 
+        
         session.start();
 
         return context;

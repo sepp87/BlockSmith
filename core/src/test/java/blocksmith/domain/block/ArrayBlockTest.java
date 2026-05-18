@@ -1,4 +1,3 @@
-
 package blocksmith.domain.block;
 
 import blocksmith.TestApp;
@@ -55,8 +54,11 @@ public class ArrayBlockTest {
 
         var expected = 1;
         var result = concat.inputPorts().size();
-        Assertions.assertEquals(expected, result, "");
-        System.out.println("Expected: " + expected + ",  Result: " + result);
+        Assertions.assertEquals(
+                expected,
+                result,
+                "Expected: " + expected + ",  Result: " + result
+        );
     }
 
     @Test
@@ -73,37 +75,45 @@ public class ArrayBlockTest {
 
         var expected = 2;
         var result = concat.inputPorts().size();
-        Assertions.assertEquals(expected, result, "");
-        System.out.println("Expected: " + expected + ",  Result: " + result);
+        Assertions.assertEquals(
+                expected,
+                result,
+                "Expected: " + expected + ",  Result: " + result
+        );
     }
-    
-        @Test
-    public void testInputPorts_WithConcat1_ThenSize2_reize() {
-        System.out.println("testInputPorts_WithConcat1_ThenSize2_reize");
+
+    @Test
+    public void testInputPorts_WithConcat1_ThenSize2_resize() {
+        System.out.println("testInputPorts_WithConcat1_ThenSize2_resize");
 
         var connection = new Connection(
                 PortRef.output(input1.id(), "value"),
                 PortRef.input(concat.id(), "values#0")
         );
-        
+
         graph = graph.withConnection(connection).withoutConnection(connection).withConnection(connection);
         concat = concat.withFittedElements(graph.connections());
 
         var expected = 2;
         var result = concat.inputPorts().size();
-        Assertions.assertEquals(expected, result, "");
-        System.out.println("Expected: " + expected + ",  Result: " + result);
+        Assertions.assertEquals(
+                expected,
+                result,
+                "Expected: " + expected + ",  Result: " + result
+        );
     }
-
 
     @Test
     public void testConnectedElements_WithConcat0_ThenSize0() {
         System.out.println("testConnectedElements_WithConcat0_ThenSize0");
-        
+
         var expected = 0;
         var result = concat.connectedElements().size();
-        Assertions.assertEquals(expected, result, "");
-        System.out.println("Expected: " + expected + ",  Result: " + result);
+        Assertions.assertEquals(
+                expected,
+                result,
+                "Expected: " + expected + ",  Result: " + result
+        );
     }
 
     @Test
@@ -120,7 +130,10 @@ public class ArrayBlockTest {
 
         var expected = 1;
         var result = concat.connectedElements().size();
-        Assertions.assertEquals(expected, result, "");
-        System.out.println("Expected: " + expected + ",  Result: " + result);
+        Assertions.assertEquals(
+                expected,
+                result,
+                "Expected: " + expected + ",  Result: " + result
+        );
     }
 }

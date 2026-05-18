@@ -1,6 +1,5 @@
 package blocksmith.domain.graph;
 
-import blocksmith.app.inbound.TypeResolver;
 import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import blocksmith.app.inbound.TypeLookup;
 
 /**
  *
@@ -41,7 +41,7 @@ import java.util.Set;
  *
  * @author joost
  */
-public class TypeEnv implements TypeResolver {
+public class TypeEnv implements TypeLookup {
 
     private final Map<PortRef, ValueType> resolved;
 

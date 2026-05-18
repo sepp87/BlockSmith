@@ -50,6 +50,9 @@ public class SourceBlockIndex {
         for (var candidate : removed) {
             var id = candidate.id();
             var source = index.remove(id);
+            if(source == null) {
+                continue;
+            }
             source.stop();
         }
     }

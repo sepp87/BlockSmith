@@ -171,14 +171,14 @@ public class WorkspaceSession {
     public void start() {
         // add graph listener here or in constructor?
         // pass the graph into the start method or keep in the constructor of execution session?
-        executionSession.start();
         typeSession.start();
+        executionSession.start();
     }
-    
+
     public void addTypeEnvListener(Consumer<Map<PortRef, ValueType>> listener) {
         typeSession.addTypeEnvListener(listener);
     }
-    
+
     public void addExecutionStateListener() {
         // TODO
     }

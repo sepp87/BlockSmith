@@ -14,12 +14,9 @@ import blocksmith.domain.value.ValueType.MapType;
 import blocksmith.domain.value.ValueType.SimpleType;
 import java.io.IOException;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 
 /**
  *
@@ -33,12 +30,6 @@ public class TypeEnvTest {
     public static void blockFactory() throws IOException {
         var app = new TestApp();
         factory = app.getBlockFactory();
-    }
-
-    @BeforeEach
-    @AfterEach
-    public void println() {
-        System.out.println();
     }
 
     @Test
@@ -58,7 +49,7 @@ public class TypeEnvTest {
 
         // perform test
         var target = PortRef.input(list.id(), "list");
-        System.out.println("List<String> = " + env.typeOf(target));
+//        System.out.println("List<String> = " + env.typeOf(target));
         var resolved = (ListType) env.typeOf(target);
         var simple = (SimpleType) resolved.elementType();
 
@@ -66,8 +57,7 @@ public class TypeEnvTest {
         var expected = String.class;
         var result = simple.raw();
 
-        System.out.println("Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName());
-        Assertions.assertTrue(expected == result);
+        Assertions.assertTrue(expected == result, "Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName());
     }
 
     @Test
@@ -91,19 +81,18 @@ public class TypeEnvTest {
 
         // perform test
         var target = PortRef.output(first.id(), "value");
-        System.out.println("String = " + env.typeOf(target));
-        System.out.println("List<String> = " + env.typeOf(PortRef.output(create.id(), "value")));
-        System.out.println("List<T> = " + env.typeOf(PortRef.input(first.id(), "list")));
-        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#0")));
-        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#1")));
+//        System.out.println("String = " + env.typeOf(target));
+//        System.out.println("List<String> = " + env.typeOf(PortRef.output(create.id(), "value")));
+//        System.out.println("List<T> = " + env.typeOf(PortRef.input(first.id(), "list")));
+//        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#0")));
+//        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#1")));
         var resolved = (SimpleType) env.typeOf(target);
 
         // prepare result
         var expected = String.class;
         var result = resolved.raw();
 
-        System.out.println("Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName());
-        Assertions.assertTrue(expected == result);
+        Assertions.assertTrue(expected == result, "Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName());
     }
 
     public static Block concreteMapBlock() {
@@ -140,9 +129,9 @@ public class TypeEnvTest {
 
         // perform test
         var target = PortRef.output(map.id(), "value");
-        System.out.println("Map<Integer, String> = " + env.typeOf(target));
-        System.out.println("List<Integer> = " + env.typeOf(PortRef.input(map.id(), "keys")));
-        System.out.println("List<String> = " + env.typeOf(PortRef.input(map.id(), "values")));
+//        System.out.println("Map<Integer, String> = " + env.typeOf(target));
+//        System.out.println("List<Integer> = " + env.typeOf(PortRef.input(map.id(), "keys")));
+//        System.out.println("List<String> = " + env.typeOf(PortRef.input(map.id(), "values")));
         var resolved = (MapType) env.typeOf(target);
         var key = (SimpleType) resolved.keyType();
         var element = (SimpleType) resolved.elementType();
@@ -153,10 +142,14 @@ public class TypeEnvTest {
         var expectedElement = String.class;
         var resultElement = element.raw();
 
-        System.out.println("Expected key: " + expectedKey.getSimpleName() + ",  Result key: " + resultKey.getSimpleName());
-        Assertions.assertTrue(expectedKey == resultKey);
-        System.out.println("Expected element: " + expectedElement.getSimpleName() + ",  Result element: " + resultElement.getSimpleName());
-        Assertions.assertTrue(expectedElement == resultElement);
+        Assertions.assertTrue(
+                expectedKey == resultKey,
+                "Expected key: " + expectedKey.getSimpleName() + ",  Result key: " + resultKey.getSimpleName()
+        );
+        Assertions.assertTrue(
+                expectedElement == resultElement,
+                "Expected element: " + expectedElement.getSimpleName() + ",  Result element: " + resultElement.getSimpleName()
+        );
 
     }
 
@@ -181,9 +174,9 @@ public class TypeEnvTest {
 
         // perform test
         var target = PortRef.output(create.id(), "value");
-        System.out.println("List<Number> = " + env.typeOf(target));
-        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#0")));
-        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#1")));
+//        System.out.println("List<Number> = " + env.typeOf(target));
+//        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#0")));
+//        System.out.println("T = " + env.typeOf(PortRef.input(create.id(), "values#1")));
         var resolved = (ListType) env.typeOf(target);
         var simple = (SimpleType) resolved.elementType();
 
@@ -191,8 +184,10 @@ public class TypeEnvTest {
         var expected = Number.class;
         var result = simple.raw();
 
-        System.out.println("Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName());
-        Assertions.assertTrue(expected == result);
+        Assertions.assertTrue(
+                expected == result,
+                "Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName()
+        );
     }
 
     @Test
@@ -216,8 +211,8 @@ public class TypeEnvTest {
 
         // perform test
         var target = PortRef.input(first.id(), "list");
-        System.out.println("List<Integer> = " + env.typeOf(target));
-        System.out.println("Integer = " + env.typeOf(PortRef.output(first.id(), "value")));
+//        System.out.println("List<Integer> = " + env.typeOf(target));
+//        System.out.println("Integer = " + env.typeOf(PortRef.output(first.id(), "value")));
         var resolved = (ListType) env.typeOf(target);
         var simple = (SimpleType) resolved.elementType();
 
@@ -225,8 +220,10 @@ public class TypeEnvTest {
         var expected = Integer.class;
         var result = simple.raw();
 
-        System.out.println("Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName());
-        Assertions.assertTrue(expected == result);
+        Assertions.assertTrue(
+                expected == result,
+                "Expected: " + expected.getSimpleName() + ",  Result: " + result.getSimpleName()
+        );
     }
 
 }

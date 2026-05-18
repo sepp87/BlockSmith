@@ -20,7 +20,6 @@ public class ExecutionInvalidator {
         boolean changed = false;
         var visited = new HashSet<PortRef>();
 
-
         for (var c : changes.addedConnections()) {
             changed |= invalidateDownstream(state, current, c.to(), visited);
         }
@@ -45,6 +44,12 @@ public class ExecutionInvalidator {
                 updatedParams.stream().skip(1).forEach(p -> state.removeValueOf(p));
             }
         }
+
+        changed // TODO improve
+                |= !changes.addedConnections().isEmpty()
+                || !changes.removedConnections().isEmpty()
+                || !changes.addedBlocks().isEmpty() // e.g. only on added source blocks, engine should run
+                || !changes.removedBlocks().isEmpty();
 
         return changed;
     }

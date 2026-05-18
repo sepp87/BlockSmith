@@ -14,6 +14,10 @@ public sealed interface ParamInput {
         DECIMAL
     }
 
+    default String initialValue() {
+        return null;
+    }
+
     record Boolean() implements ParamInput {
     }
 
@@ -26,22 +30,22 @@ public sealed interface ParamInput {
     record Password() implements ParamInput {
     }
 
-    record Range(NumericType type, double min, double max, double step) implements ParamInput {
+    record Range(NumericType type, double min, double max, double step, String initialValue) implements ParamInput {
 
         public Range    {
             Objects.requireNonNull(type);
         }
 
         public static Range ofInteger() {
-            return new Range(NumericType.INTEGER, 0, 10, 1);
+            return new Range(NumericType.INTEGER, 0, 10, 1, "0");
         }
 
         public static Range ofDecimal() {
-            return new Range(NumericType.DECIMAL, 0, 10, 0.1);
+            return new Range(NumericType.DECIMAL, 0, 10, 0.1, "0.0");
         }
         
         public Range withBounds (double min, double max, double step) {
-            return new Range(type, min, max, step);
+            return new Range(type, min, max, step, initialValue);
         }
     }
 

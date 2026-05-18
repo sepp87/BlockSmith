@@ -6,7 +6,6 @@ import blocksmith.domain.block.Block;
 import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
-import blocksmith.domain.graph.ValueTypeResolver;
 import blocksmith.domain.value.Port;
 import static blocksmith.domain.value.Port.Direction.INPUT;
 import blocksmith.domain.value.ValueType;
@@ -44,7 +43,6 @@ public class BlockProjectionAssembler {
 
             var blockFx = blockFactory.create(block);
 
-            updatePorts(blockFx, block, graph);
             updateBlock(blockFx, block, graph);
             updateInputControls(blockFx, block, graph);
 
@@ -61,16 +59,6 @@ public class BlockProjectionAssembler {
         for (var param : block.params()) {
             var ref = PortRef.input(block.id(), param.valueId());
             updateInputControl(projection, ref, graph);
-        }
-    }
-
-    private void updatePorts(MethodBlockNew projection, Block block, Graph graph) {
-        for (var port : block.ports()) {
-            var varType = ValueTypeResolver.varTypeWithin(port.valueType());
-            if (varType.isPresent()) {
-                var ref = PortRef.of(block.id(), port.direction(), port.valueId());
-                updatePort(projection, ref, graph);
-            }
         }
     }
 
@@ -120,16 +108,6 @@ public class BlockProjectionAssembler {
         var controls = projection.getInputControls();
         var control = controls.get(valueId);
         control.setValue(param.value());
-    }
-
-    public void updatePort(MethodBlockNew projection, PortRef ref, Graph graph) {
-        var type = ValueTypeResolver.typeOf(graph, ref);
-        var ports = ref.direction() == INPUT ? projection.getInputPorts() : projection.getOutputPorts();
-
-        findPort(ports, ref.valueId()).ifPresentOrElse(
-                p -> p.updateValueType(type),
-                () -> new IllegalStateException("Port NOT found")
-        );
     }
 
     public void updatePort(MethodBlockNew projection, PortRef ref, ValueType type) {

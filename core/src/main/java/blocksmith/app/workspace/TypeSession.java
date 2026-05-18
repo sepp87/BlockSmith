@@ -1,6 +1,5 @@
 package blocksmith.app.workspace;
 
-import blocksmith.app.inbound.TypeResolver;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphDiff;
@@ -16,12 +15,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import blocksmith.app.inbound.TypeLookup;
 
 /**
  *
  * @author joost
  */
-public class TypeSession implements TypeResolver {
+public class TypeSession implements TypeLookup {
 
     private final List<Consumer<Map<PortRef, ValueType>>> listeners = new ArrayList<>();
     private TypeEnv current;

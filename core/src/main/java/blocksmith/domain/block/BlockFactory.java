@@ -59,7 +59,8 @@ public class BlockFactory {
         var result = new ArrayList<Param>();
 
         for (var paramDef : def.params()) {
-            var param = new Param(paramDef.valueId(), paramDef.argIndex(), DEFAULT_VALUE, paramDef.input());
+            var initial = paramDef.input().initialValue();
+            var param = new Param(paramDef.valueId(), paramDef.argIndex(), initial, paramDef.input());
             // TODO replace DEFAULT_VALUE with paramDef.defaultValue()
             result.add(param);
         }

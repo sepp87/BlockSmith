@@ -3,6 +3,7 @@ package blocksmith;
 import blocksmith.ui.UiApp;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
+import java.nio.file.Path;
 import javafx.application.Application;
 import org.apache.poi.util.IOUtils;
 
@@ -13,7 +14,7 @@ import org.apache.poi.util.IOUtils;
  */
 public class Launcher {
 
-    public static void main(String[] args) throws IOException  {
+    public static void main(String[] args) throws IOException {
 
         boolean devMode = Boolean.getBoolean("blocksmith.dev") || "dev".equalsIgnoreCase(System.getenv("BLOCKSMITH_MODE")); // set flag -Dblocksmith.dev=true
         boolean hasConsole = System.console() != null;
@@ -33,8 +34,10 @@ public class Launcher {
         }
 
 //        var path = "../btsxml/days-between-v2.btsxml";
-        var path = "../btsxml/aslist-v2.btsxml";
-        
+//        var path = "../btsxml/aslist-v2.btsxml";
+//        var path = "../btsxml/type-env-test.btsxml";
+        String path = null;
+
         UiApp.setEnv(env);
         Application.launch(UiApp.class, path);
 

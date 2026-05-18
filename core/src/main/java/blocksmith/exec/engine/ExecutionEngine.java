@@ -2,7 +2,6 @@ package blocksmith.exec.engine;
 
 import blocksmith.exec.block.ExecutionOutcome;
 import blocksmith.app.block.BlockLibrary;
-import blocksmith.app.inbound.TypeResolver;
 import blocksmith.app.logging.GraphLogFmt;
 import blocksmith.domain.block.ArrayBlock;
 import blocksmith.domain.block.Block;
@@ -10,7 +9,6 @@ import blocksmith.domain.block.BlockId;
 import blocksmith.domain.connection.PortRef;
 import blocksmith.domain.graph.Graph;
 import blocksmith.domain.graph.GraphUtils;
-import blocksmith.domain.graph.ValueTypeResolver;
 import blocksmith.domain.value.Port;
 import blocksmith.domain.value.ValueType.SimpleType;
 import blocksmith.exec.block.BlockException;
@@ -29,6 +27,7 @@ import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import blocksmith.app.inbound.TypeLookup;
 
 /**
  *
@@ -39,13 +38,13 @@ public class ExecutionEngine {
     private final static Logger LOGGER = Logger.getLogger(ExecutionEngine.class.getName());
 
     private final BlockLibrary blockLibrary;
-    private final TypeResolver valueTypeResolver;
+    private final TypeLookup valueTypeLookup;
     private final ValueConverter valueConverter;
     private final SourceBlockIndex sourceBlocks;
 
-    public ExecutionEngine(BlockLibrary blockLibrary, TypeResolver valueTypeResolver, ValueConverter valueConverter, SourceBlockIndex sourceBlocks) {
+    public ExecutionEngine(BlockLibrary blockLibrary, TypeLookup valueTypeLookup, ValueConverter valueConverter, SourceBlockIndex sourceBlocks) {
         this.blockLibrary = blockLibrary;
-        this.valueTypeResolver = valueTypeResolver;
+        this.valueTypeLookup = valueTypeLookup;
         this.valueConverter = valueConverter;
         this.sourceBlocks = sourceBlocks;
     }
@@ -113,8 +112,7 @@ public class ExecutionEngine {
                 LOGGER.log(Level.FINEST, GraphLogFmt.block(block.id()) + "." + element.valueId() + " = " + String.valueOf(value));
             }
 
-            var valueType = ValueTypeResolver.typeOf(current, PortRef.input(block.id(), any.valueId()));
-//            var valueType = valueTypeResolver.typeOf(PortRef.input(block.id(), any.valueId()));
+            var valueType = valueTypeLookup.typeOf(PortRef.input(block.id(), any.valueId()));
             var rawType = valueType instanceof SimpleType simple ? simple.raw() : Object.class;
             var size = values.size();
 
@@ -175,7 +173,7 @@ public class ExecutionEngine {
         if (state.hasValueOf(connectedOutput)) {
             // TODO convert effective values if needed e.g. single to list, path to file, file to path
             var value = state.valueOf(connectedOutput);
-            var converted = valueConverter.convert(current, value, connectedOutput, inputRef);
+            var converted = valueConverter.convert(value, connectedOutput, inputRef);
             return converted;
         }
 
@@ -192,7 +190,7 @@ public class ExecutionEngine {
 
         if (state.statusOf(connectedBlock) == ExecutionStatus.FINISHED) {
             var value = state.valueOf(connectedOutput);
-            var converted = valueConverter.convert(current, value, connectedOutput, inputRef);
+            var converted = valueConverter.convert(value, connectedOutput, inputRef);
             return converted;
 //            throw new RuntimeException("Execution process interrupted, because connected upstream block yielded a severe runtime exception.");
         }

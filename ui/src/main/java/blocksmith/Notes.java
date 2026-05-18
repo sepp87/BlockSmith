@@ -8,15 +8,15 @@ public class Notes {
 
 }
 
+// testTypeOfList_WhenNumberAndIntegerDownstream_ThenListOfInteger() {
+// - "BUG" when number connected first, than integer is not allowed
+
 
 // TypeEnv.typeOf(...)
 // - stepping away from getOrDefault generates exceptions
 
 // Change threading seam
 // - scheduler not in exec engine?
-
-// ValueConverter
-// - convert values for map types
 
 // WorkspaceSession 
 // - implement addExecutionStateListener(...)
@@ -25,16 +25,6 @@ public class Notes {
 // - allow varargs as params OR throw exception? 
 // - element port to typed ElementPort/PartialInput/...
 // - refactor BlockModelFactory to use Block only from creation and PortDefMappingUtils
-
-// Refactor ValueTypeResolver
-// - resolve all VarTypes once on graph updated
-// - OBSOLETE Resolve ValueTypes upstream also (GraphProjectionAssembler)
-// - implement TypeSession
-// - listen to graph changes
-// - identify if TypeEnv needs to be rebuild
-// - rebuild TypeEnv 
-// - identify all VarTyped ports
-// - notify listeners of value types of VarTyped ports
 
 
 //
