@@ -49,13 +49,12 @@ That’s it! You’re ready to build your first graph.
 
 ### FUNCTIONALITIES
 * Input blocks to generate primitve data types e.g. String, Boolean, Integer, Long, Double
+* Blocks to handle data types e.g. String, Number, Date, File 
 * Math blocks such as multiply, divide, add and substract
-* List blocks to get, add, remove and replace items
-* Json blocks to get properties
-* Date blocks
-* File blocks
-* Spreadsheet blocks
-* String blocks
+* List blocks to create, modify and query lists
+* Map blocks to create, modify and query maps
+* Json blocks to query json strings and generate lists and maps
+* Spreadsheet blocks to read and write CSV and XLSX files
 <br>
 
 ### CUSTOMIZE

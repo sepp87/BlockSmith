@@ -30,7 +30,7 @@ public class MapMethods {
 
     @Block(
             type = "Map.get",
-            aliases = {"Dictionary.get"},
+            aliases = {"Map.getKey", "Dictionary.get", "Dictionary.getKey"},
             description = "Returns the value to which the specified key is mapped, or null if this map contains no mapping for the key.",
             category = "Core")
     public static <K, V> V get(Map<K, V> map, K key) {

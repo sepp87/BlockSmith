@@ -11,6 +11,8 @@ import java.util.Map;
 import blocksmith.utils.ParsingUtils;
 import blocksmith.infra.blockloader.annotations.Block;
 import com.google.gson.JsonArray;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.regex.Pattern;
 
 /**
@@ -25,11 +27,33 @@ public class JsonMethods {
             .create();
 
     @Block(
-            type = "Json.asStringList",
+            type = "Json.asMap",
+            category = "Core",
+            description = "Converts a JSON object into a map.")
+    public static Map<String, String> asMap(String jsonObject) {
+        if (jsonObject == null) {
+            throw new NullPointerException("Input string \"jsonObject\" is null");
+        }
+        JsonElement element = PARSER.parse(jsonObject);
+        var map = new LinkedHashMap<String, String>();
+        if (element.isJsonObject()) {
+            for (var entry : element.getAsJsonObject().asMap().entrySet()) {
+                var key = entry.getKey();
+                var val = toOutput(entry.getValue());
+                map.put(key, val);
+            }
+        }
+        return Collections.unmodifiableMap(map);
+    }
+
+    @Block(
+            type = "Json.asList",
             category = "Core",
             description = "Converts a JSON array into a list of string values.")
     public static List<String> asStringList(String jsonArray) {
-
+        if (jsonArray == null) {
+            throw new NullPointerException("Input string \"jsonArray\" is null");
+        }
         JsonElement element = PARSER.parse(jsonArray);
         List<String> list = new ArrayList<>();
         if (element.isJsonArray()) {
@@ -41,10 +65,10 @@ public class JsonMethods {
         return list;
     }
 
-    @Block(
-            type = "Json.asList",
-            category = "Core",
-            description = "Converts a JSON array into a list of string values.")
+//    @Block(
+//            type = "Json.asList",
+//            category = "Core",
+//            description = "Converts a JSON array into a list of string values.")
     public static List<?> asList(String jsonArray) {
         if (jsonArray == null) {
             throw new NullPointerException("Input string \"jsonArray\" is null");
